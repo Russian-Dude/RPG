@@ -1,0 +1,207 @@
+{
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+	huge_white_shadow-black: {
+		file: BLKCHCRY.fnt
+	}
+	Medium_White_Shadow-black: {
+		file: BLKCHCRY.fnt
+	}
+}
+com.badlogic.gdx.graphics.Color: {
+	black: {
+		r: 0
+		g: 0
+		b: 0
+		a: 1
+	}
+	bronze: {
+		r: 0.8
+		g: 0.44434813
+		b: 0.09066665
+		a: 1
+	}
+	white: {
+		r: 1
+		g: 1
+		b: 1
+		a: 1
+	}
+}
+com.kotcrab.vis.ui.Sizes: {
+	default: {
+		scaleFactor: 1
+		spacingBottom: 8
+		spacingRight: 6
+		buttonBarSpacing: 10
+		menuItemIconSize: 22
+		borderSize: 1
+		spinnerButtonHeight: 12
+		spinnerFieldSize: 50
+		fileChooserViewModeBigIconsSize: 200
+		fileChooserViewModeMediumIconsSize: 128
+		fileChooserViewModeSmallIconsSize: 64
+		fileChooserViewModeListWidthSize: 150
+	}
+}
+com.kotcrab.vis.ui.widget.PopupMenu$PopupMenuStyle: {
+	default: {
+		background: Window_Transparent_9p
+	}
+}
+com.kotcrab.vis.ui.widget.Separator$SeparatorStyle: {
+	default: {
+		thickness: 4
+	}
+	menu: {
+		thickness: 1
+	}
+}
+com.kotcrab.vis.ui.widget.Tooltip$TooltipStyle: {
+	default: {
+		background: Window_Transparent_9p
+	}
+}
+com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane$TabbedPaneStyle: {
+	default: {
+		vertical: false
+		draggable: false
+	}
+}
+com.kotcrab.vis.ui.widget.BusyBar$BusyBarStyle: {
+	default: {
+		height: 5
+		segmentWidth: 150
+		segmentOverflow: 10
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+	default: {
+		up: Button_Horizontal_Up
+		down: Button_Horizontal_Pressed
+		over: Button_Horizontal_Over
+		disabled: Button_Horizontal_Disabled
+	}
+	yes: {
+		up: Button_Horizontal_Yes_Up
+		down: Button_Horizontal_Yes_Pressed
+		over: Button_Horizontal_Yes_Over
+		disabled: Button_Horizontal_Disabled
+	}
+	no: {
+		up: Button_Horizontal_No_Up
+		down: Button_Horizontal_No_Pressed
+		over: Button_Horizontal_No_Over
+		disabled: Button_Horizontal_Disabled
+	}
+	attack: {
+		up: Button_Attack_Up
+		over: Button_Attack_Over
+	}
+	spells: {
+		up: Button_Spells_Up
+		over: Button_Spells_Over
+	}
+	items: {
+		up: Button_Items_Up
+		over: Button_Items_Over
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+	default: {
+		font: Medium_White_Shadow-black
+		fontColor: white
+	}
+	small: {
+		font: Medium_White_Shadow-black
+	}
+	title: {
+		font: huge_white_shadow-black
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
+	default: {
+		font: Medium_White_Shadow-black
+		fontColorSelected: white
+		fontColorUnselected: white
+		selection: Window_Transparent_9p
+		background: Window_Transparent_9p
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
+	default-horizontal: {
+		background: Progress_Bar_Horizontal_9p
+		knobBefore: Progress_Bar_Before_Knob_Hp
+	}
+	hp: {
+		background: Progress_Bar_Horizontal_9p
+		knobBefore: Progress_Bar_Before_Knob_Hp
+	}
+	stm: {
+		background: Progress_Bar_Horizontal_V2_9p
+		knobBefore: Progress_Bar_Before_Knob_Stm
+	}
+	exp: {
+		background: Progress_Bar_Horizontal_9p
+		knobBefore: Progress_Bar_Before_Knob_Exp
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
+	default: {
+		background: Window_Transparent_9p
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
+	default: {
+		font: Medium_White_Shadow-black
+		fontColor: white
+		background: Window_Transparent_9p
+		scrollStyle: default
+		listStyle: default
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+	default: {
+		parent: default
+		font: Medium_White_Shadow-black
+	}
+	yes: {
+		parent: yes
+		font: huge_white_shadow-black
+		fontColor: white
+	}
+	no: {
+		parent: no
+		font: huge_white_shadow-black
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+	default: {
+		font: Medium_White_Shadow-black
+		fontColor: white
+		background: Window_Transparent_9p
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
+	default: {
+		label: default
+		background: Window_Transparent_9p
+	}
+	background: {
+		label: default
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+	default: {
+		background: Window_9p
+		titleFont: huge_white_shadow-black
+	}
+	transparent: {
+		background: Window_Transparent_9p
+		titleFont: huge_white_shadow-black
+	}
+	no_edges: {
+		background: Window_No_Edges_9p
+		titleFont: huge_white_shadow-black
+	}
+}
+}

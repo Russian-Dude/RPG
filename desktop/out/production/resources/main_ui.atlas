@@ -1,0 +1,347 @@
+
+main_ui.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+BLKCHCRY
+  rotate: false
+  xy: 1, 429
+  size: 506, 78
+  orig: 506, 78
+  offset: 0, 0
+  index: -1
+Button_Attack_Over
+  rotate: false
+  xy: 447, 262
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Button_Attack_Up
+  rotate: false
+  xy: 447, 220
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Button_Horizontal_Disabled
+  rotate: false
+  xy: 1, 325
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_No_Over
+  rotate: false
+  xy: 203, 377
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_No_Pressed
+  rotate: false
+  xy: 1, 273
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_No_Up
+  rotate: false
+  xy: 163, 325
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_Over
+  rotate: false
+  xy: 1, 221
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_Pressed
+  rotate: false
+  xy: 163, 273
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_Up
+  rotate: false
+  xy: 1, 169
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_Yes_Over
+  rotate: false
+  xy: 163, 221
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_Yes_Pressed
+  rotate: false
+  xy: 1, 117
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_Yes_Up
+  rotate: false
+  xy: 163, 169
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Items_Over
+  rotate: false
+  xy: 447, 178
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Button_Items_Up
+  rotate: false
+  xy: 451, 136
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Button_Spells_Over
+  rotate: false
+  xy: 451, 94
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Button_Spells_Up
+  rotate: false
+  xy: 451, 52
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Dude
+  rotate: false
+  xy: 325, 175
+  size: 120, 200
+  orig: 120, 200
+  offset: 0, 0
+  index: -1
+Progress_Bar
+  rotate: false
+  xy: 1, 377
+  size: 200, 50
+  orig: 200, 50
+  offset: 0, 0
+  index: -1
+Progress_Bar_Background
+  rotate: false
+  xy: 365, 388
+  size: 144, 39
+  orig: 144, 39
+  offset: 0, 0
+  index: -1
+Progress_Bar_Before_Knob_Exp
+  rotate: false
+  xy: 451, 11
+  size: 3, 39
+  orig: 3, 39
+  offset: 0, 0
+  index: -1
+Progress_Bar_Before_Knob_Hp
+  rotate: false
+  xy: 489, 294
+  size: 3, 40
+  orig: 3, 40
+  offset: 0, 0
+  index: -1
+Progress_Bar_Before_Knob_Stm
+  rotate: false
+  xy: 499, 346
+  size: 3, 40
+  orig: 3, 40
+  offset: 0, 0
+  index: -1
+Progress_Bar_Horizontal
+  rotate: false
+  xy: 1, 65
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Progress_Bar_Horizontal_9p
+  rotate: false
+  xy: 1, 65
+  size: 160, 50
+  split: 10, 9, 7, 7
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Progress_Bar_Horizontal_V2
+  rotate: false
+  xy: 163, 117
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Progress_Bar_Horizontal_V2_9p
+  rotate: false
+  xy: 163, 117
+  size: 160, 50
+  split: 10, 9, 7, 7
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Progress_Bar_Knob_Red
+  rotate: false
+  xy: 489, 336
+  size: 8, 50
+  orig: 8, 50
+  offset: 0, 0
+  index: -1
+Slot_Amulet
+  rotate: false
+  xy: 325, 133
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Body
+  rotate: false
+  xy: 325, 91
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Boots
+  rotate: false
+  xy: 367, 133
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Border_Bronze
+  rotate: false
+  xy: 325, 49
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Border_Gold
+  rotate: false
+  xy: 367, 91
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Border_Quest
+  rotate: false
+  xy: 367, 49
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Border_Silver
+  rotate: false
+  xy: 409, 133
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Empty
+  rotate: false
+  xy: 409, 91
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Gloves
+  rotate: false
+  xy: 409, 49
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Head
+  rotate: false
+  xy: 325, 7
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Legs
+  rotate: false
+  xy: 367, 7
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Ring
+  rotate: false
+  xy: 409, 7
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Shield
+  rotate: false
+  xy: 447, 346
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Weapon
+  rotate: false
+  xy: 447, 304
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Window
+  rotate: false
+  xy: 163, 13
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Window_9p
+  rotate: false
+  xy: 163, 13
+  size: 160, 50
+  split: 13, 13, 15, 15
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Window_No_Edges
+  rotate: false
+  xy: 163, 65
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Window_No_Edges_9p
+  rotate: false
+  xy: 163, 65
+  size: 160, 50
+  split: 12, 12, 7, 7
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Window_Transparent
+  rotate: false
+  xy: 1, 13
+  size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Window_Transparent_9p
+  rotate: false
+  xy: 1, 13
+  size: 160, 50
+  split: 15, 15, 15, 15
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
