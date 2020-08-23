@@ -10,11 +10,13 @@ public class Lvl extends Stat {
     public static final Type BASE = Type.BASE;
     public static final Type CLASS = Type.CLASS;
 
+    private Type type;
     private Exp exp;
     private Points statPoints;
     private Points skillPoints;
 
     public Lvl(Type type) {
+        this.type = type;
         if (type == BASE) exp = new ExpBase();
         else if (type == CLASS) exp = new ExpClass();
         statPoints = new Points();
@@ -28,6 +30,8 @@ public class Lvl extends Stat {
     public double expValue() { return exp.value(); }
     public double statPointsValue() { return statPoints.value(); }
     public double skillPointsValue() { return skillPoints.value(); }
+
+    public Type getType() { return type; }
 
     @Override
     public double increase(double value) {
@@ -54,6 +58,9 @@ public class Lvl extends Stat {
         protected abstract double calculate(double lvl);
         protected double max;
 
+        public double getMax() { return max; }
+        public void setMax(double max) { this.max = max; }
+
         @Override
         public double calculate() {
             return calculate(Lvl.this.value());
@@ -70,7 +77,6 @@ public class Lvl extends Stat {
             }
             return value;
         }
-
     }
 
     public class ExpClass extends Exp {

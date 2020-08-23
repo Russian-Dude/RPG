@@ -124,6 +124,10 @@ public class Stats implements StatObserver {
         this.stats.values().forEach(stat -> stat.decreaseBuffValue(clazz, stats.stats.get(stat.getClass()).value()));
     }
 
+    public boolean isCalculatable() {
+        return calculatable;
+    }
+
     public void clear() {
         stats.values().forEach(stat -> stat.set(0d));
     }

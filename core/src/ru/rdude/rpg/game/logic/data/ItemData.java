@@ -157,6 +157,10 @@ public class ItemData extends EntityData {
         this.type = type;
     }
 
+    public String getType() {
+        return type;
+    }
+
     public Class<? extends Item> getItemType() {
         return itemType;
     }

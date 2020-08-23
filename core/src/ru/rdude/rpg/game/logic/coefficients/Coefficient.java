@@ -28,6 +28,8 @@ public class Coefficient<T extends Enum<T>> {
                 .reduce(1d, (before, after) -> (before - 1) + (after - 1) + 1);
     }
 
+    public Map<T, Double> getCoefficientsMap() { return coefficients; }
+
     public Class<T> getType() {
         return type;
     }

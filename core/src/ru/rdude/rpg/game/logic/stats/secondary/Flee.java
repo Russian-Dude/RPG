@@ -47,6 +47,8 @@ public class Flee extends Stat implements Calculatable {
         return value();
     }
 
+    public LuckyDodgeChance luckyDodgeChance() { return luckyDodgeChance; }
+
     @Override
     public double increase(Stat stat) {
         super.increase(stat);
@@ -77,7 +79,7 @@ public class Flee extends Stat implements Calculatable {
         return value();
     }
 
-    private class LuckyDodgeChance extends Stat implements Calculatable {
+    public class LuckyDodgeChance extends Stat implements Calculatable {
         @Override
         public double calculate() {
             double LUCK = luck.value();
