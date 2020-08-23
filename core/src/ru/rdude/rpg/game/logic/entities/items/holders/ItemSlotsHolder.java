@@ -48,4 +48,17 @@ public class ItemSlotsHolder<T extends Item> extends SlotsHolder<T> {
         }
         return false;
     }
+
+    public boolean hasEntity(T entity, int amount) {
+        int currentAmount = 0;
+        for (Slot<T> slot : slots) {
+            if (slot.hasEntity(entity)) {
+                currentAmount += slot.getEntity().getAmount();
+                if (currentAmount >= amount)
+                    return true;
+            }
+        }
+        return false;
+    }
+
 }

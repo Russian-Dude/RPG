@@ -21,6 +21,14 @@ public abstract class SlotsHolder<T extends Entity> {
     protected SlotsHolder() {
     }
 
+    public boolean hasEntity(T entity) {
+        for (Slot<T> slot : slots) {
+            if (slot.hasEntity(entity))
+                return true;
+        }
+        return false;
+    }
+
     public boolean hasEmptySlot() {
         return slots.stream().anyMatch(Slot::isEmpty);
     }
