@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.entities.skills;
 
+import ru.rdude.rpg.game.logic.enums.BuffType;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.SkillData;
@@ -25,15 +26,15 @@ public class SkillApplier {
         this.skillParser = new SkillParser(skillData, caster, target);
     }
 
-    public static void apply(SkillData skillData, Being caster, Being target) {
-        apply(new SkillApplier(skillData, caster, target), true);
+    public static boolean apply(SkillData skillData, Being caster, Being target) {
+        return apply(new SkillApplier(skillData, caster, target), true);
     }
 
-    public static void apply(SkillApplier skillApplier) {
-        apply(skillApplier, false);
+    public static boolean apply(SkillApplier skillApplier) {
+        return apply(skillApplier, false);
     }
 
-    private static void apply(SkillApplier skillApplier, boolean applyBuff) {
+    private static boolean apply(SkillApplier skillApplier, boolean applyBuff) {
         // damage part:
         Damage damage = skillApplier.getDamage();
         boolean isReceivedDamage = true;
@@ -41,15 +42,18 @@ public class SkillApplier {
             isReceivedDamage = skillApplier.target.receive(damage);
         // non damage parts:
         if (!isReceivedDamage)
-            return;
+            return false;
         // buff part:
         if (applyBuff) {
+            if (skillApplier.isResisted())
+                return false;
             Buff buff = new Buff(skillApplier);
             buff.setDamage(damage != null ? damage.value() : null);
             skillApplier.target.receive(buff);
         }
         // items part:
         skillApplier.getReceivedItems().forEach(item -> skillApplier.target.receive(item));
+        return true;
     }
 
 
@@ -88,6 +92,16 @@ public class SkillApplier {
 
     private boolean isCritical() {
         return caster.stats().critValue() >= Functions.random(100d);
+    }
+
+    private boolean isResisted() {
+        double randomValue = Functions.random(100d);
+        double resistanceValue = 0;
+        if (skillData.getBuffType() == BuffType.MAGIC)
+            resistanceValue = target.stats().magicResistanceValue();
+        else if (skillData.getBuffType() == BuffType.PHYSIC)
+            resistanceValue = target.stats().physicResistanceValue();
+        return resistanceValue >= randomValue;
     }
 
     private Damage getDamage() {

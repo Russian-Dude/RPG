@@ -1,20 +1,33 @@
 package ru.rdude.rpg.game.logic.gameStates;
 
+import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.time.TurnChangeObserver;
 
 public class Battle extends GameState implements TurnChangeObserver {
 
-    private Party playerSide;
     private Party enemySide;
     private Party turnOf;
 
-    public Party getPlayerSide() {
-        return playerSide;
-    }
 
     public Party getEnemySide() {
         return enemySide;
+    }
+
+    public Party getAllySide(Being of) {
+        for (Being being : playerSide.getBeings()) {
+            if (of == being)
+                return playerSide;
+        }
+        for (Being being : enemySide.getBeings()) {
+            if (of == being)
+                return enemySide;
+        }
+        return null;
+    }
+
+    public Party getEnemySide(Being of) {
+        return getAllySide(of) == playerSide ? enemySide : playerSide;
     }
 
     @Override

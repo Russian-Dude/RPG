@@ -34,13 +34,13 @@ public class Party {
         beings.add(index + 1, being);
     }
 
-    public Being getBeingLeftFrom(Being being, Being from) {
+    public Being getBeingLeftFrom(Being from) {
         int index = beings.indexOf(from);
         if (index == 0) return null;
         return beings.get(beings.indexOf(from) - 1);
     }
 
-    public Being getBeingRightFrom(Being being, Being from) {
+    public Being getBeingRightFrom(Being from) {
         int index = beings.indexOf(from);
         if (index == beings.size() - 1) return null;
         return beings.get(beings.indexOf(from) + 1);
@@ -56,5 +56,9 @@ public class Party {
 
     public Stream<Being> stream() {
         return beings.stream();
+    }
+
+    public LinkedList<Being> getBeings() {
+        return beings;
     }
 }

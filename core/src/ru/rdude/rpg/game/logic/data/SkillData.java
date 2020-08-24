@@ -53,6 +53,8 @@ public class SkillData extends EntityData {
     // Skills casted after specific being action:
     private Map<BeingAction.Action, Long> skillsOnBeingAction;
     private boolean onBeingActionCastToEnemy; // if true skill will be casted to interactor else from initial buff caster to buff holder
+    // buff type - using magic or physic resistance to resist:
+    private BuffType buffType;
 
     public SkillData(long guid) {
         super(guid);
@@ -349,6 +351,22 @@ public class SkillData extends EntityData {
 
     public void setTargets(List<Target> targets) {
         this.targets = targets;
+    }
+
+    public static Map<Long, SkillData> getSkills() {
+        return skills;
+    }
+
+    public static void setSkills(Map<Long, SkillData> skills) {
+        SkillData.skills = skills;
+    }
+
+    public BuffType getBuffType() {
+        return buffType;
+    }
+
+    public void setBuffType(BuffType buffType) {
+        this.buffType = buffType;
     }
 
     public class Requirements {

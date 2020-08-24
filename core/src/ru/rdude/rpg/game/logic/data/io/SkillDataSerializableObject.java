@@ -73,6 +73,7 @@ public class SkillDataSerializableObject implements Externalizable {
         objectOutput.writeObject(skillData.getSkillsMustCast());
         objectOutput.writeObject(skillData.getSkillsOnBeingAction());
         objectOutput.writeBoolean(skillData.isOnBeingActionCastToEnemy());
+        objectOutput.writeObject(skillData.getBuffType());
     }
 
     @Override
@@ -122,5 +123,6 @@ public class SkillDataSerializableObject implements Externalizable {
         skillData.setSkillsMustCast((Map<Long, Float>) objectInput.readObject());
         skillData.setSkillsOnBeingAction((Map<BeingAction.Action, Long>) objectInput.readObject());
         skillData.setOnBeingActionCastToEnemy(objectInput.readBoolean());
+        skillData.setBuffType((BuffType) objectInput.readObject());
     }
 }
