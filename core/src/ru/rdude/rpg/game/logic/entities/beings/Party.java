@@ -1,57 +1,60 @@
 package ru.rdude.rpg.game.logic.entities.beings;
 
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class Party {
 
-    private Set<Member> members;
+    private LinkedList<Being> beings;
 
-    public void add(Being being) {
-
+    public Party() {
+        this(new LinkedList<>());
     }
 
-    public void addToTheRightOf(Being of, Being who) {
-
+    public Party(Collection<Being> collection) {
+        beings = new LinkedList<>(collection);
     }
 
-    public void addToTheLeftOf(Being of, Being who) {
-
+    public boolean add(Being being) {
+        return beings.add(being);
     }
 
-    public void summon(Being summoner, Being minion) {
+    public void addToTheLeftFrom(Being being, Being from) {
 
+        int index = beings.indexOf(from);
+        if (index == 0)
+            beings.addFirst(being);
+        else
+            beings.add(index - 1, being);
+    }
+
+    public void addToTheRightFrom(Being being, Being from) {
+        int index = beings.indexOf(from);
+        beings.add(index + 1, being);
+    }
+
+    public Being getBeingLeftFrom(Being being, Being from) {
+        int index = beings.indexOf(from);
+        if (index == 0) return null;
+        return beings.get(beings.indexOf(from) - 1);
+    }
+
+    public Being getBeingRightFrom(Being being, Being from) {
+        int index = beings.indexOf(from);
+        if (index == beings.size() - 1) return null;
+        return beings.get(beings.indexOf(from) + 1);
+    }
+
+    public void remove(Being being) {
+        beings.remove(being);
     }
 
     public void forEach(Consumer<? super Being> action) {
-        members.stream().map(Member::getMember).forEach(action);
+        beings.forEach(action);
     }
 
     public Stream<Being> stream() {
-        return members.stream().map(Member::getMember);
-    }
-
-    private class Member implements BeingActionObserver {
-        private Being member;
-        private Being left;
-        private Being right;
-
-        public Being getMember() {
-            return member;
-        }
-
-        public Being getLeft() {
-            return left;
-        }
-
-        public Being getRight() {
-            return right;
-        }
-
-        @Override
-        public void update(BeingAction action, Being being) {
-
-        }
+        return beings.stream();
     }
 }

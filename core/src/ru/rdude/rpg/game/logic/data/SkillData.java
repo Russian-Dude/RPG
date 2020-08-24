@@ -45,17 +45,21 @@ public class SkillData extends EntityData {
     private boolean canBeDodged;
     private boolean canBeResisted;
     private SkillEffect effect;
-    //private SkillOverlay overlay;
-    //private Target[] targets;
+    private SkillOverlay overlay;
+    private Target mainTarget;
+    private List<Target> targets;
     private Map<Long, Float> skillsCouldCast;
     private Map<Long, Float> skillsMustCast;
-
-    public SkillData(long guid) {
-        super(guid);
-    }
     // Skills casted after specific being action:
     private Map<BeingAction.Action, Long> skillsOnBeingAction;
     private boolean onBeingActionCastToEnemy; // if true skill will be casted to interactor else from initial buff caster to buff holder
+
+    public SkillData(long guid) {
+        super(guid);
+        transformation = new Transformation();
+        requirements = new Requirements();
+    }
+
 
 
     public static SkillData getSkillByGuid(long guid) {
@@ -299,6 +303,10 @@ public class SkillData extends EntityData {
         this.skillsOnBeingAction = skillsOnBeingAction;
     }
 
+    public void setUsableInGameStates(Map<Class<? extends GameState>, Boolean> usableInGameStates) {
+        this.usableInGameStates = usableInGameStates;
+    }
+
     public boolean isRecalculateStatsEveryIteration() {
         return recalculateStatsEveryIteration;
     }
@@ -317,6 +325,30 @@ public class SkillData extends EntityData {
 
     public void setUsableInGameStates(Class<? extends GameState> gameState, boolean value) {
         this.usableInGameStates.put(gameState, value);
+    }
+
+    public SkillOverlay getOverlay() {
+        return overlay;
+    }
+
+    public void setOverlay(SkillOverlay overlay) {
+        this.overlay = overlay;
+    }
+
+    public Target getMainTarget() {
+        return mainTarget;
+    }
+
+    public void setMainTarget(Target mainTarget) {
+        this.mainTarget = mainTarget;
+    }
+
+    public List<Target> getTargets() {
+        return targets;
+    }
+
+    public void setTargets(List<Target> targets) {
+        this.targets = targets;
     }
 
     public class Requirements {

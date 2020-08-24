@@ -29,6 +29,10 @@ public class ItemDataSerializableObject implements Externalizable {
     @Override
     public void writeExternal(ObjectOutput objectOutput) throws IOException {
         objectOutput.writeLong(itemData.getGuid());
+        objectOutput.writeObject(itemData.getName());
+        objectOutput.writeObject(itemData.getNameInEditor());
+        objectOutput.writeObject(itemData.getDescription());
+
         objectOutput.writeObject(itemData.getItemType());
         objectOutput.writeObject(itemData.getType());
         objectOutput.writeBoolean(itemData.isStackable());
@@ -51,6 +55,10 @@ public class ItemDataSerializableObject implements Externalizable {
     @Override
     public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
         itemData = new ItemData(objectInput.readLong());
+        itemData.setName((String) objectInput.readObject());
+        itemData.setNameInEditor((String) objectInput.readObject());
+        itemData.setDescription((String) objectInput.readObject());
+
         itemData.setItemType((Class<? extends Item>) objectInput.readObject());
         itemData.setType((String) objectInput.readObject());
         itemData.setStackable(objectInput.readBoolean());
