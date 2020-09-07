@@ -1,6 +1,8 @@
 package ru.rdude.rpg.game.logic.map.bioms;
 
-public abstract class Biom {
+import ru.rdude.rpg.game.logic.map.CellProperty;
+
+public abstract class Biom extends CellProperty {
 
     public abstract Biom getThisInstance();
 

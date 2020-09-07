@@ -22,10 +22,6 @@ public class ItemDataSerializableObject implements Externalizable {
         return itemData;
     }
 
-    /*
-    private Coefficients coefficients;
-     */
-
     @Override
     public void writeExternal(ObjectOutput objectOutput) throws IOException {
         objectOutput.writeLong(itemData.getGuid());

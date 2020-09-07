@@ -231,36 +231,30 @@ public class Generator {
     }
 
     // looking for cells around, then everywhere
-    private List<Point> findUnSteppedCells(Point point, CellProperty property) {
+    private List<Point> findUnSteppedCells(Point point, CellProperty.Type property) {
         List<Point> result = new ArrayList<>();
         for (int i = 1; i <= 2; i++) {
             for (Point aroundCell : getAroundCells(point, i)) {
-                if (property == CellProperty.BIOM && map.cell(aroundCell).getBiom() == null)
-                    result.add(aroundCell);
-                else if (property == CellProperty.RELIEF && map.cell(aroundCell).getRelief() == null)
-                    result.add(aroundCell);
-                else if (property == CellProperty.OBJECT && map.cell(aroundCell).getObject() == null)
-                    result.add(aroundCell);
-                else if (property == CellProperty.ROAD && map.cell(aroundCell).getRoad() == null)
+                if (map.cell(aroundCell).get(property) == null)
                     result.add(aroundCell);
             }
             if (!result.isEmpty()) return result;
         }
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if (property == CellProperty.BIOM && map.cell(x,y).getBiom() == null) {
+                if (property == CellProperty.Type.BIOM && map.cell(x,y).getBiom() == null) {
                     result.add(new Point(x, y));
                     return result;
                 }
-                else if (property == CellProperty.RELIEF && map.cell(x,y).getRelief() == null) {
+                else if (property == CellProperty.Type.RELIEF && map.cell(x,y).getRelief() == null) {
                     result.add(new Point(x, y));
                     return result;
                 }
-                else if (property == CellProperty.OBJECT && map.cell(x,y).getObject() == null) {
+                else if (property == CellProperty.Type.OBJECT && map.cell(x,y).getObject() == null) {
                     result.add(new Point(x, y));
                     return result;
                 }
-                else if (property == CellProperty.ROAD && map.cell(x,y).getRoad() == null) {
+                else if (property == CellProperty.Type.ROAD && map.cell(x,y).getRoad() == null) {
                     result.add(new Point(x, y));
                     return result;
                 }
@@ -271,7 +265,7 @@ public class Generator {
 
 
     private void createBioms() {
-        int cellsWithNoBiomAmount = map.nonNullCells(CellProperty.BIOM);
+        int cellsWithNoBiomAmount = map.nonNullCells(CellProperty.Type.BIOM);
         int steps = height*width - cellsWithNoBiomAmount;
         Biom lastBiom;
         List<Point> points = createStartPoints();
@@ -290,12 +284,11 @@ public class Generator {
             }
         }
         // move through the map and generate bioms:
-        while (steps > 0) { // do not work probably due to JVM optimisation. Or I'm blind and some bug is over here
-        //while (map.nonNullCells(CellProperty.BIOM) > 0) {
+        while (steps > 0) {
             for (Point point : points) {
                 lastBiom = map.cell(point).getBiom();
                 // move to the next position:
-                List<Point> unSteppedCells = findUnSteppedCells(point, CellProperty.BIOM);
+                List<Point> unSteppedCells = findUnSteppedCells(point, CellProperty.Type.BIOM);
                 if (unSteppedCells.isEmpty())
                     return;
                 Point unSteppedPoint = unSteppedCells.get(random(0, unSteppedCells.size() - 1));
@@ -353,7 +346,7 @@ public class Generator {
         while (steps > 0) {
             for (Point point : points) {
                 // move to the next position:
-                Point nextPoint = random(findUnSteppedCells(point, CellProperty.BIOM));
+                Point nextPoint = random(findUnSteppedCells(point, CellProperty.Type.BIOM));
                 if (nextPoint == null) return;
                 point.x = nextPoint.x;
                 point.y = nextPoint.y;
@@ -401,7 +394,7 @@ public class Generator {
             for (Point point : points) {
                 // moving through the map:
                 lastRelief = map.cell(point).getRelief();
-                Point nextPoint = random(findUnSteppedCells(point, CellProperty.RELIEF));
+                Point nextPoint = random(findUnSteppedCells(point, CellProperty.Type.RELIEF));
                 point.x = nextPoint.x;
                 point.y = nextPoint.y;
                 // generating relief:

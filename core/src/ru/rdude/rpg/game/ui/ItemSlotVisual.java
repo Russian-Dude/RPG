@@ -2,11 +2,13 @@ package ru.rdude.rpg.game.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import ru.rdude.rpg.game.logic.entities.Entity;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.entities.items.equip.*;
 import ru.rdude.rpg.game.logic.holders.Slot;
+import ru.rdude.rpg.game.logic.holders.SlotObserver;
 
-public class ItemSlotVisual<T extends Item> extends Group {
+public class ItemSlotVisual<T extends Item> extends Group implements SlotObserver {
 
     private Slot<T> slot;
 
@@ -16,12 +18,14 @@ public class ItemSlotVisual<T extends Item> extends Group {
 
     public ItemSlotVisual(Slot<T> slot) {
         this.slot = slot;
+        slot.subscribe(this);
         background = new Image(UiData.DEFAULT_SKIN.getDrawable("Slot_" + getDrawableBackgroundName()));
         addActor(background);
         setSize(background.getWidth(), background.getHeight());
     }
 
     public void setItemVisual(ItemVisual itemVisual) {
+        this.item = itemVisual;
         addActor(itemVisual);
     }
 
@@ -52,4 +56,10 @@ public class ItemSlotVisual<T extends Item> extends Group {
             return "Empty";
     }
 
+    @Override
+    public void update(Slot<?> slot, Entity entity) {
+        if (this.slot == slot && entity instanceof Item) {
+            setItemVisual(ItemVisual.items.get(entity));
+        }
+    }
 }

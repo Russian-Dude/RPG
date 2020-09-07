@@ -7,7 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ItemVisual extends Group {
+
+    public static Map<Item, ItemVisual> items;
 
     private Item item;
 
@@ -17,6 +22,11 @@ public class ItemVisual extends Group {
     private ItemInfoTooltip tooltip;
 
     public ItemVisual(Item item) {
+
+        if (items == null)
+            items = new HashMap<>();
+        items.put(item, this);
+
         this.item = item;
         itemImage = UiData.getItemImage("simple_sword");
         border = UiData.ItemBorder.BRONZE;

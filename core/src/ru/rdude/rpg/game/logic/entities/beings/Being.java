@@ -113,9 +113,13 @@ public abstract class Being extends Entity implements BuffObserver {
 
     public boolean receive(Buff buff) {
         // subscribing to buff updates:
-        buff.subscribe(this);
+        if (!buff.isPermanent())
+            buff.subscribe(this);
         // stats:
-        stats.increaseBuffValues(Buff.class, buff.getStats());
+        if (buff.isPermanent())
+            stats.increase(buff.getStats());
+        else
+            stats.increaseBuffValues(Buff.class, buff.getStats());
         // being types:
         if (buff.getSkillData().getTransformation().getBeingTypes() != null)
             beingTypes.add(buff, buff.getSkillData().getTransformation().getBeingTypes());
@@ -192,8 +196,10 @@ public abstract class Being extends Entity implements BuffObserver {
     @Override
     public void update(Buff buff, boolean ends) {
         if (!ends) return;
-        buff.unsubscribe(this);
-        stats.decreaseBuffValues(Buff.class, buff.getStats());
+        if (!buff.isPermanent()) {
+            buff.unsubscribe(this);
+            stats.decreaseBuffValues(Buff.class, buff.getStats());
+        }
         beingTypes.remove(buff);
         elements.remove(buff);
         size.remove(buff);

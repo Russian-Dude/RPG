@@ -1,4 +1,4 @@
 package ru.rdude.rpg.game.logic.map;
 
-public class Road {
+public class Road extends CellProperty {
 }

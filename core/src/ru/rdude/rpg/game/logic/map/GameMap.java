@@ -33,11 +33,11 @@ public class GameMap {
         return builder.toString();
     }
 
-    public int nonNullCells(CellProperty cellProperty) {
+    public int nonNullCells(CellProperty.Type cellPropertyType) {
         int realNonNullCells = 0;
         for (int x = 0; x < map.length; x++) {
             for (int y = 0; y < map[0].length; y++) {
-                switch (cellProperty) {
+                switch (cellPropertyType) {
                     case BIOM:
                         if (map[x][y].getBiom() != null) realNonNullCells++;
                         break;

@@ -21,6 +21,7 @@ public class SkillData extends EntityData {
     private Coefficients buffCoefficients;
     private String damage;
     private Map<Class<Stat>, String> stats;
+    private double timeChange;
     private Transformation transformation;
     private List<Long> summon; // by guid
     private Map<Long, Integer> receiveItems; // by guid
@@ -367,6 +368,14 @@ public class SkillData extends EntityData {
 
     public void setBuffType(BuffType buffType) {
         this.buffType = buffType;
+    }
+
+    public double getTimeChange() {
+        return timeChange;
+    }
+
+    public void setTimeChange(double timeChange) {
+        this.timeChange = timeChange;
     }
 
     public class Requirements {

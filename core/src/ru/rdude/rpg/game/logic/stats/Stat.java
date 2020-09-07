@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class Stat implements StatObserver {
+public abstract class Stat implements Comparable<Stat>, StatObserver {
 
     protected Set<StatObserver> subscribers;
     private double value;
@@ -95,5 +95,10 @@ public abstract class Stat implements StatObserver {
     @Override
     public void update(Stat stat) {
         forceCalculate();
+    }
+
+    @Override
+    public int compareTo(Stat stat) {
+        return (int) (value() - stat.value());
     }
 }

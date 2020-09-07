@@ -38,6 +38,7 @@ public class SkillDataSerializableObject implements Externalizable {
         objectOutput.writeObject(new CoefficientsSerializable(skillData.getBuffCoefficients()));
         objectOutput.writeObject(skillData.getDamage());
         objectOutput.writeObject(skillData.getStats());
+        objectOutput.writeDouble(skillData.getTimeChange());
         objectOutput.writeObject(skillData.getTransformation().getBeingTypes());
         objectOutput.writeObject(skillData.getTransformation().getElements());
         objectOutput.writeObject(skillData.getTransformation().getSize());
@@ -88,6 +89,7 @@ public class SkillDataSerializableObject implements Externalizable {
         skillData.setBuffCoefficients(((CoefficientsSerializable) objectInput.readObject()).getCoefficients());
         skillData.setDamage((String) objectInput.readObject());
         skillData.setStats((Map<Class<Stat>, String>) objectInput.readObject());
+        skillData.setTimeChange(objectInput.readDouble());
         skillData.getTransformation().setBeingTypes((Set<BeingType>) objectInput.readObject());
         skillData.getTransformation().setElements((Set<Element>) objectInput.readObject());
         skillData.getTransformation().setSize((Size) objectInput.readObject());

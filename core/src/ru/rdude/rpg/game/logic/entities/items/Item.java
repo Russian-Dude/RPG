@@ -100,4 +100,7 @@ public abstract class Item extends Entity {
 
     public abstract Item copy();
 
+    public ItemData getItemData() {
+        return itemData;
+    }
 }

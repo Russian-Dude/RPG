@@ -1,10 +1,14 @@
 package ru.rdude.rpg.game.logic.stats.secondary;
 
 
+import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.primary.*;
+
+import java.util.Comparator;
+import java.util.List;
 
 public class Dmg extends Stat implements Calculatable {
 
@@ -48,6 +52,26 @@ public class Dmg extends Stat implements Calculatable {
     public Range range() { return range; }
     public Magic magic() { return magic; }
 
+    public AtkType get(AttackType attackType) {
+        switch (attackType) {
+            case MAGIC:
+                return magic();
+            case RANGE:
+                return range();
+            case MELEE:
+                return melee();
+            default:
+                return getStrongest();
+        }
+    }
+
+    public AtkType getStrongest() {
+        List<AtkType> types = List.of(magic, range, melee);
+        return types.stream()
+                .max(Comparator.naturalOrder())
+                .get();
+    }
+
     @Override
     public double increase(Stat stat) {
         if (!(stat instanceof Dmg))
@@ -72,7 +96,7 @@ public class Dmg extends Stat implements Calculatable {
         return value();
     }
 
-    private class AtkType {
+    public class AtkType implements Comparable<AtkType> {
         protected Max max;
         protected Min min;
 
@@ -87,9 +111,13 @@ public class Dmg extends Stat implements Calculatable {
         public double minValue() { return min.value(); }
         public double randomValue() { return Functions.random(min.value(), max.value()); }
 
-
         public class Max extends Stat {}
         public class Min extends Stat {}
+
+        @Override
+        public int compareTo(AtkType atkType) {
+            return (int) (minValue() + maxValue() - atkType.minValue() - atkType.maxValue());
+        }
     }
 
     public class Melee extends AtkType implements Calculatable {

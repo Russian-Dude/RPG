@@ -7,12 +7,15 @@ import java.util.Set;
 
 public class Slot<T extends Entity> {
 
+    private Set<SlotObserver> subscribers;
+
     protected T entity;
 
     protected Class<? extends T> requiredClass;
 
     public Slot(Class<? extends T> requiredClass) {
         this.requiredClass = requiredClass;
+        subscribers = new HashSet<>();
     }
 
     public T getEntity() {
@@ -21,6 +24,7 @@ public class Slot<T extends Entity> {
 
     public void setEntity(T item) {
         this.entity = item;
+        notifySubscribers(item);
     }
 
     public boolean hasEntity(T item) {
@@ -42,5 +46,17 @@ public class Slot<T extends Entity> {
 
     public Class<? extends T> getRequiredClass() {
         return requiredClass;
+    }
+
+    public void subscribe(SlotObserver subscriber) {
+        this.subscribers.add(subscriber);
+    }
+
+    public void unsubscribe(SlotObserver subscriber) {
+        this.subscribers.remove(subscriber);
+    }
+
+    private void notifySubscribers(T entity) {
+        subscribers.forEach(subscriber -> subscriber.update(this, entity));
     }
 }

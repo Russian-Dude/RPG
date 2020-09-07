@@ -76,41 +76,12 @@ public class SkillParser {
         bindings.put("TSTMREC", target.stats().stm().recoveryValue());
         bindings.put("MAXHP", caster.stats().hp().maxValue());
         bindings.put("TMAXHP", target.stats().hp().maxValue());
-
-        double atk;
-        switch (caster.getAttackType()) {
-            case MELEE:
-                atk = caster.stats().dmg().melee().randomValue();
-                break;
-            case RANGE:
-                atk = caster.stats().dmg().range().randomValue();
-                break;
-            case MAGIC:
-                atk = caster.stats().dmg().magic().randomValue();
-                break;
-            case WEAPON_TYPE:
-                atk = caster.stats().dmg().value();
-                break;
-            default:
-                atk = 0;
-        }
-        bindings.put("ATK", atk);
-
-        switch (target.getAttackType()) {
-            case MELEE:
-                atk = caster.stats().dmg().melee().randomValue();
-                break;
-            case RANGE:
-                atk = caster.stats().dmg().range().randomValue();
-                break;
-            case MAGIC:
-                atk = caster.stats().dmg().magic().randomValue();
-                break;
-            case WEAPON_TYPE:
-                atk = caster.stats().dmg().value();
-                break;
-        };
-        bindings.put("TATK", atk);
+        bindings.put("ATK", caster.stats().dmg().get(caster.getAttackType()).randomValue());
+        bindings.put("MINATK", caster.stats().dmg().get(caster.getAttackType()).minValue());
+        bindings.put("MAXATK", caster.stats().dmg().get(caster.getAttackType()).maxValue());
+        bindings.put("TATK", target.stats().dmg().get(target.getAttackType()).randomValue());
+        bindings.put("TMINATK", target.stats().dmg().get(target.getAttackType()).minValue());
+        bindings.put("TMAXATK", target.stats().dmg().get(target.getAttackType()).maxValue());
     }
 
 

@@ -20,6 +20,7 @@ public class Buff implements TurnChangeObserver, TimeChangeObserver, BeingAction
     private SkillData skillData;
     private SkillDuration duration;
     private Double damage;
+    private boolean permanent;
 
 
 
@@ -34,11 +35,14 @@ public class Buff implements TurnChangeObserver, TimeChangeObserver, BeingAction
         this.skillData = skillApplier.skillData;
         this.actsMinutes = skillData.getActsEveryMinute() > 0 ? skillData.getActsEveryMinute() : null;
         this.actsTurns = skillData.getActsEveryTurn() > 0 ? skillData.getActsEveryTurn() : null;
-        Game.getCurrentGame().getTimeManager().subscribe(this);
-        duration = createDuration();
-        duration.subscribe(this);
+        this.permanent = skillData.isPermanent();
+        if (!permanent) {
+            Game.getCurrentGame().getTimeManager().subscribe(this);
+            duration = createDuration();
+            duration.subscribe(this);
+            skillApplier.target.subscribe(this);
+        }
         stats = createStats();
-        skillApplier.target.subscribe(this);
     }
 
 
@@ -85,6 +89,10 @@ public class Buff implements TurnChangeObserver, TimeChangeObserver, BeingAction
         return skillData;
     }
 
+    public boolean isPermanent() {
+        return permanent;
+    }
+
     private void onTimeOrTurnUpdate() {
         if (damage != null) {
             if (skillData.isRecalculateStatsEveryIteration())
@@ -92,6 +100,8 @@ public class Buff implements TurnChangeObserver, TimeChangeObserver, BeingAction
             else skillApplier.target.receive(new Damage(damage, skillApplier.caster));
         }
         stats.increase(skillData.isRecalculateStatsEveryIteration() ? createStats() : stats);
+        if (skillData.getTimeChange() != 0)
+            Game.getCurrentGame().getTimeManager().increaseTime((int) skillData.getTimeChange());
     }
 
     @Override

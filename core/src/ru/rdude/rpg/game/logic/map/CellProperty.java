@@ -1,4 +1,6 @@
 package ru.rdude.rpg.game.logic.map;
 
-public enum CellProperty
- {BIOM, RELIEF, OBJECT, ROAD}
+public abstract class CellProperty {
+    public enum Type
+     {BIOM, RELIEF, OBJECT, ROAD}
+}
