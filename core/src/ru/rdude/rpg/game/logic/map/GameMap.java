@@ -13,6 +13,9 @@ public class GameMap {
         }
     }
 
+    public int getWidth() { return map.length; }
+    public int getHeight() { return map[0].length; }
+
     public Cell cell(int x, int y) {
         return map[x][y];
     }
