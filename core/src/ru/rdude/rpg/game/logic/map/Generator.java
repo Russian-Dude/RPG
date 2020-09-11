@@ -60,12 +60,9 @@ public class Generator {
     private double newBiomCoefficient; // chance to generate new biom instead of surrounding bioms
     private double newReliefCoefficient; // same with relief
     private boolean equalBioms; // generation type where biom trying to be equal size
-    private int equalBiomsCounter;
-    private int equalBiomsCounterSetting;
 
     private WaterAlgorithm waterAlgorithm;
-    private float waterAmount;
-    private float biomSize;
+    private float waterAmount; // works only with separate water algorithm
 
 
 
@@ -84,12 +81,9 @@ public class Generator {
         map = new GameMap(width, height);
         newBiomCoefficient = 0.004;
         newReliefCoefficient = 0.3;
-        biomSize = 3;
-        waterAlgorithm = WaterAlgorithm.SEPARATE_FROM_BIOM;
-        waterAmount = 0.33f;
+        waterAlgorithm = WaterAlgorithm.AS_BIOM;
+        waterAmount = 0.01f;
         equalBioms = true;
-        equalBiomsCounterSetting = (int) (height * width / 4369 * biomSize);
-        equalBiomsCounter = equalBiomsCounterSetting;
     }
 
     public void setWaterAlgorithm(WaterAlgorithm waterAlgorithm) { this.waterAlgorithm = waterAlgorithm; }
@@ -245,6 +239,8 @@ public class Generator {
     // looking for cells around, then everywhere
     private List<Point> findUnSteppedCells(Point point, CellProperty.Type property) {
         List<Point> result = new ArrayList<>();
+
+        // close cells
         for (int i = 1; i <= 2; i++) {
             for (Point aroundCell : getAroundCells(point, i)) {
                 if (map.cell(aroundCell).get(property) == null)
@@ -252,21 +248,28 @@ public class Generator {
             }
             if (!result.isEmpty()) return result;
         }
+
+        // 1/4 map zone cells cells
+        int xStart = point.x < width / 2 ? 0 : width / 2;
+        int xEnd = point.x < width / 2 ? width / 2 : width - 1;
+        int yStart = point.y < height / 2 ? 0 : height / 2;
+        int yEnd = point.y < height / 2 ? height / 2 : height - 1;
+        for (int x = xStart; x < xEnd; x++) {
+            for (int y = yStart; y < yEnd; y++) {
+                if (map.cell(x, y).get(property) == null) {
+                    result.add(new Point(x, y));
+                    if (result.size() > 5)
+                        return result;
+                }
+            }
+        }
+        if (!result.isEmpty())
+            return result;
+
+        // all cells
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if (property == CellProperty.Type.BIOM && map.cell(x,y).getBiom() == null) {
-                    result.add(new Point(x, y));
-                    return result;
-                }
-                else if (property == CellProperty.Type.RELIEF && map.cell(x,y).getRelief() == null) {
-                    result.add(new Point(x, y));
-                    return result;
-                }
-                else if (property == CellProperty.Type.OBJECT && map.cell(x,y).getObject() == null) {
-                    result.add(new Point(x, y));
-                    return result;
-                }
-                else if (property == CellProperty.Type.ROAD && map.cell(x,y).getRoad() == null) {
+                if (map.cell(x, y).get(property) == null) {
                     result.add(new Point(x, y));
                     return result;
                 }

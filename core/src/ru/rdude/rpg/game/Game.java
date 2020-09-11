@@ -50,7 +50,7 @@ public class Game extends ApplicationAdapter {
 
         stage.getViewport().setCamera(camera);
 
-        GameMap gameMap = new Generator(256, 256, Biom.getDefaultBiomes(), Relief.getDefaultReliefs(), 0, 0)
+        GameMap gameMap = new Generator(512, 512, Biom.getDefaultBiomes(), Relief.getDefaultReliefs(), 0, 0)
                 .createMap();
         MapVisual mapVisual = new MapVisual(camera, gameMap);
         stage.addActor(mapVisual);
