@@ -5,10 +5,7 @@ import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.logic.map.reliefs.Relief;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.floor;
@@ -63,7 +60,14 @@ public class Generator {
     private double newBiomCoefficient; // chance to generate new biom instead of surrounding bioms
     private double newReliefCoefficient; // same with relief
     private boolean equalBioms; // generation type where biom trying to be equal size
+    private int equalBiomsCounter;
+    private int equalBiomsCounterSetting;
+
     private WaterAlgorithm waterAlgorithm;
+    private float waterAmount;
+    private float biomSize;
+
+
 
 
     public Generator(int width, int height, List<Biom> bioms, List<Relief> reliefs, int citiesAmount, int dungeonsAmount) {
@@ -80,8 +84,12 @@ public class Generator {
         map = new GameMap(width, height);
         newBiomCoefficient = 0.004;
         newReliefCoefficient = 0.3;
+        biomSize = 3;
         waterAlgorithm = WaterAlgorithm.SEPARATE_FROM_BIOM;
+        waterAmount = 0.33f;
         equalBioms = true;
+        equalBiomsCounterSetting = (int) (height * width / 4369 * biomSize);
+        equalBiomsCounter = equalBiomsCounterSetting;
     }
 
     public void setWaterAlgorithm(WaterAlgorithm waterAlgorithm) { this.waterAlgorithm = waterAlgorithm; }
@@ -121,6 +129,10 @@ public class Generator {
         createBioms();
         denoiseBioms();
         createRelief();
+
+        System.out.println(biomAmount.get(Water.getInstance()));
+        biomAmount.forEach((k, v) -> System.out.println(k.toString() + " " + v));
+
         return map;
     }
 
@@ -264,9 +276,18 @@ public class Generator {
     }
 
 
+    private boolean isChangeBiom(Biom lastBiom, int cellsWithNoBiomAmount) {
+        if (equalBioms && biomAmount.get(lastBiom) > cellsWithNoBiomAmount / bioms.size()) {
+                return true;
+            }
+        return random(1d) < newBiomCoefficient;
+    }
+
+
     private void createBioms() {
-        int cellsWithNoBiomAmount = map.nonNullCells(CellProperty.Type.BIOM);
-        int steps = height*width - cellsWithNoBiomAmount;
+        int nonNullCells = map.nonNullCells(CellProperty.Type.BIOM);
+        int steps = height*width - nonNullCells;
+        int cellsWithNoBiomAmount = steps;
         Biom lastBiom;
         List<Point> points = createStartPoints();
         // generate random biom at start positions and 1 cell around:
@@ -295,13 +316,11 @@ public class Generator {
                 point.x = unSteppedPoint.x;
                 point.y = unSteppedPoint.y;
                 // if absolutely new biom creating:
-                if ((random(1d) < newBiomCoefficient)
-                        || (equalBioms && biomAmount.get(lastBiom) > cellsWithNoBiomAmount / bioms.size())) {
+                if (isChangeBiom(lastBiom, cellsWithNoBiomAmount)) {
                     // next biom will be a biom with less present amount
-                    Biom biom = biomAmount.entrySet().stream()
-                            .min(Map.Entry.comparingByValue())
-                            .map(Map.Entry::getKey)
-                            .get();
+                    Biom biom = bioms.stream()
+                            .min(Comparator.comparingInt(biom2 -> biomAmount.get(biom2)))
+                            .orElse(lastBiom);
                     steps -= 1;
                     increaseBiomAmount(biom);
                     map.cell(point).setBiom(biom);
@@ -334,7 +353,7 @@ public class Generator {
     }
 
     private void createWater() {
-        int steps = height * width / 3;
+        int steps = (int) (height * width * waterAmount);
         Water water = Water.getInstance();
         // creating start points for generation:
         List<Point> points = createStartPoints();
