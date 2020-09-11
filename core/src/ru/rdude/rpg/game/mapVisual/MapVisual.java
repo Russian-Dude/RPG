@@ -2,7 +2,9 @@ package ru.rdude.rpg.game.mapVisual;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -36,9 +38,7 @@ public class MapVisual extends Actor implements Disposable {
         layers.add(layer);
         setBounds(getX(), getY(), gameMap.getWidth() * 128, gameMap.getHeight() * 128);
         setTouchable(Touchable.enabled);
-
-        renderer = new HexagonalTiledMapRenderer(map);
-
+        renderer = new HexagonalTiledMapRenderer(map, 0.01f);
     }
 
     @Override
