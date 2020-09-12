@@ -24,6 +24,10 @@ public class MapTilesFabric {
     //private static StaticTiledMapTile test = new StaticTiledMapTile(new TextureRegion(tilesTexture));
 
     public static StaticTiledMapTile getTile(Cell cell) {
+        if (cell.getObject() != null) {
+            System.out.println("city creating");
+            return getTileOrPutAndGet("VOID");
+        }
         return getTileOrPutAndGet(cell.getBiom().getClass().getSimpleName().toUpperCase());
     }
 

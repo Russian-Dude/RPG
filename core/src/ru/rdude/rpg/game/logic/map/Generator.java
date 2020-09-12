@@ -1,9 +1,12 @@
 package ru.rdude.rpg.game.logic.map;
 
 import ru.rdude.rpg.game.logic.map.bioms.Biom;
+import ru.rdude.rpg.game.logic.map.bioms.Dirt;
 import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.logic.map.objects.City;
+import ru.rdude.rpg.game.logic.map.objects.MapObject;
 import ru.rdude.rpg.game.logic.map.reliefs.Relief;
+import ru.rdude.rpg.game.utils.Functions;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,8 +55,9 @@ public class Generator {
     private List<Biom> bioms; // available bioms
     private List<Relief> reliefs; // available reliefs
 
-    private int CitiesAmount; //  Need to be smaller on smaller maps
-    private int DungeonsAmount;
+    private int citiesAmount; //  Need to be smaller on smaller maps
+    private int dungeonsAmount;
+    private List<MapObject> objects;
     private List<City> cities;
     private Map<Biom, Integer> biomAmount;
     // next parameters can be set directly with setter after creating Generator. Instead - default values:
@@ -65,8 +69,6 @@ public class Generator {
     private float waterAmount; // works only with separate water algorithm
 
 
-
-
     public Generator(int width, int height, List<Biom> bioms, List<Relief> reliefs, int citiesAmount, int dungeonsAmount) {
         this.width = width;
         this.height = height;
@@ -74,8 +76,8 @@ public class Generator {
         this.bioms.addAll(bioms);
         this.reliefs = new ArrayList<>();
         this.reliefs.addAll(reliefs);
-        CitiesAmount = citiesAmount;
-        DungeonsAmount = dungeonsAmount;
+        this.citiesAmount = citiesAmount;
+        this.dungeonsAmount = dungeonsAmount;
         biomAmount = new HashMap<>();
         fillBiomAmountMap(bioms);
         map = new GameMap(width, height);
@@ -84,9 +86,14 @@ public class Generator {
         waterAlgorithm = WaterAlgorithm.AS_BIOM;
         waterAmount = 0.01f;
         equalBioms = true;
+
+        objects = new ArrayList<>();
+        cities = new ArrayList<>();
     }
 
-    public void setWaterAlgorithm(WaterAlgorithm waterAlgorithm) { this.waterAlgorithm = waterAlgorithm; }
+    public void setWaterAlgorithm(WaterAlgorithm waterAlgorithm) {
+        this.waterAlgorithm = waterAlgorithm;
+    }
 
     public void setNewBiomCoefficient(double newBiomCoefficient) {
         this.newBiomCoefficient = newBiomCoefficient;
@@ -97,24 +104,9 @@ public class Generator {
     }
 
     public GameMap createMap() {
-        /*
-        func Full_Process():
-	Map_Global = Create_3d_Array()
-	Create_Biom()
-	if Water_Type == 0:
-		Create_Water()
-	Denoise_Bioms()
-	Create_Relief()
-	Create_Cityes()
-	Create_Dungeons()
-	Create_Roads()
-	Draw_Tiles()
-
-         */
         switch (waterAlgorithm) {
             case SEPARATE_FROM_BIOM:
                 createWater();
-                bioms.remove(Water.getInstance());
                 break;
             case NO_WATER:
                 bioms.remove(Water.getInstance());
@@ -123,9 +115,7 @@ public class Generator {
         createBioms();
         denoiseBioms();
         createRelief();
-
-        System.out.println(biomAmount.get(Water.getInstance()));
-        biomAmount.forEach((k, v) -> System.out.println(k.toString() + " " + v));
+        createCities();
 
         return map;
     }
@@ -138,20 +128,20 @@ public class Generator {
     private List<Point> createStartPoints() {
         List<Point> points = new ArrayList<>();
         // point 1
-        int y = (int) (height/4 + floor(random(height/5 * (-1), height/5)));
-        int x = (int) (width/4 + floor(random(width/5 * (-1), width/5)));
+        int y = (int) (height / 4 + floor(random(height / 5 * (-1), height / 5)));
+        int x = (int) (width / 4 + floor(random(width / 5 * (-1), width / 5)));
         points.add(new Point(x, y));
         // point 2
-        y = (int) (height - height/4 + floor(random(height/5 * (-1), height/5)));
-        x = (int) (width/4 + floor(random(width/5 * (-1), width/5)));
+        y = (int) (height - height / 4 + floor(random(height / 5 * (-1), height / 5)));
+        x = (int) (width / 4 + floor(random(width / 5 * (-1), width / 5)));
         points.add(new Point(x, y));
         // point 3
-        y = (int) (height/4 + floor(random(height/5 * (-1), height/5)));
-        x = (int) (width - width/4 + floor(random(width/5* (-1), width/5)));
+        y = (int) (height / 4 + floor(random(height / 5 * (-1), height / 5)));
+        x = (int) (width - width / 4 + floor(random(width / 5 * (-1), width / 5)));
         points.add(new Point(x, y));
         // point 4
-        y = (int) (height - height/4 + floor(random(height/5 * (-1), height/5)));
-        x = (int) (width - width/4 + floor(random(width/5 * (-1), width/5)));
+        y = (int) (height - height / 4 + floor(random(height / 5 * (-1), height / 5)));
+        x = (int) (width - width / 4 + floor(random(width / 5 * (-1), width / 5)));
         points.add(new Point(x, y));
         return points;
     }
@@ -173,61 +163,61 @@ public class Generator {
     // get points around given point
     // closeness - how close this points to given cell (1 - short radius, 2 - huge radius)
     private List<Point> getAroundCells(Point point, int closeness) {
-        if (closeness > 2 || closeness < 1) throw new IllegalArgumentException("closeness in AroundCells() method is wrong");
+        if (closeness > 2 || closeness < 1)
+            throw new IllegalArgumentException("closeness in AroundCells() method is wrong");
         List<Point> aroundCells = new ArrayList<>();
         int x = point.x;
         int y = point.y;
         if (closeness == 1) {
             if (point.x > 0)
-                aroundCells.add(new Point(x-1, y));
+                aroundCells.add(new Point(x - 1, y));
             if (point.y > 0)
-                aroundCells.add(new Point(x, y-1));
+                aroundCells.add(new Point(x, y - 1));
             if (x < width - 1)
-                aroundCells.add(new Point(x+1, y));
+                aroundCells.add(new Point(x + 1, y));
             if (y < height - 1)
-                aroundCells.add(new Point(x, y+1));
-            if (x%2 == 0 && (x < width - 1) && (y > 0))
+                aroundCells.add(new Point(x, y + 1));
+            if (x % 2 == 0 && (x < width - 1) && (y < height - 1))
+                aroundCells.add(new Point(x + 1, y + 1));
+            else if ((x < width - 1) && y > 0)
                 aroundCells.add(new Point(x + 1, y - 1));
-            else if ((x < width - 1) && y < height - 1)
-                aroundCells.add(new Point(x+1, y+1));
-            if (x%2 == 0 && x > 0 && y > 0)
-                aroundCells.add(new Point(x-1, y-1));
-            else if (x > 0 && y < height - 1)
-                aroundCells.add(new Point(x-1, y+1));
-        }
-        else if (closeness == 2) {
-            if (x%2 == 0 && x > 0 && y > 1)
-                aroundCells.add(new Point(x-1, y-2));
+            if (x % 2 == 0 && x > 0 && y < height - 1)
+                aroundCells.add(new Point(x - 1, y + 1));
             else if (x > 0 && y > 0)
-                aroundCells.add(new Point(x-1, y-1));
+                aroundCells.add(new Point(x - 1, y - 1));
+        } else if (closeness == 2) {
+            if (x % 2 == 0 && x > 0 && y > 0)
+                aroundCells.add(new Point(x - 1, y - 1));
+            else if (x > 0 && y > 1)
+                aroundCells.add(new Point(x - 1, y - 2));
             if (y > 1)
-                aroundCells.add(new Point(x, y-2));
-            if (x%2 == 0 && x < width - 1 && y > 2)
-                aroundCells.add(new Point(x+1, y-2));
-            else if (x < width - 1 && y > 1)
-                aroundCells.add(new Point(x+1, y-1));
+                aroundCells.add(new Point(x, y - 2));
+            if (x % 2 == 0 && x < width - 1 && y > 1)
+                aroundCells.add(new Point(x + 1, y - 1));
+            else if (x < width - 1 && y > 2)
+                aroundCells.add(new Point(x + 1, y - 2));
             if (x > 1 && y > 0)
-                aroundCells.add(new Point(x-2, y-1));
+                aroundCells.add(new Point(x - 2, y - 1));
             if (x < width - 2 && y > 0)
-                aroundCells.add(new Point(x+2, y-1));
+                aroundCells.add(new Point(x + 2, y - 1));
             if (x > 1)
-                aroundCells.add(new Point(x-2, y));
+                aroundCells.add(new Point(x - 2, y));
             if (x < width - 2)
-                aroundCells.add(new Point(x+2, y));
+                aroundCells.add(new Point(x + 2, y));
             if (x > 1 && y < height - 1)
-                aroundCells.add(new Point(x-2, y+1));
+                aroundCells.add(new Point(x - 2, y + 1));
             if (x < width - 2 && y < height - 1)
-                aroundCells.add(new Point(x+2, y+1));
+                aroundCells.add(new Point(x + 2, y + 1));
             if (y < height - 2)
-                aroundCells.add(new Point(x, y+2));
-            if (x%2 == 0 && x < width - 1 && y < height - 1)
-                aroundCells.add(new Point(x+1, y+1));
-            else if (x < width - 1 && y < height - 2)
-                aroundCells.add(new Point(x+1, y+2));
-            if (x%2 == 0 && x > 0 && y < height - 1)
-                aroundCells.add(new Point(x-1, y+1));
-            else if (x > 0 && y < height - 2)
-                aroundCells.add(new Point(x-1, y+2));
+                aroundCells.add(new Point(x, y + 2));
+            if (x % 2 == 0 && x < width - 1 && y < height - 2)
+                aroundCells.add(new Point(x + 1, y + 2));
+            else if (x < width - 1 && y < height - 1)
+                aroundCells.add(new Point(x + 1, y + 1));
+            if (x % 2 == 0 && x > 0 && y < height - 2)
+                aroundCells.add(new Point(x - 1, y + 2));
+            else if (x > 0 && y < height - 1)
+                aroundCells.add(new Point(x - 1, y + 1));
         }
         return aroundCells;
     }
@@ -281,15 +271,15 @@ public class Generator {
 
     private boolean isChangeBiom(Biom lastBiom, int cellsWithNoBiomAmount) {
         if (equalBioms && biomAmount.get(lastBiom) > cellsWithNoBiomAmount / bioms.size()) {
-                return true;
-            }
+            return true;
+        }
         return random(1d) < newBiomCoefficient;
     }
 
 
     private void createBioms() {
         int nonNullCells = map.nonNullCells(CellProperty.Type.BIOM);
-        int steps = height*width - nonNullCells;
+        int steps = height * width - nonNullCells;
         int cellsWithNoBiomAmount = steps;
         Biom lastBiom;
         List<Point> points = createStartPoints();
@@ -482,12 +472,44 @@ public class Generator {
         }
     }
 
+
+    private void createCities() {
+        int currentID = objects.size();
+        List<Point> startingPoints = new ArrayList<>();
+
+        // create starting points for cities
+        while (startingPoints.size() < citiesAmount) {
+            List<Point> newPoints = createStartPoints().stream()
+                    .filter(newPoint -> {
+                        Set<Point> existingPoints = new HashSet<>(startingPoints);
+                        startingPoints.forEach(sp -> {
+                           existingPoints.addAll(getAroundCells(sp, 1));
+                           existingPoints.addAll(getAroundCells(sp, 2));
+                        });
+                        return !existingPoints.contains(newPoint);
+                    })
+                    .collect(Collectors.toList());
+            startingPoints.addAll(newPoints);
+        }
+
+        // create cities
+        for (int i = 0; i < citiesAmount; i++) {
+            Point point = startingPoints.get(i);
+            while (map.cell(point).getBiom() == Water.getInstance()) {
+                List<Point> unsteppedCells = findUnSteppedCells(point, CellProperty.Type.OBJECT);
+                point = Functions.random(unsteppedCells);
+            }
+            City city = createCity(currentID);
+            map.cell(point).setObject(city);
+            currentID++;
+            cities.add(city);
+        }
+    }
+
+    private City createCity(int id) {
+        return new City(id);
+    }
     /*
-
-
-
-
-
 func Create_Cityes():
 	var City_Size = 1
 	var Around_Cells
