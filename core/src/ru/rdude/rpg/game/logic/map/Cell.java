@@ -3,13 +3,21 @@ package ru.rdude.rpg.game.logic.map;
 import ru.rdude.rpg.game.logic.map.bioms.Biom;
 import ru.rdude.rpg.game.logic.map.objects.MapObject;
 import ru.rdude.rpg.game.logic.map.reliefs.Relief;
+import ru.rdude.rpg.game.utils.aStar.AStarNode;
 
-public class Cell {
+public class Cell implements AStarNode {
+
+    private static long count = 0;
+    private long id;
 
     private Biom biom;
     private Relief relief;
     private MapObject object;
     private Road road;
+
+    public Cell() {
+        this.id = count++;
+    }
 
     public Biom getBiom() { return biom; }
     public void setBiom(Biom biom) { this.biom = biom; }
@@ -36,6 +44,10 @@ public class Cell {
             default:
                 throw new IllegalArgumentException(property.name() + " not implemented yet");
         }
+    }
+
+    public long getId() {
+        return id;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.map;
 
+import ru.rdude.rpg.game.logic.map.aStarImpl.MapRoadScorer;
 import ru.rdude.rpg.game.logic.map.bioms.Biom;
 import ru.rdude.rpg.game.logic.map.bioms.Dirt;
 import ru.rdude.rpg.game.logic.map.bioms.Water;
@@ -7,6 +8,9 @@ import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.logic.map.objects.MapObject;
 import ru.rdude.rpg.game.logic.map.reliefs.Relief;
 import ru.rdude.rpg.game.utils.Functions;
+import ru.rdude.rpg.game.utils.aStar.AStarGraph;
+import ru.rdude.rpg.game.utils.aStar.AStarRouteFinder;
+import ru.rdude.rpg.game.utils.aStar.AStarScorer;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -116,6 +120,7 @@ public class Generator {
         denoiseBioms();
         createRelief();
         createCities();
+        createRoads();
 
         return map;
     }
@@ -509,73 +514,33 @@ public class Generator {
     private City createCity(int id) {
         return new City(id);
     }
+
+    private void createRoads() {
+        Set<Cell> nodes = new HashSet<>();
+        Map<Cell, Set<Cell>> connections = new HashMap<>();
+        AStarScorer<Cell> scorer = new MapRoadScorer();
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Cell cell = map.cell(x, y);
+                nodes.add(cell);
+                Set<Cell> aroundCells = getAroundCells(x, y, 1)
+                        .stream().map(map::cell)
+                        .collect(Collectors.toSet());
+                connections.put(cell, aroundCells);
+            }
+        }
+
+        AStarGraph<Cell> graph = new AStarGraph<>(nodes, connections);
+        AStarRouteFinder<Cell> routeFinder = new AStarRouteFinder<>(graph, scorer, scorer);
+
+        //test
+        routeFinder.findRoute(map.cell(5, 5), map.cell(31, 31)).forEach(cell -> cell.setObject(new City(31513)));
+        routeFinder.findRoute(map.cell(31, 5), map.cell(5, 31)).forEach(cell -> cell.setObject(new City(31513)));
+    }
+
+
     /*
-func Create_Cityes():
-	var City_Size = 1
-	var Around_Cells
-	var Point = [0,0]
-	if Cityes_Amount == 4:
-		Create_City_By_Coordinates(0, float(0.5), 0, float(0.5))
-		Create_City_By_Coordinates(float(0.5), 1, 0, float(0.5))
-		Create_City_By_Coordinates(0, float(0.5), float(0.5), 1)
-		Create_City_By_Coordinates(float(0.5), 1, float(0.5), 1)
-	if Cityes_Amount == 8:
-		Create_City_By_Coordinates(float(4)/float(12), float(8)/float(12), float(4)/float(12), float(8)/float(12))
-		Create_City_By_Coordinates(0, float(4)/float(12), 0, float(3)/float(12))
-		Create_City_By_Coordinates(float(8)/float(12), 1, 0, float(3)/float(12))
-		Create_City_By_Coordinates(0, float(4)/float(12), float(9)/float(12), 1)
-		Create_City_By_Coordinates(float(8)/float(12), 1, float(9)/float(12), 1)
-		Create_City_By_Coordinates(float(1)/float(12), float(3)/float(12), float(4)/float(12), float(8)/float(12))
-		Create_City_By_Coordinates(float(5)/float(12), float(7)/float(12), float(1)/float(12), float(3)/float(12))
-		Create_City_By_Coordinates(float(9)/float(12), float(11)/float(12), float(4)/float(12), float(8)/float(12))
-	var City_ID = 0
-	for City in Cityes:
-		City['ID'] = City_ID
-		City_ID += 1
-
-func Create_City_By_Coordinates(Xmin, Xmax, Ymin, Ymax):
-	var City_Size
-	var Point = [0, 0]
-	var Around_Cells
-	for attempt in 15: # trying to find correct place to settle city
-		City_Size = 1
-		randomize()
-		Point[0] = floor(rand_range(float(Xmin)*float(Map_Width), float(Xmax)*float(Map_Width)))
-		randomize()
-		Point[1] = floor(rand_range(float(Ymin)*float(Map_Height), float(Ymax)*float(Map_Height)))
-		if Map_Global[Point[0]][Point[1]][0] > 1:
-			Map_Global[Point[0]][Point[1]][2] = 1 # Creating center of the city
-			Map_Global[Point[0]][Point[1]][4] = 1 # Showing this place is forbiden for dungeon
-			Around_Cells = Get_Around_Cells(Point[0], Point[1], 0, 1, 'Cell')
-			var Suitable_Cells = [] # Cells that can be part of the city around the main city cell
-			for cell in Around_Cells:
-				if Map_Global[cell[0]][cell[1]][0] > 1 && Map_Global[cell[0]][cell[1]][2] == 0:
-					Suitable_Cells.append(cell)
-			if Suitable_Cells.size() > 0:
-				randomize()
-				var City_Around_Cells_Amount = floor(rand_range(0, Suitable_Cells.size())) # How many cells around main city cell will become part of the city
-				if City_Around_Cells_Amount > 0:
-					for step in City_Around_Cells_Amount:
-						randomize()
-						var Current_Cell = floor(rand_range(0, Suitable_Cells.size() - 1))
-						var Current_Point = Suitable_Cells[Current_Cell]
-						var x = Current_Point[0]
-						var y = Current_Point[1]
-						Map_Global[x][y][2] = 1
-						Map_Global[x][y][4] = 1
-						Around_Cells = Get_Around_Cells(x, y, 0, 1, 'Cell') # Making cells around the city not be able to place dungeon
-						for thecell in Around_Cells:
-							Map_Global[thecell[0]][thecell[1]][4] = 1
-						City_Size += 1
-						Suitable_Cells.remove(Current_Cell)
-			###
-			### Here will go part with city dictionary
-			###
-			var City = {'ID' : null, 'Name' : '', 'Size' : City_Size, 'x' : Point[0], 'y' : Point[1], 'Connected' : 0, 'Connected_With' : []}
-			Cityes.append(City)
-			break
-
-
 
 func Create_Dungeons():
 	Dungeons_Amount = (Map_Width*Map_Height)/76

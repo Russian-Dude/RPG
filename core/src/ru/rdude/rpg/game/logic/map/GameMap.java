@@ -1,5 +1,8 @@
 package ru.rdude.rpg.game.logic.map;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class GameMap {
 
     private Cell[][] map;

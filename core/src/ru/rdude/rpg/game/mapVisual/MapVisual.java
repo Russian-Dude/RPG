@@ -48,7 +48,7 @@ public class MapVisual extends Actor implements Disposable {
         layers.add(reliefLayer);
         setBounds(getX(), getY(), gameMap.getWidth() * 128, gameMap.getHeight() * 128);
         setTouchable(Touchable.enabled);
-        renderer = new HexagonalTiledMapRendererWithObjectsLayer(map, 0.01f);
+        renderer = new HexagonalTiledMapRendererWithObjectsLayer(map, 0.1f);
     }
 
     @Override
