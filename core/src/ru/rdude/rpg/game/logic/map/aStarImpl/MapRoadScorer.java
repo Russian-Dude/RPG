@@ -15,7 +15,7 @@ public class MapRoadScorer implements AStarScorer<Cell> {
     public double computeCost(Cell from, Cell to) {
         if (to.getBiom() == Water.getInstance())
             return 2500d;
-/*        if (to.getRoad() != null)
+        if (to.getRoad() != null)
             return 0d;
         if (to.getRelief() instanceof Mountains)
             return Functions.random(5d, 7d);
@@ -25,7 +25,6 @@ public class MapRoadScorer implements AStarScorer<Cell> {
             return Functions.random(5d, 5.5d);
         else if (to.getRelief() instanceof Plain)
             return Functions.random(4.5d, 6d);
-        return 0;*/
-        return Functions.random(20d, 100d);
+        return 0;
     }
 }

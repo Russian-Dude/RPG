@@ -10,12 +10,17 @@ public class Cell implements AStarNode {
     private static long count = 0;
     private long id;
 
+    private int x;
+    private int y;
+
     private Biom biom;
     private Relief relief;
     private MapObject object;
     private Road road;
 
-    public Cell() {
+    public Cell(int x, int y) {
+        this.x = x;
+        this.y = y;
         this.id = count++;
     }
 
@@ -48,6 +53,14 @@ public class Cell implements AStarNode {
 
     public long getId() {
         return id;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     @Override

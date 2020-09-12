@@ -11,7 +11,7 @@ public class GameMap {
         map = new Cell[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                map[x][y] = new Cell();
+                map[x][y] = new Cell(x, y);
             }
         }
     }

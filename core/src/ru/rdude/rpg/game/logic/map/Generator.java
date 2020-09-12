@@ -2,7 +2,6 @@ package ru.rdude.rpg.game.logic.map;
 
 import ru.rdude.rpg.game.logic.map.aStarImpl.MapRoadScorer;
 import ru.rdude.rpg.game.logic.map.bioms.Biom;
-import ru.rdude.rpg.game.logic.map.bioms.Dirt;
 import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.logic.map.objects.MapObject;
@@ -119,11 +118,42 @@ public class Generator {
         createBioms();
         denoiseBioms();
         createRelief();
-        createCities();
-        createRoads();
+        //createCities();
+        //createRoads();
+
+        test();
 
         return map;
     }
+
+    private void test() {
+        Point point1 = new Point(5, 5);
+        Point point2 = new Point(12, 5);
+        map.cell(point1).setRoad(new Road());
+        map.cell(point2).setRoad(new Road());
+        getAroundCells(point1, 1).stream()
+                .filter(point ->
+                        getRelativeLocation(point1, point) == CellSide.NN ||
+                                getRelativeLocation(point1, point) == CellSide.SS ||
+                                getRelativeLocation(point1, point) == CellSide.NE ||
+                                getRelativeLocation(point1, point) == CellSide.NW ||
+                                getRelativeLocation(point1, point) == CellSide.SE ||
+                                getRelativeLocation(point1, point) == CellSide.SW
+                )
+                .forEach(point -> map.cell(point).setRoad(new Road()));
+
+        getAroundCells(point2, 1).stream()
+                .filter(point ->
+                        getRelativeLocation(point2, point) == CellSide.NN ||
+                                getRelativeLocation(point2, point) == CellSide.SS ||
+                                getRelativeLocation(point2, point) == CellSide.NE ||
+                                getRelativeLocation(point2, point) == CellSide.NW ||
+                                getRelativeLocation(point2, point) == CellSide.SE ||
+                                getRelativeLocation(point2, point) == CellSide.SW
+                )
+                .forEach(point -> map.cell(point).setRoad(new Road()));
+    }
+
 
     // Passing a list of bioms allows to use specific bioms on created map
     private void fillBiomAmountMap(List<Biom> availableBioms) {
@@ -164,10 +194,52 @@ public class Generator {
         biomAmount.put(biom, biomAmount.get(biom) + 1);
     }
 
+    private List<Point> getAroundCells(int x, int y, int closeness) {
+        return getAroundCells(new Point(x, y), closeness);
+    }
+
+    // get cells in closeness radius. Closeness 1 and 2 implemented by
+    // old implementation. This method still uses old one with closeness 1 though
+    private List<Point> getAroundCells(Point point, int closeness) {
+        if (closeness == 1 || closeness == 2)
+            return getCloseAroundCells(point, closeness);
+
+        Set<Point> checkedPoints = new HashSet<>();
+        Set<Point> nextCheckingPoints = new HashSet<>();
+        checkedPoints.add(point);
+        nextCheckingPoints.add(point);
+
+        for (int i = 0; i < closeness; i++) {
+            Set<Point> currentPoints = new HashSet<>(nextCheckingPoints);
+            nextCheckingPoints.clear();
+            for (Point currentPoint : currentPoints) {
+                List<Point> aroundCells = getAroundCells(currentPoint, 1).stream()
+                        .filter(p -> !checkedPoints.contains(p))
+                        .collect(Collectors.toList());
+                checkedPoints.addAll(aroundCells);
+                nextCheckingPoints.addAll(aroundCells);
+            }
+            if (i == closeness - 1)
+                return new ArrayList<>(nextCheckingPoints);
+        }
+        return new ArrayList<>();
+    }
+
+    private List<Point> getArea(int x_center, int y_center, int radius) {
+        return getArea(new Point(x_center, y_center), radius);
+    }
+
+    private List<Point> getArea(Point center, int radius) {
+        List<Point> result = new ArrayList<>();
+        for (int i = 1; i <= radius; i++) {
+            result.addAll(getAroundCells(center, i));
+        }
+        return result;
+    }
 
     // get points around given point
     // closeness - how close this points to given cell (1 - short radius, 2 - huge radius)
-    private List<Point> getAroundCells(Point point, int closeness) {
+    private List<Point> getCloseAroundCells(Point point, int closeness) {
         if (closeness > 2 || closeness < 1)
             throw new IllegalArgumentException("closeness in AroundCells() method is wrong");
         List<Point> aroundCells = new ArrayList<>();
@@ -227,10 +299,6 @@ public class Generator {
         return aroundCells;
     }
 
-    private List<Point> getAroundCells(int x, int y, int closeness) {
-        return getAroundCells(new Point(x, y), closeness);
-    }
-
     // looking for cells around, then everywhere
     private List<Point> findUnSteppedCells(Point point, CellProperty.Type property) {
         List<Point> result = new ArrayList<>();
@@ -271,6 +339,40 @@ public class Generator {
             }
         }
         return result;
+    }
+
+    private CellSide getRelativeLocation(Cell of, Cell to) {
+        return getRelativeLocation(new Point(of.getX(), of.getY()), new Point(to.getX(), to.getY()));
+    }
+
+    // from which side of cell another cell locates
+    private CellSide getRelativeLocation(Point from, Point searching) {
+        if (from.x == searching.x && from.y + 1 == searching.y)
+            return CellSide.NN;
+        if (from.x == searching.x && from.y - 1 == searching.y)
+            return CellSide.SS;
+
+        if (from.x % 2 == 0) {
+            if (from.x + 1 == searching.x && from.y + 1 == searching.y)
+                return CellSide.NE;
+            if (from.x + 1 == searching.x && from.y == searching.y)
+                return CellSide.SE;
+            if (from.x - 1 == searching.x && from.y == searching.y)
+                return CellSide.SW;
+            if (from.x - 1 == searching.x && from.y + 1 == searching.y)
+                return CellSide.NW;
+        }
+        else {
+            if (from.x + 1 == searching.x && from.y == searching.y)
+                return CellSide.NE;
+            if (from.x + 1 == searching.x && from.y - 1 == searching.y)
+                return CellSide.SE;
+            if (from.x - 1 == searching.x && from.y - 1 == searching.y)
+                return CellSide.SW;
+            if (from.x - 1 == searching.x && from.y == searching.y)
+                return CellSide.NW;
+        }
+            return CellSide.NOT_RELATED;
     }
 
 
@@ -488,8 +590,8 @@ public class Generator {
                     .filter(newPoint -> {
                         Set<Point> existingPoints = new HashSet<>(startingPoints);
                         startingPoints.forEach(sp -> {
-                           existingPoints.addAll(getAroundCells(sp, 1));
-                           existingPoints.addAll(getAroundCells(sp, 2));
+                            existingPoints.addAll(getAroundCells(sp, 1));
+                            existingPoints.addAll(getAroundCells(sp, 2));
                         });
                         return !existingPoints.contains(newPoint);
                     })
@@ -534,9 +636,18 @@ public class Generator {
         AStarGraph<Cell> graph = new AStarGraph<>(nodes, connections);
         AStarRouteFinder<Cell> routeFinder = new AStarRouteFinder<>(graph, scorer, scorer);
 
+
         //test
-        routeFinder.findRoute(map.cell(5, 5), map.cell(31, 31)).forEach(cell -> cell.setObject(new City(31513)));
-        routeFinder.findRoute(map.cell(31, 5), map.cell(5, 31)).forEach(cell -> cell.setObject(new City(31513)));
+        createRoad(routeFinder, map.cell(5, 5), map.cell(31, 31));
+        createRoad(routeFinder, map.cell(31, 5), map.cell(5, 31));
+    }
+
+    private void createRoad(AStarRouteFinder<Cell> routeFinder, Cell from, Cell to) {
+        List<Cell> route = routeFinder.findRoute(from, to);
+        for (int i = 0; i < route.size() - 1; i++) {
+            Cell cell = route.get(i);
+            cell.setRoad(new Road());
+        }
     }
 
 
