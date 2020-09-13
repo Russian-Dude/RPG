@@ -32,6 +32,7 @@ public class MapVisual extends Actor implements Disposable {
         MapLayers layers = map.getLayers();
         TiledMapTileLayer biomLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), 128, 128);
         TiledMapTileLayer reliefLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), 100, 100);
+        TiledMapTileLayer roadLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), 100, 100);
 
         for (int x = 0; x < gameMap.getWidth() - 1; x++) {
             for (int y = 0; y < gameMap.getHeight() - 1; y++) {
@@ -42,13 +43,17 @@ public class MapVisual extends Actor implements Disposable {
 
                 //relief
                 TiledMapTileLayer.Cell reliefCell = new TiledMapTileLayer.Cell();
+
+                //road
+                TiledMapTileLayer.Cell roadCell = new TiledMapTileLayer.Cell();
             }
         }
         layers.add(biomLayer);
+        layers.add(roadLayer);
         layers.add(reliefLayer);
         setBounds(getX(), getY(), gameMap.getWidth() * 128, gameMap.getHeight() * 128);
         setTouchable(Touchable.enabled);
-        renderer = new HexagonalTiledMapRendererWithObjectsLayer(map, 0.1f);
+        renderer = new HexagonalTiledMapRendererWithObjectsLayer(map, 0.014f);
     }
 
     @Override

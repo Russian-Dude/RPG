@@ -1,249 +1,361 @@
 map_tiles.png
-size: 512, 1152
+size: 2048, 768
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-DEADLAND
+BRICK
   rotate: false
   xy: 0, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-DIRT
+DEADLAND
   rotate: false
   xy: 128, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-GRASS
+DIRT
   rotate: false
   xy: 256, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-JUNGLE
+DIRT_FOREST_ANY
+  rotate: false
+  xy: 768, 256
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+DIRT_FOREST_FULL
+  rotate: false
+  xy: 1024, 256
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 1
+DIRT_FOREST_FULL
+  rotate: false
+  xy: 1280, 256
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 2
+DIRT_FOREST_FULL
+  rotate: false
+  xy: 1536, 256
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 3
+DIRT_FOREST_SW
+  rotate: false
+  xy: 1792, 256
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 1
+DIRT_FOREST_SW
+  rotate: false
+  xy: 0, 512
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 2
+DIRT_FOREST_SW
+  rotate: false
+  xy: 256, 512
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 3
+DIRT_MOUNTAINS_FULL
+  rotate: false
+  xy: 512, 512
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 1
+DIRT_MOUNTAINS_FULL
+  rotate: false
+  xy: 768, 512
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 2
+DIRT_MOUNTAINS_FULL
+  rotate: false
+  xy: 1024, 512
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 3
+DIRT_MOUNTAINS_SW
+  rotate: false
+  xy: 1280, 512
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 1
+DIRT_MOUNTAINS_SW
+  rotate: false
+  xy: 1536, 512
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 2
+DIRT_MOUNTAINS_SW
+  rotate: false
+  xy: 1792, 512
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: 3
+GRASS
   rotate: false
   xy: 384, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
+JUNGLE
+  rotate: false
+  xy: 512, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
 NE-NW
   rotate: false
-  xy: 0, 128
+  xy: 640, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
-NE-SW
+NN-SE
   rotate: false
-  xy: 128, 128
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-NN-SW
-  rotate: false
-  xy: 256, 128
+  xy: 768, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 NW-SE-NE
   rotate: false
-  xy: 384, 128
+  xy: 896, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 NW-SE-NN
   rotate: false
-  xy: 0, 256
+  xy: 1024, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 NW-SE-SS
   rotate: false
-  xy: 128, 256
+  xy: 1152, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 NW-SE-SW
   rotate: false
-  xy: 256, 256
+  xy: 1280, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+NW-SE
+  rotate: false
+  xy: 1408, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SAND
   rotate: false
-  xy: 384, 256
+  xy: 1536, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SNOW
   rotate: false
-  xy: 0, 384
+  xy: 1664, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SS-NE
   rotate: false
-  xy: 128, 384
+  xy: 1792, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SS-NN-NE
   rotate: false
-  xy: 256, 384
+  xy: 1920, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SS-NN-NW
   rotate: false
-  xy: 384, 384
+  xy: 0, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SS-NN-SE
   rotate: false
-  xy: 0, 512
+  xy: 128, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SS-NN-SW
   rotate: false
-  xy: 128, 512
+  xy: 256, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SS-NN
   rotate: false
-  xy: 256, 512
+  xy: 384, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SS-NW
   rotate: false
-  xy: 384, 512
+  xy: 512, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SW-NE-NN
   rotate: false
-  xy: 0, 640
+  xy: 640, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SW-NE-NW
   rotate: false
-  xy: 128, 640
+  xy: 768, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SW-NE-SE
   rotate: false
-  xy: 256, 640
+  xy: 896, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SW-NE-SS
   rotate: false
-  xy: 384, 640
+  xy: 1024, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SW-NE
   rotate: false
-  xy: 0, 768
+  xy: 1152, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SW-NN
   rotate: false
-  xy: 128, 768
+  xy: 1280, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SW-SE-NE
   rotate: false
-  xy: 256, 768
+  xy: 1408, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SW-SE-NN
   rotate: false
-  xy: 384, 768
+  xy: 1536, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SW-SE-NW
   rotate: false
-  xy: 0, 896
+  xy: 1664, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SW-SE-SS
   rotate: false
-  xy: 128, 896
+  xy: 1792, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SW-SE
   rotate: false
-  xy: 256, 896
+  xy: 1920, 128
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SWAMP
   rotate: false
-  xy: 384, 896
+  xy: 0, 256
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 VOID
   rotate: false
-  xy: 0, 1024
+  xy: 128, 256
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 VOLCANIC
   rotate: false
-  xy: 128, 1024
+  xy: 256, 256
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 WATER
   rotate: false
-  xy: 256, 1024
+  xy: 384, 256
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WATER_DEEP
+  rotate: false
+  xy: 512, 256
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WATER_SMALL
+  rotate: false
+  xy: 640, 256
   size: 128, 128
   orig: 128, 128
   offset: 0, 0

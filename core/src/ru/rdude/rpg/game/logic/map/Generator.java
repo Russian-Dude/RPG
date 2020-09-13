@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.map;
 
+import ru.rdude.rpg.game.logic.map.aStarImpl.MapRiverScorer;
 import ru.rdude.rpg.game.logic.map.aStarImpl.MapRoadScorer;
 import ru.rdude.rpg.game.logic.map.bioms.Biom;
 import ru.rdude.rpg.game.logic.map.bioms.Water;
@@ -13,6 +14,7 @@ import ru.rdude.rpg.game.utils.aStar.AStarScorer;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.Math.floor;
 import static ru.rdude.rpg.game.utils.Functions.random;
@@ -48,8 +50,6 @@ var Cell_Propertyes_Count = 5 # This is depth of the array
  */
 public class Generator {
 
-    int test = 0;
-
     public enum WaterAlgorithm {AS_BIOM, SEPARATE_FROM_BIOM, NO_WATER}
 
     private GameMap map;
@@ -70,6 +70,7 @@ public class Generator {
 
     private WaterAlgorithm waterAlgorithm;
     private float waterAmount; // works only with separate water algorithm
+    private int riversAmount;
 
 
     public Generator(int width, int height, List<Biom> bioms, List<Relief> reliefs, int citiesAmount, int dungeonsAmount) {
@@ -86,8 +87,10 @@ public class Generator {
         map = new GameMap(width, height);
         newBiomCoefficient = 0.004;
         newReliefCoefficient = 0.3;
-        waterAlgorithm = WaterAlgorithm.AS_BIOM;
-        waterAmount = 0.01f;
+        waterAlgorithm = WaterAlgorithm.SEPARATE_FROM_BIOM;
+        waterAmount = 0.33f;
+        riversAmount = 5;
+
         equalBioms = true;
 
         objects = new ArrayList<>();
@@ -117,41 +120,13 @@ public class Generator {
         }
         createBioms();
         denoiseBioms();
+        createRivers();
         createRelief();
-        //createCities();
+        createCities();
         //createRoads();
-
-        test();
+        createDeepOfWater();
 
         return map;
-    }
-
-    private void test() {
-        Point point1 = new Point(5, 5);
-        Point point2 = new Point(12, 5);
-        map.cell(point1).setRoad(new Road());
-        map.cell(point2).setRoad(new Road());
-        getAroundCells(point1, 1).stream()
-                .filter(point ->
-                        getRelativeLocation(point1, point) == CellSide.NN ||
-                                getRelativeLocation(point1, point) == CellSide.SS ||
-                                getRelativeLocation(point1, point) == CellSide.NE ||
-                                getRelativeLocation(point1, point) == CellSide.NW ||
-                                getRelativeLocation(point1, point) == CellSide.SE ||
-                                getRelativeLocation(point1, point) == CellSide.SW
-                )
-                .forEach(point -> map.cell(point).setRoad(new Road()));
-
-        getAroundCells(point2, 1).stream()
-                .filter(point ->
-                        getRelativeLocation(point2, point) == CellSide.NN ||
-                                getRelativeLocation(point2, point) == CellSide.SS ||
-                                getRelativeLocation(point2, point) == CellSide.NE ||
-                                getRelativeLocation(point2, point) == CellSide.NW ||
-                                getRelativeLocation(point2, point) == CellSide.SE ||
-                                getRelativeLocation(point2, point) == CellSide.SW
-                )
-                .forEach(point -> map.cell(point).setRoad(new Road()));
     }
 
 
@@ -341,8 +316,8 @@ public class Generator {
         return result;
     }
 
-    private CellSide getRelativeLocation(Cell of, Cell to) {
-        return getRelativeLocation(new Point(of.getX(), of.getY()), new Point(to.getX(), to.getY()));
+    private CellSide getRelativeLocation(Cell from, Cell searching) {
+        return getRelativeLocation(new Point(from.getX(), from.getY()), new Point(searching.getX(), searching.getY()));
     }
 
     // from which side of cell another cell locates
@@ -361,8 +336,7 @@ public class Generator {
                 return CellSide.SW;
             if (from.x - 1 == searching.x && from.y + 1 == searching.y)
                 return CellSide.NW;
-        }
-        else {
+        } else {
             if (from.x + 1 == searching.x && from.y == searching.y)
                 return CellSide.NE;
             if (from.x + 1 == searching.x && from.y - 1 == searching.y)
@@ -372,7 +346,7 @@ public class Generator {
             if (from.x - 1 == searching.x && from.y == searching.y)
                 return CellSide.NW;
         }
-            return CellSide.NOT_RELATED;
+        return CellSide.NOT_RELATED;
     }
 
 
@@ -493,6 +467,56 @@ public class Generator {
         }
         // remove water from biom types list so generate bioms method won't generate it
         bioms.remove(water);
+    }
+
+    private void createRivers() {
+        Set<Cell> nodes = new HashSet<>();
+        Map<Cell, Set<Cell>> connections = new HashMap<>();
+        AStarScorer<Cell> scorer = new MapRiverScorer();
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Cell cell = map.cell(x, y);
+                nodes.add(cell);
+                Set<Cell> aroundCells = getAroundCells(x, y, 1)
+                        .stream().map(map::cell)
+                        .collect(Collectors.toSet());
+                connections.put(cell, aroundCells);
+            }
+        }
+
+        AStarGraph<Cell> graph = new AStarGraph<>(nodes, connections);
+        AStarRouteFinder<Cell> routeFinder = new AStarRouteFinder<>(graph, scorer, scorer);
+
+        for (int i = 0; i < riversAmount; i++) {
+            Cell from = map.cell(Functions.random(width - 1), Functions.random(height - 1));
+            Cell to;
+            if (!map.getCellsWithProperty(Water.getInstance()).isEmpty())
+                to = Functions.random(map.getCellsWithProperty(Water.getInstance()));
+            else
+                to = map.cell(Functions.random(width - 1), Functions.random(height - 1));
+            routeFinder.findRoute(from, to).forEach(cell -> cell.setBiom(Water.getInstance()));
+        }
+    }
+
+    private void createDeepOfWater() {
+        for (Cell cell : map.getCellsWithProperty(Water.getInstance())) {
+
+            Water.DeepProperty deepProperty;
+
+            if (getAroundCells(cell.getX(), cell.getY(), 1).stream()
+                    .anyMatch(point -> map.cell(point).getBiom() != Water.getInstance())) {
+                deepProperty = Water.DeepProperty.SMALL;
+            } else if (getArea(cell.getX(), cell.getY(), 4).stream()
+                    .filter(point -> map.cell(point).getBiom() != Water.getInstance())
+                    .count() < 2) {
+                deepProperty = Water.DeepProperty.DEEP;
+            } else {
+                deepProperty = Water.DeepProperty.NORMAL;
+            }
+
+            cell.setDeepProperty(deepProperty);
+        }
     }
 
     private void createRelief() {
@@ -617,6 +641,7 @@ public class Generator {
         return new City(id);
     }
 
+
     private void createRoads() {
         Set<Cell> nodes = new HashSet<>();
         Map<Cell, Set<Cell>> connections = new HashMap<>();
@@ -646,165 +671,16 @@ public class Generator {
         List<Cell> route = routeFinder.findRoute(from, to);
         for (int i = 0; i < route.size() - 1; i++) {
             Cell cell = route.get(i);
-            cell.setRoad(new Road());
+            Road road = new Road();
+            if (i > 0) {
+                CellSide destination = getRelativeLocation(cell, route.get(i - 1));
+                road.addDestination(destination);
+            }
+            if (i < route.size() - 1) {
+                CellSide destination = getRelativeLocation(cell, route.get(i + 1));
+                road.addDestination(destination);
+            }
+            cell.setRoad(road);
         }
     }
-
-
-    /*
-
-func Create_Dungeons():
-	Dungeons_Amount = (Map_Width*Map_Height)/76
-	var Dungeons_Left = Dungeons_Amount
-	var Correct_Place = false
-	var x
-	var y
-	while Dungeons_Left > 0:
-		Correct_Place = false
-		while Correct_Place == false: # Looking for correct place for dungeon
-			randomize()
-			x = floor(rand_range(0, Map_Width))
-			y = floor(rand_range(0, Map_Height))
-			if Map_Global[x][y][4] != 1:
-				Map_Global[x][y][2] = 2 # Creating a dungeon
-				var Around_Cells = Get_Around_Cells(x, y, 0, 1, 'Cell')
-				for cell in Around_Cells:
-					Map_Global[cell[0]][cell[1]][4] = 1 # Making closest cells unable to put dungeons to
-				Around_Cells = null
-				Around_Cells = Get_Around_Cells(x, y, 0, 2, 'Cell')
-				for cell in Around_Cells:
-					Map_Global[cell[0]][cell[1]][4] = 1 # Making 2nd close cells unable to put dungeons to
-				Dungeons_Left -= 1
-				Correct_Place = true
-
-
-
-func Initialize_Astar():
-	var TheID = 0
-	var Weight = 1
-	# Add points:
-	for x in Map_Width:
-		for y in Map_Height:
-			if Map_Global[x][y][0] > 1: # Dont add water cells
-				if Map_Global[x][y][2] == 0: # Add cells without cityes or dungeons
-					if Map_Global[x][y][4] == 0: # Weight of the point if no dungeons near
-						if Map_Global[x][y][1] == 2: # Forest
-							Weight = 5
-						elif Map_Global[x][y][1] == 3: # Hills
-							Weight = 6
-						elif Map_Global[x][y][1] == 4: # Mountain
-							Weight == 7
-						else: # Plain
-							Weight = 4
-					else:
-						Weight = 50 # Weight of the point if dungeons near
-					Astar_Node.add_point(TheID, Vector3(x, y, 0), Weight)
-					TheID += 1
-					pass
-				pass
-	# Connect points:
-	var All_Points = Astar_Node.get_points()
-	var Point_Position
-	var x
-	var y
-	for Point in All_Points:
-		Point_Position = Astar_Node.get_point_position(Point)
-		x = Point_Position[0]
-		y = Point_Position[1]
-		var Around_Cells = Get_Around_Cells(x, y, 0, 1, 'Cell')
-		for cell in Around_Cells:
-			if Map_Global[cell[0]][cell[1]][0] > 1: # Only non water cells
-				if Map_Global[cell[0]][cell[1]][2] == 0: # Cells without dungeons and cyties
-					var CellID = Astar_Node.get_closest_point(Vector3(cell[0], cell[1], 0))
-					Astar_Node.connect_points(Point, CellID, true)
-				pass
-			pass
-
-
-func Find_Astar_Points_Near_City(city, Is_It_Second):
-	var x = city['x']
-	var y = city['y']
-	var Around_Cells = Get_Around_Cells(x, y, 0, 1, 'Cell')
-	var City_Around_Cells_Amount = 0 # Becaouse we cant connect center cell with road if there is no empty space around
-	var City_Usefull_Cells = []
-	var Is_Point_Found = 0
-	if Is_It_Second == 1:
-		for cell in Around_Cells:
-			if Map_Global[cell[0]][cell[1]][3] == 1:
-				City_Usefull_Cells.append(cell)
-				Is_Point_Found = 1
-				break
-		if Is_Point_Found == 0:
-			for cell in Around_Cells:
-				var Around_Cells2 = Get_Around_Cells(cell[0], cell[1], 0, 1, 'Cell')
-				for cell2 in Around_Cells2:
-					if Map_Global[cell2[0]][cell2[1]][3] == 1:
-						City_Usefull_Cells.append(cell2)
-						Is_Point_Found = 1
-						break
-				if Is_Point_Found == 1:
-					break
-	if Is_It_Second == 0 or Is_Point_Found == 0:
-		for cell in Around_Cells:
-			if Map_Global[cell[0]][cell[1]][2] == 1:
-				City_Around_Cells_Amount += 1
-				var Available_cells_for_road = 0 # Cant connect city cell if there is no empty space around
-				var Around_Cells2 = Get_Around_Cells(cell[0], cell[1], 0, 1, 'Cell')
-				for cell2 in Around_Cells2:
-					if Map_Global[cell2[0]][cell2[1]][0] > 1 && Map_Global[cell2[0]][cell2[1]][2] == 0:
-						Available_cells_for_road += 1
-				if Available_cells_for_road > 0:
-					City_Usefull_Cells.append(cell)
-	if City_Around_Cells_Amount < 6:
-		City_Usefull_Cells.append([x, y])
-	randomize()
-	var City_Starting_Cell = City_Usefull_Cells[floor(rand_range(0, City_Usefull_Cells.size()))]
-	var Road_Starting_Point = Astar_Node.get_closest_point(Vector3(City_Starting_Cell[0], City_Starting_Cell[1], 0))
-	return Road_Starting_Point
-
-
-func Create_Roads():
-	Initialize_Astar()
-	var Roads = []
-	var Current_Road
-	# First iteration:
-	for city in Cityes:
-		if city['Connected'] < 2:
-			var Start_Point = Find_Astar_Points_Near_City(city, 0)
-			randomize()
-			var Second_city
-			var AnotherCity = 0
-			while AnotherCity == 0:
-				Second_city = Cityes[floor(rand_range(0, Cityes.size()))]
-				if Second_city['x'] == city['x'] && Second_city['y'] == city['y']:
-					AnotherCity = 0
-					print('Trying to connect same city')
-				else:
-					AnotherCity = 1
-			var Finish_Point = Find_Astar_Points_Near_City(Second_city, 1)
-			var Road_Path = Astar_Node.get_point_path(Start_Point, Finish_Point)
-			if Road_Path.size() != 0:
-				var Is_Cityes_Connected = false
-				for ID_Search in Second_city['Connected_With']:
-					if city['ID'] == ID_Search:
-						Is_Cityes_Connected = true
-						break
-				if Is_Cityes_Connected == false:
-					city['Connected'] += 1
-					Second_city['Connected'] += 1
-					city['Connected_With'].append(Second_city['ID'])
-					Second_city['Connected_With'].append(city['ID'])
-					for cell in Road_Path:
-						Map_Global[cell[0]][cell[1]][3] = 1
-						var CellID = Astar_Node.get_closest_point(Vector3(cell[0], cell[1], 0))
-						Astar_Node.set_point_weight_scale(CellID, 1)
-			else:
-				print('This 2 cityes can not be connected')
-	# Second iteration:
-	for city in Cityes:
-		var Need_to_Connect_With = []
-		for id in Cityes.size():
-			Need_to_Connect_With.append(id - 1)
-
-*/
 }

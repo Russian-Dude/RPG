@@ -1,17 +1,22 @@
 package ru.rdude.rpg.game.logic.map;
 
+import ru.rdude.rpg.game.logic.map.bioms.Biom;
+
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class GameMap {
 
     private Cell[][] map;
+    private Map<CellProperty, Set<Cell>> cellsByProperty;
 
     public GameMap(int width, int height) {
         map = new Cell[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                map[x][y] = new Cell(x, y);
+                map[x][y] = new Cell(x, y, this);
             }
         }
     }
@@ -25,6 +30,22 @@ public class GameMap {
 
     public Cell cell(Point point) {
         return map[point.x][point.y];
+    }
+
+    public Set<Cell> getCellsWithProperty(CellProperty property) {
+        if (!cellsByProperty.containsKey(property))
+            return new HashSet<>();
+        return cellsByProperty.get(property);
+    }
+
+    protected void addCellPropertyMap(Cell cell, CellProperty property) {
+        if (cellsByProperty == null) {
+            cellsByProperty = new HashMap<>();
+        }
+        if (!cellsByProperty.containsKey(property)) {
+            cellsByProperty.put(property, new HashSet<>());
+        }
+        cellsByProperty.get(property).add(cell);
     }
 
     @Override

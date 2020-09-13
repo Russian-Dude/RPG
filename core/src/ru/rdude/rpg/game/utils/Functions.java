@@ -1,6 +1,7 @@
 package ru.rdude.rpg.game.utils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Functions {
     public static float random(float min, float max) {
@@ -42,6 +43,8 @@ public class Functions {
     public static <T> T random(List<T> list) {
         return list.get(random(0, list.size() - 1));
     }
+
+    public static <T> T random(Set<T> set) { return random(new ArrayList<>(set)); }
 
     public static <T> T random(T... values) {
         if (values.length < 1) return null;
