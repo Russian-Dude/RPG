@@ -29,6 +29,8 @@ public class MapTilesFabric {
 
     public static StaticTiledMapTile getTile(Cell cell) {
 
+        if (cell.getBiom() == null) return getTileOrPutAndGet("VOID");
+
         if (cell.getBiom() == Water.getInstance()) {
             switch (cell.getDeepProperty()) {
                 case DEEP:

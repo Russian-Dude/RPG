@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.Math.floor;
+import static java.lang.Math.incrementExact;
 import static ru.rdude.rpg.game.utils.Functions.random;
 import static ru.rdude.rpg.game.utils.Functions.randomWithWeights;
 
@@ -50,7 +51,7 @@ var Cell_Propertyes_Count = 5 # This is depth of the array
  */
 public class Generator {
 
-    public enum WaterAlgorithm {AS_BIOM, SEPARATE_FROM_BIOM, NO_WATER}
+    public enum WaterAlgorithm {AS_BIOM, SEPARATE_FROM_BIOM, MIXED, SMALL_ISLANDS, SUPER_MIXED, NO_WATER}
 
     private GameMap map;
     private int width; // 64
@@ -87,7 +88,7 @@ public class Generator {
         map = new GameMap(width, height);
         newBiomCoefficient = 0.004;
         newReliefCoefficient = 0.3;
-        waterAlgorithm = WaterAlgorithm.SEPARATE_FROM_BIOM;
+        waterAlgorithm = WaterAlgorithm.MIXED;
         waterAmount = 0.33f;
         riversAmount = 5;
 
@@ -113,10 +114,24 @@ public class Generator {
         switch (waterAlgorithm) {
             case SEPARATE_FROM_BIOM:
                 createWater();
+                bioms.remove(Water.getInstance());
                 break;
             case NO_WATER:
                 bioms.remove(Water.getInstance());
                 break;
+            case MIXED:
+                createBioms();
+                createWater();
+                break;
+            case SMALL_ISLANDS:
+                createWaterWithSmallIslands();
+                bioms.remove(Water.getInstance());
+                break;
+            case SUPER_MIXED:
+                createWaterWithSmallIslands();
+                createWater();
+                break;
+
         }
         createBioms();
         denoiseBioms();
@@ -352,7 +367,10 @@ public class Generator {
 
     private boolean isChangeBiom(Biom lastBiom, int cellsWithNoBiomAmount) {
         if (equalBioms && biomAmount.get(lastBiom) > cellsWithNoBiomAmount / bioms.size()) {
-            return true;
+            if (lastBiom == Water.getInstance() && (waterAlgorithm == WaterAlgorithm.MIXED || waterAlgorithm == WaterAlgorithm.SUPER_MIXED))
+                return random(1d) < newBiomCoefficient;
+            else
+                return true;
         }
         return random(1d) < newBiomCoefficient;
     }
@@ -429,6 +447,23 @@ public class Generator {
     private void createWater() {
         int steps = (int) (height * width * waterAmount);
         Water water = Water.getInstance();
+        List<Point> points = createStartPoints();
+        while (steps > 0) {
+            for (Point point : points) {
+                steps--;
+                Point nextPoint = Functions.random(getAroundCells(point, 1));
+                point.x = nextPoint.x;
+                point.y = nextPoint.y;
+
+                map.cell(point).setBiom(Water.getInstance());
+            }
+        }
+    }
+
+
+    private void createWaterWithSmallIslands() {
+        int steps = (int) (height * width * waterAmount);
+        Water water = Water.getInstance();
         // creating start points for generation:
         List<Point> points = createStartPoints();
         // set start points to water:
@@ -465,8 +500,6 @@ public class Generator {
                 }
             }
         }
-        // remove water from biom types list so generate bioms method won't generate it
-        bioms.remove(water);
     }
 
     private void createRivers() {
