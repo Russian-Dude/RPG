@@ -9,7 +9,6 @@ public abstract class Relief extends CellProperty {
     public static List<Relief> getDefaultReliefs() {
         return List.of(
                 Forest.getInstance(),
-                Hills.getInstance(),
                 Mountains.getInstance(),
                 Plain.getInstance());
     }

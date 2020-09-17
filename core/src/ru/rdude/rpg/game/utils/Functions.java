@@ -41,6 +41,8 @@ public class Functions {
     }
 
     public static <T> T random(List<T> list) {
+        if (list.size() == 1)
+            return list.get(0);
         return list.get(random(0, list.size() - 1));
     }
 

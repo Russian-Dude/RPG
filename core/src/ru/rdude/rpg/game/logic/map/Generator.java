@@ -6,8 +6,11 @@ import ru.rdude.rpg.game.logic.map.bioms.Biom;
 import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.logic.map.objects.MapObject;
+import ru.rdude.rpg.game.logic.map.reliefs.Forest;
+import ru.rdude.rpg.game.logic.map.reliefs.Plain;
 import ru.rdude.rpg.game.logic.map.reliefs.Relief;
 import ru.rdude.rpg.game.utils.Functions;
+import ru.rdude.rpg.game.utils.TimeCounter;
 import ru.rdude.rpg.game.utils.aStar.AStarGraph;
 import ru.rdude.rpg.game.utils.aStar.AStarRouteFinder;
 import ru.rdude.rpg.game.utils.aStar.AStarScorer;
@@ -16,8 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.lang.Math.floor;
-import static java.lang.Math.incrementExact;
+import static java.lang.Math.*;
 import static ru.rdude.rpg.game.utils.Functions.random;
 import static ru.rdude.rpg.game.utils.Functions.randomWithWeights;
 
@@ -111,6 +113,9 @@ public class Generator {
     }
 
     public GameMap createMap() {
+        TimeCounter timeCounter = new TimeCounter("map generation");
+        System.out.println(width + "x" + height + " (" + width*height + " cells)");
+
         switch (waterAlgorithm) {
             case SEPARATE_FROM_BIOM:
                 createWater();
@@ -133,17 +138,28 @@ public class Generator {
                 break;
 
         }
+        System.out.println(timeCounter.getCount("water creation"));
+
+
         createBioms();
+        System.out.println(timeCounter.getCountFromPrevious("bioms creation"));
         denoiseBioms();
+        System.out.println(timeCounter.getCountFromPrevious("bioms denoising"));
         createRivers();
+        System.out.println(timeCounter.getCountFromPrevious("rivers creation"));
         createRelief();
+        System.out.println(timeCounter.getCountFromPrevious("relief creation"));
         createCities();
-        //createRoads();
+        System.out.println(timeCounter.getCountFromPrevious("cities creation"));
+        createRoads();
+        System.out.println(timeCounter.getCountFromPrevious("roads creation"));
         createDeepOfWater();
+        System.out.println(timeCounter.getCountFromPrevious("deep of water creation"));
+
+        System.out.println(timeCounter.getCount());
 
         return map;
     }
-
 
     // Passing a list of bioms allows to use specific bioms on created map
     private void fillBiomAmountMap(List<Biom> availableBioms) {
@@ -704,7 +720,7 @@ public class Generator {
         List<Cell> route = routeFinder.findRoute(from, to);
         for (int i = 0; i < route.size() - 1; i++) {
             Cell cell = route.get(i);
-            Road road = new Road();
+            Road road = cell.getRoad() == null ? new Road() : cell.getRoad();
             if (i > 0) {
                 CellSide destination = getRelativeLocation(cell, route.get(i - 1));
                 road.addDestination(destination);

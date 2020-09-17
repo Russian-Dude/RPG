@@ -2,7 +2,7 @@ package ru.rdude.rpg.game.logic.map.bioms;
 
 public class Water extends Biom {
 
-    public enum DeepProperty { SMALL, NORMAL, DEEP }
+    public enum DeepProperty { SMALL, NORMAL, DEEP, RIVER }
 
     private static Water instance;
 

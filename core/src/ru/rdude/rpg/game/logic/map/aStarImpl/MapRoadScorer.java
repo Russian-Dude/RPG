@@ -13,8 +13,9 @@ public class MapRoadScorer implements AStarScorer<Cell> {
 
     @Override
     public double computeCost(Cell from, Cell to) {
-        if (to.getBiom() == Water.getInstance())
-            return 2500d;
+        if (to.getBiom() == Water.getInstance()) {
+            return from.getBiom() == Water.getInstance() ? 2500d : 8d;
+        }
         if (to.getRoad() != null)
             return 0d;
         if (to.getRelief() instanceof Mountains)
