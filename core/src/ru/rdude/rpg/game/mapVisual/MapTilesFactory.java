@@ -87,7 +87,7 @@ public class MapTilesFactory {
                         && atlasRegion.name.contains(directionTo.name())
                         && atlasRegion.name.contains(roadType))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No image to represent road ffs!"));
+                .orElseThrow(() -> new IllegalArgumentException("No image to represent road ffs! (" + directionFrom + "-" + directionTo + ")"));
         return getTileOrPutAndGet(region.name);
     }
 

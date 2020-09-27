@@ -6,8 +6,6 @@ import ru.rdude.rpg.game.logic.map.bioms.Biom;
 import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.logic.map.objects.MapObject;
-import ru.rdude.rpg.game.logic.map.reliefs.Forest;
-import ru.rdude.rpg.game.logic.map.reliefs.Plain;
 import ru.rdude.rpg.game.logic.map.reliefs.Relief;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.utils.TimeCounter;
@@ -17,7 +15,6 @@ import ru.rdude.rpg.game.utils.aStar.AStarScorer;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.lang.Math.*;
 import static ru.rdude.rpg.game.utils.Functions.random;
@@ -75,6 +72,9 @@ public class Generator {
     private float waterAmount; // works only with separate water algorithm
     private int riversAmount;
 
+    // zones help optimize finding unstepped cells on big maps
+    private Map<CellProperty.Type, Set<Zone>> zones;
+
 
     public Generator(int width, int height, List<Biom> bioms, List<Relief> reliefs, int citiesAmount, int dungeonsAmount) {
         this.width = width;
@@ -85,6 +85,10 @@ public class Generator {
         this.reliefs.addAll(reliefs);
         this.citiesAmount = citiesAmount;
         this.dungeonsAmount = dungeonsAmount;
+        zones = new HashMap<>();
+        for (CellProperty.Type property : CellProperty.Type.values()) {
+            zones.put(property, divideMapToZones());
+        }
         biomAmount = new HashMap<>();
         fillBiomAmountMap(bioms);
         map = new GameMap(width, height);
@@ -185,6 +189,33 @@ public class Generator {
         x = (int) (width - width / 4 + floor(random(width / 5 * (-1), width / 5)));
         points.add(new Point(x, y));
         return points;
+    }
+
+    private Set<Zone> divideMapToZones() {
+        Set<Zone> zones = new HashSet<>();
+        int zonesAmountX = ((int) (Math.log(width)/Math.log(2)));
+        int zonesAmountY = ((int) (Math.log(height)/Math.log(2)));
+        int zoneWidth = width / zonesAmountX;
+        int zoneHeight = height / zonesAmountY;
+
+        if (width % zoneWidth != 0)
+            zonesAmountX++;
+        if (height % zoneHeight != 0)
+            zonesAmountY++;
+
+        for (int x = 0; x <= zonesAmountX; x++) {
+            for (int y = 0; y <= zonesAmountY; y++) {
+                int endX = x * zoneWidth + zoneWidth;
+                if (endX > width - 1)
+                    endX = width - 1;
+                int endY = y * zoneHeight + zoneHeight;
+                if (endY > height - 1)
+                    endY = height - 1;
+                zones.add(new Zone(x * zoneWidth, y * zoneHeight, endX, endY));
+            }
+        }
+
+        return zones;
     }
 
     private Biom randomBiom() {
@@ -305,6 +336,7 @@ public class Generator {
         return aroundCells;
     }
 
+
     // looking for cells around, then everywhere
     private List<Point> findUnSteppedCells(Point point, CellProperty.Type property) {
         List<Point> result = new ArrayList<>();
@@ -318,32 +350,40 @@ public class Generator {
             if (!result.isEmpty()) return result;
         }
 
-        // 1/4 map zone cells cells
-        int xStart = point.x < width / 2 ? 0 : width / 2;
-        int xEnd = point.x < width / 2 ? width / 2 : width - 1;
-        int yStart = point.y < height / 2 ? 0 : height / 2;
-        int yEnd = point.y < height / 2 ? height / 2 : height - 1;
-        for (int x = xStart; x < xEnd; x++) {
-            for (int y = yStart; y < yEnd; y++) {
-                if (map.cell(x, y).get(property) == null) {
-                    result.add(new Point(x, y));
-                    if (result.size() > 5)
-                        return result;
-                }
-            }
-        }
-        if (!result.isEmpty())
-            return result;
+        // far cells from zones
+        Zone zone = zones.get(property).stream()
+                .filter(z -> z.hasPoint(point))
+                .findFirst()
+                .orElse(null);
 
-        // all cells
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                if (map.cell(x, y).get(property) == null) {
-                    result.add(new Point(x, y));
-                    return result;
+        // if there is zone with unstepped cells and contains point
+        if (zone != null) {
+            for (int x = zone.getStartPoint().x; x <= zone.getEndPoint().x; x++) {
+                for (int y = zone.getStartPoint().y; y <= zone.getEndPoint().y; y++) {
+                    if (map.cell(x, y).get(property) == null) {
+                        result.add(new Point(x, y));
+                        return result;
+                    }
                 }
             }
+            zones.get(property).remove(zone);
         }
+
+        // else check through other zones
+        Set<Zone> zonesToRemove = new HashSet<>();
+        zIter: for (Zone z : zones.get(property)) {
+            for (int x = z.getStartPoint().x; x <= z.getEndPoint().x; x++) {
+                for (int y = z.getStartPoint().y; y <= z.getEndPoint().y; y++) {
+                    if (map.cell(x, y).get(property) == null) {
+                        result.add(new Point(x, y));
+                        break zIter;
+                    }
+                }
+            }
+            zonesToRemove.add(z);
+        }
+
+        zones.get(property).removeAll(zonesToRemove);
         return result;
     }
 
@@ -712,8 +752,8 @@ public class Generator {
 
 
         //test
-        createRoad(routeFinder, map.cell(5, 5), map.cell(31, 31));
-        createRoad(routeFinder, map.cell(31, 5), map.cell(5, 31));
+        createRoad(routeFinder, map.cell(2, 2), map.cell(5, 5));
+        createRoad(routeFinder, map.cell(2, 5), map.cell(5, 2));
     }
 
     private void createRoad(AStarRouteFinder<Cell> routeFinder, Cell from, Cell to) {

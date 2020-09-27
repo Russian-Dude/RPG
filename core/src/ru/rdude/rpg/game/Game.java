@@ -52,10 +52,10 @@ public class Game extends ApplicationAdapter {
 
 
 
-/*        GameMap gameMap = new Generator(600, 256, Biom.getDefaultBiomes(), Relief.getDefaultReliefs(), 0, 0)
-                .createMap();*/
-        GameMap gameMap = new Generator(64, 32, Biom.getDefaultBiomes(), Relief.getDefaultReliefs(), 0, 0)
+        GameMap gameMap = new Generator(600, 256, Biom.getDefaultBiomes(), Relief.getDefaultReliefs(), 0, 0)
                 .createMap();
+/*        GameMap gameMap = new Generator(1024, 512, Biom.getDefaultBiomes(), Relief.getDefaultReliefs(), 0, 0)
+                .createMap();*/
         MapVisual mapVisual = new MapVisual(camera, gameMap);
         stage.addActor(mapVisual);
 

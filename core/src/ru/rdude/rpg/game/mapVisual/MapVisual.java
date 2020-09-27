@@ -52,22 +52,33 @@ public class MapVisual extends Actor implements Disposable {
 
                     List<CellSide> destinations = new ArrayList<>(gameMapCell.getRoad().getDestinationsCopy());
                     Queue<CellSide> queue = new LinkedList<>(destinations);
+                    Set<CellSide> used = new HashSet<>();
                     List<TiledMapTile> tiles = new ArrayList<>();
 
-                    System.out.println(destinations);
 
                     while (queue.size() > 1) {
-                        CellSide dest1 = queue.size() % 2 == 0 ? queue.poll() : queue.peek();
-                        CellSide dest2 = queue.peek();
+                        System.out.println(queue);
+
+                        CellSide dest1 = queue.poll();
+                        CellSide dest2 = queue.size() % 2 != 0 ?  queue.poll() : queue.peek();
+
                         if (dest1.isCloseTo(dest2)) {
-                            dest2 = destinations.stream()
-                                    .filter(d -> !d.isCloseTo(dest1))
-                                    .findFirst()
-                                    .get();
+                            CellSide destPick = used.contains(dest1) ? dest2 : dest1;
+                            dest1 = destPick;
+                            for (CellSide destination : destinations) {
+                                if (!destination.isCloseTo(destPick))
+                                    dest2 = destination;
+                            }
                         }
-                        queue.remove(dest2);
+
+
                         tiles.add(MapTilesFactory.getRoadTile(gameMapCell, dest1, dest2));
+                        used.add(dest1);
+                        used.add(dest2);
                     }
+
+                    System.out.println("=========");
+
 
                     for (int i = 0; i < tiles.size(); i++) {
                         if (roadLayers.size() < i + 1) {
@@ -77,8 +88,6 @@ public class MapVisual extends Actor implements Disposable {
                         roadCell.setTile(tiles.get(i));
                         roadLayers.get(i).setCell(x, y, roadCell);
                     }
-
-
                 }
 
                 // relief
@@ -160,7 +169,7 @@ public class MapVisual extends Actor implements Disposable {
         setBounds(getX(), getY(), gameMap.getWidth() * 128, gameMap.getHeight() * 128);
         setTouchable(Touchable.enabled);
 
-        renderer = new HexagonalTiledMapRendererWithObjectsLayer(map, 0.1f);
+        renderer = new HexagonalTiledMapRendererWithObjectsLayer(map, 0.01f);
     }
 
     @Override
