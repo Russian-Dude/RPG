@@ -17,9 +17,13 @@ public class Crit extends Stat implements Calculatable {
 
     public Crit(double value, Luck luck) {
         super(value);
-        this.calculatable = true;
+        this.calculatable = false;
         this.luck = luck;
         luck.subscribe(this);
+    }
+
+    public void setCalculatable(boolean calculatable) {
+        this.calculatable = calculatable;
     }
 
     @Override

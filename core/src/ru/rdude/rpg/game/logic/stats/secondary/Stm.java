@@ -34,7 +34,7 @@ public class Stm extends Stat implements Calculatable {
 
     public Stm(double value, Agi agi, Vit vit, Dex dex, Str str, Lvl lvl) {
         super(value);
-        this.calculatable = true;
+        this.calculatable = false;
         this.agi = agi;
         this.vit = vit;
         this.dex = dex;
@@ -50,6 +50,11 @@ public class Stm extends Stat implements Calculatable {
         perHit = new PerHit();
         hardness = new Hardness();
         calculate();
+    }
+
+    @Override
+    public void setCalculatable(boolean calculatable) {
+        this.calculatable = calculatable;
     }
 
     public Recovery recovery() {
@@ -120,6 +125,11 @@ public class Stm extends Stat implements Calculatable {
             this.set(STR + Math.floor(STR / 3) + Math.floor(STR / 5) + Math.floor(DEX / 7) + LVL + Math.floor(LVL / 5) + Math.floor(LVL / 10) + 8);
             return value();
         }
+
+        @Override
+        public void setCalculatable(boolean calculatable) {
+
+        }
     }
 
     public class Recovery extends Stat implements Calculatable {
@@ -131,6 +141,11 @@ public class Stm extends Stat implements Calculatable {
             this.set(Math.floor(VIT / 3) + Math.floor(VIT / 5) + LVL + Math.floor(LVL / 3) + Math.floor(LVL / 7) + 3);
             return value();
         }
+
+        @Override
+        public void setCalculatable(boolean calculatable) {
+
+        }
     }
 
     public class PerHit extends Stat implements Calculatable {
@@ -141,6 +156,11 @@ public class Stm extends Stat implements Calculatable {
             double AGI = agi.value();
             this.set(3 + hardness.value() - Math.floor(Math.floor(AGI / 3) * 0.4 + Math.floor(AGI / 5) + Math.floor(AGI / 7) * 0.5 + Math.floor(LVL / 7)));
             return value();
+        }
+
+        @Override
+        public void setCalculatable(boolean calculatable) {
+
         }
     }
 

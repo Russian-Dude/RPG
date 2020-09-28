@@ -9,7 +9,7 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
 
     protected Set<StatObserver> subscribers;
     private double value;
-    private Map<Class<?>, Double> buffs;
+    private Map<String, Double> buffs;
 
     public Stat() {
         this(0);
@@ -21,8 +21,12 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
         subscribers = new HashSet<>();
     }
 
+    public void addBuffClass(String className) {
+        buffs.put(className, 0d);
+    }
+
     public void addBuffClass(Class<?> clazz) {
-        buffs.put(clazz, 0d);
+        addBuffClass(clazz.getSimpleName());
     }
 
     public double increase(double value) {
@@ -59,9 +63,13 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
     }
 
     public void increaseBuffValue(Class<?> clazz, double value) {
-        if (!buffs.containsKey(clazz))
-            throw new IllegalArgumentException(clazz.getSimpleName() + " class is not presented as buff field");
-        buffs.put(clazz, buffs.get(clazz) + value);
+        increaseBuffValue(clazz.getSimpleName(), value);
+    }
+
+    public void increaseBuffValue(String className, double value) {
+        if (!buffs.containsKey(className))
+            throw new IllegalArgumentException(" class is not presented as buff field");
+        buffs.put(className, buffs.get(className) + value);
         notifySubscribers();
     }
 
@@ -74,10 +82,22 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
     }
 
     public void setBuffValue(Class<?> clazz, double value) {
-        if (!buffs.containsKey(clazz))
-            throw new IllegalArgumentException(clazz.getSimpleName() + " class is not presented as buff field");
-        buffs.put(clazz, value);
+        setBuffValue(clazz.getSimpleName(), value);
+    }
+
+    public void setBuffValue(String className, double value) {
+        if (!buffs.containsKey(className))
+            throw new IllegalArgumentException(className + " class is not presented as buff field");
+        buffs.put(className, value);
         notifySubscribers();
+    }
+
+    public Map<String, Double> getBuffs() {
+        return buffs;
+    }
+
+    public void setBuffs(Map<String, Double> buffs) {
+        this.buffs = buffs;
     }
 
     public void subscribe(StatObserver observer) {

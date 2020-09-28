@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import ru.rdude.rpg.game.logic.data.io.JsonSerializer;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.map.GameMap;
 import ru.rdude.rpg.game.logic.map.Generator;
@@ -52,7 +53,7 @@ public class Game extends ApplicationAdapter {
 
 
 
-        GameMap gameMap = new Generator(600, 256, Biom.getDefaultBiomes(), Relief.getDefaultReliefs(), 0, 0)
+        GameMap gameMap = new Generator(128, 64, Biom.getDefaultBiomes(), Relief.getDefaultReliefs(), 0, 0)
                 .createMap();
 /*        GameMap gameMap = new Generator(1024, 512, Biom.getDefaultBiomes(), Relief.getDefaultReliefs(), 0, 0)
                 .createMap();*/
@@ -60,6 +61,9 @@ public class Game extends ApplicationAdapter {
         stage.addActor(mapVisual);
 
         stage.setDebugAll(true);
+
+        JsonSerializer serializer = new JsonSerializer();
+        serializer.testMethod();
     }
 
     @Override

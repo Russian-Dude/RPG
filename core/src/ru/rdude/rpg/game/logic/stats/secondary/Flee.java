@@ -28,7 +28,7 @@ public class Flee extends Stat implements Calculatable {
 
     public Flee(double value, Agi agi, Dex dex, Luck luck, Lvl lvl) {
         super(value);
-        this.calculatable = true;
+        this.calculatable = false;
         this.agi = agi;
         this.dex = dex;
         this.luck = luck;
@@ -41,6 +41,10 @@ public class Flee extends Stat implements Calculatable {
         fleeWithLuckyDodge = new FleeWithLuckyDodge();
         luckyDodgeChance.calculate();
         fleeWithLuckyDodge.calculate();
+    }
+
+    public void setCalculatable(boolean calculatable) {
+        this.calculatable = calculatable;
     }
 
     public double pureValue() {
@@ -88,6 +92,13 @@ public class Flee extends Stat implements Calculatable {
                     + Math.floor(LUCK/4)*0.1 + Math.floor(LUCK/5)*0.1);
             return this.value();
         }
+
+        @Override
+        public void setCalculatable(boolean calculatable) {
+
+        }
+
+
     }
 
     private class FleeWithLuckyDodge extends Stat implements Calculatable {
@@ -95,6 +106,11 @@ public class Flee extends Stat implements Calculatable {
         public double calculate() {
             this.set(Flee.this.value() * 1.8);
             return value();
+        }
+
+        @Override
+        public void setCalculatable(boolean calculatable) {
+
         }
     }
 

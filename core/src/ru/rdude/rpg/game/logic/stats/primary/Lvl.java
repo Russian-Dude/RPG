@@ -6,7 +6,7 @@ import ru.rdude.rpg.game.logic.stats.Stat;
 
 public class Lvl extends Stat {
 
-    private enum Type {BASE, CLASS}
+    public enum Type {BASE, CLASS}
     public static final Type BASE = Type.BASE;
     public static final Type CLASS = Type.CLASS;
 
@@ -32,6 +32,7 @@ public class Lvl extends Stat {
     public double skillPointsValue() { return skillPoints.value(); }
 
     public Type getType() { return type; }
+    public void setType(Type type) { this.type = type; }
 
     @Override
     public double increase(double value) {
@@ -86,6 +87,11 @@ public class Lvl extends Stat {
             max = 170 + lvl*180 + Math.floor(lvl/2)*180 + Math.floor(lvl/3)*240;
             return max;
         }
+
+        @Override
+        public void setCalculatable(boolean calculatable) {
+
+        }
     }
 
     public class ExpBase extends Exp {
@@ -94,6 +100,11 @@ public class Lvl extends Stat {
             if (value() < max) return max;
             max = 100 + lvl * 150 + Math.floor(lvl/2)*160 + Math.floor(lvl/3)*185;
             return max;
+        }
+
+        @Override
+        public void setCalculatable(boolean calculatable) {
+
         }
     }
 

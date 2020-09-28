@@ -23,7 +23,7 @@ public class MagicResistance extends Stat implements Calculatable {
 
     public MagicResistance(double value, Int intel, Luck luck, Str str, Dex dex, Agi agi, Vit vit, Lvl lvl) {
         super(value);
-        this.calculatable = true;
+        this.calculatable = false;
         this.intel = intel;
         this.luck = luck;
         this.str = str;
@@ -38,6 +38,11 @@ public class MagicResistance extends Stat implements Calculatable {
         agi.subscribe(this);
         vit.subscribe(this);
         lvl.subscribe(this);
+    }
+
+    @Override
+    public void setCalculatable(boolean calculatable) {
+        this.calculatable = calculatable;
     }
 
     @Override

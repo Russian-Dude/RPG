@@ -24,13 +24,18 @@ public class Hp extends Stat implements Calculatable {
 
     public Hp(double value, Vit vit, Lvl lvl) {
         super(value);
-        this.calculatable = true;
+        this.calculatable = false;
         this.vit = vit;
         this.lvl = lvl;
         vit.subscribe(this);
         lvl.subscribe(this);
         recovery = new Recovery();
         max = new Max();
+    }
+
+    @Override
+    public void setCalculatable(boolean calculatable) {
+        this.calculatable = calculatable;
     }
 
     public Recovery recovery() {
@@ -83,6 +88,11 @@ public class Hp extends Stat implements Calculatable {
             this.set(20 + Math.floor(LVL * 0.7 + Math.floor(LVL / 2) * 0.7) + Math.floor(VIT * 0.7 + Math.floor(VIT / 2) * 0.7 + Math.floor(VIT / 3)));
             return value();
         }
+
+        @Override
+        public void setCalculatable(boolean calculatable) {
+
+        }
     }
 
     public class Recovery extends Stat implements Calculatable {
@@ -93,6 +103,11 @@ public class Hp extends Stat implements Calculatable {
             double VIT = vit.value();
             this.set(1 + Math.floor(VIT / 3) + Math.floor(VIT / 7) + LVL);
             return value();
+        }
+
+        @Override
+        public void setCalculatable(boolean calculatable) {
+
         }
     }
 }

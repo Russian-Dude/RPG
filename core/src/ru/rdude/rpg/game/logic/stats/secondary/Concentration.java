@@ -22,7 +22,7 @@ public class Concentration extends Stat implements Calculatable {
 
     public Concentration(double value, Int intel, Dex dex, Agi agi, Vit vit, Str str, Lvl lvl) {
         super(value);
-        this.calculatable = true;
+        this.calculatable = false;
         this.intel = intel;
         this.lvl = lvl;
         this.dex = dex;
@@ -35,6 +35,10 @@ public class Concentration extends Stat implements Calculatable {
         agi.subscribe(this);
         vit.subscribe(this);
         str.subscribe(this);
+    }
+
+    public void setCalculatable(boolean calculatable) {
+        this.calculatable = calculatable;
     }
 
     @Override

@@ -31,7 +31,7 @@ public class Dmg extends Stat implements Calculatable {
     }
 
     public Dmg(Str str, Agi agi, Dex dex, Int intel, Lvl lvl) {
-        this.calculatable = true;
+        this.calculatable = false;
         this.lvl = lvl;
         this.str = str;
         this.agi = agi;
@@ -70,6 +70,10 @@ public class Dmg extends Stat implements Calculatable {
         return types.stream()
                 .max(Comparator.naturalOrder())
                 .get();
+    }
+
+    public void setCalculatable(boolean calculatable) {
+        this.calculatable = calculatable;
     }
 
     @Override
@@ -135,6 +139,11 @@ public class Dmg extends Stat implements Calculatable {
                     + Math.floor(AGI + DEX/5) + LVL + Math.floor(LVL)/3*1.5 + Math.floor(LVL)/4*1.7 + 1);
             return (this.minValue() + this.maxValue())/2;
         }
+
+        @Override
+        public void setCalculatable(boolean calculatable) {
+
+        }
     }
 
     public class Range extends AtkType implements Calculatable {
@@ -150,6 +159,11 @@ public class Dmg extends Stat implements Calculatable {
                     + Math.floor(AGI + STR/5) + LVL + Math.floor(LVL)/3*1.5 + Math.floor(LVL)/4*1.7 + 1);
             return (this.minValue() + this.maxValue())/2;
         }
+
+        @Override
+        public void setCalculatable(boolean calculatable) {
+
+        }
     }
 
     public class Magic extends AtkType implements Calculatable {
@@ -164,6 +178,11 @@ public class Dmg extends Stat implements Calculatable {
             this.max.set(Math.floor(INT + Math.floor(INT/2)*1.5 + Math.floor(INT/7)*1.8 + Math.floor(AGI/3 + DEX/3)/5)*1.8
                     + Math.floor(AGI + DEX/5) + LVL + Math.floor(LVL)/3*1.5 + Math.floor(LVL)/4*1.7 + 1);
             return (this.minValue() + this.maxValue())/2;
+        }
+
+        @Override
+        public void setCalculatable(boolean calculatable) {
+
         }
     }
 

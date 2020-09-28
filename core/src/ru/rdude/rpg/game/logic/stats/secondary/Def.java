@@ -19,11 +19,15 @@ public class Def extends Stat implements Calculatable {
 
     public Def(double value, Vit vit, Lvl lvl) {
         super(value);
-        this.calculatable = true;
+        this.calculatable = false;
         this.vit = vit;
         this.lvl = lvl;
         vit.subscribe(this);
         lvl.subscribe(this);
+    }
+
+    public void setCalculatable(boolean calculatable) {
+        this.calculatable = calculatable;
     }
 
     @Override

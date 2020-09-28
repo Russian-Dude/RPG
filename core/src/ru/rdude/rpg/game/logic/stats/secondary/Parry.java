@@ -21,13 +21,18 @@ public class Parry extends Stat implements Calculatable {
 
     public Parry(double value, Agi agi, Dex dex, Lvl lvl) {
         super(value);
-        this.calculatable = true;
+        this.calculatable = false;
         this.agi = agi;
         this.dex = dex;
         this.lvl = lvl;
         agi.subscribe(this);
         dex.subscribe(this);
         lvl.subscribe(this);
+    }
+
+    @Override
+    public void setCalculatable(boolean calculatable) {
+        this.calculatable = calculatable;
     }
 
     @Override

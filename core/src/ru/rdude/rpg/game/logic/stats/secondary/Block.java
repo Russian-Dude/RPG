@@ -25,13 +25,17 @@ public class Block extends Stat implements Calculatable {
 
     public Block(double value, Dex dex, Agi agi, Lvl lvl) {
         super(value);
-        this.calculatable = true;
+        this.calculatable = false;
         this.dex = dex;
         this.agi = agi;
         this.lvl = lvl;
         dex.subscribe(this);
         agi.subscribe(this);
         lvl.subscribe(this);
+    }
+
+    public void setCalculatable(boolean calculatable) {
+        this.calculatable = calculatable;
     }
 
     @Override
