@@ -96,12 +96,17 @@ public class Generator {
         newReliefCoefficient = 0.3;
         waterAlgorithm = WaterAlgorithm.MIXED;
         waterAmount = 0.33f;
-        riversAmount = 5;
+        riversAmount = 10;
 
         equalBioms = true;
 
         objects = new ArrayList<>();
         cities = new ArrayList<>();
+    }
+
+    public void setSize(GameMapSize size) {
+        this.width = size.getWidth();
+        this.height = size.getHeight();
     }
 
     public void setWaterAlgorithm(WaterAlgorithm waterAlgorithm) {
