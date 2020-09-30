@@ -66,7 +66,7 @@ public class Buff implements TurnChangeObserver, TimeChangeObserver, BeingAction
 
     private Stats createStats() {
         Stats stats = new Stats(false);
-        stats.forEach(stat -> stat.set(skillApplier.skillParser.parse(skillData.getStats().get(stat.getClass()))));
+        stats.forEachWithNestedStats(stat -> stat.set(skillApplier.skillParser.parse(skillData.getStats().get(stat.getClass()))));
         return stats;
     }
 

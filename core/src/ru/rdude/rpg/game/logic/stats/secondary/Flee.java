@@ -47,10 +47,6 @@ public class Flee extends Stat implements Calculatable {
         this.calculatable = calculatable;
     }
 
-    public double pureValue() {
-        return value();
-    }
-
     public LuckyDodgeChance luckyDodgeChance() { return luckyDodgeChance; }
 
     @Override
@@ -60,11 +56,10 @@ public class Flee extends Stat implements Calculatable {
             this.fleeWithLuckyDodge.increase(((Flee) stat).fleeWithLuckyDodge.value());
             this.luckyDodgeChance.increase(((Flee) stat).luckyDodgeChance.value());
         }
-        return pureValue();
+        return value();
     }
 
-    @Override
-    public double value() {
+    public double valueWithLuckyDodgeChance() {
         float chance = Functions.random(100f);
         boolean isLuckyDodge = luckyDodgeChance.value() >= chance;
         return isLuckyDodge ? fleeWithLuckyDodge.value() : super.value();

@@ -20,7 +20,7 @@ public class SkillData extends EntityData {
     private Coefficients coefficients;
     private Coefficients buffCoefficients;
     private String damage;
-    private Map<Class<Stat>, String> stats;
+    private Map<Class<? extends Stat>, String> stats;
     private double timeChange;
     private Transformation transformation;
     private List<Long> summon; // by guid
@@ -102,11 +102,11 @@ public class SkillData extends EntityData {
         this.damage = damage;
     }
 
-    public Map<Class<Stat>, String> getStats() {
+    public Map<Class<? extends Stat>, String> getStats() {
         return stats;
     }
 
-    public void setStats(Map<Class<Stat>, String> stats) {
+    public void setStats(Map<Class<? extends Stat>, String> stats) {
         this.stats = stats;
     }
 
@@ -230,10 +230,6 @@ public class SkillData extends EntityData {
         this.damageMade = damageMade;
     }
 
-    public Map<Class<? extends GameState>, Boolean> getUsableInGameStates() {
-        return usableInGameStates;
-    }
-
     public boolean isCanBeBlocked() {
         return canBeBlocked;
     }
@@ -304,6 +300,10 @@ public class SkillData extends EntityData {
 
     public void setSkillsOnBeingAction(Map<BeingAction.Action, Long> skillsOnBeingAction) {
         this.skillsOnBeingAction = skillsOnBeingAction;
+    }
+
+    public Map<Class<? extends GameState>, Boolean> getUsableInGameStates() {
+        return usableInGameStates;
     }
 
     public void setUsableInGameStates(Map<Class<? extends GameState>, Boolean> usableInGameStates) {
@@ -406,6 +406,7 @@ public class SkillData extends EntityData {
         public void setTakeItems(boolean takeItems) {
             this.takeItems = takeItems;
         }
+
     }
 
     public class Transformation {

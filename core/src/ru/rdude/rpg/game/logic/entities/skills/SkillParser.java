@@ -44,14 +44,12 @@ public class SkillParser {
         return result;
     }
 
-    public boolean testParse(String string) {
-        return parse(string) != Float.MIN_VALUE;
-    }
-
     private void createBindings() {
         bindings = engine.createBindings();
         bindings.put("LVL", caster.stats().lvlValue());
         bindings.put("TLVL", target.stats().lvlValue());
+        bindings.put("EXP", caster.stats().lvl().expValue());
+        bindings.put("TEXP", target.stats().lvl().expValue());
         bindings.put("DEF", caster.stats().defValue());
         bindings.put("TDEF", target.stats().defValue());
         bindings.put("AGI", caster.stats().agiValue());
@@ -72,16 +70,48 @@ public class SkillParser {
         bindings.put("TSTMATK", target.stats().stm().perHitValue());
         bindings.put("STMMAX", caster.stats().stm().maxValue());
         bindings.put("TSTMMAX", target.stats().stm().maxValue());
-        bindings.put("STMREC", caster.stats().stm().recoveryValue());
-        bindings.put("TSTMREC", target.stats().stm().recoveryValue());
-        bindings.put("MAXHP", caster.stats().hp().maxValue());
-        bindings.put("TMAXHP", target.stats().hp().maxValue());
+        bindings.put("STMREST", caster.stats().stm().recoveryValue());
+        bindings.put("TSTMREST", target.stats().stm().recoveryValue());
+        bindings.put("HPMAX", caster.stats().hp().maxValue());
+        bindings.put("THPMAX", target.stats().hp().maxValue());
+        bindings.put("HPREST", caster.stats().hp().recovery().value());
+        bindings.put("THPREST", target.stats().hp().recovery().value());
         bindings.put("ATK", caster.stats().dmg().get(caster.getAttackType()).randomValue());
-        bindings.put("MINATK", caster.stats().dmg().get(caster.getAttackType()).minValue());
-        bindings.put("MAXATK", caster.stats().dmg().get(caster.getAttackType()).maxValue());
+        bindings.put("ATKMIN", caster.stats().dmg().get(caster.getAttackType()).minValue());
+        bindings.put("ATKMAX", caster.stats().dmg().get(caster.getAttackType()).maxValue());
         bindings.put("TATK", target.stats().dmg().get(target.getAttackType()).randomValue());
-        bindings.put("TMINATK", target.stats().dmg().get(target.getAttackType()).minValue());
-        bindings.put("TMAXATK", target.stats().dmg().get(target.getAttackType()).maxValue());
+        bindings.put("TATKMIN", target.stats().dmg().get(target.getAttackType()).minValue());
+        bindings.put("TATKMAX", target.stats().dmg().get(target.getAttackType()).maxValue());
+        bindings.put("MELEEATKMIN", caster.stats().dmg().melee().minValue());
+        bindings.put("MELEEATKMAX", caster.stats().dmg().melee().maxValue());
+        bindings.put("RANGEATKMIN", caster.stats().dmg().range().minValue());
+        bindings.put("RANGEATKMAX", caster.stats().dmg().range().maxValue());
+        bindings.put("MAGICATKMIN", caster.stats().dmg().magic().minValue());
+        bindings.put("MAGICATKMAX", caster.stats().dmg().magic().maxValue());
+        bindings.put("TMELEEATKMIN", target.stats().dmg().melee().minValue());
+        bindings.put("TMELEEATKMAX", target.stats().dmg().melee().maxValue());
+        bindings.put("TRANGEATKMIN", target.stats().dmg().range().minValue());
+        bindings.put("TRANGEATKMAX", target.stats().dmg().range().maxValue());
+        bindings.put("TMAGICATKMIN", target.stats().dmg().magic().minValue());
+        bindings.put("TMAGICATKMAX", target.stats().dmg().magic().maxValue());
+        bindings.put("CRIT", caster.stats().crit().value());
+        bindings.put("TCRIT", target.stats().crit().value());
+        bindings.put("PARRY", caster.stats().parry().value());
+        bindings.put("TPARRY", target.stats().parry().value());
+        bindings.put("HIT", caster.stats().hit().value());
+        bindings.put("THIT", target.stats().hit().value());
+        bindings.put("BLOCK", caster.stats().block().value());
+        bindings.put("TBLOCK", target.stats().block().value());
+        bindings.put("CONC", caster.stats().concentration().value());
+        bindings.put("TCONC", target.stats().concentration().value());
+        bindings.put("LKYDODGE", caster.stats().flee().luckyDodgeChance().value());
+        bindings.put("TLKYDODGE", target.stats().flee().luckyDodgeChance().value());
+        bindings.put("FLEE", caster.stats().flee().value());
+        bindings.put("TFLEE", target.stats().flee().value());
+        bindings.put("PRES", caster.stats().physicResistance().value());
+        bindings.put("TPRES", target.stats().physicResistance().value());
+        bindings.put("MRES", caster.stats().magicResistance().value());
+        bindings.put("TMRES", target.stats().magicResistance().value());
     }
 
 

@@ -58,6 +58,8 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
         return buffs.values().stream().reduce(Double::sum).orElse(0d) + value;
     }
 
+    public double pureValue() { return this.value; }
+
     public void increaseBuffValue(Class<?> clazz, Stat stat) {
         increaseBuffValue(clazz, stat.value());
     }

@@ -101,13 +101,8 @@ public class Dmg extends Stat implements Calculatable {
     }
 
     public class AtkType implements Comparable<AtkType> {
-        protected Max max;
-        protected Min min;
-
-        public AtkType() {
-            this.min = new Min();
-            this.max = new Max();
-        }
+        public Max max;
+        public Min min;
 
         public Max max() { return max; }
         public Min min() { return min; }
@@ -115,8 +110,8 @@ public class Dmg extends Stat implements Calculatable {
         public double minValue() { return min.value(); }
         public double randomValue() { return Functions.random(min.value(), max.value()); }
 
-        public class Max extends Stat {}
-        public class Min extends Stat {}
+        public abstract class Max extends Stat {}
+        public abstract class Min extends Stat {}
 
         @Override
         public int compareTo(AtkType atkType) {
@@ -125,6 +120,11 @@ public class Dmg extends Stat implements Calculatable {
     }
 
     public class Melee extends AtkType implements Calculatable {
+        public Melee() {
+            this.min = new MeleeMin();
+            this.max = new MeleeMax();
+        }
+
         // calculate min and max
         // return middle value of min and max
         @Override
@@ -144,9 +144,18 @@ public class Dmg extends Stat implements Calculatable {
         public void setCalculatable(boolean calculatable) {
 
         }
+
+        public class MeleeMin extends Min {}
+        public class MeleeMax extends Max {}
     }
 
     public class Range extends AtkType implements Calculatable {
+
+        public Range() {
+            this.min = new RangeMin();
+            this.max = new RangeMax();
+        }
+
         @Override
         public double calculate() {
             double STR = str.value();
@@ -164,9 +173,18 @@ public class Dmg extends Stat implements Calculatable {
         public void setCalculatable(boolean calculatable) {
 
         }
+
+        public class RangeMin extends Min {}
+        public class RangeMax extends Max {}
     }
 
     public class Magic extends AtkType implements Calculatable {
+
+        public Magic() {
+            this.min = new MagicMin();
+            this.max = new MagicMax();
+        }
+
         @Override
         public double calculate() {
             double INT = intel.value();
@@ -184,6 +202,9 @@ public class Dmg extends Stat implements Calculatable {
         public void setCalculatable(boolean calculatable) {
 
         }
+
+        public class MagicMin extends Min {}
+        public class MagicMax extends Max {}
     }
 
 }

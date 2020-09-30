@@ -243,6 +243,25 @@ public class Stats implements StatObserver {
         stats.values().forEach(action);
     }
 
+    public void forEachWithNestedStats(Consumer<? super Stat> action) {
+        Stream.concat(
+                stats.values().stream(),
+                Stream.of(
+                       lvl().exp(),
+                       dmg().melee().min(),
+                       dmg().melee().max(),
+                       dmg().range().min(),
+                       dmg().range().max(),
+                       dmg().magic().min(),
+                       dmg().magic().max(),
+                       flee().luckyDodgeChance(),
+                       stm().hardness(),
+                       stm().max(),
+                       stm().perHit(),
+                       stm().recovery()
+                )).forEach(action);
+    }
+
     public Stream<Stat> stream() {
         return stats.values().stream();
     }

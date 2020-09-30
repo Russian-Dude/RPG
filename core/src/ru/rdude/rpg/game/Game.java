@@ -16,6 +16,7 @@ import ru.rdude.rpg.game.logic.map.GameMap;
 import ru.rdude.rpg.game.logic.map.Generator;
 import ru.rdude.rpg.game.logic.map.bioms.Biom;
 import ru.rdude.rpg.game.logic.map.reliefs.Relief;
+import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.mapVisual.MapVisual;
 import ru.rdude.rpg.game.ui.*;
 
@@ -64,6 +65,7 @@ public class Game extends ApplicationAdapter {
 
         JsonSerializer serializer = new JsonSerializer();
         serializer.testMethod();
+
     }
 
     @Override
