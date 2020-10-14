@@ -19,6 +19,11 @@ public class Hit extends Stat implements Calculatable {
         this.calculatable = false;
     }
 
+    @Override
+    public String getName() {
+        return "Hit";
+    }
+
     public Hit(double value, Dex dex, Agi agi, Lvl lvl) {
         super(value);
         this.calculatable = false;

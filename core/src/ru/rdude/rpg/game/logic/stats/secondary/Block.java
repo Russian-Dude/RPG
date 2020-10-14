@@ -19,6 +19,11 @@ public class Block extends Stat implements Calculatable {
         this.calculatable = false;
     }
 
+    @Override
+    public String getName() {
+        return "Block";
+    }
+
     public Block(Dex dex, Agi agi, Lvl lvl) {
         this(0, dex, agi, lvl);
     }

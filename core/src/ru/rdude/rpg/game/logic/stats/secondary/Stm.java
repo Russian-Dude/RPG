@@ -32,6 +32,11 @@ public class Stm extends Stat implements Calculatable {
         hardness = new Hardness();
     }
 
+    @Override
+    public String getName() {
+        return "Stamina";
+    }
+
     public Stm(double value, Agi agi, Vit vit, Dex dex, Str str, Lvl lvl) {
         super(value);
         this.calculatable = false;
@@ -130,6 +135,11 @@ public class Stm extends Stat implements Calculatable {
         public void setCalculatable(boolean calculatable) {
 
         }
+
+        @Override
+        public String getName() {
+            return "Maximum stamina";
+        }
     }
 
     public class Recovery extends Stat implements Calculatable {
@@ -145,6 +155,11 @@ public class Stm extends Stat implements Calculatable {
         @Override
         public void setCalculatable(boolean calculatable) {
 
+        }
+
+        @Override
+        public String getName() {
+            return "Stamina recovery";
         }
     }
 
@@ -162,8 +177,17 @@ public class Stm extends Stat implements Calculatable {
         public void setCalculatable(boolean calculatable) {
 
         }
+
+        @Override
+        public String getName() {
+            return "Stamina to hit";
+        }
     }
 
     public class Hardness extends Stat {
+        @Override
+        public String getName() {
+            return "Hardness";
+        }
     }
 }

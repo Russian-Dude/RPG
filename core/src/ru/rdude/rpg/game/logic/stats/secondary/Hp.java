@@ -22,6 +22,11 @@ public class Hp extends Stat implements Calculatable {
         max = new Max();
     }
 
+    @Override
+    public String getName() {
+        return "Health";
+    }
+
     public Hp(double value, Vit vit, Lvl lvl) {
         super(value);
         this.calculatable = false;
@@ -93,6 +98,11 @@ public class Hp extends Stat implements Calculatable {
         public void setCalculatable(boolean calculatable) {
 
         }
+
+        @Override
+        public String getName() {
+            return "Maximum health";
+        }
     }
 
     public class Recovery extends Stat implements Calculatable {
@@ -108,6 +118,11 @@ public class Hp extends Stat implements Calculatable {
         @Override
         public void setCalculatable(boolean calculatable) {
 
+        }
+
+        @Override
+        public String getName() {
+            return "Health recovery";
         }
     }
 }

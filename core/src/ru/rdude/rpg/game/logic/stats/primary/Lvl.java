@@ -35,6 +35,11 @@ public class Lvl extends Stat {
     public void setType(Type type) { this.type = type; }
 
     @Override
+    public String getName() {
+        return "Level";
+    }
+
+    @Override
     public double increase(double value) {
         for (int i = 0; i < (int) value; i++) {
             super.increase(1);
@@ -51,7 +56,12 @@ public class Lvl extends Stat {
     }
 
 
-    public class Points extends Stat { }
+    public class Points extends Stat {
+        @Override
+        public String getName() {
+            return "Point";
+        }
+    }
 
 
     public abstract class Exp extends Stat implements Calculatable {
@@ -92,6 +102,11 @@ public class Lvl extends Stat {
         public void setCalculatable(boolean calculatable) {
 
         }
+
+        @Override
+        public String getName() {
+            return "Class experience";
+        }
     }
 
     public class ExpBase extends Exp {
@@ -105,6 +120,11 @@ public class Lvl extends Stat {
         @Override
         public void setCalculatable(boolean calculatable) {
 
+        }
+
+        @Override
+        public String getName() {
+            return "Experience";
         }
     }
 

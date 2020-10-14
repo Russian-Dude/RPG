@@ -15,6 +15,11 @@ public class Crit extends Stat implements Calculatable {
         this.calculatable = false;
     }
 
+    @Override
+    public String getName() {
+        return "Critical chance";
+    }
+
     public Crit(double value, Luck luck) {
         super(value);
         this.calculatable = false;

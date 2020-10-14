@@ -20,6 +20,11 @@ public class Concentration extends Stat implements Calculatable {
         this.calculatable = false;
     }
 
+    @Override
+    public String getName() {
+        return "Concentration";
+    }
+
     public Concentration(double value, Int intel, Dex dex, Agi agi, Vit vit, Str str, Lvl lvl) {
         super(value);
         this.calculatable = false;

@@ -30,6 +30,11 @@ public class Dmg extends Stat implements Calculatable {
         this.magic = new Magic();
     }
 
+    @Override
+    public String getName() {
+        return "Damage";
+    }
+
     public Dmg(Str str, Agi agi, Dex dex, Int intel, Lvl lvl) {
         this.calculatable = false;
         this.lvl = lvl;
@@ -145,8 +150,18 @@ public class Dmg extends Stat implements Calculatable {
 
         }
 
-        public class MeleeMin extends Min {}
-        public class MeleeMax extends Max {}
+        public class MeleeMin extends Min {
+            @Override
+            public String getName() {
+                return "Melee minimum damage";
+            }
+        }
+        public class MeleeMax extends Max {
+            @Override
+            public String getName() {
+                return "Melee maximum damage";
+            }
+        }
     }
 
     public class Range extends AtkType implements Calculatable {
@@ -174,8 +189,18 @@ public class Dmg extends Stat implements Calculatable {
 
         }
 
-        public class RangeMin extends Min {}
-        public class RangeMax extends Max {}
+        public class RangeMin extends Min {
+            @Override
+            public String getName() {
+                return "Range minimum damage";
+            }
+        }
+        public class RangeMax extends Max {
+            @Override
+            public String getName() {
+                return "Range maximum damage";
+            }
+        }
     }
 
     public class Magic extends AtkType implements Calculatable {
@@ -203,8 +228,18 @@ public class Dmg extends Stat implements Calculatable {
 
         }
 
-        public class MagicMin extends Min {}
-        public class MagicMax extends Max {}
+        public class MagicMin extends Min {
+            @Override
+            public String getName() {
+                return "Magic minimum damage";
+            }
+        }
+        public class MagicMax extends Max {
+            @Override
+            public String getName() {
+                return "Magic maximum damage";
+            }
+        }
     }
 
 }

@@ -17,6 +17,11 @@ public class Def extends Stat implements Calculatable {
         this.calculatable = false;
     }
 
+    @Override
+    public String getName() {
+        return "Defence";
+    }
+
     public Def(double value, Vit vit, Lvl lvl) {
         super(value);
         this.calculatable = false;

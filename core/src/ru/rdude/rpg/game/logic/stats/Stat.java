@@ -21,6 +21,8 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
         subscribers = new HashSet<>();
     }
 
+    public abstract String getName();
+
     public void addBuffClass(String className) {
         buffs.put(className, 0d);
     }

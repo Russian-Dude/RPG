@@ -5,4 +5,8 @@ import ru.rdude.rpg.game.logic.stats.Stat;
 
 public class Int extends Stat {
 
+    @Override
+    public String getName() {
+        return "Intelligence";
+    }
 }

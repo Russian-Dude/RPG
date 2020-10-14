@@ -44,6 +44,10 @@ public class SkillParser {
         return result;
     }
 
+    public boolean testParse(String string) {
+        return parse(string) != Float.MIN_VALUE;
+    }
+
     private void createBindings() {
         bindings = engine.createBindings();
         bindings.put("LVL", caster.stats().lvlValue());

@@ -26,6 +26,11 @@ public class Flee extends Stat implements Calculatable {
         fleeWithLuckyDodge = new FleeWithLuckyDodge();
     }
 
+    @Override
+    public String getName() {
+        return "Flee";
+    }
+
     public Flee(double value, Agi agi, Dex dex, Luck luck, Lvl lvl) {
         super(value);
         this.calculatable = false;
@@ -94,6 +99,10 @@ public class Flee extends Stat implements Calculatable {
         }
 
 
+        @Override
+        public String getName() {
+            return "Lucky dodge chance";
+        }
     }
 
     private class FleeWithLuckyDodge extends Stat implements Calculatable {
@@ -106,6 +115,11 @@ public class Flee extends Stat implements Calculatable {
         @Override
         public void setCalculatable(boolean calculatable) {
 
+        }
+
+        @Override
+        public String getName() {
+            return "Flee with lucky dodge";
         }
     }
 

@@ -21,6 +21,11 @@ public class PhysicResistance extends Stat implements Calculatable {
         this.calculatable = false;
     }
 
+    @Override
+    public String getName() {
+        return "Physic resistance";
+    }
+
     public PhysicResistance(double value, Int intel, Luck luck, Str str, Dex dex, Agi agi, Vit vit, Lvl lvl) {
         super(value);
         this.calculatable = false;

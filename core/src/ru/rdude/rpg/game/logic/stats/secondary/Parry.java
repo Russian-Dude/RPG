@@ -19,6 +19,11 @@ public class Parry extends Stat implements Calculatable {
         this.calculatable = false;
     }
 
+    @Override
+    public String getName() {
+        return "Parry";
+    }
+
     public Parry(double value, Agi agi, Dex dex, Lvl lvl) {
         super(value);
         this.calculatable = false;

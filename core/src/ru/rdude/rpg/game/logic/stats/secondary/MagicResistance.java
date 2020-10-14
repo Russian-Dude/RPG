@@ -21,6 +21,11 @@ public class MagicResistance extends Stat implements Calculatable {
         this.calculatable = false;
     }
 
+    @Override
+    public String getName() {
+        return "Magic resistance";
+    }
+
     public MagicResistance(double value, Int intel, Luck luck, Str str, Dex dex, Agi agi, Vit vit, Lvl lvl) {
         super(value);
         this.calculatable = false;
