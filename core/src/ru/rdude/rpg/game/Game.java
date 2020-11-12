@@ -63,9 +63,6 @@ public class Game extends ApplicationAdapter {
 
         stage.setDebugAll(true);
 
-        JsonSerializer serializer = new JsonSerializer();
-        serializer.testMethod();
-
     }
 
     @Override

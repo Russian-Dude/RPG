@@ -23,7 +23,7 @@ public class Player extends Being {
 
     @Override
     public AttackType getAttackType() {
-        return null;
+        return equipment.attackType();
     }
 
     @Override

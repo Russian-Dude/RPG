@@ -8,6 +8,7 @@ import ru.rdude.rpg.game.logic.entities.states.StateChanger;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.logic.time.*;
+import ru.rdude.rpg.game.utils.Functions;
 
 import java.util.Set;
 
@@ -66,7 +67,8 @@ public class Buff implements TurnChangeObserver, TimeChangeObserver, BeingAction
 
     private Stats createStats() {
         Stats stats = new Stats(false);
-        stats.forEachWithNestedStats(stat -> stat.set(skillApplier.skillParser.parse(skillData.getStats().get(stat.getClass()))));
+        stats.forEachWithNestedStats(stat ->
+                stat.set(skillData.getStats().containsKey(stat.getClass()) ? skillApplier.skillParser.parse(skillData.getStats().get(stat.getClass())) : 0));
         return stats;
     }
 
@@ -142,10 +144,16 @@ public class Buff implements TurnChangeObserver, TimeChangeObserver, BeingAction
     @Override
     public void update(BeingAction action, Being being) {
         if (skillData.getSkillsOnBeingAction().containsKey(action.action())) {
-            if (skillData.isOnBeingActionCastToEnemy())
-                SkillApplier.apply(SkillData.getSkillByGuid(skillData.getSkillsOnBeingAction().get(action.action())), being, (Being) action.interactor());
-            else
-                SkillApplier.apply(SkillData.getSkillByGuid(skillData.getSkillsOnBeingAction().get(action.action())), skillApplier.caster, skillApplier.target);
+            skillData.getSkillsOnBeingAction().get(action.action()).forEach((guid, chance) -> {
+                if (chance >= Functions.random(100f)) {
+                    if (skillData.isOnBeingActionCastToEnemy()) {
+                        SkillApplier.apply(SkillData.getSkillByGuid(guid), being, (Being) action.interactor());
+                    }
+                    else {
+                        SkillApplier.apply(SkillData.getSkillByGuid(guid), skillApplier.caster, skillApplier.target);
+                    }
+                }
+            });
         }
     }
 

@@ -76,6 +76,10 @@ public class SkillParser {
         bindings.put("TSTMMAX", target.stats().stm().maxValue());
         bindings.put("STMREST", caster.stats().stm().recoveryValue());
         bindings.put("TSTMREST", target.stats().stm().recoveryValue());
+        bindings.put("STMH", caster.stats().stm().hardness().value());
+        bindings.put("TSTMH", target.stats().stm().hardness().value());
+        bindings.put("HP", caster.stats().hp().value());
+        bindings.put("THP", target.stats().hp().value());
         bindings.put("HPMAX", caster.stats().hp().maxValue());
         bindings.put("THPMAX", target.stats().hp().maxValue());
         bindings.put("HPREST", caster.stats().hp().recovery().value());

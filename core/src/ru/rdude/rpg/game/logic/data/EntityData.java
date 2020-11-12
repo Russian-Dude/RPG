@@ -6,6 +6,9 @@ public abstract class EntityData {
     private String nameInEditor;
     private String description;
 
+    EntityData() {
+    }
+
     public EntityData(long guid) {
         this.guid = guid;
         this.name = "";

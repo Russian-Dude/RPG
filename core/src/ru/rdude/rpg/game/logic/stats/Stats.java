@@ -2,9 +2,9 @@ package ru.rdude.rpg.game.logic.stats;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import ru.rdude.rpg.game.logic.stats.primary.*;
 import ru.rdude.rpg.game.logic.stats.secondary.*;
 
@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -204,6 +205,24 @@ public class Stats implements StatObserver {
         return stm().value();
     }
 
+    public Stat get(Class<? extends Stat> statClass) {
+        if (stats.containsKey(statClass)) {
+            return stats.get(statClass);
+        } else {
+            AtomicReference<Stat> result = new AtomicReference<>();
+            forEachWithNestedStats(stat -> {
+                if (statClass.isAssignableFrom(stat.getClass())) {
+                    result.set(stat);
+                }
+            });
+            if (result.get() != null) {
+                return result.get();
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+    }
+
     public void addBuffClass(Class<?> clazz) {
         stats.values().forEach(stat -> stat.addBuffClass(clazz));
     }
@@ -245,20 +264,23 @@ public class Stats implements StatObserver {
 
     public void forEachWithNestedStats(Consumer<? super Stat> action) {
         Stream.concat(
-                stats.values().stream(),
+                stats.values().stream()
+                        .filter(stat -> stat.getClass() != Dmg.class),
                 Stream.of(
-                       lvl().exp(),
-                       dmg().melee().min(),
-                       dmg().melee().max(),
-                       dmg().range().min(),
-                       dmg().range().max(),
-                       dmg().magic().min(),
-                       dmg().magic().max(),
-                       flee().luckyDodgeChance(),
-                       stm().hardness(),
-                       stm().max(),
-                       stm().perHit(),
-                       stm().recovery()
+                        lvl().exp(),
+                        dmg().melee().min(),
+                        dmg().melee().max(),
+                        dmg().range().min(),
+                        dmg().range().max(),
+                        dmg().magic().min(),
+                        dmg().magic().max(),
+                        flee().luckyDodgeChance(),
+                        stm().hardness(),
+                        stm().max(),
+                        stm().perHit(),
+                        stm().recovery(),
+                        hp().max(),
+                        hp().recovery()
                 )).forEach(action);
     }
 

@@ -7,14 +7,14 @@ import ru.rdude.rpg.game.logic.gameStates.GameState;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SkillData extends EntityData {
 
     private static Map<Long, SkillData> skills = new HashMap<>();
+
+    // if true this skill will not be used as skill. Instead it accumulate skills that correspond to this skill fields
+    private boolean describer;
 
     private SkillType type;
     private Coefficients coefficients;
@@ -52,15 +52,29 @@ public class SkillData extends EntityData {
     private Map<Long, Float> skillsCouldCast;
     private Map<Long, Float> skillsMustCast;
     // Skills casted after specific being action:
-    private Map<BeingAction.Action, Long> skillsOnBeingAction;
+    private Map<BeingAction.Action, Map<Long, Float>> skillsOnBeingAction;
     private boolean onBeingActionCastToEnemy; // if true skill will be casted to interactor else from initial buff caster to buff holder
     // buff type - using magic or physic resistance to resist:
     private BuffType buffType;
 
+    SkillData() {
+        super();
+    }
+
     public SkillData(long guid) {
         super(guid);
+        coefficients = new Coefficients();
+        stats = new HashMap<>();
         transformation = new Transformation();
+        summon = new ArrayList<>();
+        receiveItems = new HashMap<>();
         requirements = new Requirements();
+        elements = new HashSet<>();
+        usableInGameStates = new HashMap<>();
+        targets = new ArrayList<>();
+        skillsCouldCast = new HashMap<>();
+        skillsMustCast = new HashMap<>();
+        skillsOnBeingAction = new HashMap<>();
     }
 
 
@@ -286,8 +300,12 @@ public class SkillData extends EntityData {
         this.actsEveryTurn = actsEveryTurn;
     }
 
-    public Map<BeingAction.Action, Long> getSkillsOnBeingAction() {
+    public Map<BeingAction.Action, Map<Long, Float>> getSkillsOnBeingAction() {
         return skillsOnBeingAction;
+    }
+
+    public void setSkillsOnBeingAction(Map<BeingAction.Action, Map<Long, Float>> skillsOnBeingAction) {
+        this.skillsOnBeingAction = skillsOnBeingAction;
     }
 
     public Coefficients getBuffCoefficients() {
@@ -296,10 +314,6 @@ public class SkillData extends EntityData {
 
     public void setBuffCoefficients(Coefficients buffCoefficients) {
         this.buffCoefficients = buffCoefficients;
-    }
-
-    public void setSkillsOnBeingAction(Map<BeingAction.Action, Long> skillsOnBeingAction) {
-        this.skillsOnBeingAction = skillsOnBeingAction;
     }
 
     public Map<Class<? extends GameState>, Boolean> getUsableInGameStates() {
@@ -378,10 +392,23 @@ public class SkillData extends EntityData {
         this.timeChange = timeChange;
     }
 
+    public boolean isDescriber() {
+        return describer;
+    }
+
+    public void setDescriber(boolean describer) {
+        this.describer = describer;
+    }
+
     public class Requirements {
         private Stats stats;
-        private List<Long> items; // by guid
+        private Map<Long, Integer> items; // by guid
         private boolean takeItems;
+
+        public Requirements() {
+            stats = new Stats(false);
+            items = new HashMap<>();
+        }
 
         public Stats getStats() {
             return stats;
@@ -391,11 +418,11 @@ public class SkillData extends EntityData {
             this.stats = stats;
         }
 
-        public List<Long> getItems() {
+        public Map<Long, Integer> getItems() {
             return items;
         }
 
-        public void setItems(List<Long> items) {
+        public void setItems(Map<Long, Integer> items) {
             this.items = items;
         }
 
