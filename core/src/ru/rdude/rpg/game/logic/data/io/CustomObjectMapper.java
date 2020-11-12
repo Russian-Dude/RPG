@@ -7,6 +7,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import ru.rdude.rpg.game.logic.coefficients.Coefficients;
+import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.logic.enums.StatName;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.Stats;
@@ -26,10 +28,11 @@ public class CustomObjectMapper extends ObjectMapper {
 
     private void createModules() {
         createStatsModule();
+        createCoefficientsModule();
     }
 
     private void createStatsModule() {
-        com.fasterxml.jackson.databind.JsonSerializer<Stats> jsonSerializer = new JsonSerializer<>() {
+        JsonSerializer<Stats> jsonSerializer = new JsonSerializer<>() {
             @Override
             public void serialize(Stats stats, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
                 jsonGenerator.writeStartObject("Stats");
@@ -66,6 +69,71 @@ public class CustomObjectMapper extends ObjectMapper {
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(Stats.class, jsonSerializer);
         simpleModule.addDeserializer(Stats.class, jsonDeserializer);
+        this.registerModule(simpleModule);
+    }
+
+    private void createCoefficientsModule() {
+        JsonSerializer<Coefficients> jsonSerializer = new JsonSerializer<>() {
+            @Override
+            public void serialize(Coefficients coefficients, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+                jsonGenerator.writeStartObject("Coefficients");
+
+                jsonGenerator.writeFieldName("Atk");
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeObjectField("Attack type", coefficients.atk().attackType().getCoefficientsMap());
+                jsonGenerator.writeObjectField("Being type", coefficients.atk().beingType().getCoefficientsMap());
+                jsonGenerator.writeObjectField("Element", coefficients.atk().element().getCoefficientsMap());
+                jsonGenerator.writeObjectField("Size", coefficients.atk().size().getCoefficientsMap());
+                jsonGenerator.writeEndObject();
+
+                jsonGenerator.writeFieldName("Def");
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeObjectField("Attack type", coefficients.def().attackType().getCoefficientsMap());
+                jsonGenerator.writeObjectField("Being type", coefficients.def().beingType().getCoefficientsMap());
+                jsonGenerator.writeObjectField("Element", coefficients.def().element().getCoefficientsMap());
+                jsonGenerator.writeObjectField("Size", coefficients.def().size().getCoefficientsMap());
+                jsonGenerator.writeEndObject();
+
+                jsonGenerator.writeEndObject();
+            }
+        };
+
+        JsonDeserializer<Coefficients> jsonDeserializer = new JsonDeserializer<>() {
+            @Override
+            public Coefficients deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+                JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+                Coefficients coefficients = new Coefficients();
+                coefficients.atk().attackType().setCoefficientsMap(
+                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Atk").get("Attack type"), new TypeReference<>() {
+                        }));
+                coefficients.def().attackType().setCoefficientsMap(
+                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Def").get("Attack type"), new TypeReference<>() {
+                        }));
+                coefficients.atk().beingType().setCoefficientsMap(
+                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Atk").get("Being type"), new TypeReference<>() {
+                        }));
+                coefficients.def().beingType().setCoefficientsMap(
+                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Def").get("Being type"), new TypeReference<>() {
+                        }));
+                coefficients.atk().element().setCoefficientsMap(
+                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Atk").get("Element"), new TypeReference<>() {
+                        }));
+                coefficients.def().element().setCoefficientsMap(
+                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Def").get("Element"), new TypeReference<>() {
+                        }));
+                coefficients.atk().size().setCoefficientsMap(
+                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Atk").get("Size"), new TypeReference<>() {
+                        }));
+                coefficients.def().size().setCoefficientsMap(
+                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Def").get("Size"), new TypeReference<>() {
+                        }));
+                return coefficients;
+            }
+        };
+
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Coefficients.class, jsonSerializer);
+        simpleModule.addDeserializer(Coefficients.class, jsonDeserializer);
         this.registerModule(simpleModule);
     }
 }

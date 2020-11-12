@@ -5,20 +5,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import ru.rdude.rpg.game.logic.data.io.JsonSerializer;
-import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.map.GameMap;
 import ru.rdude.rpg.game.logic.map.Generator;
 import ru.rdude.rpg.game.logic.map.bioms.Biom;
 import ru.rdude.rpg.game.logic.map.reliefs.Relief;
-import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.mapVisual.MapVisual;
-import ru.rdude.rpg.game.ui.*;
 
 public class Game extends ApplicationAdapter {
 

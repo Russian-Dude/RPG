@@ -39,6 +39,10 @@ public class Coefficient<T extends Enum<T>> {
         return coefficients.put(t, value);
     }
 
+    public void setCoefficientsMap(Map<T, Double> coefficients) {
+        this.coefficients = coefficients;
+    }
+
     public void addSumOf(Coefficient<T>... coefficientsInput) {
         for (Coefficient<T> coefficient : coefficientsInput) {
             coefficient.coefficients.forEach((k, v) -> {

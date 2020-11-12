@@ -3,11 +3,11 @@ package ru.rdude.rpg.game.logic.data.io;
 import ru.rdude.rpg.game.logic.data.EntityData;
 import ru.rdude.rpg.game.logic.data.SkillData;
 
-public class JsonSerializer {
+public class GameJsonSerializer {
 
     private SkillDataSerializer skillDataSerializer;
 
-    public JsonSerializer() {
+    public GameJsonSerializer() {
         skillDataSerializer = new SkillDataSerializer();
     }
 
