@@ -4,7 +4,7 @@ import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.time.TurnChangeObserver;
 
-public class Battle extends GameState implements TurnChangeObserver {
+public class Battle extends GameStateBase implements TurnChangeObserver {
 
     private Party enemySide;
     private Party turnOf;

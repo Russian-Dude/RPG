@@ -7,7 +7,7 @@ import ru.rdude.rpg.game.logic.enums.Target;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Battle;
 import ru.rdude.rpg.game.logic.gameStates.Camp;
-import ru.rdude.rpg.game.logic.gameStates.GameState;
+import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.utils.Functions;
 
@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 public class SkillUser {
 
-    private GameState gameState;
+    private GameStateBase gameState;
     private Party emptyParty;
     private Party allies;
     private Party enemies;

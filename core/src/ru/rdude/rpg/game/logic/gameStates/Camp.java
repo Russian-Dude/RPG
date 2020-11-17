@@ -1,4 +1,4 @@
 package ru.rdude.rpg.game.logic.gameStates;
 
-public class Camp extends GameState {
+public class Camp extends GameStateBase {
 }

@@ -3,8 +3,7 @@ package ru.rdude.rpg.game.logic.data;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.enums.*;
-import ru.rdude.rpg.game.logic.gameStates.GameState;
-import ru.rdude.rpg.game.logic.stats.Stat;
+import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.util.*;
@@ -20,7 +19,7 @@ public class SkillData extends EntityData {
     private Coefficients coefficients;
     private Coefficients buffCoefficients;
     private String damage;
-    private Map<Class<? extends Stat>, String> stats;
+    private Map<StatName, String> stats;
     private double timeChange;
     private Transformation transformation;
     private List<Long> summon; // by guid
@@ -41,7 +40,7 @@ public class SkillData extends EntityData {
     private String hitsMade;
     private String damageReceived;
     private String damageMade;
-    private Map<Class<? extends GameState>, Boolean> usableInGameStates;
+    private Map<GameState, Boolean> usableInGameStates;
     private boolean canBeBlocked;
     private boolean canBeDodged;
     private boolean canBeResisted;
@@ -116,11 +115,11 @@ public class SkillData extends EntityData {
         this.damage = damage;
     }
 
-    public Map<Class<? extends Stat>, String> getStats() {
+    public Map<StatName, String> getStats() {
         return stats;
     }
 
-    public void setStats(Map<Class<? extends Stat>, String> stats) {
+    public void setStats(Map<StatName, String> stats) {
         this.stats = stats;
     }
 
@@ -316,11 +315,11 @@ public class SkillData extends EntityData {
         this.buffCoefficients = buffCoefficients;
     }
 
-    public Map<Class<? extends GameState>, Boolean> getUsableInGameStates() {
+    public Map<GameState, Boolean> getUsableInGameStates() {
         return usableInGameStates;
     }
 
-    public void setUsableInGameStates(Map<Class<? extends GameState>, Boolean> usableInGameStates) {
+    public void setUsableInGameStates(Map<GameState, Boolean> usableInGameStates) {
         this.usableInGameStates = usableInGameStates;
     }
 
@@ -340,7 +339,11 @@ public class SkillData extends EntityData {
         this.onBeingActionCastToEnemy = onBeingActionCastToEnemy;
     }
 
-    public void setUsableInGameStates(Class<? extends GameState> gameState, boolean value) {
+    public void setUsableInGameStates(Class<? extends GameStateBase> gameState, boolean value) {
+        this.usableInGameStates.put(GameState.get(gameState), value);
+    }
+
+    public void setUsableInGameStates(GameState gameState, boolean value) {
         this.usableInGameStates.put(gameState, value);
     }
 

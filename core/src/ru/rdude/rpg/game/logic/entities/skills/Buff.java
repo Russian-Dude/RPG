@@ -5,6 +5,7 @@ import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.entities.beings.BeingActionObserver;
 import ru.rdude.rpg.game.logic.entities.states.StateChanger;
+import ru.rdude.rpg.game.logic.enums.StatName;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.logic.time.*;
@@ -68,7 +69,7 @@ public class Buff implements TurnChangeObserver, TimeChangeObserver, BeingAction
     private Stats createStats() {
         Stats stats = new Stats(false);
         stats.forEachWithNestedStats(stat ->
-                stat.set(skillData.getStats().containsKey(stat.getClass()) ? skillApplier.skillParser.parse(skillData.getStats().get(stat.getClass())) : 0));
+                stat.set(skillData.getStats().containsKey(StatName.get(stat.getClass())) ? skillApplier.skillParser.parse(skillData.getStats().get(StatName.get(stat.getClass()))) : 0));
         return stats;
     }
 
