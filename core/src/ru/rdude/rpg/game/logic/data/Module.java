@@ -14,6 +14,10 @@ public class Module extends EntityData implements Serializable {
     private Set<ItemData> itemData;
     private Set<MonsterData> monsterData;
 
+    // default constructor for Jackson json deserialization
+    private Module() {
+    }
+
     public Module(long guid) {
         super(guid);
         skillData = new HashSet<>();

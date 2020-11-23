@@ -15,6 +15,7 @@ import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 public class CustomObjectMapper extends ObjectMapper {
@@ -102,31 +103,35 @@ public class CustomObjectMapper extends ObjectMapper {
             @Override
             public Coefficients deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
                 JsonNode node = jsonParser.getCodec().readTree(jsonParser);
-                Coefficients coefficients = new Coefficients();
-                coefficients.atk().attackType().setCoefficientsMap(
-                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Atk").get("Attack type"), new TypeReference<>() {
-                        }));
-                coefficients.def().attackType().setCoefficientsMap(
-                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Def").get("Attack type"), new TypeReference<>() {
-                        }));
-                coefficients.atk().beingType().setCoefficientsMap(
-                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Atk").get("Being type"), new TypeReference<>() {
-                        }));
-                coefficients.def().beingType().setCoefficientsMap(
-                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Def").get("Being type"), new TypeReference<>() {
-                        }));
-                coefficients.atk().element().setCoefficientsMap(
-                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Atk").get("Element"), new TypeReference<>() {
-                        }));
-                coefficients.def().element().setCoefficientsMap(
-                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Def").get("Element"), new TypeReference<>() {
-                        }));
-                coefficients.atk().size().setCoefficientsMap(
-                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Atk").get("Size"), new TypeReference<>() {
-                        }));
-                coefficients.def().size().setCoefficientsMap(
-                        CustomObjectMapper.this.convertValue(node.get("Coefficients").get("Def").get("Size"), new TypeReference<>() {
-                        }));
+                Coefficients coefficients = null;
+                if (node != null) {
+                    coefficients = new Coefficients();
+                    coefficients.atk().attackType().setCoefficientsMap(
+                            CustomObjectMapper.this.convertValue(node.get("Atk").get("Attack type"), new TypeReference<>() {
+                            }));
+                    coefficients.def().attackType().setCoefficientsMap(
+                            CustomObjectMapper.this.convertValue(node.get("Def").get("Attack type"), new TypeReference<>() {
+                            }));
+                    coefficients.atk().beingType().setCoefficientsMap(
+                            CustomObjectMapper.this.convertValue(node.get("Atk").get("Being type"), new TypeReference<>() {
+                            }));
+                    coefficients.def().beingType().setCoefficientsMap(
+                            CustomObjectMapper.this.convertValue(node.get("Def").get("Being type"), new TypeReference<>() {
+                            }));
+                    coefficients.atk().element().setCoefficientsMap(
+                            CustomObjectMapper.this.convertValue(node.get("Atk").get("Element"), new TypeReference<>() {
+                            }));
+                    coefficients.def().element().setCoefficientsMap(
+                            CustomObjectMapper.this.convertValue(node.get("Def").get("Element"), new TypeReference<>() {
+                            }));
+                    coefficients.atk().size().setCoefficientsMap(
+                            CustomObjectMapper.this.convertValue(node.get("Atk").get("Size"), new TypeReference<>() {
+                            }));
+                    coefficients.def().size().setCoefficientsMap(
+                            CustomObjectMapper.this.convertValue(node.get("Def").get("Size"), new TypeReference<>() {
+                            }));
+
+                }
                 return coefficients;
             }
         };
