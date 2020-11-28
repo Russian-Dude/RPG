@@ -6,7 +6,7 @@ import ru.rdude.rpg.game.logic.enums.Size;
 
 import java.util.Set;
 
-public class BeingData extends EntityData {
+public abstract class BeingData extends EntityData {
 
     public BeingData(long guid) {
         super(guid);

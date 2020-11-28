@@ -2,19 +2,18 @@ package ru.rdude.rpg.game.logic.data.io;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import ru.rdude.rpg.game.logic.data.EntityData;
 import ru.rdude.rpg.game.logic.data.SkillData;
 
-public class SkillDataSerializer {
+public class EntityDataSerializer {
 
-    private CustomObjectMapper objectMapper;
+    private final CustomObjectMapper objectMapper;
 
-    public SkillDataSerializer() {
+    public EntityDataSerializer() {
         objectMapper = new CustomObjectMapper();
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     }
 
-    public String serialize(SkillData entity) {
+    public String serialize(EntityData entity) {
         String result = null;
         try {
             result = objectMapper.writeValueAsString(entity);
@@ -24,10 +23,10 @@ public class SkillDataSerializer {
         return result;
     }
 
-    public SkillData deserialize(String jsonString) {
-        SkillData result = null;
+    public <T extends EntityData> T deserialize(String jsonString, Class<T> cl) {
+        T result = null;
         try {
-            result = objectMapper.readValue(jsonString, SkillData.class);
+            result = objectMapper.readValue(jsonString, cl);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

@@ -169,6 +169,23 @@ public class ItemData extends EntityData {
         this.itemType = itemType;
     }
 
+    @Override
+    public boolean hasEntityDependency(long guid) {
+        return skillsOnUse.contains(guid) || skillsEquip.contains(guid);
+    }
+
+    @Override
+    public void replaceEntityDependency(long oldValue, long newValue) {
+        if (skillsOnUse.contains(oldValue)) {
+            skillsOnUse.remove(oldValue);
+            skillsOnUse.add(newValue);
+        }
+        if (skillsEquip.contains(oldValue)) {
+            skillsEquip.remove(oldValue);
+            skillsEquip.add(newValue);
+        }
+    }
+
     public static class ListOfItemsWithParametersBuilder {
 
         private Stream<ItemData> stream;

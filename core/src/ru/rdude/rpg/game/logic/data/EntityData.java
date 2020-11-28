@@ -5,7 +5,7 @@ import java.util.Set;
 
 public abstract class EntityData {
     private long guid;
-    private Set<Long> dependencies;
+    private Set<Long> moduleDependencies;
     private String name;
     private String nameInEditor;
     private String description;
@@ -17,7 +17,7 @@ public abstract class EntityData {
         this.guid = guid;
         this.name = "";
         this.description = "";
-        dependencies = new HashSet<>();
+        moduleDependencies = new HashSet<>();
     }
 
     public long getGuid() {
@@ -52,27 +52,46 @@ public abstract class EntityData {
         this.nameInEditor = nameInEditor;
     }
 
-    public Set<Long> getDependencies() {
-        return dependencies;
+    public Set<Long> getModuleDependencies() {
+        return moduleDependencies;
     }
 
-    public void setDependencies(Set<Long> dependencies) {
-        this.dependencies = dependencies;
+    public void setModuleDependencies(Set<Long> moduleDependencies) {
+        this.moduleDependencies = moduleDependencies;
     }
 
-    public void addDependency(Long guid) {
-        this.dependencies.add(guid);
+    public void addModuleDependency(Long guid) {
+        this.moduleDependencies.add(guid);
     }
 
-    public void addDependency(EntityData entityData) {
-        addDependency(entityData.getGuid());
+    public void addModuleDependency(Module entityData) {
+        addModuleDependency(entityData.getGuid());
     }
 
-    public void removeDependency(Long guid) {
-        this.dependencies.remove(guid);
+    public void removeModuleDependency(Long guid) {
+        this.moduleDependencies.remove(guid);
     }
 
-    public void removeDependency(EntityData entityData) {
-        removeDependency(entityData.getGuid());
+    public void removeModuleDependency(EntityData entityData) {
+        removeModuleDependency(entityData.getGuid());
+    }
+
+    public abstract boolean hasEntityDependency(long guid);
+
+    public abstract void replaceEntityDependency(long oldValue, long newValue);
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EntityData)) return false;
+
+        EntityData that = (EntityData) o;
+
+        return guid == that.guid;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (guid ^ (guid >>> 32));
     }
 }

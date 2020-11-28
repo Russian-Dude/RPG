@@ -1,12 +1,10 @@
 package ru.rdude.rpg.game.logic.data;
 
-import ru.rdude.rpg.game.logic.entities.items.Item;
-
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class Module extends EntityData implements Serializable {
 
@@ -60,7 +58,21 @@ public class Module extends EntityData implements Serializable {
             monsterData.add((MonsterData) entityData);
         }
         else if (entityData instanceof Module) {
-            addDependency(entityData);
+            addModuleDependency((Module) entityData);
         }
+    }
+
+    @Override
+    public boolean hasEntityDependency(long guid) {
+        return Stream.of(skillData, itemData, monsterData)
+                .flatMap(Collection::stream)
+                .anyMatch(entityData -> entityData.hasEntityDependency(guid));
+    }
+
+    @Override
+    public void replaceEntityDependency(long oldValue, long newValue) {
+        Stream.of(skillData, itemData, monsterData)
+                .flatMap(Collection::stream)
+                .forEach(entityData -> entityData.replaceEntityDependency(oldValue, newValue));
     }
 }

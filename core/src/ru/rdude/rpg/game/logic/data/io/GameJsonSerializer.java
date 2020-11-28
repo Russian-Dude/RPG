@@ -6,30 +6,26 @@ import ru.rdude.rpg.game.logic.data.SkillData;
 
 public class GameJsonSerializer {
 
-    private SkillDataSerializer skillDataSerializer;
-    private ModuleSerializer moduleSerializer;
+    private EntityDataSerializer entityDataSerializer;
 
     public GameJsonSerializer() {
-        skillDataSerializer = new SkillDataSerializer();
-        moduleSerializer = new ModuleSerializer();
+        entityDataSerializer = new EntityDataSerializer();
     }
 
     public String serialize(EntityData entity) {
-        if (entity instanceof SkillData) {
-            return skillDataSerializer.serialize((SkillData) entity);
-        } else if (entity instanceof Module){
-            return moduleSerializer.serialize((Module) entity);
-        }
-        else throw new IllegalArgumentException("Not implemented");
+        return entityDataSerializer.serialize(entity);
     }
 
+    public <T extends EntityData> T deSerializeEntityData(String jsonString, Class<T> cl) {
+        return entityDataSerializer.deserialize(jsonString, cl);
+    }
 
     public SkillData deSerializeSkillData(String jsonString) {
-        return skillDataSerializer.deserialize(jsonString);
+        return entityDataSerializer.deserialize(jsonString, SkillData.class);
     }
 
     public Module deSerializeModule(String jsonString) {
-        return moduleSerializer.deserialize(jsonString);
+        return entityDataSerializer.deserialize(jsonString, Module.class);
     }
 
 }

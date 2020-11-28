@@ -7,6 +7,7 @@ import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class SkillData extends EntityData {
 
@@ -75,7 +76,6 @@ public class SkillData extends EntityData {
         skillsMustCast = new HashMap<>();
         skillsOnBeingAction = new HashMap<>();
     }
-
 
 
     public static SkillData getSkillByGuid(long guid) {
@@ -401,6 +401,46 @@ public class SkillData extends EntityData {
 
     public void setDescriber(boolean describer) {
         this.describer = describer;
+    }
+
+    @Override
+    public boolean hasEntityDependency(long guid) {
+        return
+                summon.contains(guid)
+                        || receiveItems.containsKey(guid)
+                        || requirements.items.containsKey(guid)
+                        || skillsCouldCast.containsKey(guid)
+                        || skillsMustCast.containsKey(guid)
+                        || skillsOnBeingAction.values().stream()
+                        .flatMap(map -> map.keySet().stream())
+                        .anyMatch(g -> g.equals(guid));
+    }
+
+    @Override
+    public void replaceEntityDependency(long oldValue, long newValue) {
+        summon.replaceAll(guid -> guid == oldValue ? newValue : oldValue);
+        if (receiveItems.containsKey(oldValue)) {
+            receiveItems.put(newValue, receiveItems.get(oldValue));
+            receiveItems.remove(oldValue);
+        }
+        if (requirements.items.containsKey(oldValue)) {
+            requirements.items.put(newValue, requirements.items.get(oldValue));
+            requirements.items.remove(oldValue);
+        }
+        if (skillsCouldCast.containsKey(oldValue)) {
+            skillsCouldCast.put(newValue, skillsCouldCast.get(oldValue));
+            skillsCouldCast.remove(oldValue);
+        }
+        if (skillsMustCast.containsKey(oldValue)) {
+            skillsMustCast.put(newValue, skillsMustCast.get(oldValue));
+            skillsMustCast.remove(oldValue);
+        }
+        for (Map<Long, Float> map : skillsOnBeingAction.values()) {
+            if (map.containsKey(oldValue)) {
+                map.put(newValue, map.get(oldValue));
+                map.remove(oldValue);
+            }
+        }
     }
 
     public class Requirements {
