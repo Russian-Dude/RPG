@@ -13,9 +13,6 @@ public class SkillData extends EntityData {
 
     private static Map<Long, SkillData> skills = new HashMap<>();
 
-    // if true this skill will not be used as skill. Instead it accumulate skills that correspond to this skill fields
-    private boolean describer;
-
     private SkillType type;
     private Coefficients coefficients;
     private Coefficients buffCoefficients;
@@ -395,14 +392,6 @@ public class SkillData extends EntityData {
         this.timeChange = timeChange;
     }
 
-    public boolean isDescriber() {
-        return describer;
-    }
-
-    public void setDescriber(boolean describer) {
-        this.describer = describer;
-    }
-
     @Override
     public boolean hasEntityDependency(long guid) {
         return
@@ -484,6 +473,11 @@ public class SkillData extends EntityData {
         private Size size;
         private Set<Element> elements;
         private boolean override;
+
+        public Transformation() {
+            beingTypes = new HashSet<>();
+            elements = new HashSet<>();
+        }
 
         public Set<BeingType> getBeingTypes() {
             return beingTypes;

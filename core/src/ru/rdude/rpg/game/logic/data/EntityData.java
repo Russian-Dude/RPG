@@ -10,6 +10,9 @@ public abstract class EntityData {
     private String nameInEditor;
     private String description;
 
+    // if true this entity will not be used as entity. Instead it accumulate entities that correspond to this entity fields
+    private boolean describer;
+
     EntityData() {
     }
 
@@ -50,6 +53,14 @@ public abstract class EntityData {
 
     public void setNameInEditor(String nameInEditor) {
         this.nameInEditor = nameInEditor;
+    }
+
+    public boolean isDescriber() {
+        return describer;
+    }
+
+    public void setDescriber(boolean describer) {
+        this.describer = describer;
     }
 
     public Set<Long> getModuleDependencies() {

@@ -121,10 +121,10 @@ public abstract class Being extends Entity implements BuffObserver {
         else
             stats.increaseBuffValues(Buff.class, buff.getStats());
         // being types:
-        if (buff.getSkillData().getTransformation().getBeingTypes() != null)
+        if (buff.getSkillData().getTransformation().getBeingTypes() != null && !buff.getSkillData().getTransformation().getBeingTypes().isEmpty())
             beingTypes.add(buff, buff.getSkillData().getTransformation().getBeingTypes());
         // elements:
-        if (buff.getSkillData().getTransformation().getElements() != null)
+        if (buff.getSkillData().getTransformation().getElements() != null && !buff.getSkillData().getTransformation().getElements().isEmpty())
             elements.add(buff, buff.getSkillData().getTransformation().getElements());
         // size:
         if (buff.getSkillData().getTransformation().getSize() != null) {
