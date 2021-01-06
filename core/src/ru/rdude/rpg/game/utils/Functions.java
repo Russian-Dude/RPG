@@ -1,70 +1,81 @@
 package ru.rdude.rpg.game.utils;
 
+import com.badlogic.gdx.math.RandomXS128;
+
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class Functions {
-    public static float random(float min, float max) {
-        return (float) new Random().doubles(1L, min, max).findFirst().getAsDouble();
-    }
 
-    public static double random(double min, double max) {
-        return new Random().doubles(1L, min, max + 0.00000001d).findFirst().getAsDouble();
+    private static RandomXS128 random = new RandomXS128();
+
+    public static int random(int to) {
+        return random.nextInt(to);
     }
 
     public static int random(int min, int max) {
-        return (int) Math.floor(new Random().doubles(1L, min, max + 0.999999).findFirst().getAsDouble());
+        return random.nextInt(max - min) + min;
+    }
+
+    public static float random(float min, float max) {
+        return (float) ThreadLocalRandom.current().nextDouble(min, max);
+    }
+
+    public static double random(double min, double max) {
+        return ThreadLocalRandom.current().nextDouble(min, max);
     }
 
     public static long random(long min, long max) {
-        return (long) Math.floor(new Random().doubles(1L, min, max + 0.999999).findFirst().getAsDouble());
+        return random.nextLong(min - max) + min;
     }
 
     public static float random(float max) {
-        return (float) new Random().doubles(1L, 0, max).findFirst().getAsDouble();
+        return (float) ThreadLocalRandom.current().nextDouble(max);
     }
 
     public static double random(double max) {
-        return new Random().doubles(1L, 0, max).findFirst().getAsDouble();
-    }
-
-    public static int random(int max) {
-        return (int) Math.floor(new Random().doubles(1L, 0, max + 0.999999).findFirst().getAsDouble());
+        return ThreadLocalRandom.current().nextDouble(max);
     }
 
     public static float random(long max) {
-        return (float) Math.floor(new Random().doubles(1L, 0, max + 0.999999).findFirst().getAsDouble());
+        return random.nextLong(max);
     }
 
     public static float random(String min, String max) {
-        return (float) new Random().doubles(1L, Float.parseFloat(min), Float.parseFloat(max)).findFirst().getAsDouble();
+        return (float) random(Double.parseDouble(min), Double.parseDouble(max));
     }
 
     public static <T> T random(List<T> list) {
         if (list.size() == 1)
             return list.get(0);
-        return list.get(random(0, list.size() - 1));
+        return list.get(random(0, list.size()));
     }
 
-    public static <T> T random(Set<T> set) { return random(new ArrayList<>(set)); }
+    public static <T> T random(Set<T> set) {
+        return set.stream()
+                .skip(random(set.size()))
+                .findAny()
+                .orElse(null);
+    }
 
     public static <T> T random(T... values) {
         if (values.length < 1) return null;
-        return values[random(0, values.length - 1)];
+        return values[random(0, values.length)];
     }
 
     public static <T> T randomMapKey(Map<T, ?> map) {
         if (map.isEmpty()) return null;
-        return (T) Arrays.asList(map.keySet().toArray()).get(random(0, map.size() - 1));
+        return random(map.keySet());
     }
 
     public static <T> T randomMapValue(Map<?, T> map) {
         if (map.isEmpty()) return null;
-        return (T) Arrays.asList(map.values().toArray()).get(random(0, map.size() - 1));
+        return random(map.entrySet()).getValue();
     }
 
     public static boolean randomBoolean() {
-        return new Random().nextBoolean();
+        return random.nextBoolean();
     }
 
     public static <K> K randomWithWeights(Map<K, Double> map) {
@@ -72,7 +83,6 @@ public class Functions {
         double sum = map.values().stream().reduce(0d, Double::sum);
         double current = 0d;
         double random = random(0d, sum);
-        //System.out.printf("map size: %d; coefficients sum: %s; random value: %s", map.size(), String.valueOf(sum), String.valueOf(random));
         for (Map.Entry<K, Double> entry : map.entrySet()) {
             current += entry.getValue();
             if (current >= random) return entry.getKey();
@@ -83,7 +93,7 @@ public class Functions {
     public static long generateGuid() {
         try {
             long date = new Date().getTime();
-            long randomNumber = new Random().nextLong();
+            long randomNumber = random.nextLong();
             randomNumber = randomNumber < 0 ? randomNumber * (-1) : randomNumber;
             String string = date + String.valueOf(randomNumber).substring(12, 17);
             return Long.parseLong(string);

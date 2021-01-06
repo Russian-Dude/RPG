@@ -20,7 +20,7 @@ public class AStarRouteFinder<T extends AStarNode> {
         Queue<AStarRouteNode<T>> openSet = new PriorityQueue<>();
         Map<T, AStarRouteNode<T>> allNodes = new HashMap<>();
 
-        AStarRouteNode<T> start = new AStarRouteNode<>(from, null, 0d, targetScorer.computeCost(from, to));
+        AStarRouteNode<T> start = new AStarRouteNode<>(from, null, 0, targetScorer.computeCost(from, to));
         openSet.add(start);
         allNodes.put(from, start);
 
@@ -40,7 +40,7 @@ public class AStarRouteFinder<T extends AStarNode> {
                 AStarRouteNode<T> nextNode = allNodes.getOrDefault(connection, new AStarRouteNode<>(connection));
                 allNodes.put(connection, nextNode);
 
-                double newScore = next.getRouteScore() + nextNodeScorer.computeCost(next.getCurrent(), connection);
+                int newScore = next.getRouteScore() + nextNodeScorer.computeCost(next.getCurrent(), connection);
                 if (newScore < nextNode.getRouteScore()) {
                     nextNode.setPrevious(next.getCurrent());
                     nextNode.setRouteScore(newScore);

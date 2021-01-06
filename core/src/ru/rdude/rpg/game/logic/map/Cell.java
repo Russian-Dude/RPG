@@ -20,6 +20,8 @@ public class Cell implements AStarNode {
     private int x;
     private int y;
 
+    private Set<Cell> connectedByRoads;
+
     private Biom biom;
     private Water.DeepProperty deepProperty;
     private Relief relief;
@@ -105,6 +107,14 @@ public class Cell implements AStarNode {
 
     public int getY() {
         return y;
+    }
+
+    public boolean isConnectedByRoadWith(Cell cell) {
+        return connectedByRoads.contains(cell);
+    }
+
+    public Set<Cell> getConnectedByRoads() {
+        return connectedByRoads;
     }
 
     @Override

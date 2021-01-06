@@ -29,4 +29,6 @@ public abstract class MapObject extends CellProperty {
     public void setPositions(Set<CellSide> positions) {
         this.positions = positions;
     }
+
+    public abstract MapObjectRoadAvailability roadAvailability();
 }

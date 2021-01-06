@@ -4,14 +4,14 @@ class AStarRouteNode<T extends AStarNode> implements Comparable<AStarRouteNode<?
 
     private final T current;
     private T previous;
-    private double routeScore;
-    private double estimatedScore;
+    private int routeScore;
+    private int estimatedScore;
 
     AStarRouteNode(T current) {
-        this(current, null, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+        this(current, null, Integer.MAX_VALUE, Integer.MAX_VALUE);
     }
 
-    AStarRouteNode(T current, T previous, double routeScore, double estimatedScore) {
+    AStarRouteNode(T current, T previous, int routeScore, int estimatedScore) {
         this.current = current;
         this.previous = previous;
         this.routeScore = routeScore;
@@ -30,19 +30,19 @@ class AStarRouteNode<T extends AStarNode> implements Comparable<AStarRouteNode<?
         this.previous = previous;
     }
 
-    public double getRouteScore() {
+    public int getRouteScore() {
         return routeScore;
     }
 
-    public void setRouteScore(double routeScore) {
+    public void setRouteScore(int routeScore) {
         this.routeScore = routeScore;
     }
 
-    public double getEstimatedScore() {
+    public int getEstimatedScore() {
         return estimatedScore;
     }
 
-    public void setEstimatedScore(double estimatedScore) {
+    public void setEstimatedScore(int estimatedScore) {
         this.estimatedScore = estimatedScore;
     }
 

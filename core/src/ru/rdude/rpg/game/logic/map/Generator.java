@@ -5,7 +5,9 @@ import ru.rdude.rpg.game.logic.map.aStarImpl.MapRoadScorer;
 import ru.rdude.rpg.game.logic.map.bioms.Biom;
 import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.logic.map.objects.City;
+import ru.rdude.rpg.game.logic.map.objects.Dungeon;
 import ru.rdude.rpg.game.logic.map.objects.MapObject;
+import ru.rdude.rpg.game.logic.map.objects.MapObjectRoadAvailability;
 import ru.rdude.rpg.game.logic.map.reliefs.Relief;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.utils.TimeCounter;
@@ -17,37 +19,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.*;
-import static ru.rdude.rpg.game.utils.Functions.random;
-import static ru.rdude.rpg.game.utils.Functions.randomWithWeights;
+import static ru.rdude.rpg.game.utils.Functions.*;
 
-/*
-# Bioms (z = 0):
-# 0 - empty
-# 1 - water
-# 2 - grass
-# 3 - dirt
-# 4 - sand
-# 5 - snow
-# 6 - swamp
-# 7 - jungle
-# 8 - deadland
-# 9 - volcanic
-
-# Reliefs (z = 1):
-# 1 - plain
-# 2 - forest
-# 3 - hills
-# 4 - mountain
-
-# Objects (z = 2):
-# 0 - no object
-# 1 - city
-# 2 - dungeon
-
-# Roads (z = 3)
-var Cell_Propertyes_Count = 5 # This is depth of the array
-# 0 - biom type, 1 - relief, 2 - object, 3 - road, 4 - helper for placing dungeons
- */
 public class Generator {
 
     public enum WaterAlgorithm {AS_BIOM, SEPARATE_FROM_BIOM, MIXED, SMALL_ISLANDS, SUPER_MIXED, NO_WATER}
@@ -60,8 +33,9 @@ public class Generator {
 
     private int citiesAmount; //  Need to be smaller on smaller maps
     private int dungeonsAmount;
-    private List<MapObject> objects;
+    private List<Point> mapObjectsPoints;
     private List<City> cities;
+    private List<Dungeon> dungeons;
     private Map<Biom, Integer> biomAmount;
     // next parameters can be set directly with setter after creating Generator. Instead - default values:
     private double newBiomCoefficient; // chance to generate new biom instead of surrounding bioms
@@ -75,6 +49,15 @@ public class Generator {
     // zones help optimize finding unstepped cells on big maps
     private Map<CellProperty.Type, Set<Zone>> zones;
 
+    public Generator(GameMapSize gameMapSize) {
+        this(
+                gameMapSize.getWidth(),
+                gameMapSize.getHeight(),
+                Biom.getDefaultBiomes(),
+                Relief.getDefaultReliefs(),
+                gameMapSize.getWidth() / 32,
+                gameMapSize.getWidth() / 4);
+    }
 
     public Generator(int width, int height, List<Biom> bioms, List<Relief> reliefs, int citiesAmount, int dungeonsAmount) {
         this.width = width;
@@ -100,8 +83,9 @@ public class Generator {
 
         equalBioms = true;
 
-        objects = new ArrayList<>();
+        mapObjectsPoints = new ArrayList<>();
         cities = new ArrayList<>();
+        dungeons = new ArrayList<>();
     }
 
     public void setSize(GameMapSize size) {
@@ -123,7 +107,7 @@ public class Generator {
 
     public GameMap createMap() {
         TimeCounter timeCounter = new TimeCounter("map generation");
-        System.out.println(width + "x" + height + " (" + width*height + " cells)");
+        System.out.println(width + "x" + height + " (" + width * height + " cells)");
 
         switch (waterAlgorithm) {
             case SEPARATE_FROM_BIOM:
@@ -160,6 +144,8 @@ public class Generator {
         System.out.println(timeCounter.getCountFromPrevious("relief creation"));
         createCities();
         System.out.println(timeCounter.getCountFromPrevious("cities creation"));
+        createDungeons();
+        System.out.println(timeCounter.getCountFromPrevious("dungeons creation"));
         createRoads();
         System.out.println(timeCounter.getCountFromPrevious("roads creation"));
         createDeepOfWater();
@@ -198,8 +184,8 @@ public class Generator {
 
     private Set<Zone> divideMapToZones() {
         Set<Zone> zones = new HashSet<>();
-        int zonesAmountX = ((int) (Math.log(width)/Math.log(2)));
-        int zonesAmountY = ((int) (Math.log(height)/Math.log(2)));
+        int zonesAmountX = ((int) (Math.log(width) / Math.log(2)));
+        int zonesAmountY = ((int) (Math.log(height) / Math.log(2)));
         int zoneWidth = width / zonesAmountX;
         int zoneHeight = height / zonesAmountY;
 
@@ -376,7 +362,8 @@ public class Generator {
 
         // else check through other zones
         Set<Zone> zonesToRemove = new HashSet<>();
-        zIter: for (Zone z : zones.get(property)) {
+        zIter:
+        for (Zone z : zones.get(property)) {
             for (int x = z.getStartPoint().x; x <= z.getEndPoint().x; x++) {
                 for (int y = z.getStartPoint().y; y <= z.getEndPoint().y; y++) {
                     if (map.cell(x, y).get(property) == null) {
@@ -465,7 +452,7 @@ public class Generator {
                 List<Point> unSteppedCells = findUnSteppedCells(point, CellProperty.Type.BIOM);
                 if (unSteppedCells.isEmpty())
                     return;
-                Point unSteppedPoint = unSteppedCells.get(random(0, unSteppedCells.size() - 1));
+                Point unSteppedPoint = random(unSteppedCells);
                 point.x = unSteppedPoint.x;
                 point.y = unSteppedPoint.y;
                 // if absolutely new biom creating:
@@ -699,7 +686,7 @@ public class Generator {
 
 
     private void createCities() {
-        int currentID = objects.size();
+        int currentID = mapObjectsPoints.size();
         List<Point> startingPoints = new ArrayList<>();
 
         // create starting points for cities
@@ -728,6 +715,7 @@ public class Generator {
             map.cell(point).setObject(city);
             currentID++;
             cities.add(city);
+            mapObjectsPoints.add(point);
         }
     }
 
@@ -735,6 +723,30 @@ public class Generator {
         return new City(id);
     }
 
+    private void createDungeons() {
+        int startID = mapObjectsPoints.size();
+        for (int i = 0; i < dungeonsAmount; i++) {
+            Dungeon currentDungeon = new Dungeon(startID + i);
+            boolean notAllowedToPlace = true;
+            int tries = 0;
+            while (notAllowedToPlace) {
+                if (tries > 100) {
+                    break;
+                }
+                Point point = new Point(random(width), random(height));
+                if (map.cell(point).getObject() == null
+                        && getAroundCells(point, 1).stream().noneMatch(cell -> map.cell(cell).getObject() != null)
+                        && getAroundCells(point, 2).stream().noneMatch(cell -> map.cell(cell).getObject() != null)) {
+                    notAllowedToPlace = false;
+                    tries = 0;
+                    map.cell(point).setObject(currentDungeon);
+                    dungeons.add(currentDungeon);
+                    mapObjectsPoints.add(point);
+                }
+                tries++;
+            }
+        }
+    }
 
     private void createRoads() {
         Set<Cell> nodes = new HashSet<>();
@@ -755,10 +767,29 @@ public class Generator {
         AStarGraph<Cell> graph = new AStarGraph<>(nodes, connections);
         AStarRouteFinder<Cell> routeFinder = new AStarRouteFinder<>(graph, scorer, scorer);
 
+        List<Point> remainedObjects = mapObjectsPoints.stream()
+                .filter(
+                        point -> {
+                            MapObjectRoadAvailability availability = map.cell(point).getObject().roadAvailability();
+                            return map.cell(point).getBiom() != Water.getInstance()
+                                    && (availability == MapObjectRoadAvailability.MUST
+                                    || (availability == MapObjectRoadAvailability.CAN && randomBoolean()));
+                        }
+                ).collect(Collectors.toList());
 
-        //test
-        createRoad(routeFinder, map.cell(2, 2), map.cell(5, 5));
-        createRoad(routeFinder, map.cell(2, 5), map.cell(5, 2));
+        while (remainedObjects.size() > 2) {
+            Point first = remainedObjects.get(remainedObjects.size() - 1);
+            Point second = remainedObjects.get(random(remainedObjects.size() - 1));
+            createRoad(routeFinder, map.cell(first), map.cell(second));
+/*            if (randomBoolean()) {
+                remainedObjects.remove(first);
+            }
+            if (randomBoolean()) {
+                remainedObjects.remove(second);
+            }*/
+            remainedObjects.remove(first);
+            remainedObjects.remove(second);
+        }
     }
 
     private void createRoad(AStarRouteFinder<Cell> routeFinder, Cell from, Cell to) {
