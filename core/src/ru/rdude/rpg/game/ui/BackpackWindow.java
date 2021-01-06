@@ -15,7 +15,7 @@ import java.util.List;
 
 public class BackpackWindow extends Window {
 
-    private ItemSlotsHolder<Item> backpack;
+    private ItemSlotsHolder backpack;
 
     public BackpackWindow(Being being) {
         super(being.getName(), UiData.DEFAULT_SKIN);

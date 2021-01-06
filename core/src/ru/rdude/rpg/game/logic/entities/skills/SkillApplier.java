@@ -1,12 +1,12 @@
 package ru.rdude.rpg.game.logic.entities.skills;
 
+import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.enums.BuffType;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.items.Item;
-import ru.rdude.rpg.game.logic.entities.items.ItemFabric;
 import ru.rdude.rpg.game.logic.enums.AttackType;
 
 import java.util.Set;
@@ -110,7 +110,7 @@ public class SkillApplier {
         }
         double pureDamageValue = skillParser.parse(skillData.getDamage());
         double damageValue = Math.floor(pureDamageValue * getDamageCoefficient());
-        Damage damage = new Damage(damageValue, caster);
+        Damage damage = new Damage(damageValue, caster, skillData);
         if (isCritical()) {
             damage.setCritical(true);
         }
@@ -139,7 +139,7 @@ public class SkillApplier {
 
     private Set<Item> getReceivedItems() {
         return skillData.getReceiveItems().entrySet().stream()
-                .map(entry -> ItemFabric.instance.getItemByGuid(entry.getKey(), entry.getValue()))
+                .map(entry -> new Item(ItemData.getItemDataByGuid(entry.getKey()), entry.getValue()))
                 .collect(Collectors.toSet());
     }
 }

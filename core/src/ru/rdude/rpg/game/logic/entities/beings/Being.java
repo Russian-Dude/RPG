@@ -4,17 +4,13 @@ import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.BeingData;
 import ru.rdude.rpg.game.logic.entities.Entity;
 import ru.rdude.rpg.game.logic.entities.items.Item;
-import ru.rdude.rpg.game.logic.entities.items.equip.EquippableItem;
 import ru.rdude.rpg.game.logic.entities.items.holders.EquipmentSlotsHolder;
 import ru.rdude.rpg.game.logic.entities.items.holders.ItemSlotsHolder;
 import ru.rdude.rpg.game.logic.entities.skills.Buff;
 import ru.rdude.rpg.game.logic.entities.skills.BuffObserver;
 import ru.rdude.rpg.game.logic.entities.skills.Damage;
 import ru.rdude.rpg.game.logic.entities.states.StateHolder;
-import ru.rdude.rpg.game.logic.enums.AttackType;
-import ru.rdude.rpg.game.logic.enums.BeingType;
-import ru.rdude.rpg.game.logic.enums.Element;
-import ru.rdude.rpg.game.logic.enums.Size;
+import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.util.HashSet;
@@ -32,7 +28,7 @@ public abstract class Being extends Entity implements BuffObserver {
 
     protected Coefficients coefficients;
 
-    protected ItemSlotsHolder<Item> backpack;
+    protected ItemSlotsHolder backpack;
     protected EquipmentSlotsHolder equipment;
     protected Set<Buff> buffs;
 
@@ -49,7 +45,7 @@ public abstract class Being extends Entity implements BuffObserver {
         size = new StateHolder<>(beingData.getSize());
         coefficients = new Coefficients();
         buffs = new HashSet<>();
-        backpack = new ItemSlotsHolder<>(16, Item.class);
+        backpack = new ItemSlotsHolder(16);
         equipment = new EquipmentSlotsHolder();
     }
 
@@ -67,19 +63,19 @@ public abstract class Being extends Entity implements BuffObserver {
         if (damage.value() > 0) {
             // check if damage is missed
             if (damage.isMiss()) {
-                notifySubscribers(new BeingAction(BeingAction.Action.DODGE, damage.interactor()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.DODGE, damage.interactor(), damage.bySkill()), this);
                 if (damage.interactor() instanceof Being)
-                    ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.MISS, this), (Being) damage.interactor());
+                    ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.MISS, this, damage.bySkill()), (Being) damage.interactor());
                 return false;
             }
             // check if blocked
             if (damage.isBlock()) {
-                notifySubscribers(new BeingAction(BeingAction.Action.BLOCK, damage.interactor()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.BLOCK, damage.interactor(), damage.bySkill()), this);
                 return false;
             }
             // check if parried
             if (damage.isParry()) {
-                notifySubscribers(new BeingAction(BeingAction.Action.PARRY, damage.interactor()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.PARRY, damage.interactor(), damage.bySkill()), this);
                 return false;
             }
             // else take damage
@@ -89,24 +85,24 @@ public abstract class Being extends Entity implements BuffObserver {
                 realDamage = 1;
             boolean isAlive = stats.hp().decrease(realDamage) > 0;
             if (damage.isCritical())
-                notifySubscribers(new BeingAction(BeingAction.Action.CRITICAL_RECEIVE, damage.interactor()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.CRITICAL_RECEIVE, damage.interactor(), damage.bySkill(), realDamage), this);
             else
-                notifySubscribers(new BeingAction(BeingAction.Action.DAMAGE_RECEIVE, damage.interactor()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.DAMAGE_RECEIVE, damage.interactor(), damage.bySkill(), realDamage), this);
             if (damage.interactor() instanceof Being)
-                ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.DAMAGE_DEAL, this), (Being) damage.interactor());
+                ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.DAMAGE_DEAL, this, damage.bySkill(), realDamage), (Being) damage.interactor());
             if (!isAlive) {
                 alive = false;
-                notifySubscribers(new BeingAction(BeingAction.Action.DIE, damage.interactor()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.DIE, damage.interactor(), damage.bySkill()), this);
                 if (damage.interactor() instanceof Being)
-                    ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.KILL, this), (Being) damage.interactor());
+                    ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.KILL, this, damage.bySkill()), (Being) damage.interactor());
             }
         }
         // heal
         else {
             stats.hp().increase(damage.value());
-            notifySubscribers(new BeingAction(BeingAction.Action.HEAL_RECEIVE, damage.interactor()), this);
+            notifySubscribers(new BeingAction(BeingAction.Action.HEAL_RECEIVE, damage.interactor(), damage.bySkill(), damage.value()), this);
             if (damage.interactor() instanceof Being)
-                ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.HEAL_DEAL, this), (Being) damage.interactor());
+                ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.HEAL_DEAL, this, damage.bySkill(), damage.value()), (Being) damage.interactor());
         }
         return true;
     }
@@ -142,8 +138,9 @@ public abstract class Being extends Entity implements BuffObserver {
     public boolean receive(Item item) {
         if (backpack.receiveEntity(item))
             return true;
-        if (item instanceof EquippableItem)
-            return equipment.receiveEntity((EquippableItem) item);
+        if (item.getItemData().getItemType().getMainType() == ItemMainType.ARMOR
+                || item.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+            return equipment.receiveEntity(item);
         return false;
     }
 
@@ -168,7 +165,7 @@ public abstract class Being extends Entity implements BuffObserver {
         return size;
     }
 
-    public ItemSlotsHolder<Item> backpack() {
+    public ItemSlotsHolder backpack() {
         return backpack;
     }
 

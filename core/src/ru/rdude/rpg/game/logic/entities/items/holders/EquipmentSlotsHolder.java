@@ -1,9 +1,11 @@
 package ru.rdude.rpg.game.logic.entities.items.holders;
 
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
-import ru.rdude.rpg.game.logic.entities.items.equip.*;
+import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.logic.enums.Element;
+import ru.rdude.rpg.game.logic.enums.ItemMainType;
+import ru.rdude.rpg.game.logic.enums.ItemType;
 import ru.rdude.rpg.game.logic.holders.Slot;
 import ru.rdude.rpg.game.logic.holders.SlotsHolder;
 import ru.rdude.rpg.game.logic.stats.Stats;
@@ -13,126 +15,129 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-public class EquipmentSlotsHolder extends SlotsHolder<EquippableItem> {
+public class EquipmentSlotsHolder extends SlotsHolder<Item> {
 
-    private Slot<EquippableItem> armor;
-    private Slot<EquippableItem> boots;
-    private Slot<EquippableItem> gloves;
-    private Slot<EquippableItem> helmet;
-    private Slot<EquippableItem> necklace;
-    private Slot<EquippableItem> pants;
-    private Slot<EquippableItem> leftHand;
-    private Slot<EquippableItem> rightHand;
-    private Slot<EquippableItem> jewelry1;
-    private Slot<EquippableItem> jewelry2;
+    private Slot<Item> armor;
+    private Slot<Item> boots;
+    private Slot<Item> gloves;
+    private Slot<Item> helmet;
+    private Slot<Item> necklace;
+    private Slot<Item> pants;
+    private Slot<Item> leftHand;
+    private Slot<Item> rightHand;
+    private Slot<Item> jewelry1;
+    private Slot<Item> jewelry2;
 
 
     public EquipmentSlotsHolder() {
         slots = new ArrayList<>(10);
-        slots.add(new Slot<>(Armor.class));
+        slots.add(new Slot<>(ItemType.ARMOR, t -> t.getItemData().getItemType() == ItemType.ARMOR));
         armor = slots.get(0);
-        slots.add(new Slot<>(Boots.class));
+        slots.add(new Slot<>(ItemType.BOOTS, t -> t.getItemData().getItemType() == ItemType.BOOTS));
         boots = slots.get(1);
-        slots.add(new Slot<>(Gloves.class));
+        slots.add(new Slot<>(ItemType.GLOVES, t -> t.getItemData().getItemType() == ItemType.GLOVES));
         gloves = slots.get(2);
-        slots.add(new Slot<>(Helmet.class));
+        slots.add(new Slot<>(ItemType.HELMET, t -> t.getItemData().getItemType() == ItemType.HELMET));
         helmet = slots.get(3);
-        slots.add(new Slot<>(Necklace.class));
+        slots.add(new Slot<>(ItemType.NECKLACE, t -> t.getItemData().getItemType() == ItemType.NECKLACE));
         necklace = slots.get(4);
-        slots.add(new Slot<>(Pants.class));
+        slots.add(new Slot<>(ItemType.PANTS, t -> t.getItemData().getItemType() == ItemType.PANTS));
         pants = slots.get(5);
-        slots.add(new Slot<>(EquipInHandItem.class));
+        slots.add(new Slot<>(ItemType.SHIELD, t -> t.getItemData().getItemType() == ItemType.SHIELD
+                || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON));
         leftHand = slots.get(6);
-        slots.add(new Slot<>(EquipInHandItem.class));
+        slots.add(new Slot<>(ItemMainType.WEAPON, t -> t.getItemData().getItemType() == ItemType.SHIELD
+                || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON));
         rightHand = slots.get(7);
-        slots.add(new Slot<>(Jewelry.class));
+        slots.add(new Slot<>(ItemType.JEWELRY, t -> t.getItemData().getItemType() == ItemType.JEWELRY));
         jewelry1 = slots.get(8);
-        slots.add(new Slot<>(Jewelry.class));
+        slots.add(new Slot<>(ItemType.JEWELRY, t -> t.getItemData().getItemType() == ItemType.JEWELRY));
         jewelry2 = slots.get(9);
     }
 
-    public Slot<EquippableItem> armor() {
+    public Slot<Item> armor() {
         return armor;
     }
 
-    public Slot<EquippableItem> boots() {
+    public Slot<Item> boots() {
         return boots;
     }
 
-    public Slot<EquippableItem> gloves() {
+    public Slot<Item> gloves() {
         return gloves;
     }
 
-    public Slot<EquippableItem> helmet() {
+    public Slot<Item> helmet() {
         return helmet;
     }
 
-    public Slot<EquippableItem> necklace() {
+    public Slot<Item> necklace() {
         return necklace;
     }
 
-    public Slot<EquippableItem> pants() {
+    public Slot<Item> pants() {
         return pants;
     }
 
-    public Slot<EquippableItem> jewelry1() {
+    public Slot<Item> jewelry1() {
         return jewelry1;
     }
 
-    public Slot<EquippableItem> jewelry2() {
+    public Slot<Item> jewelry2() {
         return jewelry2;
     }
 
-    public Slot<EquippableItem> leftHand() {
+    public Slot<Item> leftHand() {
         return leftHand;
     }
 
-    public Slot<EquippableItem> rightHand() {
+    public Slot<Item> rightHand() {
         return rightHand;
     }
 
 
     @Override
-    public boolean receiveEntity(EquippableItem entity) {
-        if (entity instanceof Armor) {
+    public boolean receiveEntity(Item entity) {
+        if (entity.getItemData().getItemType() == ItemType.ARMOR) {
             if (armor.getEntity() == null) {
-                armor.setEntity((Armor) entity);
+                armor.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity instanceof Boots) {
+        } else if (entity.getItemData().getItemType() == ItemType.BOOTS) {
             if (boots.getEntity() == null) {
-                boots.setEntity((Boots) entity);
+                boots.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity instanceof Gloves) {
+        } else if (entity.getItemData().getItemType() == ItemType.GLOVES) {
             if (gloves.getEntity() == null) {
-                gloves.setEntity((Gloves) entity);
+                gloves.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity instanceof Helmet) {
+        } else if (entity.getItemData().getItemType() == ItemType.HELMET) {
             if (helmet.getEntity() == null) {
-                helmet.setEntity((Helmet) entity);
+                helmet.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity instanceof Necklace) {
+        } else if (entity.getItemData().getItemType() == ItemType.NECKLACE) {
             if (necklace.getEntity() == null) {
-                necklace.setEntity((Necklace) entity);
+                necklace.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity instanceof Pants) {
+        } else if (entity.getItemData().getItemType() == ItemType.PANTS) {
             if (pants.getEntity() == null) {
-                pants.setEntity((Pants) entity);
+                pants.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity instanceof Jewelry) {
+        } else if (entity.getItemData().getItemType() == ItemType.JEWELRY) {
             if (jewelry1.getEntity() == null) {
-                jewelry1.setEntity((Jewelry) entity);
+                jewelry1.setEntity(entity);
                 return true;
             } else if (jewelry2.getEntity() == null) {
-                jewelry2.setEntity((Jewelry) entity);
+                jewelry2.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity instanceof Shield || entity instanceof Weapon) {
+        } else if (entity.getItemData().getItemType() == ItemType.SHIELD
+                || entity.getItemData().getItemType().getMainType() == ItemMainType.WEAPON) {
             if (leftHand.getEntity() == null) {
                 leftHand.setEntity(entity);
                 return true;
@@ -146,18 +151,18 @@ public class EquipmentSlotsHolder extends SlotsHolder<EquippableItem> {
 
     public int weaponsAmount() {
         int amount = 0;
-        if (leftHand.getEntity() instanceof Weapon)
+        if (leftHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
             amount++;
-        if (rightHand.getEntity() instanceof Weapon)
+        if (rightHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
             amount++;
         return amount;
     }
 
     public int shieldsAmount() {
         int amount = 0;
-        if (leftHand.getEntity() instanceof Shield)
+        if (leftHand.getEntity().getItemData().getItemType() == ItemType.SHIELD)
             amount++;
-        if (rightHand.getEntity() instanceof Shield)
+        if (rightHand.getEntity().getItemData().getItemType() == ItemType.SHIELD)
             amount++;
         return amount;
     }
@@ -166,13 +171,14 @@ public class EquipmentSlotsHolder extends SlotsHolder<EquippableItem> {
         int weaponsAmount = weaponsAmount();
         if (weaponsAmount == 0) return AttackType.MELEE;
         else if (weaponsAmount == 1) {
-            if (leftHand.getEntity() instanceof Weapon)
-                return ((Weapon) leftHand.getEntity()).getAttackType();
-            else if (rightHand.getEntity() instanceof Weapon)
-                return ((Weapon) rightHand.getEntity()).getAttackType();
+            if (leftHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+                return leftHand.getEntity().getItemData().getWeaponData().getAttackType();
+            else if (rightHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+                return rightHand.getEntity().getItemData().getWeaponData().getAttackType();
         } else if (weaponsAmount == 2) {
-            return ((Weapon) leftHand.getEntity()).compareTo((Weapon) rightHand.getEntity()) > 0 ?
-                    ((Weapon) leftHand.getEntity()).getAttackType() : ((Weapon) rightHand.getEntity()).getAttackType();
+            return leftHand.getEntity().getItemData().getWeaponData().compareTo(rightHand.getEntity().getItemData().getWeaponData()) > 0 ?
+                    leftHand.getEntity().getItemData().getWeaponData().getAttackType()
+                    : rightHand.getEntity().getItemData().getWeaponData().getAttackType();
         } else {
             throw new IllegalStateException("there must be 0-2 weapons. Something wrong");
         }
@@ -192,7 +198,7 @@ public class EquipmentSlotsHolder extends SlotsHolder<EquippableItem> {
         return slots.stream()
                 .filter(slot -> !slot.isEmpty())
                 .map(Slot::getEntity)
-                .filter(entity -> !(entity instanceof Weapon))
+                .filter(entity -> entity.getItemData().getItemType().getMainType() == ItemMainType.ARMOR)
                 .flatMap(entity -> entity.elements().getCurrent().stream())
                 .collect(Collectors.toSet());
     }
@@ -201,7 +207,7 @@ public class EquipmentSlotsHolder extends SlotsHolder<EquippableItem> {
         return slots.stream()
                 .filter(slot -> !slot.isEmpty())
                 .map(Slot::getEntity)
-                .filter(entity -> entity instanceof Weapon)
+                .filter(entity -> entity.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
                 .flatMap(weapon -> weapon.elements().getCurrent().stream())
                 .collect(Collectors.toSet());
     }
@@ -210,7 +216,7 @@ public class EquipmentSlotsHolder extends SlotsHolder<EquippableItem> {
         Stats result = new Stats(false);
         slots.stream()
                 .filter(slot -> !slot.isEmpty())
-                .map(slot -> slot.getEntity().stats())
+                .map(slot -> slot.getEntity().getItemData().getStats())
                 .forEach(result::increase);
         return result;
     }

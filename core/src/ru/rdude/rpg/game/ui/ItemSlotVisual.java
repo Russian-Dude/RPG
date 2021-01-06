@@ -4,7 +4,8 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import ru.rdude.rpg.game.logic.entities.Entity;
 import ru.rdude.rpg.game.logic.entities.items.Item;
-import ru.rdude.rpg.game.logic.entities.items.equip.*;
+import ru.rdude.rpg.game.logic.enums.ItemMainType;
+import ru.rdude.rpg.game.logic.enums.ItemType;
 import ru.rdude.rpg.game.logic.holders.Slot;
 import ru.rdude.rpg.game.logic.holders.SlotObserver;
 
@@ -34,23 +35,23 @@ public class ItemSlotVisual<T extends Item> extends Group implements SlotObserve
     }
 
     private String getDrawableBackgroundName() {
-        if (Armor.class.isAssignableFrom(slot.getRequiredClass()))
+        if (slot.getMarker() == ItemType.ARMOR)
             return "Body";
-        else if (Boots.class.isAssignableFrom(slot.getRequiredClass()))
+        else if (slot.getMarker() == ItemType.BOOTS)
             return "Boots";
-        else if (Gloves.class.isAssignableFrom(slot.getRequiredClass()))
+        else if (slot.getMarker() == ItemType.GLOVES)
             return "Gloves";
-        else if (Helmet.class.isAssignableFrom(slot.getRequiredClass()))
+        else if (slot.getMarker() == ItemType.HELMET)
             return "Head";
-        else if (Jewelry.class.isAssignableFrom(slot.getRequiredClass()))
+        else if (slot.getMarker() == ItemType.JEWELRY)
             return "Ring";
-        else if (Necklace.class.isAssignableFrom(slot.getRequiredClass()))
+        else if (slot.getMarker() == ItemType.NECKLACE)
             return "Amulet";
-        else if (Pants.class.isAssignableFrom(slot.getRequiredClass()))
+        else if (slot.getMarker() == ItemType.PANTS)
             return "Legs";
-        else if (Shield.class.isAssignableFrom(slot.getRequiredClass()))
+        else if (slot.getMarker() == ItemType.SHIELD)
             return "Shield";
-        else if (Weapon.class.isAssignableFrom(slot.getRequiredClass()))
+        else if (slot.getMarker() == ItemMainType.WEAPON)
             return "Weapon";
         else
             return "Empty";

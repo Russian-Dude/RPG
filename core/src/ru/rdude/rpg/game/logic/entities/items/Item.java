@@ -11,35 +11,26 @@ import ru.rdude.rpg.game.logic.stats.secondary.Hp;
 
 import java.util.Set;
 
-public abstract class Item extends Entity {
+public class Item extends Entity {
 
     public static final int MAX_AMOUNT = 99;
 
     protected ItemData itemData;
     protected int amount;
-    protected Hp durability;
     protected StateHolder<Element> elements;
-    protected Stats stats;
-
 
     public Item(ItemData itemData, int amount) {
         this.itemData = itemData;
         this.amount = amount;
         Double durabilityData;
-        if ((durabilityData = itemData.getDurability()) != null)
-            durability = new Hp(durabilityData);
         Set<Element> elementsData;
         if ((elementsData = itemData.getElements()) != null)
             elements = new StateHolder<>(elementsData);
-        stats = new Stats(false);
-        stats.increase(itemData.getStats());
     }
 
     public Item(ItemData itemData) {
         this(itemData, 1);
     }
-
-
 
     public boolean isStackable() {
         return itemData.isStackable();
@@ -47,10 +38,6 @@ public abstract class Item extends Entity {
 
     public Stats requirements() {
         return itemData.getRequirements();
-    }
-
-    public Stats stats() {
-        return stats;
     }
 
     public ItemRarity rarity() {
@@ -63,10 +50,6 @@ public abstract class Item extends Entity {
 
     public Coefficients coefficients() {
         return itemData.getCoefficients();
-    }
-
-    public Hp durability() {
-        return durability;
     }
 
     public double price() {
@@ -98,9 +81,13 @@ public abstract class Item extends Entity {
         amount = value;
     }
 
-    public abstract Item copy();
-
     public ItemData getItemData() {
         return itemData;
+    }
+
+    public Item copy() {
+        Item copy = new Item(itemData, amount);
+        copy.elements = elements.copy();
+        return copy;
     }
 }

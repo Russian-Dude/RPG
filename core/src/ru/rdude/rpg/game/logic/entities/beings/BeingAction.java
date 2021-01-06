@@ -1,6 +1,8 @@
 package ru.rdude.rpg.game.logic.entities.beings;
 
+import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.Entity;
+import ru.rdude.rpg.game.logic.entities.skills.Damage;
 import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.logic.enums.BeingType;
 import ru.rdude.rpg.game.logic.enums.Element;
@@ -13,11 +15,9 @@ public class BeingAction {
         HEAL_RECEIVE, RESIST, DIE, KILL, NO_ACTION}
 
     private Action action;
-    private List<Element> elements;
-    private AttackType attackType;
-    private List<BeingType> beingTypes;
     private double value;
     private Entity interactionWith;
+    private SkillData withSkill;
 
     public BeingAction(Action action) {
         if (action == null)
@@ -35,18 +35,24 @@ public class BeingAction {
         }
     }
 
-    public BeingAction(Action action, Entity interactionWith) {
+    public BeingAction(Action action, Entity interactionWith, SkillData withSkill) {
+        this.action = action;
+        this.interactionWith = interactionWith;
+        this.withSkill = withSkill;
+    }
+
+    public BeingAction(Action action, Entity interactionWith, SkillData withSkill, double value) {
         if (action == null || interactionWith == null)
             throw new IllegalArgumentException("required non null arguments");
         this.action = action;
         this.interactionWith = interactionWith;
+        this.withSkill = withSkill;
+        this.value = value;
     }
 
     public Action action() { return action; }
-    public List<Element> elements() { return elements; }
-    public AttackType attackType() { return attackType; }
-    public List<BeingType> beingTypes() { return beingTypes; }
     public double value() { return value; }
     public Entity interactor() { return interactionWith; }
+    public SkillData withSkill() { return withSkill; }
 }
 

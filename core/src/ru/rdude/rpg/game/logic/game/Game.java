@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.game;
 
+import ru.rdude.rpg.game.logic.GameLogger;
 import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.Map;
@@ -8,6 +9,8 @@ import ru.rdude.rpg.game.logic.time.TimeManager;
 public class Game {
 
     private static Game currentGame;
+
+    private GameLogger gameLogger;
 
     private TimeManager timeManager;
     private SkillUser skillUser;
@@ -32,5 +35,9 @@ public class Game {
 
     public static Game getCurrentGame() {
         return currentGame;
+    }
+
+    public GameLogger getGameLogger() {
+        return gameLogger;
     }
 }

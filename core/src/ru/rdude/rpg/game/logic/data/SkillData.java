@@ -13,6 +13,8 @@ public class SkillData extends EntityData {
 
     private static Map<Long, SkillData> skills = new HashMap<>();
 
+    private SkillVisualData visualData;
+
     private SkillType type;
     private Coefficients coefficients;
     private Coefficients buffCoefficients;
@@ -79,6 +81,14 @@ public class SkillData extends EntityData {
         return skills.get(guid);
     }
 
+
+    public SkillVisualData getVisualData() {
+        return visualData;
+    }
+
+    public void setVisualData(SkillVisualData visualData) {
+        this.visualData = visualData;
+    }
 
     public SkillEffect getEffect() {
         return effect;

@@ -5,60 +5,61 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import ru.rdude.rpg.game.logic.GameLogger;
 import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
-import ru.rdude.rpg.game.logic.entities.items.simpleItems.SimpleItem;
+import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.map.GameMap;
-import ru.rdude.rpg.game.logic.map.GameMapSize;
 import ru.rdude.rpg.game.logic.map.Generator;
 import ru.rdude.rpg.game.logic.map.bioms.Biom;
 import ru.rdude.rpg.game.logic.map.reliefs.Relief;
 import ru.rdude.rpg.game.mapVisual.MapVisual;
 import ru.rdude.rpg.game.ui.*;
 
-public class Game extends ApplicationAdapter {
+public class GameApp extends ApplicationAdapter {
 
     Stage stage;
     OrthographicCamera camera;
 
     @Override
     public void create() {
-/*        stage = new Stage(new ScreenViewport());
+        stage = new Stage(new ScreenViewport());
         stage.addActor(new PlayersVisualBottom());
         Player player = new Player();
         stage.addActor(new EquipmentWindow(player));
         BackpackWindow backpackWindow = new BackpackWindow(player);
         stage.addActor(backpackWindow);
-        ItemVisual itemVisual = new ItemVisual(new SimpleItem(new ItemData(135135)));
+        ItemVisual itemVisual = new ItemVisual(new Item(new ItemData(35135)));
         stage.addActor(itemVisual);
         ((ItemSlotVisual) backpackWindow.getCells().first().getActor()).setItemVisual(itemVisual);
 
 
-        Gdx.input.setInputProcessor(stage);*/
+        Gdx.input.setInputProcessor(stage);
 
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, (w / h) * 480, 480);
+        camera.setToOrtho(false, w, h);
         camera.update();
 
 
         //stage = new Stage(new FitViewport(w, h));
-        stage = new Stage();
+        //stage = new Stage();
 
         stage.getViewport().setCamera(camera);
 
 
 
-        GameMap gameMap = new Generator(GameMapSize.XXL)
+/*        GameMap gameMap = new Generator(128, 64, Biom.getDefaultBiomes(), Relief.getDefaultReliefs(), 0, 0)
                 .createMap();
-/*        GameMap gameMap = new Generator(1024, 512, Biom.getDefaultBiomes(), Relief.getDefaultReliefs(), 0, 0)
-                .createMap();*/
+*//*        GameMap gameMap = new Generator(1024, 512, Biom.getDefaultBiomes(), Relief.getDefaultReliefs(), 0, 0)
+                .createMap();*//*
         MapVisual mapVisual = new MapVisual(camera, gameMap);
         stage.addActor(mapVisual);
 
-        stage.setDebugAll(true);
+        stage.setDebugAll(true);*/
 
     }
 
