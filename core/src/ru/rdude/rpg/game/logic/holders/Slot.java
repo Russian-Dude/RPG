@@ -2,8 +2,11 @@ package ru.rdude.rpg.game.logic.holders;
 
 import ru.rdude.rpg.game.logic.entities.Entity;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Slot<T extends Entity> {
 
@@ -11,11 +14,14 @@ public class Slot<T extends Entity> {
 
     protected T entity;
 
-    protected Class<? extends T> requiredClass;
+    protected Set<Predicate<T>> extraRequirements;
 
-    public Slot(Class<? extends T> requiredClass) {
-        this.requiredClass = requiredClass;
+    protected Enum<?> marker;
+
+    public Slot(Enum<?> marker, Predicate<T> ... extraRequirements) {
         subscribers = new HashSet<>();
+        this.marker = marker;
+        this.extraRequirements = Arrays.stream(extraRequirements).collect(Collectors.toSet());
     }
 
     public T getEntity() {
@@ -36,16 +42,25 @@ public class Slot<T extends Entity> {
     }
 
     public boolean swapEntities(Slot<T> anotherSlot) {
-        if (!requiredClass.isAssignableFrom(anotherSlot.entity.getClass()))
+        if (!isEntityMatchRequirements(anotherSlot.entity)) {
             return false;
+        }
         T thisEntity = this.entity;
         setEntity(anotherSlot.entity);
         anotherSlot.setEntity(thisEntity);
         return true;
     }
 
-    public Class<? extends T> getRequiredClass() {
-        return requiredClass;
+    public boolean isEntityMatchRequirements(T t) {
+        return extraRequirements.stream().allMatch(p -> p.test(t));
+    }
+
+    public Enum<?> getMarker() {
+        return marker;
+    }
+
+    public void setMarker(Enum<?> marker) {
+        this.marker = marker;
     }
 
     public void subscribe(SlotObserver subscriber) {

@@ -1,11 +1,7 @@
 package ru.rdude.rpg.game.logic.data;
 
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
-import ru.rdude.rpg.game.logic.entities.items.Item;
-import ru.rdude.rpg.game.logic.entities.items.equip.Weapon;
-import ru.rdude.rpg.game.logic.enums.AttackType;
-import ru.rdude.rpg.game.logic.enums.Element;
-import ru.rdude.rpg.game.logic.enums.ItemRarity;
+import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.util.*;
@@ -16,8 +12,7 @@ public class ItemData extends EntityData {
 
     private static Map<Long, ItemData> items = new HashMap<>();
 
-    private Class<? extends Item> itemType;
-    private String type;
+    private ItemType itemType;
     private boolean stackable;
     private Stats requirements;
     private Stats stats;
@@ -26,11 +21,8 @@ public class ItemData extends EntityData {
     private List<Long> skillsOnUse;
     private List<Long> skillsEquip;
     private Coefficients coefficients;
-    private Double durability;
     private double price;
-    private AttackType attackType;
-    private double minDmg;
-    private double maxDmg;
+    private WeaponData weaponData;
 
     public ItemData(long guid) {
         super(guid);
@@ -49,28 +41,24 @@ public class ItemData extends EntityData {
         list.forEach(itemData -> items.put(itemData.getGuid(), itemData));
     }
 
-    public double getMinDmg() {
-        return minDmg;
+    public static Map<Long, ItemData> getItems() {
+        return items;
     }
 
-    public void setMinDmg(double minDmg) {
-        this.minDmg = minDmg;
+    public static void setItems(Map<Long, ItemData> items) {
+        ItemData.items = items;
     }
 
-    public double getMaxDmg() {
-        return maxDmg;
+    public WeaponData getWeaponData() {
+        return weaponData;
     }
 
-    public void setMaxDmg(double maxDmg) {
-        this.maxDmg = maxDmg;
+    public void setWeaponData(WeaponData weaponData) {
+        this.weaponData = weaponData;
     }
 
-    public AttackType getAttackType() {
-        return attackType;
-    }
-
-    public void setAttackType(AttackType attackType) {
-        this.attackType = attackType;
+    public boolean isWeapon() {
+        return weaponData != null;
     }
 
     public double getPrice() {
@@ -79,14 +67,6 @@ public class ItemData extends EntityData {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public Double getDurability() {
-        return durability;
-    }
-
-    public void setDurability(Double durability) {
-        this.durability = durability;
     }
 
     public boolean isStackable() {
@@ -153,19 +133,11 @@ public class ItemData extends EntityData {
         this.coefficients = coefficients;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public Class<? extends Item> getItemType() {
+    public ItemType getItemType() {
         return itemType;
     }
 
-    public void setItemType(Class<? extends Item> itemType) {
+    public void setItemType(ItemType itemType) {
         this.itemType = itemType;
     }
 
@@ -186,6 +158,57 @@ public class ItemData extends EntityData {
         }
     }
 
+    public class WeaponData implements Comparable<WeaponData> {
+        private AttackType attackType;
+        private boolean dualHanded;
+        private double minDmg;
+        private double maxDmg;
+
+        public WeaponData(AttackType attackType, boolean dualHanded, double minDmg, double maxDmg) {
+            this.attackType = attackType;
+            this.dualHanded = dualHanded;
+            this.minDmg = minDmg;
+            this.maxDmg = maxDmg;
+        }
+
+        public AttackType getAttackType() {
+            return attackType;
+        }
+
+        public void setAttackType(AttackType attackType) {
+            this.attackType = attackType;
+        }
+
+        public boolean isDualHanded() {
+            return dualHanded;
+        }
+
+        public void setDualHanded(boolean dualHanded) {
+            this.dualHanded = dualHanded;
+        }
+
+        public double getMinDmg() {
+            return minDmg;
+        }
+
+        public void setMinDmg(double minDmg) {
+            this.minDmg = minDmg;
+        }
+
+        public double getMaxDmg() {
+            return maxDmg;
+        }
+
+        public void setMaxDmg(double maxDmg) {
+            this.maxDmg = maxDmg;
+        }
+
+        @Override
+        public int compareTo(WeaponData weaponData) {
+            return (int) ((this.minDmg + this.maxDmg) - (weaponData.minDmg + weaponData.maxDmg));
+        }
+    }
+
     public static class ListOfItemsWithParametersBuilder {
 
         private Stream<ItemData> stream;
@@ -199,18 +222,18 @@ public class ItemData extends EntityData {
             return this;
         }
 
-        public ListOfItemsWithParametersBuilder type(Weapon.WeaponType weaponType) {
-            stream = stream.filter(itemData -> itemData.type.equals(weaponType.name()));
+        public ListOfItemsWithParametersBuilder type(ItemType itemType) {
+            stream = stream.filter(itemData -> itemData.itemType == itemType);
+            return this;
+        }
+
+        public ListOfItemsWithParametersBuilder type(ItemMainType itemMainType) {
+            stream = stream.filter(itemData -> itemData.itemType.getMainType() == itemMainType);
             return this;
         }
 
         public ListOfItemsWithParametersBuilder type(AttackType attackType) {
-            stream = stream.filter(itemData -> itemData.type.equals(attackType.name()));
-            return this;
-        }
-
-        public ListOfItemsWithParametersBuilder type(Class<? extends Item> cl) {
-            stream = stream.filter(itemData -> itemData.type.toUpperCase().equals(cl.getSimpleName().toUpperCase()));
+            stream = stream.filter(itemData -> itemData.isWeapon() && itemData.weaponData.attackType == attackType);
             return this;
         }
 

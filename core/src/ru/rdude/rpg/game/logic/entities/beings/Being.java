@@ -4,17 +4,13 @@ import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.BeingData;
 import ru.rdude.rpg.game.logic.entities.Entity;
 import ru.rdude.rpg.game.logic.entities.items.Item;
-import ru.rdude.rpg.game.logic.entities.items.equip.EquippableItem;
 import ru.rdude.rpg.game.logic.entities.items.holders.EquipmentSlotsHolder;
 import ru.rdude.rpg.game.logic.entities.items.holders.ItemSlotsHolder;
 import ru.rdude.rpg.game.logic.entities.skills.Buff;
 import ru.rdude.rpg.game.logic.entities.skills.BuffObserver;
 import ru.rdude.rpg.game.logic.entities.skills.Damage;
 import ru.rdude.rpg.game.logic.entities.states.StateHolder;
-import ru.rdude.rpg.game.logic.enums.AttackType;
-import ru.rdude.rpg.game.logic.enums.BeingType;
-import ru.rdude.rpg.game.logic.enums.Element;
-import ru.rdude.rpg.game.logic.enums.Size;
+import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.util.HashSet;
@@ -32,7 +28,7 @@ public abstract class Being extends Entity implements BuffObserver {
 
     protected Coefficients coefficients;
 
-    protected ItemSlotsHolder<Item> backpack;
+    protected ItemSlotsHolder backpack;
     protected EquipmentSlotsHolder equipment;
     protected Set<Buff> buffs;
 
@@ -49,7 +45,7 @@ public abstract class Being extends Entity implements BuffObserver {
         size = new StateHolder<>(beingData.getSize());
         coefficients = new Coefficients();
         buffs = new HashSet<>();
-        backpack = new ItemSlotsHolder<>(16, Item.class);
+        backpack = new ItemSlotsHolder(16);
         equipment = new EquipmentSlotsHolder();
     }
 
@@ -142,8 +138,9 @@ public abstract class Being extends Entity implements BuffObserver {
     public boolean receive(Item item) {
         if (backpack.receiveEntity(item))
             return true;
-        if (item instanceof EquippableItem)
-            return equipment.receiveEntity((EquippableItem) item);
+        if (item.getItemData().getItemType().getMainType() == ItemMainType.ARMOR
+                || item.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+            return equipment.receiveEntity(item);
         return false;
     }
 
@@ -168,7 +165,7 @@ public abstract class Being extends Entity implements BuffObserver {
         return size;
     }
 
-    public ItemSlotsHolder<Item> backpack() {
+    public ItemSlotsHolder backpack() {
         return backpack;
     }
 

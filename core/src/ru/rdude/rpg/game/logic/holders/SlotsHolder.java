@@ -4,17 +4,21 @@ import ru.rdude.rpg.game.logic.entities.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 public abstract class SlotsHolder<T extends Entity> {
 
     protected List<Slot<T>> slots;
-    protected Class<? extends T> requiredClass;
 
-    public SlotsHolder(int capacity, Class<T> requiredClass) {
-        this.requiredClass = requiredClass;
+    public SlotsHolder(int capacity) {
+        this(capacity, null);
+    }
+
+    public SlotsHolder(int capacity, Enum<?> marker, Predicate<T> ... extraRequirements) {
         slots = new ArrayList<>(capacity);
         for (int i = 0; i < capacity; i++) {
-            slots.add(new Slot<>(requiredClass));
+            slots.add(new Slot<T>(marker, extraRequirements));
         }
     }
 
@@ -47,7 +51,7 @@ public abstract class SlotsHolder<T extends Entity> {
 
     // return false if no space to receive
     public boolean receiveEntity(T entity) {
-        if (!requiredClass.isAssignableFrom(entity.getClass()))
+        if (slots.isEmpty() || !slots.get(0).isEntityMatchRequirements(entity))
             return false;
         Slot<T> slot = findEmptySlot();
         if (slot != null) {
