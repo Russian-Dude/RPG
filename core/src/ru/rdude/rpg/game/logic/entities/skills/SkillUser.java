@@ -41,9 +41,9 @@ public class SkillUser {
 
         allBeings = Stream.concat(allies.stream(), enemies.stream()).collect(Collectors.toList());
 
-
         switch (skillData.getMainTarget()) {
             case NO:
+                Game.getCurrentGame().getGameLogger().log(caster, skillData);
                 use(skillData, caster, null);
                 break;
 
@@ -53,12 +53,16 @@ public class SkillUser {
 
             case RIGHT_ALLY:
                 Being rightAlly = allies.getBeingRightFrom(caster);
-                if (rightAlly != null) use(skillData, caster, rightAlly);
+                if (rightAlly != null) {
+                    use(skillData, caster, rightAlly);
+                }
                 break;
 
             case LEFT_ALLY:
                 Being leftAlly = allies.getBeingLeftFrom(caster);
-                if (leftAlly != null) use(skillData, caster, leftAlly);
+                if (leftAlly != null) {
+                    use(skillData, caster, leftAlly);
+                }
                 break;
 
             case SELF:
@@ -66,17 +70,23 @@ public class SkillUser {
                 break;
 
             case RANDOM_ALLY:
-                use(skillData, caster, Functions.random(allies.getBeings()));
+                Being ally = Functions.random(allies.getBeings());
+                use(skillData, caster, ally);
                 break;
 
             case RANDOM_ENEMY:
-                if (enemies != emptyParty)
-                    use(skillData, caster, Functions.random(enemies.getBeings()));
+                if (enemies != emptyParty) {
+                    Being enemy = Functions.random(enemies.getBeings());
+                    use(skillData, caster, enemy);
+                }
                 break;
         }
     }
 
     public void use(SkillData skillData, Being caster, Being mainTarget) {
+        if (mainTarget != null) {
+            Game.getCurrentGame().getGameLogger().log(caster, mainTarget, skillData);
+        }
         // if there is main target and main target does not receive hit - return
         if (mainTarget != null && !SkillApplier.apply(skillData, caster, mainTarget))
             return;

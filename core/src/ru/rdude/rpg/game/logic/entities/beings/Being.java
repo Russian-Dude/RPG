@@ -63,19 +63,19 @@ public abstract class Being extends Entity implements BuffObserver {
         if (damage.value() > 0) {
             // check if damage is missed
             if (damage.isMiss()) {
-                notifySubscribers(new BeingAction(BeingAction.Action.DODGE, damage.interactor()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.DODGE, damage.interactor(), damage.bySkill()), this);
                 if (damage.interactor() instanceof Being)
-                    ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.MISS, this), (Being) damage.interactor());
+                    ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.MISS, this, damage.bySkill()), (Being) damage.interactor());
                 return false;
             }
             // check if blocked
             if (damage.isBlock()) {
-                notifySubscribers(new BeingAction(BeingAction.Action.BLOCK, damage.interactor()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.BLOCK, damage.interactor(), damage.bySkill()), this);
                 return false;
             }
             // check if parried
             if (damage.isParry()) {
-                notifySubscribers(new BeingAction(BeingAction.Action.PARRY, damage.interactor()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.PARRY, damage.interactor(), damage.bySkill()), this);
                 return false;
             }
             // else take damage
@@ -85,24 +85,24 @@ public abstract class Being extends Entity implements BuffObserver {
                 realDamage = 1;
             boolean isAlive = stats.hp().decrease(realDamage) > 0;
             if (damage.isCritical())
-                notifySubscribers(new BeingAction(BeingAction.Action.CRITICAL_RECEIVE, damage.interactor()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.CRITICAL_RECEIVE, damage.interactor(), damage.bySkill(), realDamage), this);
             else
-                notifySubscribers(new BeingAction(BeingAction.Action.DAMAGE_RECEIVE, damage.interactor()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.DAMAGE_RECEIVE, damage.interactor(), damage.bySkill(), realDamage), this);
             if (damage.interactor() instanceof Being)
-                ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.DAMAGE_DEAL, this), (Being) damage.interactor());
+                ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.DAMAGE_DEAL, this, damage.bySkill(), realDamage), (Being) damage.interactor());
             if (!isAlive) {
                 alive = false;
-                notifySubscribers(new BeingAction(BeingAction.Action.DIE, damage.interactor()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.DIE, damage.interactor(), damage.bySkill()), this);
                 if (damage.interactor() instanceof Being)
-                    ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.KILL, this), (Being) damage.interactor());
+                    ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.KILL, this, damage.bySkill()), (Being) damage.interactor());
             }
         }
         // heal
         else {
             stats.hp().increase(damage.value());
-            notifySubscribers(new BeingAction(BeingAction.Action.HEAL_RECEIVE, damage.interactor()), this);
+            notifySubscribers(new BeingAction(BeingAction.Action.HEAL_RECEIVE, damage.interactor(), damage.bySkill(), damage.value()), this);
             if (damage.interactor() instanceof Being)
-                ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.HEAL_DEAL, this), (Being) damage.interactor());
+                ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.HEAL_DEAL, this, damage.bySkill(), damage.value()), (Being) damage.interactor());
         }
         return true;
     }

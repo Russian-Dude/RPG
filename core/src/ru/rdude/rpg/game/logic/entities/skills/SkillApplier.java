@@ -110,7 +110,7 @@ public class SkillApplier {
         }
         double pureDamageValue = skillParser.parse(skillData.getDamage());
         double damageValue = Math.floor(pureDamageValue * getDamageCoefficient());
-        Damage damage = new Damage(damageValue, caster);
+        Damage damage = new Damage(damageValue, caster, skillData);
         if (isCritical()) {
             damage.setCritical(true);
         }
