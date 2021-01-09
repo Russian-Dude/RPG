@@ -46,7 +46,7 @@ public abstract class Being extends Entity implements BuffObserver {
         coefficients = new Coefficients();
         buffs = new HashSet<>();
         backpack = new ItemSlotsHolder(16);
-        equipment = new EquipmentSlotsHolder();
+        equipment = new EquipmentSlotsHolder(this);
     }
 
 

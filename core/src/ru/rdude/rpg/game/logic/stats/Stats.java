@@ -262,8 +262,21 @@ public class Stats implements StatObserver {
         stats.values().forEach(action);
     }
 
+    public boolean isMatchRequirementsOf(Stats stats) {
+        return streamWithNestedStats()
+                .allMatch(stat -> stat.value() >= stats.get(stat.getClass()).value());
+    }
+
     public void forEachWithNestedStats(Consumer<? super Stat> action) {
-        Stream.concat(
+        streamWithNestedStats().forEach(action);
+    }
+
+    public Stream<Stat> stream() {
+        return stats.values().stream();
+    }
+
+    public Stream<Stat> streamWithNestedStats() {
+        return Stream.concat(
                 stats.values().stream()
                         .filter(stat -> stat.getClass() != Dmg.class),
                 Stream.of(
@@ -281,11 +294,7 @@ public class Stats implements StatObserver {
                         stm().recovery(),
                         hp().max(),
                         hp().recovery()
-                )).forEach(action);
-    }
-
-    public Stream<Stat> stream() {
-        return stats.values().stream();
+                ));
     }
 
     public void subscribe(StatsObserver subscriber) {

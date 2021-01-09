@@ -4,8 +4,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Align;
 import ru.rdude.rpg.game.logic.entities.items.Item;
+import ru.rdude.rpg.game.logic.game.Game;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +41,15 @@ public class ItemVisual extends Group {
         addActor(count);
         setSize(border.getWidth(), border.getHeight());
         setBounds(getX(), getY(), getWidth(), getHeight());
+
+        ItemDragAndDroper.addItem(this);
     }
 
+    public Item getItem() {
+        return item;
+    }
+
+    public Image getItemImage() {
+        return itemImage;
+    }
 }

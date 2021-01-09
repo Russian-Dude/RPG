@@ -99,8 +99,8 @@ public class Buff implements TurnChangeObserver, TimeChangeObserver, BeingAction
     private void onTimeOrTurnUpdate() {
         if (damage != null) {
             if (skillData.isRecalculateStatsEveryIteration())
-                skillApplier.target.receive(new Damage(skillApplier.skillParser.parse(skillData.getDamage()), skillApplier.caster));
-            else skillApplier.target.receive(new Damage(damage, skillApplier.caster));
+                skillApplier.target.receive(new Damage(skillApplier.skillParser.parse(skillData.getDamage()), skillApplier.caster, skillData));
+            else skillApplier.target.receive(new Damage(damage, skillApplier.caster, skillData));
         }
         stats.increase(skillData.isRecalculateStatsEveryIteration() ? createStats() : stats);
         if (skillData.getTimeChange() != 0)

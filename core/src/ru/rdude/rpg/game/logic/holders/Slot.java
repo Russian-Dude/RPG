@@ -2,13 +2,14 @@ package ru.rdude.rpg.game.logic.holders;
 
 import ru.rdude.rpg.game.logic.entities.Entity;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Slot<T extends Entity> {
+
+    // need to drag and drop knows from which slot entity dragged
+    private static Map<? super Entity, Slot<? extends Entity>> entitiesInSlots = new HashMap<>();
 
     private Set<SlotObserver> subscribers;
 
@@ -24,12 +25,17 @@ public class Slot<T extends Entity> {
         this.extraRequirements = Arrays.stream(extraRequirements).collect(Collectors.toSet());
     }
 
+    public static <E extends Entity> Slot<? extends Entity> withEntity(E entity) {
+        return entitiesInSlots.get(entity);
+    }
+
     public T getEntity() {
         return entity;
     }
 
     public void setEntity(T item) {
         this.entity = item;
+        entitiesInSlots.put(item, this);
         notifySubscribers(item);
     }
 

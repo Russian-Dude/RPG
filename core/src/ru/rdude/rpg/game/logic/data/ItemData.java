@@ -12,6 +12,8 @@ public class ItemData extends EntityData {
 
     private static Map<Long, ItemData> items = new HashMap<>();
 
+    private ItemVisualData visualData;
+
     private ItemType itemType;
     private boolean stackable;
     private Stats requirements;
@@ -47,6 +49,14 @@ public class ItemData extends EntityData {
 
     public static void setItems(Map<Long, ItemData> items) {
         ItemData.items = items;
+    }
+
+    public ItemVisualData getVisualData() {
+        return visualData;
+    }
+
+    public void setVisualData(ItemVisualData visualData) {
+        this.visualData = visualData;
     }
 
     public WeaponData getWeaponData() {

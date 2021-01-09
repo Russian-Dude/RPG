@@ -23,7 +23,7 @@ public class BackpackWindow extends Window {
         backpack = being.backpack();
         int i = 1;
         for (Slot<Item> slot : backpack.getSlots()) {
-            add(new ItemSlotVisual<>(slot));
+            add(new ItemSlotVisual(slot));
             if (i % 4 == 0)
                 row();
             i++;

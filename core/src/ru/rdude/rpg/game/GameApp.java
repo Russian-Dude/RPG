@@ -9,12 +9,15 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import ru.rdude.rpg.game.logic.GameLogger;
 import ru.rdude.rpg.game.logic.data.ItemData;
+import ru.rdude.rpg.game.logic.data.ItemVisualData;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.entities.items.Item;
+import ru.rdude.rpg.game.logic.enums.ItemType;
 import ru.rdude.rpg.game.logic.map.GameMap;
 import ru.rdude.rpg.game.logic.map.Generator;
 import ru.rdude.rpg.game.logic.map.bioms.Biom;
 import ru.rdude.rpg.game.logic.map.reliefs.Relief;
+import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.mapVisual.MapVisual;
 import ru.rdude.rpg.game.ui.*;
 
@@ -31,9 +34,14 @@ public class GameApp extends ApplicationAdapter {
         stage.addActor(new EquipmentWindow(player));
         BackpackWindow backpackWindow = new BackpackWindow(player);
         stage.addActor(backpackWindow);
-        ItemVisual itemVisual = new ItemVisual(new Item(new ItemData(35135)));
+        Item item = new Item(new ItemData(35135));
+        ItemVisualData itemVisualData = new ItemVisualData();
+        item.getItemData().setItemType(ItemType.SWORD);
+        item.getItemData().setRequirements(new Stats(false));
+        ItemVisual itemVisual = new ItemVisual(item);
         stage.addActor(itemVisual);
-        ((ItemSlotVisual) backpackWindow.getCells().first().getActor()).setItemVisual(itemVisual);
+        //((ItemSlotVisual) backpackWindow.getCells().first().getActor()).setItemVisual(itemVisual);
+        player.receive(item);
 
 
         Gdx.input.setInputProcessor(stage);

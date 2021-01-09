@@ -36,14 +36,5 @@ public class Battle extends GameStateBase implements TurnChangeObserver {
         if (turnOf == playerSide)
             turnOf = enemySide;
         else turnOf = playerSide;
-        // buffs' actions:
-
-        // buffs duration update:
-      /*  turnOf.stream()
-                .map(Being::buffs)
-                .flatMap(Collection::stream)
-                .forEach(Buff::turnUpdate);
-        // global time update:
-        Game.getCurrentGame().getTimeManager().turnUpdate();*/
     }
 }

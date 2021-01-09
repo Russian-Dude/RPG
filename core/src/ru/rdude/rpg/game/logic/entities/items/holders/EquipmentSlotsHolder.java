@@ -1,6 +1,8 @@
 package ru.rdude.rpg.game.logic.entities.items.holders;
 
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
+import ru.rdude.rpg.game.logic.entities.beings.Being;
+import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.logic.enums.Element;
@@ -29,29 +31,39 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
     private Slot<Item> jewelry2;
 
 
-    public EquipmentSlotsHolder() {
+    public EquipmentSlotsHolder(Being being) {
         slots = new ArrayList<>(10);
-        slots.add(new Slot<>(ItemType.ARMOR, t -> t.getItemData().getItemType() == ItemType.ARMOR));
+        slots.add(new Slot<>(ItemType.ARMOR, t -> t.getItemData().getItemType() == ItemType.ARMOR
+                && being.stats().isMatchRequirementsOf(t.requirements())));
         armor = slots.get(0);
-        slots.add(new Slot<>(ItemType.BOOTS, t -> t.getItemData().getItemType() == ItemType.BOOTS));
+        slots.add(new Slot<>(ItemType.BOOTS, t -> t.getItemData().getItemType() == ItemType.BOOTS
+                && being.stats().isMatchRequirementsOf(t.requirements())));
         boots = slots.get(1);
-        slots.add(new Slot<>(ItemType.GLOVES, t -> t.getItemData().getItemType() == ItemType.GLOVES));
+        slots.add(new Slot<>(ItemType.GLOVES, t -> t.getItemData().getItemType() == ItemType.GLOVES
+                && being.stats().isMatchRequirementsOf(t.requirements())));
         gloves = slots.get(2);
-        slots.add(new Slot<>(ItemType.HELMET, t -> t.getItemData().getItemType() == ItemType.HELMET));
+        slots.add(new Slot<>(ItemType.HELMET, t -> t.getItemData().getItemType() == ItemType.HELMET
+                && being.stats().isMatchRequirementsOf(t.requirements())));
         helmet = slots.get(3);
-        slots.add(new Slot<>(ItemType.NECKLACE, t -> t.getItemData().getItemType() == ItemType.NECKLACE));
+        slots.add(new Slot<>(ItemType.NECKLACE, t -> t.getItemData().getItemType() == ItemType.NECKLACE
+                && being.stats().isMatchRequirementsOf(t.requirements())));
         necklace = slots.get(4);
-        slots.add(new Slot<>(ItemType.PANTS, t -> t.getItemData().getItemType() == ItemType.PANTS));
+        slots.add(new Slot<>(ItemType.PANTS, t -> t.getItemData().getItemType() == ItemType.PANTS
+                && being.stats().isMatchRequirementsOf(t.requirements())));
         pants = slots.get(5);
-        slots.add(new Slot<>(ItemType.SHIELD, t -> t.getItemData().getItemType() == ItemType.SHIELD
-                || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON));
+        slots.add(new Slot<>(ItemType.SHIELD, t -> (t.getItemData().getItemType() == ItemType.SHIELD
+                || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+                && being.stats().isMatchRequirementsOf(t.requirements())));
         leftHand = slots.get(6);
-        slots.add(new Slot<>(ItemMainType.WEAPON, t -> t.getItemData().getItemType() == ItemType.SHIELD
-                || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON));
+        slots.add(new Slot<>(ItemMainType.WEAPON, t -> (t.getItemData().getItemType() == ItemType.SHIELD
+                || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+                && being.stats().isMatchRequirementsOf(t.requirements())));
         rightHand = slots.get(7);
-        slots.add(new Slot<>(ItemType.JEWELRY, t -> t.getItemData().getItemType() == ItemType.JEWELRY));
+        slots.add(new Slot<>(ItemType.JEWELRY, t -> t.getItemData().getItemType() == ItemType.JEWELRY
+                && being.stats().isMatchRequirementsOf(t.requirements())));
         jewelry1 = slots.get(8);
-        slots.add(new Slot<>(ItemType.JEWELRY, t -> t.getItemData().getItemType() == ItemType.JEWELRY));
+        slots.add(new Slot<>(ItemType.JEWELRY, t -> t.getItemData().getItemType() == ItemType.JEWELRY
+                && being.stats().isMatchRequirementsOf(t.requirements())));
         jewelry2 = slots.get(9);
     }
 
@@ -99,50 +111,50 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
     @Override
     public boolean receiveEntity(Item entity) {
         if (entity.getItemData().getItemType() == ItemType.ARMOR) {
-            if (armor.getEntity() == null) {
+            if (armor.getEntity() == null && armor.isEntityMatchRequirements(entity)) {
                 armor.setEntity(entity);
                 return true;
             } else return false;
         } else if (entity.getItemData().getItemType() == ItemType.BOOTS) {
-            if (boots.getEntity() == null) {
+            if (boots.getEntity() == null && boots.isEntityMatchRequirements(entity)) {
                 boots.setEntity(entity);
                 return true;
             } else return false;
         } else if (entity.getItemData().getItemType() == ItemType.GLOVES) {
-            if (gloves.getEntity() == null) {
+            if (gloves.getEntity() == null && gloves.isEntityMatchRequirements(entity)) {
                 gloves.setEntity(entity);
                 return true;
             } else return false;
         } else if (entity.getItemData().getItemType() == ItemType.HELMET) {
-            if (helmet.getEntity() == null) {
+            if (helmet.getEntity() == null && helmet.isEntityMatchRequirements(entity)) {
                 helmet.setEntity(entity);
                 return true;
             } else return false;
         } else if (entity.getItemData().getItemType() == ItemType.NECKLACE) {
-            if (necklace.getEntity() == null) {
+            if (necklace.getEntity() == null && necklace.isEntityMatchRequirements(entity)) {
                 necklace.setEntity(entity);
                 return true;
             } else return false;
         } else if (entity.getItemData().getItemType() == ItemType.PANTS) {
-            if (pants.getEntity() == null) {
+            if (pants.getEntity() == null && pants.isEntityMatchRequirements(entity)) {
                 pants.setEntity(entity);
                 return true;
             } else return false;
         } else if (entity.getItemData().getItemType() == ItemType.JEWELRY) {
-            if (jewelry1.getEntity() == null) {
+            if (jewelry1.getEntity() == null && jewelry1.isEntityMatchRequirements(entity)) {
                 jewelry1.setEntity(entity);
                 return true;
-            } else if (jewelry2.getEntity() == null) {
+            } else if (jewelry2.getEntity() == null && jewelry2.isEntityMatchRequirements(entity)) {
                 jewelry2.setEntity(entity);
                 return true;
             } else return false;
         } else if (entity.getItemData().getItemType() == ItemType.SHIELD
                 || entity.getItemData().getItemType().getMainType() == ItemMainType.WEAPON) {
-            if (leftHand.getEntity() == null) {
+            if (leftHand.getEntity() == null && leftHand.isEntityMatchRequirements(entity)) {
                 leftHand.setEntity(entity);
                 return true;
             }
-            if (rightHand.getEntity() == null) {
+            else if (rightHand.getEntity() == null && rightHand.isEntityMatchRequirements(entity)) {
                 rightHand.setEntity(entity);
                 return true;
             } else return false;

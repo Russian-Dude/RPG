@@ -9,20 +9,21 @@ import ru.rdude.rpg.game.logic.enums.ItemType;
 import ru.rdude.rpg.game.logic.holders.Slot;
 import ru.rdude.rpg.game.logic.holders.SlotObserver;
 
-public class ItemSlotVisual<T extends Item> extends Group implements SlotObserver {
+public class ItemSlotVisual extends Group implements SlotObserver {
 
-    private Slot<T> slot;
+    private Slot<Item> slot;
 
     private Image background;
     private ItemVisual item;
 
 
-    public ItemSlotVisual(Slot<T> slot) {
+    public ItemSlotVisual(Slot<Item> slot) {
         this.slot = slot;
         slot.subscribe(this);
         background = new Image(UiData.DEFAULT_SKIN.getDrawable("Slot_" + getDrawableBackgroundName()));
         addActor(background);
         setSize(background.getWidth(), background.getHeight());
+        ItemDragAndDroper.addSlot(this);
     }
 
     public void setItemVisual(ItemVisual itemVisual) {
@@ -30,7 +31,7 @@ public class ItemSlotVisual<T extends Item> extends Group implements SlotObserve
         addActor(itemVisual);
     }
 
-    public Slot<T> getSlot() {
+    public Slot<Item> getSlot() {
         return slot;
     }
 
