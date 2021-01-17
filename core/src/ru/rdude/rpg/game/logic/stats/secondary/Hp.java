@@ -95,6 +95,15 @@ public class Hp extends Stat implements Calculatable {
         }
 
         @Override
+        public void set(double value) {
+            double oldValue = this.value();
+            super.set(value);
+            if (Hp.this.value() > this.value() || Hp.this.value() == oldValue) {
+                Hp.this.set(this.value());
+            }
+        }
+
+        @Override
         public void setCalculatable(boolean calculatable) {
 
         }

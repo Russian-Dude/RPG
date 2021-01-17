@@ -132,6 +132,15 @@ public class Stm extends Stat implements Calculatable {
         }
 
         @Override
+        public void set(double value) {
+            double oldValue = this.value();
+            super.set(value);
+            if (Stm.this.value() > this.value() || Stm.this.value() == oldValue) {
+                Stm.this.set(this.value());
+            }
+        }
+
+        @Override
         public void setCalculatable(boolean calculatable) {
 
         }

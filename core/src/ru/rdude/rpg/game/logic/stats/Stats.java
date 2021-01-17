@@ -51,6 +51,11 @@ public class Stats implements StatObserver {
         setCalculatable(calculatable);
         // subscribe:
         stats.values().forEach(stat -> stat.subscribe(this));
+        if (calculatable) {
+            stats.values().forEach(Stat::forceCalculate);
+            hp().set(hp().max().value());
+            stm().set(stm().maxValue());
+        }
     }
 
     public Agi agi() {
