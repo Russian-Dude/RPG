@@ -59,7 +59,7 @@ public class Lvl extends Stat {
     public class Points extends Stat {
         @Override
         public String getName() {
-            return "Point";
+            return "Stat Points";
         }
     }
 

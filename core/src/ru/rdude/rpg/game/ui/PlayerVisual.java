@@ -26,6 +26,8 @@ public class PlayerVisual extends VerticalGroup {
     private BackpackWindow backpackWindow;
     private EquipmentWindow equipmentWindow;
 
+    private StatsWindow statsWindow;
+
     private PlayerAvatar avatar;
     private Label name;
     private HpBar hpBar;
@@ -47,6 +49,7 @@ public class PlayerVisual extends VerticalGroup {
         spells = new Button(DEFAULT_SKIN, "spells");
         name = new Label(player.getName(), DEFAULT_SKIN);
 
+        // items
         backpackWindow = new BackpackWindow(player);
         equipmentWindow = new EquipmentWindow(player);
         items.addListener(new ClickListener() {
@@ -71,6 +74,23 @@ public class PlayerVisual extends VerticalGroup {
         backpackWindow.setVisible(false);
         equipmentWindow.setVisible(false);
 
+        // stats
+        statsWindow = new StatsWindow(player);
+        avatar.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                statsWindow.setVisible(!statsWindow.isVisible());
+                if (!getStage().getActors().contains(statsWindow, true)) {
+                    getStage().addActor(statsWindow);
+                    statsWindow.setX(PlayerVisual.this.getX());
+                    statsWindow.setY(Gdx.graphics.getHeight() / 2f);
+                    statsWindow.setVisible(true);
+                }
+                statsWindow.toFront();
+            }
+        });
+
+        // add
         addActor(avatar);
         addActor(name);
         buttons.addActor(spells);

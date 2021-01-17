@@ -30,7 +30,9 @@ public class GameApp extends ApplicationAdapter {
     @Override
     public void create() {
         stage = new Stage(new ScreenViewport());
-        stage.addActor(new PlayersVisualBottom(new Player(), new Player(), new Player()));
+        Player p = new Player();
+        p.stats().lvl().increase(5);
+        stage.addActor(new PlayersVisualBottom(new Player(), new Player(), new Player(), p));
         Item item = new Item(new ItemData(35135));
         ItemVisualData itemVisualData = new ItemVisualData();
         item.getItemData().setItemType(ItemType.SWORD);

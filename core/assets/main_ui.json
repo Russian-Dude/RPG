@@ -1,13 +1,22 @@
 {
-com.badlogic.gdx.graphics.g2d.BitmapFont: {
+BitmapFont: {
 	huge_white_shadow-black: {
 		file: BLKCHCRY.fnt
 	}
 	Medium_White_Shadow-black: {
 		file: BLKCHCRY.fnt
 	}
+	modern: {
+		file: modern.fnt
+	}
+	mud: {
+		file: mud.fnt
+	}
+	simple: {
+		file: simple.fnt
+	}
 }
-com.badlogic.gdx.graphics.Color: {
+Color: {
 	black: {
 		r: 0
 		g: 0
@@ -74,7 +83,7 @@ com.kotcrab.vis.ui.widget.BusyBar$BusyBarStyle: {
 		segmentOverflow: 10
 	}
 }
-com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+ButtonStyle: {
 	default: {
 		up: Button_Horizontal_Up
 		down: Button_Horizontal_Pressed
@@ -105,8 +114,23 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 		up: Button_Items_Up
 		over: Button_Items_Over
 	}
+	square: {
+		up: Square_Button_Up
+		down: Square_Button_Pressed_Neutral
+		over: Square_Button_Hover_Neutral
+	}
+	square_green: {
+		up: Square_Button_Up
+		down: Square_Button_Pressed_Green
+		over: Square_Button_Hover_Green
+	}
+	square_red: {
+		up: Square_Button_Up
+		down: Square_Button_Pressed_Red
+		over: Square_Button_Hover_Red
+	}
 }
-com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+LabelStyle: {
 	default: {
 		font: Medium_White_Shadow-black
 		fontColor: white
@@ -117,8 +141,18 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	title: {
 		font: huge_white_shadow-black
 	}
+	simple: {
+		font: simple
+		fontColor: white
+	}
+	mud: {
+		font: mud
+	}
+	modern: {
+		font: modern
+	}
 }
-com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
+ListStyle: {
 	default: {
 		font: Medium_White_Shadow-black
 		fontColorSelected: white
@@ -126,8 +160,20 @@ com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 		selection: Window_Transparent_9p
 		background: Window_Transparent_9p
 	}
+	simple: {
+		parent: default
+		font: simple
+	}
+	mud: {
+		parent: default
+		font: mud
+	}
+	modern: {
+		parent: default
+		font: modern
+	}
 }
-com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
+ProgressBarStyle: {
 	default-horizontal: {
 		background: Progress_Bar_Horizontal_9p
 		knobBefore: Progress_Bar_Before_Knob_Hp
@@ -145,12 +191,12 @@ com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
 		knobBefore: Progress_Bar_Before_Knob_Exp
 	}
 }
-com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
+ScrollPaneStyle: {
 	default: {
 		background: Window_Transparent_9p
 	}
 }
-com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
+SelectBoxStyle: {
 	default: {
 		font: Medium_White_Shadow-black
 		fontColor: white
@@ -159,7 +205,7 @@ com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 		listStyle: default
 	}
 }
-com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+TextButtonStyle: {
 	default: {
 		parent: default
 		font: Medium_White_Shadow-black
@@ -173,15 +219,121 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		parent: no
 		font: huge_white_shadow-black
 	}
+	simple: {
+		parent: default
+		font: simple
+	}
+	simple_yes: {
+		parent: yes
+		font: simple
+	}
+	simple_no: {
+		parent: no
+		font: simple
+	}
+	mud: {
+		parent: default
+		font: mud
+	}
+	mud_yes: {
+		parent: yes
+		font: mud
+	}
+	mud_no: {
+		parent: no
+		font: mud
+	}
+	modern: {
+		parent: default
+		font: modern
+	}
+	modern_yes: {
+		parent: yes
+		font: modern
+	}
+	modern_no: {
+		parent: no
+		font: modern
+	}
+	square: {
+		font: Medium_White_Shadow-black
+		up: Square_Button_Up
+		down: Square_Button_Pressed_Neutral
+		over: Square_Button_Hover_Neutral
+	}
+	square_yes: {
+		font: Medium_White_Shadow-black
+		up: Square_Button_Up
+		down: Square_Button_Pressed_Green
+		over: Square_Button_Hover_Green
+	}
+	square_no: {
+		font: Medium_White_Shadow-black
+		up: Square_Button_Up
+		down: Square_Button_Pressed_Red
+		over: Square_Button_Hover_Red
+	}
+	square_simple: {
+		parent: square
+		font: simple
+	}
+	square_simple_yes: {
+		parent: square_yes
+		font: simple
+	}
+	square_simple_no: {
+		parent: square_no
+		font: simple
+	}
+	square_mud: {
+		parent: square
+		font: mud
+	}
+	square_mud_no: {
+		parent: square_no
+		font: mud
+	}
+	square_mud_yes: {
+		parent: square_yes
+		font: mud
+	}
+	square_modern: {
+		parent: square
+		font: modern
+	}
+	square_modern_yes: {
+		parent: square_yes
+		font: modern
+	}
+	square_modern_no: {
+		parent: square_no
+		font: modern
+	}
 }
-com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+TextFieldStyle: {
 	default: {
 		font: Medium_White_Shadow-black
 		fontColor: white
 		background: Window_Transparent_9p
+		cursor: Text_Knob
+		selection: Text_Selection
+	}
+	simple: {
+		parent: default
+		font: simple
+	}
+	mud: {
+		parent: default
+		font: mud
+	}
+	modern: {
+		parent: default
+		font: modern
+		cursor: Text_Knob
+		selection: Text_Selection
 	}
 }
-com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
+TextTooltipStyle: {
 	default: {
 		label: default
 		background: Window_Transparent_9p
@@ -190,7 +342,7 @@ com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
 		label: default
 	}
 }
-com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+WindowStyle: {
 	default: {
 		background: Window_9p
 		titleFont: huge_white_shadow-black
@@ -202,6 +354,42 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 	no_edges: {
 		background: Window_No_Edges_9p
 		titleFont: huge_white_shadow-black
+	}
+	simple: {
+		parent: default
+		titleFont: simple
+	}
+	simple_transparent: {
+		parent: transparent
+		titleFont: simple
+	}
+	simple_no_edges: {
+		parent: no_edges
+		titleFont: simple
+	}
+	mud: {
+		parent: default
+		titleFont: mud
+	}
+	mud_transparent: {
+		parent: transparent
+		titleFont: mud
+	}
+	mud_no_edges: {
+		parent: no_edges
+		titleFont: mud
+	}
+	modern: {
+		parent: default
+		titleFont: modern
+	}
+	modern_transparent: {
+		parent: transparent
+		titleFont: modern
+	}
+	modern_no_edges: {
+		parent: no_edges
+		titleFont: modern
 	}
 }
 }
