@@ -64,6 +64,8 @@ public class PlayerVisual extends VerticalGroup {
                     equipmentWindow.setX(PlayerVisual.this.getX() - equipmentWindow.getWidth());
                     equipmentWindow.setY(Gdx.graphics.getHeight() / 2f);
                 }
+                equipmentWindow.toFront();
+                backpackWindow.toFront();
             }
         });
         backpackWindow.setVisible(false);
