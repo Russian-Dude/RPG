@@ -13,6 +13,7 @@ import ru.rdude.rpg.game.logic.data.ItemVisualData;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.enums.ItemType;
+import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.map.GameMap;
 import ru.rdude.rpg.game.logic.map.Generator;
 import ru.rdude.rpg.game.logic.map.bioms.Biom;
@@ -29,11 +30,7 @@ public class GameApp extends ApplicationAdapter {
     @Override
     public void create() {
         stage = new Stage(new ScreenViewport());
-        stage.addActor(new PlayersVisualBottom());
-        Player player = new Player();
-        stage.addActor(new EquipmentWindow(player));
-        BackpackWindow backpackWindow = new BackpackWindow(player);
-        stage.addActor(backpackWindow);
+        stage.addActor(new PlayersVisualBottom(new Player(), new Player(), new Player()));
         Item item = new Item(new ItemData(35135));
         ItemVisualData itemVisualData = new ItemVisualData();
         item.getItemData().setItemType(ItemType.SWORD);
@@ -41,7 +38,6 @@ public class GameApp extends ApplicationAdapter {
         ItemVisual itemVisual = new ItemVisual(item);
         stage.addActor(itemVisual);
         //((ItemSlotVisual) backpackWindow.getCells().first().getActor()).setItemVisual(itemVisual);
-        player.receive(item);
 
 
         Gdx.input.setInputProcessor(stage);

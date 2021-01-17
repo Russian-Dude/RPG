@@ -6,11 +6,12 @@ import com.badlogic.gdx.utils.Align;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
 
 public class PlayersVisualBottom extends HorizontalGroup {
-    public PlayersVisualBottom() {
+
+    public PlayersVisualBottom(Player... players) {
         space(30);
         align(Align.center);
-        for (int i = 0; i < 3; i++) {
-            addActor(new PlayerVisual(new Player()));
+        for (Player player : players) {
+            addActor(new PlayerVisual(player));
         }
         setWidth(Gdx.graphics.getWidth());
         setHeight(getPrefHeight());

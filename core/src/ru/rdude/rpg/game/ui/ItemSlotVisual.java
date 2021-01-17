@@ -24,6 +24,12 @@ public class ItemSlotVisual extends Group implements SlotObserver {
         addActor(background);
         setSize(background.getWidth(), background.getHeight());
         ItemDragAndDroper.addSlot(this);
+
+        Item inside = slot.getEntity();
+        if (inside != null) {
+            ItemVisual itemVisual = ItemVisual.items.get(inside);
+            setItemVisual(itemVisual != null ? itemVisual : new ItemVisual(inside));
+        }
     }
 
     public void setItemVisual(ItemVisual itemVisual) {

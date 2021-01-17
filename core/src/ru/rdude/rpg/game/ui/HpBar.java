@@ -44,6 +44,9 @@ public class HpBar extends Group implements StatObserver {
 
         setWidth(progressBar.getWidth());
         setHeight(progressBar.getHeight());
+
+        update(hp);
+        update(hp.max());
     }
 
 

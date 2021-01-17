@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.game;
 
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import ru.rdude.rpg.game.logic.GameLogger;
 import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
