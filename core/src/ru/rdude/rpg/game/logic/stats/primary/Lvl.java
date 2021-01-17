@@ -4,7 +4,7 @@ package ru.rdude.rpg.game.logic.stats.primary;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.Stat;
 
-public class Lvl extends Stat {
+public class Lvl extends Stat implements Calculatable {
 
     public enum Type {BASE, CLASS}
     public static final Type BASE = Type.BASE;
@@ -53,6 +53,16 @@ public class Lvl extends Stat {
         skillPoints.increase(1);
         if (value() % 3 == 0) statPoints.increase(1);
         if (value() % 10 == 0) statPoints.increase(1);
+    }
+
+    @Override
+    public double calculate() {
+        exp.calculate();
+        return value();
+    }
+
+    @Override
+    public void setCalculatable(boolean calculatable) {
     }
 
 

@@ -39,6 +39,8 @@ public class GameApp extends ApplicationAdapter {
         item.getItemData().setRequirements(new Stats(false));
         ItemVisual itemVisual = new ItemVisual(item);
         stage.addActor(itemVisual);
+        LoggerVisual loggerVisual = new LoggerVisual();
+        stage.addActor(loggerVisual);
         //((ItemSlotVisual) backpackWindow.getCells().first().getActor()).setItemVisual(itemVisual);
 
 

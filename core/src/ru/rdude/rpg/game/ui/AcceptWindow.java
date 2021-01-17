@@ -15,6 +15,7 @@ public class AcceptWindow extends Window {
 
     public AcceptWindow(String title, String text, String yes, String no) {
         super(title, UiData.DEFAULT_SKIN);
+        setModal(true);
         this.yes = new TextButton(yes, UiData.DEFAULT_SKIN, "yes");
         this.no = new TextButton(no, UiData.DEFAULT_SKIN, "no");
         buttons = new HorizontalGroup();

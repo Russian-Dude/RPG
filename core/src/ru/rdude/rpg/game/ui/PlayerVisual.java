@@ -1,21 +1,18 @@
 package ru.rdude.rpg.game.ui;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static ru.rdude.rpg.game.ui.UiData.*;
+import static ru.rdude.rpg.game.ui.UiData.DEFAULT_SKIN;
 
 public class PlayerVisual extends VerticalGroup {
 
@@ -47,7 +44,7 @@ public class PlayerVisual extends VerticalGroup {
         attack = new Button(DEFAULT_SKIN, "attack");
         items = new Button(DEFAULT_SKIN, "items");
         spells = new Button(DEFAULT_SKIN, "spells");
-        name = new Label(player.getName(), DEFAULT_SKIN);
+        name = new Label(player.getName(), DEFAULT_SKIN, "mud");
 
         // items
         backpackWindow = new BackpackWindow(player);
