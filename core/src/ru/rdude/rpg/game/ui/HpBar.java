@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.utils.Align;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.StatObserver;
@@ -38,6 +39,7 @@ public class HpBar extends Group implements StatObserver {
         horizontalLabelGroup.addActor(slash);
         horizontalLabelGroup.addActor(max);
         horizontalLabelGroup.setSize(progressBar.getWidth(), progressBar.getHeight());
+        horizontalLabelGroup.align(Align.center);
 
         addActor(progressBar);
         addActor(horizontalLabelGroup);
