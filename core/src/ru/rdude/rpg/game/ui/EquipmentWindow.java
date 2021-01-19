@@ -16,7 +16,7 @@ public class EquipmentWindow extends Window {
     private Image dude;
 
     public EquipmentWindow(Being being) {
-        super(being.getName(), UiData.DEFAULT_SKIN);
+        super(being.getName(), UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
         equipment = being.equipment();
         padTop(35);
         leftGroup = new VerticalGroup();

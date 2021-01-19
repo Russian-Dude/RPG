@@ -21,7 +21,7 @@ public class LoggerVisual extends Window {
         super("", UiData.DEFAULT_SKIN, "simple_transparent");
         align(Align.topLeft);
         this.gameLogger = Game.getCurrentGame().getGameLogger();
-        text = new Label("Game has been started!", UiData.DEFAULT_SKIN, "simple");
+        text = new Label("Game has been started!", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
         text.setWrap(true);
         ScrollPane scrollPane = new ScrollPane(text);
         scrollPane.setScrollbarsVisible(true);

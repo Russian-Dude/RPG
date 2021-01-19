@@ -9,11 +9,6 @@ import java.util.List;
 
 public class AvatarCreator {
 
-    private List<Color> faceColors;
-    private List<Color> hairColors;
-    private List<Color> clothColors;
-    private List<Color> eyesColors;
-
     private TextureAtlas textureAtlas;
 
     private List<TextureAtlas.AtlasRegion> faces;
@@ -108,21 +103,5 @@ public class AvatarCreator {
 
     public List<TextureAtlas.AtlasRegion> hairs() {
         return hairs;
-    }
-
-    public List<Color> getFaceColors() {
-        return faceColors;
-    }
-
-    public List<Color> getHairColors() {
-        return hairColors;
-    }
-
-    public List<Color> getClothColors() {
-        return clothColors;
-    }
-
-    public List<Color> getEyesColors() {
-        return eyesColors;
     }
 }

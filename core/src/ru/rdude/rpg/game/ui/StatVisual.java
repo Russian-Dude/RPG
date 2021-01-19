@@ -44,22 +44,22 @@ public class StatVisual extends Table implements StatObserver {
         this.isDecimal = isDecimal;
         Label name;
         if (isStatSecondary()) {
-            name = new Label(stat.getName(), UiData.DEFAULT_SKIN, "simple");
-            value = new Label(String.valueOf(stat.value()), UiData.DEFAULT_SKIN, "simple");
-            pureValue = new Label("", UiData.DEFAULT_SKIN, "simple");
+            name = new Label(stat.getName(), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+            value = new Label(String.valueOf(stat.value()), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+            pureValue = new Label("", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
         }
         else {
-            name = new Label(stat.getName(), UiData.DEFAULT_SKIN, "mud");
-            value = new Label(String.valueOf(stat.value()), UiData.DEFAULT_SKIN, "mud");
-            pureValue = new Label("", UiData.DEFAULT_SKIN, "mud");
+            name = new Label(stat.getName(), UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+            value = new Label(String.valueOf(stat.value()), UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+            pureValue = new Label("", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
         }
         if (canIncrease) {
             this.statPoints = being.stats().lvl().statPoints();
             this.being = being;
-            this.plusButton = new TextButton("+", UiData.DEFAULT_SKIN, "square_mud_yes");
+            this.plusButton = new TextButton("+", UiData.DEFAULT_SKIN, UiData.YES_SQUARE_BUTTON_STYLE);
         }
         if (canDecrease) {
-            this.minusButton = new TextButton("-", UiData.DEFAULT_SKIN, "square_mud_no");
+            this.minusButton = new TextButton("-", UiData.DEFAULT_SKIN, UiData.NO_SQUARE_BUTTON_STYLE);
         }
         // add
         row().spaceRight(10);

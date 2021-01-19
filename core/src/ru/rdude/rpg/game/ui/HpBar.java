@@ -32,9 +32,9 @@ public class HpBar extends Group implements StatObserver {
         progressBar.setValue((float) hp.value());
 
         horizontalLabelGroup = new HorizontalGroup();
-        slash = new Label(" / ", UiData.DEFAULT_SKIN);
-        current = new Label(String.valueOf((int)hp.value()), UiData.DEFAULT_SKIN);
-        max = new Label(String.valueOf((int) hp.max().value()), UiData.DEFAULT_SKIN);
+        slash = new Label(" / ", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+        current = new Label(String.valueOf((int)hp.value()), UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+        max = new Label(String.valueOf((int) hp.max().value()), UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
         horizontalLabelGroup.addActor(current);
         horizontalLabelGroup.addActor(slash);
         horizontalLabelGroup.addActor(max);

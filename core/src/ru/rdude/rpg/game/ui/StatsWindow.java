@@ -10,7 +10,7 @@ import ru.rdude.rpg.game.logic.stats.Stats;
 public class StatsWindow extends Window {
 
     public StatsWindow(Being being) {
-        super(being.getName(), UiData.DEFAULT_SKIN, "mud");
+        super(being.getName(), UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
         getTitleTable().padTop(20);
         Stats stats = being.stats();
         align(Align.center);
@@ -20,7 +20,7 @@ public class StatsWindow extends Window {
         Table secondaryStats = new Table();
 
         // close button
-        Button closeButton = new TextButton("X", UiData.DEFAULT_SKIN, "square_mud_no");
+        Button closeButton = new TextButton("X", UiData.DEFAULT_SKIN, UiData.NO_SQUARE_BUTTON_STYLE);
         getTitleTable().add(closeButton).padTop(25);
         closeButton.addListener(new ClickListener() {
             @Override

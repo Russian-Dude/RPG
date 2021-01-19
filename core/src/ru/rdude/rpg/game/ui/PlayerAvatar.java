@@ -37,7 +37,7 @@ public class PlayerAvatar extends Group {
 
     private final List<Image> images = List.of(face, cloth, mouth, nose, eyes, eyePupils, eyeBrows, beard, hair);
 
-    private final Label name = new Label("", UiData.DEFAULT_SKIN, "mud");
+    private final Label name = new Label("", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
 
     public PlayerAvatar() {
         addActor(face);

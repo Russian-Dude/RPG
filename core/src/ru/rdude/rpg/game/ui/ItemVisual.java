@@ -32,7 +32,7 @@ public class ItemVisual extends Group {
         this.item = item;
         itemImage = UiData.getItemImage("simple_sword");
         border = UiData.ItemBorder.BRONZE;
-        count = new Label("", UiData.DEFAULT_SKIN);
+        count = new Label("", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
         tooltip = new ItemInfoTooltip(item);
         addListener(tooltip);
         itemImage.setSize(border.getWidth(), border.getHeight());

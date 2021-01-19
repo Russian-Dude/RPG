@@ -32,7 +32,7 @@ public class ItemInfoTooltip extends Tooltip<Table> {
         setInstant(true);
 
         // name
-        name = new Label(itemData.getName(), UiData.DEFAULT_SKIN);
+        name = new Label(itemData.getName(), UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
         mainTable.add(name);
         mainTable.row();
 
@@ -42,7 +42,7 @@ public class ItemInfoTooltip extends Tooltip<Table> {
             typeString += itemData.getWeaponData().isDualHanded() ? "TWO-HANDED " : "ONE-HANDED ";
         }
         typeString += itemData.getItemType().name();
-        type = new Label(typeString, UiData.DEFAULT_SKIN);
+        type = new Label(typeString, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
         mainTable.add(type);
         mainTable.row();
 
@@ -60,7 +60,7 @@ public class ItemInfoTooltip extends Tooltip<Table> {
             damageBuilder.append(itemData.getWeaponData().getAttackType().name())
                     .append(" ");
             damageBuilder.append("damage");
-            damage = new Label(damageBuilder.toString(), UiData.DEFAULT_SKIN);
+            damage = new Label(damageBuilder.toString(), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
             mainTable.add(damage);
             mainTable.row();
         }
@@ -105,7 +105,7 @@ public class ItemInfoTooltip extends Tooltip<Table> {
 
             String result = builder.toString();
             if (!result.isEmpty()) {
-                this.coefficients = new Label(result, UiData.DEFAULT_SKIN);
+                this.coefficients = new Label(result, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
                 mainTable.add(this.coefficients);
                 mainTable.row();
             }
@@ -129,7 +129,7 @@ public class ItemInfoTooltip extends Tooltip<Table> {
             });
             String result = builder.toString();
             if (!result.isEmpty()) {
-                stats = new Label(result, UiData.DEFAULT_SKIN);
+                stats = new Label(result, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
                 mainTable.add(stats);
                 mainTable.row();
             }
@@ -145,7 +145,7 @@ public class ItemInfoTooltip extends Tooltip<Table> {
             }
             String s = builder.toString();
             if (!s.isEmpty()) {
-                skillsOnUse = new Label(s, UiData.DEFAULT_SKIN);
+                skillsOnUse = new Label(s, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
                 mainTable.add(skillsOnUse);
                 mainTable.row();
             }
@@ -158,7 +158,7 @@ public class ItemInfoTooltip extends Tooltip<Table> {
             itemData.getSkillsEquip().forEach(skill -> builder.append(SkillData.getSkillByGuid(skill))
                     .append(" "));
             builder.append("when equipped");
-            skillsOnEquip = new Label(builder.toString(), UiData.DEFAULT_SKIN);
+            skillsOnEquip = new Label(builder.toString(), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
             mainTable.add(skillsOnEquip);
             mainTable.row();
         }
@@ -181,8 +181,8 @@ public class ItemInfoTooltip extends Tooltip<Table> {
             });
             String s = builder.toString();
             if (!s.isEmpty()) {
-                mainTable.add(new Label("REQUIREMENTS", UiData.DEFAULT_SKIN));
-                requirements = new Label(s, UiData.DEFAULT_SKIN);
+                mainTable.add(new Label("REQUIREMENTS", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE));
+                requirements = new Label(s, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
                 mainTable.add(requirements);
                 mainTable.row();
             }
@@ -190,7 +190,7 @@ public class ItemInfoTooltip extends Tooltip<Table> {
 
         // description
         if (itemData.getDescription() != null && !itemData.getDescription().isEmpty()) {
-            description = new Label(itemData.getDescription(), UiData.DEFAULT_SKIN);
+            description = new Label(itemData.getDescription(), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
             mainTable.add(description);
         }
 

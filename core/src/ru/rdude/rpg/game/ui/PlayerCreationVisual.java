@@ -47,10 +47,10 @@ public class PlayerCreationVisual extends Table {
         // create
         leftVerticalGroup = new VerticalGroup();
         leftVerticalGroup.space(15);
-        name = new TextField("", UiData.DEFAULT_SKIN, "mud");
+        name = new TextField("", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
         name.setMessageText("enter name here");
         avatar = new PlayerAvatar();
-        randomizeButton = new TextButton("randomize", UiData.DEFAULT_SKIN, "mud");
+        randomizeButton = new TextButton("randomize", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
         name.setAlignment(Align.center);
 
         // listeners
@@ -98,32 +98,32 @@ public class PlayerCreationVisual extends Table {
         leftVerticalGroup.addActor(nameTable);
         leftVerticalGroup.addActor(randomizeButton);
         // face types
-        faceCreationTable.add(new Label("Face", UiData.DEFAULT_SKIN, "mud"));
-        faceCreationTable.add(new Label("Mouth", UiData.DEFAULT_SKIN, "mud"));
+        faceCreationTable.add(new Label("Face", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
+        faceCreationTable.add(new Label("Mouth", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
         faceCreationTable.row();
         faceCreationTable.add(faceSelector).padRight(15);
         faceCreationTable.add(mouthSelector);
         faceCreationTable.row();
-        faceCreationTable.add(new Label("Nose", UiData.DEFAULT_SKIN, "mud"));
-        faceCreationTable.add(new Label("Eyes", UiData.DEFAULT_SKIN, "mud"));
+        faceCreationTable.add(new Label("Nose", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
+        faceCreationTable.add(new Label("Eyes", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
         faceCreationTable.row();
         faceCreationTable.add(noseSelector).padRight(15);
         faceCreationTable.add(eyesSelector);
         faceCreationTable.row();
-        faceCreationTable.add(new Label("Eyebrows", UiData.DEFAULT_SKIN, "mud"));
-        faceCreationTable.add(new Label("Beard", UiData.DEFAULT_SKIN, "mud"));
+        faceCreationTable.add(new Label("Eyebrows", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
+        faceCreationTable.add(new Label("Beard", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
         faceCreationTable.row();
         faceCreationTable.add(eyeBrowsSelector).padRight(15);
         faceCreationTable.add(beardSelector);
         faceCreationTable.row();
-        faceCreationTable.add(new Label("Hair", UiData.DEFAULT_SKIN, "mud"));
-        faceCreationTable.add(new Label("Hair color", UiData.DEFAULT_SKIN, "mud"));
+        faceCreationTable.add(new Label("Hair", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
+        faceCreationTable.add(new Label("Hair color", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
         faceCreationTable.row();
         faceCreationTable.add(hairSelector).padRight(15);
         faceCreationTable.add(hairColorSelector);
         faceCreationTable.row();
-        faceCreationTable.add(new Label("Face color", UiData.DEFAULT_SKIN, "mud"));
-        faceCreationTable.add(new Label("Eyes color", UiData.DEFAULT_SKIN, "mud"));
+        faceCreationTable.add(new Label("Face color", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
+        faceCreationTable.add(new Label("Eyes color", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
         faceCreationTable.row();
         faceCreationTable.add(faceColorSelector).padRight(15);
         faceCreationTable.add(eyesColorSelector);

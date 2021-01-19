@@ -14,10 +14,10 @@ public class AcceptWindow extends Window {
     }
 
     public AcceptWindow(String title, String text, String yes, String no) {
-        super(title, UiData.DEFAULT_SKIN);
+        super(title, UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
         setModal(true);
-        this.yes = new TextButton(yes, UiData.DEFAULT_SKIN, "yes");
-        this.no = new TextButton(no, UiData.DEFAULT_SKIN, "no");
+        this.yes = new TextButton(yes, UiData.DEFAULT_SKIN, UiData.YES_BUTTON_STYLE);
+        this.no = new TextButton(no, UiData.DEFAULT_SKIN, UiData.NO_BUTTON_STYLE);
         buttons = new HorizontalGroup();
         buttons.addActor(this.yes);
         buttons.addActor(this.no);
