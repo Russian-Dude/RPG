@@ -26,7 +26,6 @@ public class PlayerVisual extends VerticalGroup {
     private StatsWindow statsWindow;
 
     private PlayerAvatar avatar;
-    private Label name;
     private HpBar hpBar;
     private StmBar stmBar;
     private Button attack;
@@ -44,7 +43,6 @@ public class PlayerVisual extends VerticalGroup {
         attack = new Button(DEFAULT_SKIN, "attack");
         items = new Button(DEFAULT_SKIN, "items");
         spells = new Button(DEFAULT_SKIN, "spells");
-        name = new Label(player.getName(), DEFAULT_SKIN, "mud");
 
         // items
         backpackWindow = new BackpackWindow(player);
@@ -89,7 +87,6 @@ public class PlayerVisual extends VerticalGroup {
 
         // add
         addActor(avatar);
-        addActor(name);
         buttons.addActor(spells);
         buttons.addActor(attack);
         buttons.addActor(items);

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import ru.rdude.rpg.game.logic.GameLogger;
@@ -30,7 +31,12 @@ public class GameApp extends ApplicationAdapter {
     @Override
     public void create() {
         stage = new Stage(new ScreenViewport());
-        Player p = new Player();
+
+        PlayerCreationVisual playerCreationVisual = new PlayerCreationVisual();
+        stage.addActor(playerCreationVisual);
+        playerCreationVisual.setY(Gdx.graphics.getHeight() - playerCreationVisual.getHeight());
+
+/*        Player p = new Player();
         p.stats().lvl().increase(5);
         stage.addActor(new PlayersVisualBottom(new Player(), new Player(), new Player(), p));
         Item item = new Item(new ItemData(35135));
@@ -40,7 +46,7 @@ public class GameApp extends ApplicationAdapter {
         ItemVisual itemVisual = new ItemVisual(item);
         stage.addActor(itemVisual);
         LoggerVisual loggerVisual = new LoggerVisual();
-        stage.addActor(loggerVisual);
+        stage.addActor(loggerVisual);*/
         //((ItemSlotVisual) backpackWindow.getCells().first().getActor()).setItemVisual(itemVisual);
 
 

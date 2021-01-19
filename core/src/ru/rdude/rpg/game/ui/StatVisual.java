@@ -18,6 +18,7 @@ public class StatVisual extends Table implements StatObserver {
     private Stat statPoints;
     private Being being;
     private Button plusButton;
+    private Button minusButton;
 
 
     public StatVisual(Being being, Stat stat) {
@@ -33,6 +34,10 @@ public class StatVisual extends Table implements StatObserver {
     }
 
     public StatVisual(Being being, Stat stat, boolean canIncrease, boolean isDecimal) {
+        this(being, stat, canIncrease, isDecimal, false);
+    }
+
+    public StatVisual(Being being, Stat stat, boolean canIncrease, boolean isDecimal, boolean canDecrease) {
 
         // create
         this.stat = stat;
@@ -53,10 +58,15 @@ public class StatVisual extends Table implements StatObserver {
             this.being = being;
             this.plusButton = new TextButton("+", UiData.DEFAULT_SKIN, "square_mud_yes");
         }
-
+        if (canDecrease) {
+            this.minusButton = new TextButton("-", UiData.DEFAULT_SKIN, "square_mud_no");
+        }
         // add
         row().spaceRight(10);
         add(name).center().expand(false, false);
+        if (canDecrease) {
+            add(minusButton);
+        }
         add(value).padLeft(10).align(Align.left).minWidth(20).expand(false, false).minWidth(canIncrease ? 15 : 50);
         add(pureValue);
         if (canIncrease) {
@@ -78,6 +88,18 @@ public class StatVisual extends Table implements StatObserver {
                 }
             });
         }
+        if (canDecrease) {
+            minusButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (stat.value() < 1) {
+                        return;
+                    }
+                    stat.decrease(1);
+                    statPoints.increase(1);
+                }
+            });
+        }
 
         // subscribe
         stat.subscribe(this);
@@ -95,6 +117,9 @@ public class StatVisual extends Table implements StatObserver {
     @Override
     public void update(Stat stat) {
         if (stat == this.stat) {
+            if (minusButton != null) {
+                minusButton.setVisible(stat.value() > 0);
+            }
             if (stat instanceof Lvl.Exp) {
                 value.setText((int) (stat.value()) + " / " + (int) (((Lvl.Exp) stat)).getMax());
             }

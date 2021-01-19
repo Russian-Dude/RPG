@@ -1,0 +1,236 @@
+faces.png
+size: 2040, 240
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+beard
+  rotate: false
+  xy: 0, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 1
+beard
+  rotate: false
+  xy: 120, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 2
+eyebrows
+  rotate: false
+  xy: 240, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 1
+eyebrows
+  rotate: false
+  xy: 360, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 2
+eyebrows
+  rotate: false
+  xy: 480, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 3
+eyes
+  rotate: false
+  xy: 600, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 1
+eyes
+  rotate: false
+  xy: 720, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 2
+eyes
+  rotate: false
+  xy: 840, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 3
+eyes
+  rotate: false
+  xy: 960, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 4
+eyes_pupils
+  rotate: false
+  xy: 1080, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 1
+eyes_pupils
+  rotate: false
+  xy: 1200, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 2
+eyes_pupils
+  rotate: false
+  xy: 1320, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 3
+eyes_pupils
+  rotate: false
+  xy: 1440, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 4
+face_cloth
+  rotate: false
+  xy: 1560, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 1
+face_cloth
+  rotate: false
+  xy: 1680, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 2
+face_cloth
+  rotate: false
+  xy: 1800, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 3
+face_cloth
+  rotate: false
+  xy: 1920, 0
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 4
+face_skin
+  rotate: false
+  xy: 0, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 1
+face_skin
+  rotate: false
+  xy: 120, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 2
+face_skin
+  rotate: false
+  xy: 240, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 3
+face_skin
+  rotate: false
+  xy: 360, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 4
+hair
+  rotate: false
+  xy: 480, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 1
+hair
+  rotate: false
+  xy: 600, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 2
+hair
+  rotate: false
+  xy: 720, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 3
+hair
+  rotate: false
+  xy: 840, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 4
+hair
+  rotate: false
+  xy: 960, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 5
+mouth
+  rotate: false
+  xy: 1080, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 1
+mouth
+  rotate: false
+  xy: 1200, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 2
+mouth
+  rotate: false
+  xy: 1320, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 3
+nose
+  rotate: false
+  xy: 1440, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 1
+nose
+  rotate: false
+  xy: 1560, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 2
+nose
+  rotate: false
+  xy: 1680, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 3
+nose
+  rotate: false
+  xy: 1800, 120
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 4

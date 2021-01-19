@@ -7,6 +7,7 @@ import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.time.TimeManager;
+import ru.rdude.rpg.game.ui.AvatarCreator;
 
 public class Game {
 
@@ -18,10 +19,16 @@ public class Game {
     private SkillUser skillUser;
     private GameStateBase currentGameState;
     private Map gameMap;
+    private AvatarCreator avatarCreator;
 
     public Game() {
         this.itemsDragAndDrop = new DragAndDrop();
         this.gameLogger = new GameLogger();
+        this.avatarCreator = new AvatarCreator();
+    }
+
+    public static Game getCurrentGame() {
+        return currentGame;
     }
 
     public TimeManager getTimeManager() {
@@ -40,15 +47,15 @@ public class Game {
         return gameMap;
     }
 
-    public static Game getCurrentGame() {
-        return currentGame;
-    }
-
     public GameLogger getGameLogger() {
         return gameLogger;
     }
 
     public DragAndDrop getItemsDragAndDrop() {
         return itemsDragAndDrop;
+    }
+
+    public AvatarCreator getAvatarCreator() {
+        return avatarCreator;
     }
 }
