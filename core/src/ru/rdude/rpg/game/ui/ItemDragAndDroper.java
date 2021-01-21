@@ -1,10 +1,12 @@
 package ru.rdude.rpg.game.ui;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.holders.Slot;
@@ -12,6 +14,7 @@ import ru.rdude.rpg.game.logic.holders.Slot;
 public class ItemDragAndDroper {
 
     private static DragAndDrop dragAndDrop = Game.getCurrentGame().getItemsDragAndDrop();
+    private static Image currentDragImage = new Image(new SpriteDrawable(new Sprite()));
 
     public static void addSlot(ItemSlotVisual slotVisual) {
         dragAndDrop.addTarget(new DragAndDrop.Target(slotVisual) {
@@ -32,11 +35,20 @@ public class ItemDragAndDroper {
             @Override
             public DragAndDrop.Payload dragStart(InputEvent inputEvent, float v, float v1, int i) {
                 DragAndDrop.Payload payload = new DragAndDrop.Payload();
-                Image image = new Image(itemVisual.getItem().getItemData().getVisualData().getTextureRegion());
-                image.setWidth(itemVisual.getWidth());
-                image.setHeight(itemVisual.getHeight());
-                dragAndDrop.setDragActorPosition(image.getWidth() / 2, -image.getHeight() / 2);
-                payload.setDragActor(image);
+                ((SpriteDrawable) currentDragImage.getDrawable())
+                        .getSprite()
+                        .setRegion(Game.getCurrentGame()
+                                .getItemImageFactory()
+                                .getRegion(itemVisual
+                                        .getItem()
+                                        .getItemData()
+                                        .getResources()
+                                        .getMainImage()
+                                        .getGuid()));
+                currentDragImage.setWidth(itemVisual.getWidth());
+                currentDragImage.setHeight(itemVisual.getHeight());
+                dragAndDrop.setDragActorPosition(currentDragImage.getWidth() / 2, -currentDragImage.getHeight() / 2);
+                payload.setDragActor(currentDragImage);
                 return payload;
             }
 
@@ -81,8 +93,7 @@ public class ItemDragAndDroper {
             Slot<Item> initialSlot = (Slot<Item>) Slot.withEntity(item);
             if (initialSlot != null && initialSlot.isEntityMatchRequirements(slot.getEntity())) {
                 slot.swapEntities(initialSlot);
-            }
-            else {
+            } else {
                 return;
             }
         }
@@ -91,14 +102,12 @@ public class ItemDragAndDroper {
         else {
             if (!item.isStackable()) {
                 return;
-            }
-            else {
+            } else {
                 int rest = slot.getEntity().increaseAmountAndReturnRest(item.getAmount());
                 if (rest > 0) {
                     item.setAmount(rest);
                     return;
-                }
-                else {
+                } else {
                     Slot.withEntity(item).setEntity(null);
                 }
             }

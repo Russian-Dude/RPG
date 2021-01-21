@@ -2,9 +2,13 @@ package ru.rdude.rpg.game.logic.data;
 
 import ru.rdude.rpg.game.utils.Pair;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MonsterData extends BeingData {
+
+    private static Map<Long, MonsterData> monsters = new HashMap<>();
 
     private DropProperties drop;
 
@@ -21,6 +25,10 @@ public class MonsterData extends BeingData {
     @Override
     public void replaceEntityDependency(long oldValue, long newValue) {
 
+    }
+
+    public static void storeMonsters(Collection<MonsterData> collection) {
+        collection.forEach(monsterData -> monsters.put(monsterData.getGuid(), monsterData));
     }
 
     public class DropProperties {

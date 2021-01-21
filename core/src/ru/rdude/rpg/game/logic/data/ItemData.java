@@ -12,8 +12,6 @@ public class ItemData extends EntityData {
 
     private static Map<Long, ItemData> items = new HashMap<>();
 
-    private ItemVisualData visualData;
-
     private ItemType itemType;
     private boolean stackable;
     private Stats requirements;
@@ -25,6 +23,10 @@ public class ItemData extends EntityData {
     private Coefficients coefficients;
     private double price;
     private WeaponData weaponData;
+
+    ItemData() {
+        super();
+    }
 
     public ItemData(long guid) {
         super(guid);
@@ -39,8 +41,8 @@ public class ItemData extends EntityData {
         return items.get(guid);
     }
 
-    public static void storeItems(List<ItemData> list) {
-        list.forEach(itemData -> items.put(itemData.getGuid(), itemData));
+    public static void storeItems(Collection<ItemData> collection) {
+        collection.forEach(itemData -> items.put(itemData.getGuid(), itemData));
     }
 
     public static Map<Long, ItemData> getItems() {
@@ -49,14 +51,6 @@ public class ItemData extends EntityData {
 
     public static void setItems(Map<Long, ItemData> items) {
         ItemData.items = items;
-    }
-
-    public ItemVisualData getVisualData() {
-        return visualData;
-    }
-
-    public void setVisualData(ItemVisualData visualData) {
-        this.visualData = visualData;
     }
 
     public WeaponData getWeaponData() {
@@ -149,6 +143,15 @@ public class ItemData extends EntityData {
 
     public void setItemType(ItemType itemType) {
         this.itemType = itemType;
+    }
+
+    @Override
+    public ItemResources getResources() {
+        return (ItemResources) super.getResources();
+    }
+
+    public void setResources(ItemResources resources) {
+        super.setResources(resources);
     }
 
     @Override

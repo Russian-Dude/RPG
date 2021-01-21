@@ -13,8 +13,6 @@ public class SkillData extends EntityData {
 
     private static Map<Long, SkillData> skills = new HashMap<>();
 
-    private SkillVisualData visualData;
-
     private SkillType type;
     private Coefficients coefficients;
     private Coefficients buffCoefficients;
@@ -81,13 +79,17 @@ public class SkillData extends EntityData {
         return skills.get(guid);
     }
 
-
-    public SkillVisualData getVisualData() {
-        return visualData;
+    public static void storeSkills(Collection<SkillData> collection) {
+        collection.forEach(skillData -> skills.put(skillData.getGuid(), skillData));
     }
 
-    public void setVisualData(SkillVisualData visualData) {
-        this.visualData = visualData;
+    @Override
+    public SkillResources getResources() {
+        return (SkillResources) super.getResources();
+    }
+
+    public void setResources(SkillResources resources) {
+        super.setResources(resources);
     }
 
     public SkillEffect getEffect() {

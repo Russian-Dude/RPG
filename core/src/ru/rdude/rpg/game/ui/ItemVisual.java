@@ -30,7 +30,7 @@ public class ItemVisual extends Group {
         items.put(item, this);
 
         this.item = item;
-        itemImage = UiData.getItemImage("simple_sword");
+        itemImage = new Image(Game.getCurrentGame().getItemImageFactory().getRegion(item.getItemData().getResources().getMainImage().getGuid()));
         border = UiData.ItemBorder.BRONZE;
         count = new Label("", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
         tooltip = new ItemInfoTooltip(item);
