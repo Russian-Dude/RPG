@@ -1,9 +1,13 @@
 package ru.rdude.rpg.game.logic.data;
 
+import ru.rdude.rpg.game.logic.data.resources.ModuleResources;
+import ru.rdude.rpg.game.logic.data.resources.Resources;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Module extends EntityData implements Serializable {
@@ -18,6 +22,7 @@ public class Module extends EntityData implements Serializable {
 
     public Module(long guid) {
         super(guid);
+        setResources(new ModuleResources());
         skillData = new HashSet<>();
         itemData = new HashSet<>();
         monsterData = new HashSet<>();
@@ -45,6 +50,21 @@ public class Module extends EntityData implements Serializable {
 
     public void setMonsterData(Set<MonsterData> monsterData) {
         this.monsterData = monsterData;
+    }
+
+    @Override
+    public ModuleResources getResources() {
+        return (ModuleResources) super.getResources();
+    }
+
+    public void setResources(ModuleResources moduleResources) {
+        super.setResources(moduleResources);
+    }
+
+    public Set<EntityData> getAllEntities() {
+        return Stream.of(skillData, itemData, monsterData)
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
     }
 
     public void addEntity(EntityData entityData) {

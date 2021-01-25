@@ -1,6 +1,7 @@
 package ru.rdude.rpg.game.logic.data;
 
-import ru.rdude.rpg.game.utils.Pair;
+import ru.rdude.rpg.game.logic.data.resources.MonsterResources;
+import ru.rdude.rpg.game.logic.data.resources.Resources;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,6 +16,16 @@ public class MonsterData extends BeingData {
 
     public MonsterData(long guid) {
         super(guid);
+        setResources(new MonsterResources());
+    }
+
+    @Override
+    public MonsterResources getResources() {
+        return (MonsterResources) super.getResources();
+    }
+
+    public void setResources(MonsterResources monsterResources) {
+        super.setResources(monsterResources);
     }
 
     @Override

@@ -41,13 +41,13 @@ public class ModuleFileLoader {
         // load files
         FileHandle[] moduleFiles = Gdx.files.local("modules").list(".module");
         for (FileHandle moduleFile : moduleFiles) {
-            try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(moduleFile.file()))) {
+            try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(moduleFile.file()));
+                 BufferedInputStream bufferedInputStream = new BufferedInputStream(zipInputStream)) {
                 ZipEntry entry;
                 while ((entry = zipInputStream.getNextEntry()) != null) {
 
                     // main module logic file
                     if (!entry.isDirectory() && entry.getName().equals("moduledata")) {
-                        BufferedInputStream bufferedInputStream = new BufferedInputStream(zipInputStream);
                         String jsonString = new String(bufferedInputStream.readAllBytes());
                         Module module = gameJsonSerializer.deSerializeModule(jsonString);
                         // store entities

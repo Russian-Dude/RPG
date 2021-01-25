@@ -102,6 +102,14 @@ public class Functions {
         }
     }
 
+    public static String addSlashToString(String string) {
+        return string.endsWith("\\") || string.endsWith("/") ? string : string + "\\";
+    }
+
+    public static String trimPath(String string) {
+        return string.substring(Math.max(string.lastIndexOf("/"), string.lastIndexOf("\\")) + 1);
+    }
+
     /*
     public static class Visual {
 

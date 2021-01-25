@@ -1,13 +1,13 @@
 package ru.rdude.rpg.game.logic.data;
 
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
+import ru.rdude.rpg.game.logic.data.resources.SkillResources;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class SkillData extends EntityData {
 
@@ -60,6 +60,7 @@ public class SkillData extends EntityData {
 
     public SkillData(long guid) {
         super(guid);
+        setResources(new SkillResources());
         coefficients = new Coefficients();
         stats = new HashMap<>();
         transformation = new Transformation();

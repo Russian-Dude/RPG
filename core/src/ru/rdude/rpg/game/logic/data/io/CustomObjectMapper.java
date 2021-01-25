@@ -8,15 +8,14 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
-import ru.rdude.rpg.game.logic.data.Resource;
-import ru.rdude.rpg.game.logic.enums.AttackType;
+import ru.rdude.rpg.game.logic.data.resources.*;
+import ru.rdude.rpg.game.logic.enums.ResourcesType;
 import ru.rdude.rpg.game.logic.enums.StatName;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 public class CustomObjectMapper extends ObjectMapper {
@@ -31,6 +30,36 @@ public class CustomObjectMapper extends ObjectMapper {
     private void createModules() {
         createStatsModule();
         createCoefficientsModule();
+        createResourcesModule();
+    }
+
+    private void createResourcesModule() {
+        JsonSerializer<Resources> jsonSerializer = new JsonSerializer<>() {
+            @Override
+            public void serialize(Resources resources, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+                jsonGenerator.writeStartObject("Resources");
+                jsonGenerator.writeObjectField("Type", ResourcesType.of(resources));
+                jsonGenerator.writeObjectField("Images", resources.getImageResourcesMap());
+                jsonGenerator.writeObjectField("Sounds", resources.getSoundResourcesMap());
+                jsonGenerator.writeEndObject();
+            }
+        };
+
+        JsonDeserializer<Resources> jsonDeserializer = new JsonDeserializer<>() {
+            @Override
+            public Resources deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+                JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+                ResourcesType resourcesType = CustomObjectMapper.this.convertValue(node.get("Type"), new TypeReference<>() {});
+                Resources resources = resourcesType.createInstance();
+                resources.setImageResourcesMap(CustomObjectMapper.this.convertValue(node.get("Images"), new TypeReference<>() {}));
+                resources.setSoundResourcesMap(CustomObjectMapper.this.convertValue(node.get("Sounds"), new TypeReference<>() {}));
+                return resources;
+            }
+        };
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Resources.class, jsonSerializer);
+        simpleModule.addDeserializer(Resources.class, jsonDeserializer);
+        this.registerModule(simpleModule);
     }
 
     private void createStatsModule() {

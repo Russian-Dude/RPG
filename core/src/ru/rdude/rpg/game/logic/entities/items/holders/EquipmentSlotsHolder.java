@@ -163,18 +163,18 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
 
     public int weaponsAmount() {
         int amount = 0;
-        if (leftHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+        if (leftHand.getEntity() != null && leftHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
             amount++;
-        if (rightHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+        if (rightHand.getEntity() != null && rightHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
             amount++;
         return amount;
     }
 
     public int shieldsAmount() {
         int amount = 0;
-        if (leftHand.getEntity().getItemData().getItemType() == ItemType.SHIELD)
+        if (leftHand.getEntity() != null && leftHand.getEntity().getItemData().getItemType() == ItemType.SHIELD)
             amount++;
-        if (rightHand.getEntity().getItemData().getItemType() == ItemType.SHIELD)
+        if (rightHand.getEntity() != null && rightHand.getEntity().getItemData().getItemType() == ItemType.SHIELD)
             amount++;
         return amount;
     }

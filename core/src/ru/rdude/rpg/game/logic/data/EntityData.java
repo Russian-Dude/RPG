@@ -1,5 +1,7 @@
 package ru.rdude.rpg.game.logic.data;
 
+import ru.rdude.rpg.game.logic.data.resources.Resources;
+
 import java.util.HashSet;
 import java.util.Set;
 

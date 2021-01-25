@@ -1,6 +1,7 @@
 package ru.rdude.rpg.game.logic.data;
 
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
+import ru.rdude.rpg.game.logic.data.resources.ItemResources;
 import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
@@ -30,6 +31,7 @@ public class ItemData extends EntityData {
 
     public ItemData(long guid) {
         super(guid);
+        setResources(new ItemResources());
         items.put(guid, this);
     }
 
