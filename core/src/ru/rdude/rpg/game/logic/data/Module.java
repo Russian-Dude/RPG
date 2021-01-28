@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.rdude.rpg.game.logic.data.resources.ModuleResources;
 import ru.rdude.rpg.game.logic.data.resources.Resources;
 
@@ -61,6 +62,7 @@ public class Module extends EntityData implements Serializable {
         super.setResources(moduleResources);
     }
 
+    @JsonIgnore
     public Set<EntityData> getAllEntities() {
         return Stream.of(skillData, itemData, monsterData)
                 .flatMap(Set::stream)

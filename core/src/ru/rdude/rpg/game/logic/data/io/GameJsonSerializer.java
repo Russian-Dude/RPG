@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.logic.data.io;
 
 import ru.rdude.rpg.game.logic.data.EntityData;
 import ru.rdude.rpg.game.logic.data.Module;
+import ru.rdude.rpg.game.logic.data.MonsterData;
 import ru.rdude.rpg.game.logic.data.SkillData;
 
 public class GameJsonSerializer {
@@ -26,6 +27,10 @@ public class GameJsonSerializer {
 
     public Module deSerializeModule(String jsonString) {
         return entityDataSerializer.deserialize(jsonString, Module.class);
+    }
+
+    public MonsterData deSerializeMonster(String jsonString) {
+        return entityDataSerializer.deserialize(jsonString, MonsterData.class);
     }
 
 }

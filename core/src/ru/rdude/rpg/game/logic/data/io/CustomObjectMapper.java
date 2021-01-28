@@ -45,21 +45,60 @@ public class CustomObjectMapper extends ObjectMapper {
             }
         };
 
-        JsonDeserializer<Resources> jsonDeserializer = new JsonDeserializer<>() {
+        JsonDeserializer<EventResources> eventResourcesJsonDeserializer = new JsonDeserializer<>() {
             @Override
-            public Resources deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-                JsonNode node = jsonParser.getCodec().readTree(jsonParser);
-                ResourcesType resourcesType = CustomObjectMapper.this.convertValue(node.get("Type"), new TypeReference<>() {});
-                Resources resources = resourcesType.createInstance();
-                resources.setImageResourcesMap(CustomObjectMapper.this.convertValue(node.get("Images"), new TypeReference<>() {}));
-                resources.setSoundResourcesMap(CustomObjectMapper.this.convertValue(node.get("Sounds"), new TypeReference<>() {}));
-                return resources;
+            public EventResources deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+                return (EventResources) deserializeResourcesInherited(jsonParser, deserializationContext);
+            }
+        };
+        JsonDeserializer<ItemResources> itemResourcesJsonDeserializer = new JsonDeserializer<>() {
+            @Override
+            public ItemResources deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+                return (ItemResources) deserializeResourcesInherited(jsonParser, deserializationContext);
+            }
+        };
+        JsonDeserializer<ModuleResources> moduleResourcesJsonDeserializer = new JsonDeserializer<>() {
+            @Override
+            public ModuleResources deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+                return (ModuleResources) deserializeResourcesInherited(jsonParser, deserializationContext);
+            }
+        };
+        JsonDeserializer<MonsterResources> monsterResourcesJsonDeserializer = new JsonDeserializer<>() {
+            @Override
+            public MonsterResources deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+                return (MonsterResources) deserializeResourcesInherited(jsonParser, deserializationContext);
+            }
+        };
+        JsonDeserializer<QuestResources> questResourcesJsonDeserializer = new JsonDeserializer<>() {
+            @Override
+            public QuestResources deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+                return (QuestResources) deserializeResourcesInherited(jsonParser, deserializationContext);
+            }
+        };
+        JsonDeserializer<SkillResources> skillResourcesJsonDeserializer = new JsonDeserializer<>() {
+            @Override
+            public SkillResources deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+                return (SkillResources) deserializeResourcesInherited(jsonParser, deserializationContext);
             }
         };
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(Resources.class, jsonSerializer);
-        simpleModule.addDeserializer(Resources.class, jsonDeserializer);
+        simpleModule.addDeserializer(EventResources.class, eventResourcesJsonDeserializer);
+        simpleModule.addDeserializer(ItemResources.class, itemResourcesJsonDeserializer);
+        simpleModule.addDeserializer(ModuleResources.class, moduleResourcesJsonDeserializer);
+        simpleModule.addDeserializer(MonsterResources.class, monsterResourcesJsonDeserializer);
+        simpleModule.addDeserializer(QuestResources.class, questResourcesJsonDeserializer);
+        simpleModule.addDeserializer(SkillResources.class, skillResourcesJsonDeserializer);
         this.registerModule(simpleModule);
+    }
+
+    private Resources deserializeResourcesInherited(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+        JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+        ResourcesType resourcesType = CustomObjectMapper.this.convertValue(node.get("Type"), new TypeReference<>() {});
+        Resources resources = resourcesType.createInstance();
+        resources.setImageResourcesMap(CustomObjectMapper.this.convertValue(node.get("Images"), new TypeReference<>() {}));
+        resources.setSoundResourcesMap(CustomObjectMapper.this.convertValue(node.get("Sounds"), new TypeReference<>() {}));
+        return resources;
     }
 
     private void createStatsModule() {
