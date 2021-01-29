@@ -16,6 +16,8 @@ public class Module extends EntityData implements Serializable {
     private Set<SkillData> skillData;
     private Set<ItemData> itemData;
     private Set<MonsterData> monsterData;
+    private Set<EventData> eventData;
+    private Set<QuestData> questData;
 
     // default constructor for Jackson json deserialization
     private Module() {
@@ -27,6 +29,8 @@ public class Module extends EntityData implements Serializable {
         skillData = new HashSet<>();
         itemData = new HashSet<>();
         monsterData = new HashSet<>();
+        eventData = new HashSet<>();
+        questData = new HashSet<>();
     }
 
     public Set<SkillData> getSkillData() {
@@ -53,6 +57,22 @@ public class Module extends EntityData implements Serializable {
         this.monsterData = monsterData;
     }
 
+    public Set<EventData> getEventData() {
+        return eventData;
+    }
+
+    public void setEventData(Set<EventData> eventData) {
+        this.eventData = eventData;
+    }
+
+    public Set<QuestData> getQuestData() {
+        return questData;
+    }
+
+    public void setQuestData(Set<QuestData> questData) {
+        this.questData = questData;
+    }
+
     @Override
     public ModuleResources getResources() {
         return (ModuleResources) super.getResources();
@@ -64,7 +84,7 @@ public class Module extends EntityData implements Serializable {
 
     @JsonIgnore
     public Set<EntityData> getAllEntities() {
-        return Stream.of(skillData, itemData, monsterData)
+        return Stream.of(skillData, itemData, monsterData, eventData, questData)
                 .flatMap(Set::stream)
                 .collect(Collectors.toSet());
     }
@@ -82,18 +102,24 @@ public class Module extends EntityData implements Serializable {
         else if (entityData instanceof Module) {
             addModuleDependency((Module) entityData);
         }
+        else if (entityData instanceof EventData) {
+            eventData.add((EventData) entityData);
+        }
+        else if (entityData instanceof QuestData) {
+            questData.add((QuestData) entityData);
+        }
     }
 
     @Override
     public boolean hasEntityDependency(long guid) {
-        return Stream.of(skillData, itemData, monsterData)
+        return Stream.of(skillData, itemData, monsterData, eventData, questData)
                 .flatMap(Collection::stream)
                 .anyMatch(entityData -> entityData.hasEntityDependency(guid));
     }
 
     @Override
     public void replaceEntityDependency(long oldValue, long newValue) {
-        Stream.of(skillData, itemData, monsterData)
+        Stream.of(skillData, itemData, monsterData, eventData, questData)
                 .flatMap(Collection::stream)
                 .forEach(entityData -> entityData.replaceEntityDependency(oldValue, newValue));
     }
