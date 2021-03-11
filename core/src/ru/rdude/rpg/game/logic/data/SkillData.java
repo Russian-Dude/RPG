@@ -20,7 +20,7 @@ public class SkillData extends EntityData {
     private Map<StatName, String> stats;
     private double timeChange;
     private Transformation transformation;
-    private List<Long> summon; // by guid
+    private Map<Long, Float> summon; // by guid
     private Map<Long, Integer> receiveItems; // by guid
     private Requirements requirements;
     private boolean permanent;
@@ -64,7 +64,7 @@ public class SkillData extends EntityData {
         coefficients = new Coefficients();
         stats = new HashMap<>();
         transformation = new Transformation();
-        summon = new ArrayList<>();
+        summon = new HashMap<>();
         receiveItems = new HashMap<>();
         requirements = new Requirements();
         elements = new HashSet<>();
@@ -141,11 +141,11 @@ public class SkillData extends EntityData {
         this.transformation = transformation;
     }
 
-    public List<Long> getSummon() {
+    public Map<Long, Float> getSummon() {
         return summon;
     }
 
-    public void setSummon(List<Long> summon) {
+    public void setSummon(Map<Long, Float> summon) {
         this.summon = summon;
     }
 
@@ -277,6 +277,7 @@ public class SkillData extends EntityData {
         this.canBeResisted = canBeResisted;
     }
 
+    // TODO: 11.03.2021 skills must cast and could cast. Float value is percent (0 - 100)
     public Map<Long, Float> getSkillsCouldCast() {
         return skillsCouldCast;
     }
@@ -408,7 +409,7 @@ public class SkillData extends EntityData {
     @Override
     public boolean hasEntityDependency(long guid) {
         return
-                summon.contains(guid)
+                summon.containsKey(guid)
                         || receiveItems.containsKey(guid)
                         || requirements.items.containsKey(guid)
                         || skillsCouldCast.containsKey(guid)
@@ -420,7 +421,10 @@ public class SkillData extends EntityData {
 
     @Override
     public void replaceEntityDependency(long oldValue, long newValue) {
-        summon.replaceAll(guid -> guid == oldValue ? newValue : oldValue);
+        if (summon.containsKey(oldValue)) {
+            summon.put(newValue, summon.get(oldValue));
+            summon.remove(oldValue);
+        }
         if (receiveItems.containsKey(oldValue)) {
             receiveItems.put(newValue, receiveItems.get(oldValue));
             receiveItems.remove(oldValue);
