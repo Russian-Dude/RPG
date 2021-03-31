@@ -1,6 +1,6 @@
 package ru.rdude.rpg.game.logic.map.bioms;
 
-public class Dirt extends Biom {
+public class Dirt extends BiomCellProperty {
 
     private static Dirt instance;
 
@@ -19,7 +19,7 @@ public class Dirt extends Biom {
     }
 
     @Override
-    public Biom getThisInstance() {
+    public BiomCellProperty getThisInstance() {
         return getInstance();
     }
 }

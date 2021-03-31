@@ -4,9 +4,9 @@ import ru.rdude.rpg.game.logic.map.CellProperty;
 
 import java.util.List;
 
-public abstract class Biom extends CellProperty {
+public abstract class BiomCellProperty extends CellProperty {
 
-    public static List<Biom> getDefaultBiomes() {
+    public static List<BiomCellProperty> getDefaultBiomes() {
         return List.of(
                 DeadLand.getInstance(),
                 Dirt.getInstance(),
@@ -19,7 +19,7 @@ public abstract class Biom extends CellProperty {
                 Water.getInstance());
     }
 
-    public abstract Biom getThisInstance();
+    public abstract BiomCellProperty getThisInstance();
 
     @Override
     public String toString() {

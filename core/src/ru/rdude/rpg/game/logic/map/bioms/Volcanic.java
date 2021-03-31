@@ -1,6 +1,6 @@
 package ru.rdude.rpg.game.logic.map.bioms;
 
-public class Volcanic extends Biom {
+public class Volcanic extends BiomCellProperty {
 
     private static Volcanic instance;
 
@@ -19,7 +19,7 @@ public class Volcanic extends Biom {
     }
 
     @Override
-    public Biom getThisInstance() {
+    public BiomCellProperty getThisInstance() {
         return getInstance();
     }
 }

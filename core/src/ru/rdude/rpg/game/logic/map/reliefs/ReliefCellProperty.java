@@ -4,16 +4,16 @@ import ru.rdude.rpg.game.logic.map.CellProperty;
 
 import java.util.List;
 
-public abstract class Relief extends CellProperty {
+public abstract class ReliefCellProperty extends CellProperty {
 
-    public static List<Relief> getDefaultReliefs() {
+    public static List<ReliefCellProperty> getDefaultReliefs() {
         return List.of(
                 Forest.getInstance(),
                 Mountains.getInstance(),
                 Plain.getInstance());
     }
 
-    public abstract Relief getThisInstance();
+    public abstract ReliefCellProperty getThisInstance();
 
     @Override
     public String toString() {

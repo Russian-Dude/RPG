@@ -1,7 +1,5 @@
 package ru.rdude.rpg.game.logic.map;
 
-import ru.rdude.rpg.game.logic.map.bioms.Biom;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

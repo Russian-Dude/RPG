@@ -2,13 +2,12 @@ package ru.rdude.rpg.game.logic.map;
 
 import ru.rdude.rpg.game.logic.map.aStarImpl.MapRiverScorer;
 import ru.rdude.rpg.game.logic.map.aStarImpl.MapRoadScorer;
-import ru.rdude.rpg.game.logic.map.bioms.Biom;
+import ru.rdude.rpg.game.logic.map.bioms.BiomCellProperty;
 import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.logic.map.objects.Dungeon;
-import ru.rdude.rpg.game.logic.map.objects.MapObject;
 import ru.rdude.rpg.game.logic.map.objects.MapObjectRoadAvailability;
-import ru.rdude.rpg.game.logic.map.reliefs.Relief;
+import ru.rdude.rpg.game.logic.map.reliefs.ReliefCellProperty;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.utils.TimeCounter;
 import ru.rdude.rpg.game.utils.aStar.AStarGraph;
@@ -28,15 +27,15 @@ public class Generator {
     private GameMap map;
     private int width; // 64
     private int height; // 64
-    private List<Biom> bioms; // available bioms
-    private List<Relief> reliefs; // available reliefs
+    private List<BiomCellProperty> bioms; // available bioms
+    private List<ReliefCellProperty> reliefs; // available reliefs
 
     private int citiesAmount; //  Need to be smaller on smaller maps
     private int dungeonsAmount;
     private List<Point> mapObjectsPoints;
     private List<City> cities;
     private List<Dungeon> dungeons;
-    private Map<Biom, Integer> biomAmount;
+    private Map<BiomCellProperty, Integer> biomAmount;
     // next parameters can be set directly with setter after creating Generator. Instead - default values:
     private double newBiomCoefficient; // chance to generate new biom instead of surrounding bioms
     private double newReliefCoefficient; // same with relief
@@ -53,13 +52,13 @@ public class Generator {
         this(
                 gameMapSize.getWidth(),
                 gameMapSize.getHeight(),
-                Biom.getDefaultBiomes(),
-                Relief.getDefaultReliefs(),
+                BiomCellProperty.getDefaultBiomes(),
+                ReliefCellProperty.getDefaultReliefs(),
                 gameMapSize.getWidth() / 32,
                 gameMapSize.getWidth() / 4);
     }
 
-    public Generator(int width, int height, List<Biom> bioms, List<Relief> reliefs, int citiesAmount, int dungeonsAmount) {
+    public Generator(int width, int height, List<BiomCellProperty> bioms, List<ReliefCellProperty> reliefs, int citiesAmount, int dungeonsAmount) {
         this.width = width;
         this.height = height;
         this.bioms = new ArrayList<>();
@@ -157,7 +156,7 @@ public class Generator {
     }
 
     // Passing a list of bioms allows to use specific bioms on created map
-    private void fillBiomAmountMap(List<Biom> availableBioms) {
+    private void fillBiomAmountMap(List<BiomCellProperty> availableBioms) {
         availableBioms.forEach(biom -> biomAmount.put(biom, 0));
     }
 
@@ -209,16 +208,16 @@ public class Generator {
         return zones;
     }
 
-    private Biom randomBiom() {
+    private BiomCellProperty randomBiom() {
         return bioms.get(random(0, bioms.size() - 1));
     }
 
-    private Relief randomRelief() {
+    private ReliefCellProperty randomRelief() {
         return reliefs.get(random(0, reliefs.size() - 1));
     }
 
 
-    private void increaseBiomAmount(Biom biom) {
+    private void increaseBiomAmount(BiomCellProperty biom) {
         biomAmount.put(biom, biomAmount.get(biom) + 1);
     }
 
@@ -413,7 +412,7 @@ public class Generator {
     }
 
 
-    private boolean isChangeBiom(Biom lastBiom, int cellsWithNoBiomAmount) {
+    private boolean isChangeBiom(BiomCellProperty lastBiom, int cellsWithNoBiomAmount) {
         if (equalBioms && biomAmount.get(lastBiom) > cellsWithNoBiomAmount / bioms.size()) {
             if (lastBiom == Water.getInstance() && (waterAlgorithm == WaterAlgorithm.MIXED || waterAlgorithm == WaterAlgorithm.SUPER_MIXED))
                 return random(1d) < newBiomCoefficient;
@@ -428,11 +427,11 @@ public class Generator {
         int nonNullCells = map.nonNullCells(CellProperty.Type.BIOM);
         int steps = height * width - nonNullCells;
         int cellsWithNoBiomAmount = steps;
-        Biom lastBiom;
+        BiomCellProperty lastBiom;
         List<Point> points = createStartPoints();
         // generate random biom at start positions and 1 cell around:
         for (Point point : points) {
-            Biom randomBiom = randomBiom();
+            BiomCellProperty randomBiom = randomBiom();
             if (map.cell(point).getBiom() == null) // cause water can be at this cell already
                 steps -= 1;
             map.cell(point).setBiom(randomBiom);
@@ -458,7 +457,7 @@ public class Generator {
                 // if absolutely new biom creating:
                 if (isChangeBiom(lastBiom, cellsWithNoBiomAmount)) {
                     // next biom will be a biom with less present amount
-                    Biom biom = bioms.stream()
+                    BiomCellProperty biom = bioms.stream()
                             .min(Comparator.comparingInt(biom2 -> biomAmount.get(biom2)))
                             .orElse(lastBiom);
                     steps -= 1;
@@ -469,20 +468,20 @@ public class Generator {
                 // else creating biom based on around cells:
                 // creating biom coefficients from cells around:
                 // close cells:
-                Map<Biom, Double> coefficients = getAroundCells(point, 1).stream()
+                Map<BiomCellProperty, Double> coefficients = getAroundCells(point, 1).stream()
                         .filter(p -> map.cell(p).getBiom() != null)
                         .map(p -> map.cell(p).getBiom())
-                        .collect(Collectors.toMap(Biom::getThisInstance, v -> 7d, Double::sum));
+                        .collect(Collectors.toMap(BiomCellProperty::getThisInstance, v -> 7d, Double::sum));
                 // far cells:
                 coefficients.putAll(getAroundCells(point, 2).stream()
                         .filter(p -> map.cell(p).getBiom() != null)
                         .map(p -> map.cell(p).getBiom())
-                        .collect(Collectors.toMap(Biom::getThisInstance, v -> 1d, Double::sum)));
+                        .collect(Collectors.toMap(BiomCellProperty::getThisInstance, v -> 1d, Double::sum)));
                 // extra coefficient to last biom if it presents around:
                 if (coefficients.containsKey(lastBiom))
                     coefficients.put(lastBiom, coefficients.get(lastBiom) + 15);
                 // get random biom based on coefficients:
-                Biom biom = randomWithWeights(coefficients);
+                BiomCellProperty biom = randomWithWeights(coefficients);
                 if (biom == null)
                     biom = randomBiom();
                 steps -= 1;
@@ -603,10 +602,10 @@ public class Generator {
     private void createRelief() {
         int steps = height * width;
         List<Point> points = createStartPoints();
-        Relief lastRelief;
+        ReliefCellProperty lastRelief;
         // generate random relief at start points:
         for (Point point : points) {
-            Relief randomRelief = randomRelief();
+            ReliefCellProperty randomRelief = randomRelief();
             map.cell(point).setRelief(randomRelief);
             steps--;
             for (Point aroundCell : getAroundCells(point, 1)) {
@@ -631,20 +630,20 @@ public class Generator {
                 // else creating relief based on around cells:
                 // creating relief coefficients from cells around:
                 // close cells:
-                Map<Relief, Double> coefficients = getAroundCells(point, 1).stream()
+                Map<ReliefCellProperty, Double> coefficients = getAroundCells(point, 1).stream()
                         .filter(p -> map.cell(p).getRelief() != null)
                         .map(p -> map.cell(p).getRelief())
-                        .collect(Collectors.toMap(Relief::getThisInstance, v -> 7d, Double::sum));
+                        .collect(Collectors.toMap(ReliefCellProperty::getThisInstance, v -> 7d, Double::sum));
                 // far cells:
                 coefficients.putAll(getAroundCells(point, 2).stream()
                         .filter(p -> map.cell(p).getRelief() != null)
                         .map(p -> map.cell(p).getRelief())
-                        .collect(Collectors.toMap(Relief::getThisInstance, v -> 1d, Double::sum)));
+                        .collect(Collectors.toMap(ReliefCellProperty::getThisInstance, v -> 1d, Double::sum)));
                 // extra coefficient to last relief if it presents around:
                 if (coefficients.containsKey(lastRelief))
                     coefficients.put(lastRelief, coefficients.get(lastRelief) + 15);
                 // get random relief based on coefficients:
-                Relief relief = randomWithWeights(coefficients);
+                ReliefCellProperty relief = randomWithWeights(coefficients);
                 if (relief == null)
                     relief = randomRelief();
                 steps -= 1;
@@ -663,7 +662,7 @@ public class Generator {
                 for (int y = 0; y < height; y++) {
                     int sameBiomAroundAmount = 0;
                     int waterAround = 0;
-                    Biom thisBiom = map.cell(x, y).getBiom();
+                    BiomCellProperty thisBiom = map.cell(x, y).getBiom();
                     // denoise only non water cells
                     if (thisBiom.equals(Water.getInstance()))
                         continue;

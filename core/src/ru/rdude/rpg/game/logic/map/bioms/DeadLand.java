@@ -1,6 +1,6 @@
 package ru.rdude.rpg.game.logic.map.bioms;
 
-public class DeadLand extends Biom {
+public class DeadLand extends BiomCellProperty {
 
     private static DeadLand instance;
 
@@ -19,7 +19,7 @@ public class DeadLand extends Biom {
     }
 
     @Override
-    public Biom getThisInstance() {
+    public BiomCellProperty getThisInstance() {
         return getInstance();
     }
 }

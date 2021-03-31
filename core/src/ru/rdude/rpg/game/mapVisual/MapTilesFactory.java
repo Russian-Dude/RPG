@@ -6,8 +6,7 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.CellSide;
-import ru.rdude.rpg.game.logic.map.Generator;
-import ru.rdude.rpg.game.logic.map.bioms.Biom;
+import ru.rdude.rpg.game.logic.map.bioms.BiomCellProperty;
 import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.utils.Functions;
 
@@ -23,7 +22,7 @@ public class MapTilesFactory {
 
 
     public static TiledMapTile getBiomTile(Cell cell) {
-        Biom biom = cell.getBiom();
+        BiomCellProperty biom = cell.getBiom();
         if (biom == Water.getInstance()) {
             switch (cell.getDeepProperty()) {
                 case DEEP:

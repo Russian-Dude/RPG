@@ -1,6 +1,6 @@
 package ru.rdude.rpg.game.logic.map.reliefs;
 
-public class Mountains extends Relief {
+public class Mountains extends ReliefCellProperty {
     private static Mountains instance;
 
     private Mountains() {
@@ -18,7 +18,7 @@ public class Mountains extends Relief {
     }
 
     @Override
-    public Relief getThisInstance() {
+    public ReliefCellProperty getThisInstance() {
         return getInstance();
     }
 }

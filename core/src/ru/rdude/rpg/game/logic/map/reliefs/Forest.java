@@ -1,6 +1,6 @@
 package ru.rdude.rpg.game.logic.map.reliefs;
 
-public class Forest extends Relief {
+public class Forest extends ReliefCellProperty {
     private static Forest instance;
 
     private Forest() {
@@ -18,7 +18,7 @@ public class Forest extends Relief {
     }
 
     @Override
-    public Relief getThisInstance() {
+    public ReliefCellProperty getThisInstance() {
         return getInstance();
     }
 }

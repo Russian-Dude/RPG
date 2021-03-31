@@ -1,6 +1,6 @@
 package ru.rdude.rpg.game.logic.map.bioms;
 
-public class Water extends Biom {
+public class Water extends BiomCellProperty {
 
     public enum DeepProperty { SMALL, NORMAL, DEEP, RIVER }
 
@@ -21,7 +21,7 @@ public class Water extends Biom {
     }
 
     @Override
-    public Biom getThisInstance() {
+    public BiomCellProperty getThisInstance() {
         return getInstance();
     }
 }

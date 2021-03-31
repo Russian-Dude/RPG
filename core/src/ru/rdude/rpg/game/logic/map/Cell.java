@@ -1,14 +1,11 @@
 package ru.rdude.rpg.game.logic.map;
 
-import ru.rdude.rpg.game.logic.map.bioms.Biom;
+import ru.rdude.rpg.game.logic.map.bioms.BiomCellProperty;
 import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.logic.map.objects.MapObject;
-import ru.rdude.rpg.game.logic.map.reliefs.Relief;
+import ru.rdude.rpg.game.logic.map.reliefs.ReliefCellProperty;
 import ru.rdude.rpg.game.utils.aStar.AStarNode;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class Cell implements AStarNode {
@@ -22,9 +19,9 @@ public class Cell implements AStarNode {
 
     private Set<Cell> connectedByRoads;
 
-    private Biom biom;
+    private BiomCellProperty biom;
     private Water.DeepProperty deepProperty;
-    private Relief relief;
+    private ReliefCellProperty relief;
     private MapObject object;
     private Road road;
 
@@ -36,21 +33,21 @@ public class Cell implements AStarNode {
     }
 
 
-    public Biom getBiom() {
+    public BiomCellProperty getBiom() {
         return biom;
     }
 
-    public void setBiom(Biom biom) {
+    public void setBiom(BiomCellProperty biom) {
         this.biom = biom;
         if (gameMap != null)
             gameMap.addCellPropertyMap(this, biom);
     }
 
-    public Relief getRelief() {
+    public ReliefCellProperty getRelief() {
         return relief;
     }
 
-    public void setRelief(Relief relief) {
+    public void setRelief(ReliefCellProperty relief) {
         this.relief = relief;
         if (gameMap != null)
             gameMap.addCellPropertyMap(this, relief);
