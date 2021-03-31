@@ -69,6 +69,9 @@ public class SkillData extends EntityData {
         requirements = new Requirements();
         elements = new HashSet<>();
         usableInGameStates = new HashMap<>();
+        for (GameState value : GameState.values()) {
+            usableInGameStates.put(value, true);
+        }
         targets = new ArrayList<>();
         skillsCouldCast = new HashMap<>();
         skillsMustCast = new HashMap<>();

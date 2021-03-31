@@ -28,6 +28,7 @@ public class GameApp extends ApplicationAdapter {
         stage.addActor(new PlayersVisualBottom(new Player(), new Player(), new Player(), p));
         Item item = new Item(new ItemData(35135));
         ItemVisualData itemVisualData = new ItemVisualData();
+        item.getItemData().setName("Default sword");
         item.getItemData().setItemType(ItemType.SWORD);
         item.getItemData().setRequirements(new Stats(false));
         ItemVisual itemVisual = new ItemVisual(item);

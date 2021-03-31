@@ -2,7 +2,6 @@ package ru.rdude.rpg.game.logic.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.rdude.rpg.game.logic.data.resources.ModuleResources;
-import ru.rdude.rpg.game.logic.data.resources.Resources;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -108,6 +107,29 @@ public class Module extends EntityData implements Serializable {
         else if (entityData instanceof QuestData) {
             questData.add((QuestData) entityData);
         }
+        else throw new IllegalArgumentException("Adding entity of a class " + entityData.getClass() + " is not implemented");
+    }
+
+    public void removeEntity(EntityData entityData) {
+        if (entityData instanceof SkillData) {
+            skillData.remove(entityData);
+        }
+        else if (entityData instanceof ItemData) {
+            itemData.remove(entityData);
+        }
+        else if (entityData instanceof MonsterData) {
+            monsterData.remove(entityData);
+        }
+        else if (entityData instanceof Module) {
+            removeModuleDependency(entityData);
+        }
+        else if (entityData instanceof EventData) {
+            eventData.remove(entityData);
+        }
+        else if (entityData instanceof QuestData) {
+            questData.remove(entityData);
+        }
+        else throw new IllegalArgumentException("Removing entity of a class " + entityData.getClass() + " is not implemented");
     }
 
     @Override

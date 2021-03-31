@@ -1,9 +1,7 @@
 package ru.rdude.rpg.game.logic.data.resources;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Resources {
 
@@ -22,7 +20,9 @@ public abstract class Resources {
     }
 
     public Set<Resource> getImageResources() {
-        return new HashSet<>(this.imageResources.values());
+        return this.imageResources.values().stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     public void setImageResources(Map<String, Resource> imageResources) {
@@ -30,11 +30,26 @@ public abstract class Resources {
     }
 
     public Set<Resource> getSoundResources() {
-        return new HashSet<>(soundResources.values());
+        return this.soundResources.values().stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     public void setSoundResources(Map<String, Resource> soundResources) {
         this.soundResources = soundResources;
+    }
+
+    public void swap(Resource oldV, Resource newV) {
+        swapImage(oldV, newV);
+        swapSound(oldV, newV);
+    }
+
+    public void swapImage(Resource oldV, Resource newV) {
+        imageResources.replaceAll((name, resource) -> oldV.equals(resource) ? newV : resource);
+    }
+
+    public void swapSound(Resource oldV, Resource newV) {
+        soundResources.replaceAll((name, resource) -> oldV.equals(resource) ? newV : resource);
     }
 
     public void remove(Resource resource) {

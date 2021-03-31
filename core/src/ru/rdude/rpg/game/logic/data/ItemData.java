@@ -15,15 +15,15 @@ public class ItemData extends EntityData {
 
     private ItemType itemType;
     private boolean stackable;
-    private Stats requirements;
-    private Stats stats;
+    private Stats requirements = new Stats(false);
+    private Stats stats = new Stats(false);
     private ItemRarity rarity;
-    private Set<Element> elements;
-    private List<Long> skillsOnUse;
-    private List<Long> skillsEquip;
+    private Set<Element> elements = new HashSet<>();
+    private List<Long> skillsOnUse = new ArrayList<>();
+    private List<Long> skillsEquip = new ArrayList<>();
     private Coefficients coefficients;
     private double price;
-    private WeaponData weaponData;
+    private WeaponData weaponData = new WeaponData();
 
     ItemData() {
         super();
@@ -178,6 +178,9 @@ public class ItemData extends EntityData {
         private boolean dualHanded;
         private double minDmg;
         private double maxDmg;
+
+        public WeaponData() {
+        }
 
         public WeaponData(AttackType attackType, boolean dualHanded, double minDmg, double maxDmg) {
             this.attackType = attackType;

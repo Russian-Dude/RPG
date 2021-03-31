@@ -1,5 +1,7 @@
 package ru.rdude.rpg.game.ui;
 
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 
@@ -26,5 +28,22 @@ public class AcceptWindow extends Window {
         add(text).space(15).row();
         add(buttons).row();
         pack();
+        setModal(true);
+    }
+
+    public void addAcceptListener(EventListener listener) {
+        yes.addListener(listener);
+    }
+
+    public void removeAcceptListener(EventListener listener) {
+        yes.removeListener(listener);
+    }
+
+    public void addDeclineListener(EventListener listener) {
+        no.addListener(listener);
+    }
+
+    public void removeDeclineListener(EventListener listener) {
+        no.removeListener(listener);
     }
 }
