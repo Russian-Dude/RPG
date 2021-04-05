@@ -19,7 +19,7 @@ public class QuestData extends EntityData {
     private boolean takeItems = true;
     private double collectGold = 0d;
     private Map<Long, Integer> useSkills = new HashMap<>();
-    private Map<BeingAction, Integer> doActions = new HashMap<>();
+    private Map<BeingAction.Action, Integer> doActions = new HashMap<>();
     private Stats reachStats = new Stats(false);
 
     // rewards
@@ -77,11 +77,11 @@ public class QuestData extends EntityData {
         this.useSkills = useSkills;
     }
 
-    public Map<BeingAction, Integer> getDoActions() {
+    public Map<BeingAction.Action, Integer> getDoActions() {
         return doActions;
     }
 
-    public void setDoActions(Map<BeingAction, Integer> doActions) {
+    public void setDoActions(Map<BeingAction.Action, Integer> doActions) {
         this.doActions = doActions;
     }
 

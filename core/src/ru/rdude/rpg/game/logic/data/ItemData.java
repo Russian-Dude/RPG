@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.resources.ItemResources;
 import ru.rdude.rpg.game.logic.enums.*;
@@ -63,6 +64,7 @@ public class ItemData extends EntityData {
         this.weaponData = weaponData;
     }
 
+    @JsonIgnore
     public boolean isWeapon() {
         return weaponData != null;
     }
