@@ -10,7 +10,7 @@ public class MonsterData extends BeingData {
 
     private static Map<Long, MonsterData> monsters = new HashMap<>();
 
-    private Set<ItemsDrop> drop;
+    private Map<Long, Double> drop;
     private double goldDrop = 0d;
     private double expReward = 0d;
     private double minLvl = 0d;
@@ -28,11 +28,11 @@ public class MonsterData extends BeingData {
         monsters.put(guid, this);
     }
 
-    public Set<ItemsDrop> getDrop() {
+    public Map<Long, Double> getDrop() {
         return drop;
     }
 
-    public void setDrop(Set<ItemsDrop> drop) {
+    public void setDrop(Map<Long, Double> drop) {
         this.drop = drop;
     }
 
@@ -119,52 +119,29 @@ public class MonsterData extends BeingData {
 
     @Override
     public boolean hasEntityDependency(long guid) {
-        return false;
+        return
+                drop.containsKey(guid)
+                || skills.containsKey(guid)
+                || startBuffs.contains(guid);
     }
 
     @Override
     public void replaceEntityDependency(long oldValue, long newValue) {
-
+        if (drop.containsKey(oldValue)) {
+            drop.put(newValue, drop.get(oldValue));
+            drop.remove(oldValue);
+        }
+        if (skills.containsKey(oldValue)) {
+            skills.put(newValue, drop.get(oldValue));
+            skills.remove(oldValue);
+        }
+        if (startBuffs.contains(oldValue)) {
+            startBuffs.remove(oldValue);
+            startBuffs.add(newValue);
+        }
     }
 
     public static void storeMonsters(Collection<MonsterData> collection) {
         collection.forEach(monsterData -> monsters.put(monsterData.getGuid(), monsterData));
-    }
-
-    public class ItemsDrop {
-
-        private long itemData;
-        private int amount;
-        private double chance;
-
-        public ItemsDrop(long itemData, int amount, double chance) {
-            this.itemData = itemData;
-            this.amount = amount;
-            this.chance = chance;
-        }
-
-        public long getItemData() {
-            return itemData;
-        }
-
-        public void setItemData(long itemData) {
-            this.itemData = itemData;
-        }
-
-        public int getAmount() {
-            return amount;
-        }
-
-        public void setAmount(int amount) {
-            this.amount = amount;
-        }
-
-        public double getChance() {
-            return chance;
-        }
-
-        public void setChance(double chance) {
-            this.chance = chance;
-        }
     }
 }

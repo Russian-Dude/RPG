@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class QuestData extends EntityData {
 
@@ -143,11 +144,47 @@ public class QuestData extends EntityData {
 
     @Override
     public boolean hasEntityDependency(long guid) {
-        return false;
+        return Stream.of(
+                killMonsters.keySet().stream(),
+                collectItems.keySet().stream(),
+                useSkills.keySet().stream(),
+                learnSkills.stream(),
+                receiveItems.keySet().stream(),
+                startQuests.stream(),
+                Stream.of(startEvent))
+                .reduce(Stream::concat)
+                .orElse(Stream.of())
+                .anyMatch(g -> g.equals(guid));
     }
 
     @Override
     public void replaceEntityDependency(long oldValue, long newValue) {
-
+        if (killMonsters.containsKey(oldValue)) {
+            killMonsters.put(newValue, killMonsters.get(oldValue));
+            killMonsters.remove(oldValue);
+        }
+        if (collectItems.containsKey(oldValue)) {
+            collectItems.put(newValue, collectItems.get(oldValue));
+            collectItems.remove(oldValue);
+        }
+        if (useSkills.containsKey(oldValue)) {
+            useSkills.put(newValue, useSkills.get(oldValue));
+            useSkills.remove(oldValue);
+        }
+        if (learnSkills.contains(oldValue)) {
+            learnSkills.remove(oldValue);
+            learnSkills.add(newValue);
+        }
+        if (receiveItems.containsKey(oldValue)) {
+            receiveItems.put(newValue, receiveItems.get(oldValue));
+            receiveItems.remove(oldValue);
+        }
+        if (startQuests.contains(oldValue)) {
+            startQuests.remove(oldValue);
+            startQuests.add(newValue);
+        }
+        if (startEvent == oldValue) {
+            startEvent = newValue;
+        }
     }
 }

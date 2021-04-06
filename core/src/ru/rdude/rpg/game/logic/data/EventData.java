@@ -7,10 +7,11 @@ import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EventData extends EntityData {
 
-    public enum EventActionTarget { NO, SELECTED_PLAYER, RANDOM_PLAYER, ALL_PLAYERS }
+    public enum EventActionTarget {NO, SELECTED_PLAYER, RANDOM_PLAYER, ALL_PLAYERS}
 
     public static Map<Long, EventData> events = new HashMap<>();
 
@@ -71,12 +72,38 @@ public class EventData extends EntityData {
 
     @Override
     public boolean hasEntityDependency(long guid) {
-        return false;
+        return actions.stream()
+                .map(action -> Stream.of(
+                        action.skillsCouldCast.keySet(),
+                        action.skillsMustCast.keySet(),
+                        action.summon.keySet(),
+                        action.receiveItems.keySet())
+                        .flatMap(Set::stream))
+                .reduce(Stream::concat)
+                .orElse(Stream.of())
+                .anyMatch(g -> g.equals(guid));
     }
 
     @Override
     public void replaceEntityDependency(long oldValue, long newValue) {
-
+        for (EventAction action : actions) {
+            if (action.skillsCouldCast.containsKey(oldValue)) {
+                action.skillsCouldCast.put(newValue, action.skillsCouldCast.get(oldValue));
+                action.skillsCouldCast.remove(oldValue);
+            }
+            if (action.skillsMustCast.containsKey(oldValue)) {
+                action.skillsMustCast.put(newValue, action.skillsMustCast.get(oldValue));
+                action.skillsMustCast.remove(oldValue);
+            }
+            if (action.summon.containsKey(oldValue)) {
+                action.summon.put(newValue, action.summon.get(oldValue));
+                action.summon.remove(oldValue);
+            }
+            if (action.receiveItems.containsKey(oldValue)) {
+                action.receiveItems.put(newValue, action.receiveItems.get(oldValue));
+                action.receiveItems.remove(oldValue);
+            }
+        }
     }
 
     public class EventAction {
