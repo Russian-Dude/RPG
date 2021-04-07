@@ -4,16 +4,18 @@ import ru.rdude.rpg.game.logic.enums.BeingType;
 import ru.rdude.rpg.game.logic.enums.Element;
 import ru.rdude.rpg.game.logic.enums.Size;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public abstract class BeingData extends EntityData {
 
+    private Set<BeingType> beingTypes = new HashSet<>();
+    private Set<Element> elements = new HashSet<>();
+    private Size size;
+
     public BeingData(long guid) {
         super(guid);
     }
-    private Set<BeingType> beingTypes;
-    private Set<Element> elements;
-    private Size size;
 
     public Set<Element> getElements() {
         return elements;

@@ -5,21 +5,22 @@ import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MonsterData extends BeingData {
 
     private static Map<Long, MonsterData> monsters = new HashMap<>();
 
-    private Map<Long, Double> drop;
+    private Map<Long, Double> drop = new HashMap<>();
     private double goldDrop = 0d;
     private double expReward = 0d;
-    private double minLvl = 0d;
-    private double maxLvl = 0d;
-    private double mainLvl = 0d;
+    private double minLvl = 1d;
+    private double maxLvl = 1d;
+    private double mainLvl = 1d;
     private Map<Long, Double> skills = new HashMap<>();
     private Set<Long> startBuffs = new HashSet<>();
-    private Set<Biom> spawnBioms = new HashSet<>();
-    private Set<Relief> spawnReliefs = new HashSet<>();
+    private Set<Biom> spawnBioms = Arrays.stream(Biom.values()).collect(Collectors.toSet());
+    private Set<Relief> spawnReliefs = Arrays.stream(Relief.values()).collect(Collectors.toSet());
 
 
     public MonsterData(long guid) {
