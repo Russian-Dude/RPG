@@ -302,6 +302,26 @@ public class Stats implements StatObserver {
                 ));
     }
 
+    public Stats copy(boolean calculatable) {
+        Stats stats = new Stats(calculatable);
+        copyTo(stats);
+        return stats;
+    }
+
+    public void copyTo(Stats stats) {
+        boolean calculatable = stats.isCalculatable();
+        stats.setCalculatable(false);
+        forEachWithNestedStats(stat -> {
+            Stat copyStat = stats.get(stat.getClass());
+            copyStat.set(stat.pureValue());
+            stat.getBuffs().forEach((cl, val) -> {
+                copyStat.addBuffClass(cl);
+                copyStat.setBuffValue(cl, val);
+            });
+        });
+        stats.setCalculatable(calculatable);
+    }
+
     public void subscribe(StatsObserver subscriber) {
         subscribers.add(subscriber);
     }

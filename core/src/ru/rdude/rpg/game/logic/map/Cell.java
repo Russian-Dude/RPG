@@ -25,6 +25,8 @@ public class Cell implements AStarNode {
     private MapObject object;
     private Road road;
 
+    private int lvl = 1;
+
     public Cell(int x, int y, GameMap map) {
         this.x = x;
         this.y = y;
@@ -104,6 +106,14 @@ public class Cell implements AStarNode {
 
     public int getY() {
         return y;
+    }
+
+    public int getLvl() {
+        return lvl;
+    }
+
+    public void setLvl(int lvl) {
+        this.lvl = lvl;
     }
 
     public boolean isConnectedByRoadWith(Cell cell) {

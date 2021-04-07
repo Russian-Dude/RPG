@@ -149,7 +149,8 @@ public class Generator {
         System.out.println(timeCounter.getCountFromPrevious("roads creation"));
         createDeepOfWater();
         System.out.println(timeCounter.getCountFromPrevious("deep of water creation"));
-
+        createLevels();
+        System.out.println(timeCounter.getCountFromPrevious("leveling cells"));
         System.out.println(timeCounter.getCount());
 
         return map;
@@ -805,6 +806,31 @@ public class Generator {
                 road.addDestination(destination);
             }
             cell.setRoad(road);
+        }
+    }
+
+    private void createLevels() {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int lvl;
+                Cell cell = map.cell(x, y);
+                if (cell.getObject() instanceof City || cell.getRoad() != null) {
+                    lvl = Functions.random(1, 6);
+                }
+                else {
+                    int howFarIsRoadOrCity = 5;
+                    for (int i = 1; i < 5 ; i++) {
+                        boolean hasRoadOrCity = getAroundCells(x, y, i).stream()
+                                .anyMatch(point -> cell.getRoad() != null || cell.getObject() instanceof City);
+                        if (hasRoadOrCity) {
+                            howFarIsRoadOrCity = i;
+                            break;
+                        }
+                    }
+                    lvl = Functions.random(10 * howFarIsRoadOrCity - 5, 10 * howFarIsRoadOrCity + 6);
+                }
+                cell.setLvl(lvl);
+            }
         }
     }
 }

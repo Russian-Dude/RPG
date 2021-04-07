@@ -96,6 +96,16 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
         notifySubscribers();
     }
 
+    public double getBuffValue(Class<?> clazz) {
+        return getBuffValue(clazz.getSimpleName());
+    }
+
+    public double getBuffValue(String className) {
+        if (!buffs.containsKey(className))
+            throw new IllegalArgumentException(className + " class is not presented as buff field");
+        return buffs.get(className);
+    }
+
     public Map<String, Double> getBuffs() {
         return buffs;
     }

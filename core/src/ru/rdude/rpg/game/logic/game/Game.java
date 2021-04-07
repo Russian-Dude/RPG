@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import ru.rdude.rpg.game.logic.GameLogger;
 import ru.rdude.rpg.game.logic.data.io.GameJsonSerializer;
 import ru.rdude.rpg.game.logic.data.io.ModuleFileLoader;
+import ru.rdude.rpg.game.logic.entities.beings.MonsterFactory;
 import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.Map;
@@ -24,6 +25,7 @@ public class Game {
     private Map gameMap;
     private AvatarCreator avatarCreator;
     private ItemImageFactory itemImageFactory;
+    private MonsterFactory monsterFactory;
 
     // io
     private ModuleFileLoader moduleFileLoader;
@@ -36,6 +38,7 @@ public class Game {
         this.itemImageFactory = new ItemImageFactory();
         this.gameJsonSerializer = new GameJsonSerializer();
         this.moduleFileLoader = new ModuleFileLoader(gameJsonSerializer, itemImageFactory);
+        this.monsterFactory = new MonsterFactory();
     }
 
     public static Game getCurrentGame() {
@@ -76,5 +79,9 @@ public class Game {
 
     public GameJsonSerializer getGameJsonSerializer() {
         return gameJsonSerializer;
+    }
+
+    public MonsterFactory getMonsterFactory() {
+        return monsterFactory;
     }
 }

@@ -12,7 +12,7 @@ public class Party {
         this(new LinkedList<>());
     }
 
-    public Party(Collection<Being> collection) {
+    public Party(Collection<? extends Being> collection) {
         beings = new LinkedList<>(collection);
     }
 
