@@ -1,8 +1,10 @@
 package ru.rdude.rpg.game.logic.data;
 
 import ru.rdude.rpg.game.logic.data.resources.MonsterResources;
+import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
+import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,16 +19,28 @@ public class MonsterData extends BeingData {
     private double minLvl = 1d;
     private double maxLvl = 1d;
     private double mainLvl = 1d;
+    private Stats stats = new Stats(true);
     private Map<Long, Double> skills = new HashMap<>();
     private Set<Long> startBuffs = new HashSet<>();
     private Set<Biom> spawnBioms = Arrays.stream(Biom.values()).collect(Collectors.toSet());
     private Set<Relief> spawnReliefs = Arrays.stream(Relief.values()).collect(Collectors.toSet());
+    private AttackType defaultAttackType = AttackType.MELEE;
+    private boolean canBlock = false;
+    private boolean canParry = false;
 
 
     public MonsterData(long guid) {
         super(guid);
         setResources(new MonsterResources());
         monsters.put(guid, this);
+    }
+
+    public static Map<Long, MonsterData> getMonsters() {
+        return monsters;
+    }
+
+    public static MonsterData getMonsterByGuid(long guid) {
+        return monsters.get(guid);
     }
 
     public Map<Long, Double> getDrop() {
@@ -107,6 +121,38 @@ public class MonsterData extends BeingData {
 
     public void setSpawnReliefs(Set<Relief> spawnReliefs) {
         this.spawnReliefs = spawnReliefs;
+    }
+
+    public Stats getStats() {
+        return stats;
+    }
+
+    public void setStats(Stats stats) {
+        this.stats = stats;
+    }
+
+    public AttackType getDefaultAttackType() {
+        return defaultAttackType;
+    }
+
+    public void setDefaultAttackType(AttackType defaultAttackType) {
+        this.defaultAttackType = defaultAttackType;
+    }
+
+    public boolean isCanBlock() {
+        return canBlock;
+    }
+
+    public void setCanBlock(boolean canBlock) {
+        this.canBlock = canBlock;
+    }
+
+    public boolean isCanParry() {
+        return canParry;
+    }
+
+    public void setCanParry(boolean canParry) {
+        this.canParry = canParry;
     }
 
     @Override

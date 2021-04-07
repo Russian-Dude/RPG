@@ -11,6 +11,7 @@ import ru.rdude.rpg.game.logic.entities.skills.BuffObserver;
 import ru.rdude.rpg.game.logic.entities.skills.Damage;
 import ru.rdude.rpg.game.logic.entities.states.StateHolder;
 import ru.rdude.rpg.game.logic.enums.*;
+import ru.rdude.rpg.game.logic.stats.Bonus;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.util.HashSet;
@@ -40,6 +41,7 @@ public abstract class Being extends Entity implements BuffObserver {
         stats = new Stats(true);
         stats.addBuffClass(Buff.class);
         stats.addBuffClass(Item.class);
+        stats.addBuffClass(Bonus.class);
         beingTypes = new StateHolder<>(beingData.getBeingTypes());
         elements = new StateHolder<>(beingData.getElements());
         size = new StateHolder<>(beingData.getSize());
