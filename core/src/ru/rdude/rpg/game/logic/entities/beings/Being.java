@@ -12,10 +12,13 @@ import ru.rdude.rpg.game.logic.entities.skills.Damage;
 import ru.rdude.rpg.game.logic.entities.states.StateHolder;
 import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.stats.Bonus;
+import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public abstract class Being extends Entity implements BuffObserver {
 
@@ -65,19 +68,19 @@ public abstract class Being extends Entity implements BuffObserver {
         if (damage.value() > 0) {
             // check if damage is missed
             if (damage.isMiss()) {
-                notifySubscribers(new BeingAction(BeingAction.Action.DODGE, damage.interactor(), damage.bySkill()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.DODGE, damage.interactor(), damage.bySkill(), damage.value()), this);
                 if (damage.interactor() instanceof Being)
-                    ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.MISS, this, damage.bySkill()), (Being) damage.interactor());
+                    ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.MISS, this, damage.bySkill(), damage.value()), (Being) damage.interactor());
                 return false;
             }
             // check if blocked
             if (damage.isBlock()) {
-                notifySubscribers(new BeingAction(BeingAction.Action.BLOCK, damage.interactor(), damage.bySkill()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.BLOCK, damage.interactor(), damage.bySkill(), damage.value()), this);
                 return false;
             }
             // check if parried
             if (damage.isParry()) {
-                notifySubscribers(new BeingAction(BeingAction.Action.PARRY, damage.interactor(), damage.bySkill()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.PARRY, damage.interactor(), damage.bySkill(), damage.value()), this);
                 return false;
             }
             // else take damage
@@ -94,9 +97,9 @@ public abstract class Being extends Entity implements BuffObserver {
                 ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.DAMAGE_DEAL, this, damage.bySkill(), realDamage), (Being) damage.interactor());
             if (!isAlive) {
                 alive = false;
-                notifySubscribers(new BeingAction(BeingAction.Action.DIE, damage.interactor(), damage.bySkill()), this);
+                notifySubscribers(new BeingAction(BeingAction.Action.DIE, damage.interactor(), damage.bySkill(), realDamage), this);
                 if (damage.interactor() instanceof Being)
-                    ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.KILL, this, damage.bySkill()), (Being) damage.interactor());
+                    ((Being) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.KILL, this, damage.bySkill(), realDamage), (Being) damage.interactor());
             }
         }
         // heal
@@ -110,6 +113,9 @@ public abstract class Being extends Entity implements BuffObserver {
     }
 
     public boolean receive(Buff buff) {
+        // notify subscribers
+        notifySubscribers(new BeingAction(BeingAction.Action.BUFF_RECEIVE, buff, buff.getSkillData(), 0), this);
+        notifySubscribers(new BeingAction(BeingAction.Action.BUFF_DEAL, buff, buff.getSkillData(), 0), buff.getCaster());
         // subscribing to buff updates:
         if (!buff.isPermanent())
             buff.subscribe(this);
@@ -187,8 +193,8 @@ public abstract class Being extends Entity implements BuffObserver {
         beingActionObservers.remove(observer);
     }
 
-    private void notifySubscribers(BeingAction action, Being being) {
-        beingActionObservers.forEach(obs -> obs.update(action, this));
+    public void notifySubscribers(BeingAction action, Being being) {
+        beingActionObservers.forEach(obs -> obs.update(action, being));
     }
 
     // removing buffs

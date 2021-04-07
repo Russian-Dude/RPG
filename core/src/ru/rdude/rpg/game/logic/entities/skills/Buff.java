@@ -1,6 +1,7 @@
 package ru.rdude.rpg.game.logic.entities.skills;
 
 import ru.rdude.rpg.game.logic.data.SkillData;
+import ru.rdude.rpg.game.logic.entities.Entity;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.entities.beings.BeingActionObserver;
@@ -14,7 +15,7 @@ import ru.rdude.rpg.game.utils.Functions;
 import java.util.Set;
 
 
-public class Buff implements TurnChangeObserver, TimeChangeObserver, BeingActionObserver, DurationObserver, StateChanger {
+public class Buff extends Entity implements TurnChangeObserver, TimeChangeObserver, BeingActionObserver, DurationObserver, StateChanger {
 
     private Set<BuffObserver> subscribers;
 
@@ -69,7 +70,7 @@ public class Buff implements TurnChangeObserver, TimeChangeObserver, BeingAction
     private Stats createStats() {
         Stats stats = new Stats(false);
         stats.forEachWithNestedStats(stat ->
-                stat.set(skillData.getStats().containsKey(StatName.get(stat.getClass())) ? skillApplier.skillParser.parse(skillData.getStats().get(StatName.get(stat.getClass()))) : 0));
+                stat.set(skillData.getStats().containsKey(StatName.get(stat.getClass())) ? skillApplier.skillParser.parse(skillData.getStats().get(StatName.get(stat.getClass()))) - skillApplier.target.stats().get(stat.getClass()).value() : 0));
         return stats;
     }
 
@@ -94,6 +95,10 @@ public class Buff implements TurnChangeObserver, TimeChangeObserver, BeingAction
 
     public boolean isPermanent() {
         return permanent;
+    }
+
+    public Being getCaster() {
+        return skillApplier.caster;
     }
 
     private void onTimeOrTurnUpdate() {
@@ -168,4 +173,8 @@ public class Buff implements TurnChangeObserver, TimeChangeObserver, BeingAction
         return skillData.getTransformation().isOverride();
     }
 
+    @Override
+    public String getName() {
+        return skillData.getName();
+    }
 }

@@ -1,7 +1,9 @@
 package ru.rdude.rpg.game.logic.entities.skills;
 
 import ru.rdude.rpg.game.logic.data.ItemData;
+import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.enums.BuffType;
+import ru.rdude.rpg.game.logic.enums.Size;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.SkillData;
@@ -45,8 +47,10 @@ public class SkillApplier {
             return false;
         // buff part:
         if (applyBuff) {
-            if (skillApplier.isResisted())
+            if (skillApplier.isResisted()) {
+                skillApplier.target.notifySubscribers(new BeingAction(BeingAction.Action.RESIST, skillApplier.target, skillApplier.skillData, 0d), skillApplier.target);
                 return false;
+            }
             Buff buff = new Buff(skillApplier);
             buff.setDamage(damage != null ? damage.value() : null);
             skillApplier.target.receive(buff);
@@ -60,7 +64,7 @@ public class SkillApplier {
     private boolean isMiss() {
         if (!skillData.isCanBeDodged()) return false;
         double HIT = caster.stats().hitValue();
-        double SIZE = target.size().getCurrent().stream().findFirst().get().getSizeNumber();
+        double SIZE = target.size().getCurrent().stream().findFirst().orElse(Size.SMALL).getSizeNumber();
         double LUCK = caster.stats().luckValue();
         double LVL = caster.stats().lvlValue();
         double chanceMiss = (float) Math.floor(45 - SIZE - Math.floor(HIT / 5) - Math.floor(HIT / 10 - (HIT / SIZE) * 0.5 + Math.floor(LVL * (SIZE / 5) * 0.4) - Math.floor(LUCK / 7) - Math.floor(LUCK / 4) * 0.2 - LUCK * 0.1));
