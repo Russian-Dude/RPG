@@ -5,6 +5,7 @@ import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.primary.Lvl;
 import ru.rdude.rpg.game.logic.stats.primary.Vit;
+import static java.lang.Math.*;
 
 public class Hp extends Stat implements Calculatable {
 
@@ -90,7 +91,8 @@ public class Hp extends Stat implements Calculatable {
             if (!calculatable) return value();
             double LVL = lvl.value();
             double VIT = vit.value();
-            this.set(20 + Math.floor(LVL * 0.7 + Math.floor(LVL / 2) * 0.7) + Math.floor(VIT * 0.7 + Math.floor(VIT / 2) * 0.7 + Math.floor(VIT / 3)));
+            this.set(20 + LVL*5 + floor(LVL / 3) + floor(LVL / 5) + floor(LVL / 7) + VIT + floor(VIT / 3)*2 + floor(VIT / 5) + floor(VIT / 7)*2 + floor(VIT / 10));
+            //this.set(20 + Math.floor(LVL * 0.7 + Math.floor(LVL / 2) * 0.7) + Math.floor(VIT * 0.7 + Math.floor(VIT / 2) * 0.7 + Math.floor(VIT / 3)));
             return value();
         }
 
@@ -120,7 +122,8 @@ public class Hp extends Stat implements Calculatable {
             if (!calculatable) return value();
             double LVL = lvl.value();
             double VIT = vit.value();
-            this.set(1 + Math.floor(VIT / 3) + Math.floor(VIT / 7) + LVL);
+            this.set(1 + floor(LVL / 2) + floor(VIT / 2) + floor(VIT / 3) + floor(VIT / 5)*2 + floor(VIT / 7));
+            //this.set(1 + Math.floor(VIT / 3) + Math.floor(VIT / 7) + LVL);
             return value();
         }
 

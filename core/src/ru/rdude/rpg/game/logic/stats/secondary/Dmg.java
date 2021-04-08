@@ -6,6 +6,7 @@ import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.primary.*;
+import static java.lang.Math.*;
 
 import java.util.Comparator;
 import java.util.List;
@@ -138,10 +139,13 @@ public class Dmg extends Stat implements Calculatable {
             double AGI = agi.value();
             double DEX = dex.value();
             double LVL = lvl.value();
-            this.min().set(Math.floor(STR + Math.floor(STR/3)*1.5 + Math.floor(STR/5)*1.7 + Math.floor(AGI/3 + DEX/3)/5)*1.7
+            this.min.set(LVL + floor(LVL / 3) + STR + floor(STR / 5) + floor(STR / 7) + floor(AGI / 5) + floor(DEX / 5));
+            this.max.set(LVL + floor(LVL / 3) + floor(LVL / 5) + STR + floor(STR / 3) + floor(STR / 5) + floor(STR / 7) + floor(STR / 10)
+            + floor(AGI / 3) + floor(DEX / 3) + 1);
+/*            this.min().set(Math.floor(STR + Math.floor(STR/3)*1.5 + Math.floor(STR/5)*1.7 + Math.floor(AGI/3 + DEX/3)/5)*1.7
                     + Math.floor(AGI + DEX/5) + LVL + Math.floor(LVL/3)*1.5 + Math.floor(LVL/5)*1.7);
             this.max().set(Math.floor(STR + Math.floor(STR/2)*1.5 + Math.floor(STR/7)*1.8 + Math.floor(AGI/3 + DEX/3)/5)*1.8
-                    + Math.floor(AGI + DEX/5) + LVL + Math.floor(LVL)/3*1.5 + Math.floor(LVL)/4*1.7 + 1);
+                    + Math.floor(AGI + DEX/5) + LVL + Math.floor(LVL)/3*1.5 + Math.floor(LVL)/4*1.7 + 1);*/
             return (this.minValue() + this.maxValue())/2;
         }
 
@@ -177,10 +181,13 @@ public class Dmg extends Stat implements Calculatable {
             double AGI = agi.value();
             double DEX = dex.value();
             double LVL = lvl.value();
-            this.min().set(Math.floor(DEX + Math.floor(DEX/3)*1.5 + Math.floor(DEX/5)*1.7 + Math.floor(AGI/3 + STR/3)/5)*1.7
+            this.min.set(LVL + floor(LVL / 3) + DEX + floor(DEX / 5) + floor(DEX / 7) + floor(AGI / 5) + floor(STR / 5));
+            this.max.set(LVL + floor(LVL / 3) + floor(LVL / 5) + DEX + floor(DEX / 3) + floor(DEX / 5) + floor(DEX / 7) + floor(DEX / 10)
+                    + floor(AGI / 3) + floor(STR / 3) + 1);
+/*            this.min().set(Math.floor(DEX + Math.floor(DEX/3)*1.5 + Math.floor(DEX/5)*1.7 + Math.floor(AGI/3 + STR/3)/5)*1.7
                     + Math.floor(AGI + STR/5) + LVL + Math.floor(LVL/3)*1.5 + Math.floor(LVL/5)*1.7);
             this.max.set(Math.floor(DEX + Math.floor(DEX/2)*1.5 + Math.floor(DEX/7)*1.8 + Math.floor(AGI/3 + STR/3)/5)*1.8
-                    + Math.floor(AGI + STR/5) + LVL + Math.floor(LVL)/3*1.5 + Math.floor(LVL)/4*1.7 + 1);
+                    + Math.floor(AGI + STR/5) + LVL + Math.floor(LVL)/3*1.5 + Math.floor(LVL)/4*1.7 + 1);*/
             return (this.minValue() + this.maxValue())/2;
         }
 
@@ -216,10 +223,13 @@ public class Dmg extends Stat implements Calculatable {
             double AGI = agi.value();
             double DEX = dex.value();
             double LVL = lvl.value();
-            this.min.set(Math.floor(INT + Math.floor(INT/3)*1.5 + Math.floor(INT/5)*1.7 + Math.floor(AGI/3 + DEX/3)/5)*1.7
+            this.min.set(LVL + floor(LVL / 3) + INT + floor(INT / 5) + floor(INT / 7) + floor(AGI / 5) + floor(DEX / 5));
+            this.max.set(LVL + floor(LVL / 3) + floor(LVL / 5) + INT + floor(INT / 3) + floor(INT / 5) + floor(INT / 7) + floor(INT / 10)
+                    + floor(AGI / 3) + floor(DEX / 3) + 1);
+/*            this.min.set(Math.floor(INT + Math.floor(INT/3)*1.5 + Math.floor(INT/5)*1.7 + Math.floor(AGI/3 + DEX/3)/5)*1.7
                     + Math.floor(AGI + DEX/5) + LVL + Math.floor(LVL/3)*1.5 + Math.floor(LVL/5)*1.7);
             this.max.set(Math.floor(INT + Math.floor(INT/2)*1.5 + Math.floor(INT/7)*1.8 + Math.floor(AGI/3 + DEX/3)/5)*1.8
-                    + Math.floor(AGI + DEX/5) + LVL + Math.floor(LVL)/3*1.5 + Math.floor(LVL)/4*1.7 + 1);
+                    + Math.floor(AGI + DEX/5) + LVL + Math.floor(LVL)/3*1.5 + Math.floor(LVL)/4*1.7 + 1);*/
             return (this.minValue() + this.maxValue())/2;
         }
 

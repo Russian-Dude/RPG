@@ -49,8 +49,8 @@ public class Block extends Stat implements Calculatable {
         double DEX = dex.value();
         double AGI = agi.value();
         double LVL = lvl.value();
-        this.set(Math.floor(DEX*0.5 + Math.floor(DEX/3) + Math.floor(DEX/5)*0.5 + Math.floor(DEX/7)*0.6
-                + Math.floor(AGI/2)*0.1 + LVL*0.1 + Math.floor(LVL/3)*0.2));
+        this.set(DEX*0.5 + Math.floor(DEX/3) + Math.floor(DEX/5)*0.5 + Math.floor(DEX/7)*0.6
+                + Math.floor(AGI/2)*0.1 + LVL*0.1 + Math.floor(LVL/3)*0.2);
         return value();
     }
 }

@@ -157,7 +157,7 @@ public class Stm extends Stat implements Calculatable {
             if (!calculatable) return value();
             double LVL = lvl.value();
             double VIT = vit.value();
-            this.set(Math.floor(VIT / 3) + Math.floor(VIT / 5) + LVL + Math.floor(LVL / 3) + Math.floor(LVL / 7) + 3);
+            this.set(Math.floor(VIT / 3) + Math.floor(VIT / 5) + Math.floor(LVL / 2) + Math.floor(LVL / 3) + Math.floor(LVL / 7) + 3);
             return value();
         }
 
