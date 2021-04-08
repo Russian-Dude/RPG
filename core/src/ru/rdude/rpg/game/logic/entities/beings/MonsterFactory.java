@@ -39,6 +39,8 @@ public final class MonsterFactory {
         int minLvl = Math.max(1, cell.getLvl() - amount - 1);
         int maxLvl = cell.getLvl() + (5 - amount);
         return MonsterData.getMonsters().values().stream()
+                // filter by describer
+                .filter(data -> !data.isDescriber())
                 // filter monsters by biom and relief
                 .filter(data -> data.getSpawnBioms().contains(Biom.ofCellProperty(cell.getBiom()))
                         && data.getSpawnReliefs().contains(Relief.ofCellProperty(cell.getRelief())))
