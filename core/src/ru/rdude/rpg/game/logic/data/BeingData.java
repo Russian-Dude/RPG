@@ -13,6 +13,10 @@ public abstract class BeingData extends EntityData {
     private Set<Element> elements = new HashSet<>();
     private Size size;
 
+    public BeingData() {
+        super();
+    }
+
     public BeingData(long guid) {
         super(guid);
     }

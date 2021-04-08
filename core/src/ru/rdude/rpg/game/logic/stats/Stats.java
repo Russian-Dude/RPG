@@ -229,7 +229,7 @@ public class Stats implements StatObserver {
     }
 
     public void addBuffClass(Class<?> clazz) {
-        stats.values().forEach(stat -> stat.addBuffClass(clazz));
+        streamWithNestedStats().forEach(stat -> stat.addBuffClass(clazz));
     }
 
     public void increase(Stats stats) {

@@ -4,6 +4,7 @@ import ru.rdude.rpg.game.logic.data.resources.MonsterResources;
 import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
+import ru.rdude.rpg.game.logic.stats.Bonus;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.util.*;
@@ -28,11 +29,15 @@ public class MonsterData extends BeingData {
     private boolean canBlock = false;
     private boolean canParry = false;
 
+    public MonsterData() {
+        super();
+    }
 
     public MonsterData(long guid) {
         super(guid);
         setResources(new MonsterResources());
         monsters.put(guid, this);
+        stats.addBuffClass(Bonus.class);
     }
 
     public static Map<Long, MonsterData> getMonsters() {
