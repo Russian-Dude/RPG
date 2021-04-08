@@ -1,6 +1,5 @@
 package ru.rdude.rpg.game.logic.game;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import ru.rdude.rpg.game.logic.GameLogger;
 import ru.rdude.rpg.game.logic.data.io.GameJsonSerializer;
@@ -8,6 +7,7 @@ import ru.rdude.rpg.game.logic.data.io.ModuleFileLoader;
 import ru.rdude.rpg.game.logic.entities.beings.MonsterFactory;
 import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
+import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.time.TimeManager;
 import ru.rdude.rpg.game.ui.AvatarCreator;
@@ -17,15 +17,15 @@ public class Game {
 
     private static Game currentGame = new Game();
 
-    private DragAndDrop itemsDragAndDrop;
-    private GameLogger gameLogger;
+    private final DragAndDrop itemsDragAndDrop;
+    private final GameLogger gameLogger;
     private TimeManager timeManager;
     private SkillUser skillUser;
-    private GameStateBase currentGameState;
+    private final GameStateHolder gameStateHolder;
     private Map gameMap;
-    private AvatarCreator avatarCreator;
-    private ItemImageFactory itemImageFactory;
-    private MonsterFactory monsterFactory;
+    private final AvatarCreator avatarCreator;
+    private final ItemImageFactory itemImageFactory;
+    private final MonsterFactory monsterFactory;
 
     // io
     private ModuleFileLoader moduleFileLoader;
@@ -39,6 +39,7 @@ public class Game {
         this.gameJsonSerializer = new GameJsonSerializer();
         this.moduleFileLoader = new ModuleFileLoader(gameJsonSerializer, itemImageFactory);
         this.monsterFactory = new MonsterFactory();
+        this.gameStateHolder = new GameStateHolder();
     }
 
     public static Game getCurrentGame() {
@@ -53,8 +54,12 @@ public class Game {
         return skillUser;
     }
 
+    public GameStateHolder getGameStateHolder() {
+        return gameStateHolder;
+    }
+
     public GameStateBase getCurrentGameState() {
-        return currentGameState;
+        return gameStateHolder.getGameState();
     }
 
     public Map getGameMap() {
