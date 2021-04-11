@@ -10,12 +10,17 @@ import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.time.TimeManager;
+import ru.rdude.rpg.game.mapVisual.MapRenderer;
 import ru.rdude.rpg.game.ui.AvatarCreator;
 import ru.rdude.rpg.game.ui.ItemImageFactory;
+import ru.rdude.rpg.game.visual.GameVisual;
 
 public class Game {
 
     private static Game currentGame = new Game();
+
+    private static final GameVisual gameVisual = new GameVisual();
+
 
     private final DragAndDrop itemsDragAndDrop;
     private final GameLogger gameLogger;
@@ -44,6 +49,10 @@ public class Game {
 
     public static Game getCurrentGame() {
         return currentGame;
+    }
+
+    public static GameVisual getGameVisual() {
+        return gameVisual;
     }
 
     public TimeManager getTimeManager() {
@@ -88,5 +97,9 @@ public class Game {
 
     public MonsterFactory getMonsterFactory() {
         return monsterFactory;
+    }
+
+    public ModuleFileLoader getModuleFileLoader() {
+        return moduleFileLoader;
     }
 }
