@@ -38,6 +38,10 @@ public class Zone {
                         && y <= end.y;
     }
 
+    public boolean hasCell(Cell cell) {
+        return hasPoint(cell.getX(), cell.getY());
+    }
+
     @Override
     public String toString() {
         return "Zone{" +

@@ -135,10 +135,10 @@ public class Generator {
 
         createBioms();
         System.out.println(timeCounter.getCountFromPrevious("bioms creation"));
-        denoiseBioms();
-        System.out.println(timeCounter.getCountFromPrevious("bioms denoising"));
         createRivers();
         System.out.println(timeCounter.getCountFromPrevious("rivers creation"));
+        denoiseBioms();
+        System.out.println(timeCounter.getCountFromPrevious("bioms denoising"));
         createRelief();
         System.out.println(timeCounter.getCountFromPrevious("relief creation"));
         createCities();
@@ -222,120 +222,14 @@ public class Generator {
         biomAmount.put(biom, biomAmount.get(biom) + 1);
     }
 
-    private List<Point> getAroundCells(int x, int y, int closeness) {
-        return getAroundCells(new Point(x, y), closeness);
-    }
-
-    // get cells in closeness radius. Closeness 1 and 2 implemented by
-    // old implementation. This method still uses old one with closeness 1 though
-    private List<Point> getAroundCells(Point point, int closeness) {
-        if (closeness == 1 || closeness == 2)
-            return getCloseAroundCells(point, closeness);
-
-        Set<Point> checkedPoints = new HashSet<>();
-        Set<Point> nextCheckingPoints = new HashSet<>();
-        checkedPoints.add(point);
-        nextCheckingPoints.add(point);
-
-        for (int i = 0; i < closeness; i++) {
-            Set<Point> currentPoints = new HashSet<>(nextCheckingPoints);
-            nextCheckingPoints.clear();
-            for (Point currentPoint : currentPoints) {
-                List<Point> aroundCells = getAroundCells(currentPoint, 1).stream()
-                        .filter(p -> !checkedPoints.contains(p))
-                        .collect(Collectors.toList());
-                checkedPoints.addAll(aroundCells);
-                nextCheckingPoints.addAll(aroundCells);
-            }
-            if (i == closeness - 1)
-                return new ArrayList<>(nextCheckingPoints);
-        }
-        return new ArrayList<>();
-    }
-
-    private List<Point> getArea(int x_center, int y_center, int radius) {
-        return getArea(new Point(x_center, y_center), radius);
-    }
-
-    private List<Point> getArea(Point center, int radius) {
-        List<Point> result = new ArrayList<>();
-        for (int i = 1; i <= radius; i++) {
-            result.addAll(getAroundCells(center, i));
-        }
-        return result;
-    }
-
-    // get points around given point
-    // closeness - how close this points to given cell (1 - short radius, 2 - huge radius)
-    private List<Point> getCloseAroundCells(Point point, int closeness) {
-        if (closeness > 2 || closeness < 1)
-            throw new IllegalArgumentException("closeness in AroundCells() method is wrong");
-        List<Point> aroundCells = new ArrayList<>();
-        int x = point.x;
-        int y = point.y;
-        if (closeness == 1) {
-            if (point.x > 0)
-                aroundCells.add(new Point(x - 1, y));
-            if (point.y > 0)
-                aroundCells.add(new Point(x, y - 1));
-            if (x < width - 1)
-                aroundCells.add(new Point(x + 1, y));
-            if (y < height - 1)
-                aroundCells.add(new Point(x, y + 1));
-            if (x % 2 == 0 && (x < width - 1) && (y < height - 1))
-                aroundCells.add(new Point(x + 1, y + 1));
-            else if ((x < width - 1) && y > 0)
-                aroundCells.add(new Point(x + 1, y - 1));
-            if (x % 2 == 0 && x > 0 && y < height - 1)
-                aroundCells.add(new Point(x - 1, y + 1));
-            else if (x > 0 && y > 0)
-                aroundCells.add(new Point(x - 1, y - 1));
-        } else if (closeness == 2) {
-            if (x % 2 == 0 && x > 0 && y > 0)
-                aroundCells.add(new Point(x - 1, y - 1));
-            else if (x > 0 && y > 1)
-                aroundCells.add(new Point(x - 1, y - 2));
-            if (y > 1)
-                aroundCells.add(new Point(x, y - 2));
-            if (x % 2 == 0 && x < width - 1 && y > 1)
-                aroundCells.add(new Point(x + 1, y - 1));
-            else if (x < width - 1 && y > 2)
-                aroundCells.add(new Point(x + 1, y - 2));
-            if (x > 1 && y > 0)
-                aroundCells.add(new Point(x - 2, y - 1));
-            if (x < width - 2 && y > 0)
-                aroundCells.add(new Point(x + 2, y - 1));
-            if (x > 1)
-                aroundCells.add(new Point(x - 2, y));
-            if (x < width - 2)
-                aroundCells.add(new Point(x + 2, y));
-            if (x > 1 && y < height - 1)
-                aroundCells.add(new Point(x - 2, y + 1));
-            if (x < width - 2 && y < height - 1)
-                aroundCells.add(new Point(x + 2, y + 1));
-            if (y < height - 2)
-                aroundCells.add(new Point(x, y + 2));
-            if (x % 2 == 0 && x < width - 1 && y < height - 2)
-                aroundCells.add(new Point(x + 1, y + 2));
-            else if (x < width - 1 && y < height - 1)
-                aroundCells.add(new Point(x + 1, y + 1));
-            if (x % 2 == 0 && x > 0 && y < height - 2)
-                aroundCells.add(new Point(x - 1, y + 2));
-            else if (x > 0 && y < height - 1)
-                aroundCells.add(new Point(x - 1, y + 1));
-        }
-        return aroundCells;
-    }
-
-
     // looking for cells around, then everywhere
-    private List<Point> findUnSteppedCells(Point point, CellProperty.Type property) {
-        List<Point> result = new ArrayList<>();
+    private List<Cell> findUnSteppedCells(Cell cell, CellProperty.Type property) {
+        List<Cell> result = new ArrayList<>();
 
         // close cells
         for (int i = 1; i <= 2; i++) {
-            for (Point aroundCell : getAroundCells(point, i)) {
-                if (map.cell(aroundCell).get(property) == null)
+            for (Cell aroundCell : cell.getAroundCells(i)) {
+                if (cell.get(property) == null)
                     result.add(aroundCell);
             }
             if (!result.isEmpty()) return result;
@@ -343,7 +237,7 @@ public class Generator {
 
         // far cells from zones
         Zone zone = zones.get(property).stream()
-                .filter(z -> z.hasPoint(point))
+                .filter(z -> z.hasCell(cell))
                 .findFirst()
                 .orElse(null);
 
@@ -352,7 +246,7 @@ public class Generator {
             for (int x = zone.getStartPoint().x; x <= zone.getEndPoint().x; x++) {
                 for (int y = zone.getStartPoint().y; y <= zone.getEndPoint().y; y++) {
                     if (map.cell(x, y).get(property) == null) {
-                        result.add(new Point(x, y));
+                        result.add(map.cell(x, y));
                         return result;
                     }
                 }
@@ -367,7 +261,7 @@ public class Generator {
             for (int x = z.getStartPoint().x; x <= z.getEndPoint().x; x++) {
                 for (int y = z.getStartPoint().y; y <= z.getEndPoint().y; y++) {
                     if (map.cell(x, y).get(property) == null) {
-                        result.add(new Point(x, y));
+                        result.add(map.cell(x, y));
                         break zIter;
                     }
                 }
@@ -377,39 +271,6 @@ public class Generator {
 
         zones.get(property).removeAll(zonesToRemove);
         return result;
-    }
-
-    private CellSide getRelativeLocation(Cell from, Cell searching) {
-        return getRelativeLocation(new Point(from.getX(), from.getY()), new Point(searching.getX(), searching.getY()));
-    }
-
-    // from which side of cell another cell locates
-    private CellSide getRelativeLocation(Point from, Point searching) {
-        if (from.x == searching.x && from.y + 1 == searching.y)
-            return CellSide.NN;
-        if (from.x == searching.x && from.y - 1 == searching.y)
-            return CellSide.SS;
-
-        if (from.x % 2 == 0) {
-            if (from.x + 1 == searching.x && from.y + 1 == searching.y)
-                return CellSide.NE;
-            if (from.x + 1 == searching.x && from.y == searching.y)
-                return CellSide.SE;
-            if (from.x - 1 == searching.x && from.y == searching.y)
-                return CellSide.SW;
-            if (from.x - 1 == searching.x && from.y + 1 == searching.y)
-                return CellSide.NW;
-        } else {
-            if (from.x + 1 == searching.x && from.y == searching.y)
-                return CellSide.NE;
-            if (from.x + 1 == searching.x && from.y - 1 == searching.y)
-                return CellSide.SE;
-            if (from.x - 1 == searching.x && from.y - 1 == searching.y)
-                return CellSide.SW;
-            if (from.x - 1 == searching.x && from.y == searching.y)
-                return CellSide.NW;
-        }
-        return CellSide.NOT_RELATED;
     }
 
 
@@ -437,11 +298,11 @@ public class Generator {
                 steps -= 1;
             map.cell(point).setBiom(randomBiom);
             increaseBiomAmount(randomBiom);
-            for (Point aroundCell : getAroundCells(point, 1)) {
+            for (Cell aroundCell : map.cell(point).getAroundCells(1)) {
                 increaseBiomAmount(randomBiom);
-                if (map.cell(point).getBiom() == null) // cause water can be at this cell already
+                if (aroundCell.getBiom() == null) // cause water can be at this cell already
                     steps -= 1;
-                map.cell(aroundCell).setBiom(randomBiom);
+                aroundCell.setBiom(randomBiom);
             }
         }
         // move through the map and generate bioms:
@@ -449,12 +310,12 @@ public class Generator {
             for (Point point : points) {
                 lastBiom = map.cell(point).getBiom();
                 // move to the next position:
-                List<Point> unSteppedCells = findUnSteppedCells(point, CellProperty.Type.BIOM);
+                List<Cell> unSteppedCells = findUnSteppedCells(map.cell(point), CellProperty.Type.BIOM);
                 if (unSteppedCells.isEmpty())
                     return;
-                Point unSteppedPoint = random(unSteppedCells);
-                point.x = unSteppedPoint.x;
-                point.y = unSteppedPoint.y;
+                Cell unSteppedCell = random(unSteppedCells);
+                point.x = unSteppedCell.getX();
+                point.y = unSteppedCell.getY();
                 // if absolutely new biom creating:
                 if (isChangeBiom(lastBiom, cellsWithNoBiomAmount)) {
                     // next biom will be a biom with less present amount
@@ -469,14 +330,14 @@ public class Generator {
                 // else creating biom based on around cells:
                 // creating biom coefficients from cells around:
                 // close cells:
-                Map<BiomCellProperty, Double> coefficients = getAroundCells(point, 1).stream()
-                        .filter(p -> map.cell(p).getBiom() != null)
-                        .map(p -> map.cell(p).getBiom())
+                Map<BiomCellProperty, Double> coefficients = map.cell(point).getAroundCells(1).stream()
+                        .filter(cell -> cell.getBiom() != null)
+                        .map(Cell::getBiom)
                         .collect(Collectors.toMap(BiomCellProperty::getThisInstance, v -> 7d, Double::sum));
                 // far cells:
-                coefficients.putAll(getAroundCells(point, 2).stream()
-                        .filter(p -> map.cell(p).getBiom() != null)
-                        .map(p -> map.cell(p).getBiom())
+                coefficients.putAll(map.cell(point).getAroundCells(2).stream()
+                        .filter(cell -> cell.getBiom() != null)
+                        .map(Cell::getBiom)
                         .collect(Collectors.toMap(BiomCellProperty::getThisInstance, v -> 1d, Double::sum)));
                 // extra coefficient to last biom if it presents around:
                 if (coefficients.containsKey(lastBiom))
@@ -499,7 +360,7 @@ public class Generator {
         while (steps > 0) {
             for (Point point : points) {
                 steps--;
-                Point nextPoint = Functions.random(getAroundCells(point, 1));
+                Point nextPoint = Functions.random(map.cell(point).getAroundCells(1)).point();
                 point.x = nextPoint.x;
                 point.y = nextPoint.y;
 
@@ -522,7 +383,7 @@ public class Generator {
         while (steps > 0) {
             for (Point point : points) {
                 // move to the next position:
-                Point nextPoint = random(findUnSteppedCells(point, CellProperty.Type.BIOM));
+                Point nextPoint = random(findUnSteppedCells(map.cell(point), CellProperty.Type.BIOM)).point();
                 if (nextPoint == null) return;
                 point.x = nextPoint.x;
                 point.y = nextPoint.y;
@@ -538,12 +399,12 @@ public class Generator {
                     continue;
                 }
                 // random around cells:
-                List<Point> cellsToAddWater = getAroundCells(point, 1);
+                List<Cell> cellsToAddWater = map.cell(point).getAroundCells(1);
                 int amount = random(0, cellsToAddWater.size() - 1);
                 while (amount > 0) {
-                    Point p = cellsToAddWater.get(random(0, cellsToAddWater.size() - 1));
-                    cellsToAddWater.remove(p);
-                    map.cell(p).setBiom(water);
+                    Cell cell = cellsToAddWater.get(random(0, cellsToAddWater.size() - 1));
+                    cellsToAddWater.remove(cell);
+                    cell.setBiom(water);
                     amount--;
                 }
             }
@@ -559,9 +420,7 @@ public class Generator {
             for (int y = 0; y < height; y++) {
                 Cell cell = map.cell(x, y);
                 nodes.add(cell);
-                Set<Cell> aroundCells = getAroundCells(x, y, 1)
-                        .stream().map(map::cell)
-                        .collect(Collectors.toSet());
+                Set<Cell> aroundCells = new HashSet<>(cell.getAroundCells(1));
                 connections.put(cell, aroundCells);
             }
         }
@@ -585,11 +444,11 @@ public class Generator {
 
             Water.DeepProperty deepProperty;
 
-            if (getAroundCells(cell.getX(), cell.getY(), 1).stream()
-                    .anyMatch(point -> map.cell(point).getBiom() != Water.getInstance())) {
+            if (cell.getAroundCells(1).stream()
+                    .anyMatch(c -> c.getBiom() != Water.getInstance())) {
                 deepProperty = Water.DeepProperty.SMALL;
-            } else if (getArea(cell.getX(), cell.getY(), 4).stream()
-                    .filter(point -> map.cell(point).getBiom() != Water.getInstance())
+            } else if (cell.getArea(4).stream()
+                    .filter(c -> c.getBiom() != Water.getInstance())
                     .count() < 2) {
                 deepProperty = Water.DeepProperty.DEEP;
             } else {
@@ -609,8 +468,8 @@ public class Generator {
             ReliefCellProperty randomRelief = randomRelief();
             map.cell(point).setRelief(randomRelief);
             steps--;
-            for (Point aroundCell : getAroundCells(point, 1)) {
-                map.cell(aroundCell).setRelief(randomRelief);
+            for (Cell aroundCell : map.cell(point).getAroundCells(1)) {
+                aroundCell.setRelief(randomRelief);
                 steps--;
             }
         }
@@ -618,9 +477,9 @@ public class Generator {
             for (Point point : points) {
                 // moving through the map:
                 lastRelief = map.cell(point).getRelief();
-                Point nextPoint = random(findUnSteppedCells(point, CellProperty.Type.RELIEF));
-                point.x = nextPoint.x;
-                point.y = nextPoint.y;
+                Cell nextCell = random(findUnSteppedCells(map.cell(point), CellProperty.Type.RELIEF));
+                point.x = nextCell.getX();
+                point.y = nextCell.getY();
                 // generating relief:
                 // if random relief creating:
                 if (random(1d) < newReliefCoefficient) {
@@ -631,14 +490,14 @@ public class Generator {
                 // else creating relief based on around cells:
                 // creating relief coefficients from cells around:
                 // close cells:
-                Map<ReliefCellProperty, Double> coefficients = getAroundCells(point, 1).stream()
-                        .filter(p -> map.cell(p).getRelief() != null)
-                        .map(p -> map.cell(p).getRelief())
+                Map<ReliefCellProperty, Double> coefficients = map.cell(point).getAroundCells(1).stream()
+                        .filter(cell -> cell.getRelief() != null)
+                        .map(Cell::getRelief)
                         .collect(Collectors.toMap(ReliefCellProperty::getThisInstance, v -> 7d, Double::sum));
                 // far cells:
-                coefficients.putAll(getAroundCells(point, 2).stream()
-                        .filter(p -> map.cell(p).getRelief() != null)
-                        .map(p -> map.cell(p).getRelief())
+                coefficients.putAll(map.cell(point).getAroundCells(2).stream()
+                        .filter(cell -> cell.getRelief() != null)
+                        .map(Cell::getRelief)
                         .collect(Collectors.toMap(ReliefCellProperty::getThisInstance, v -> 1d, Double::sum)));
                 // extra coefficient to last relief if it presents around:
                 if (coefficients.containsKey(lastRelief))
@@ -667,17 +526,17 @@ public class Generator {
                     // denoise only non water cells
                     if (thisBiom.equals(Water.getInstance()))
                         continue;
-                    List<Point> aroundCells = getAroundCells(x, y, 1);
-                    for (Point point : aroundCells) {
-                        if (thisBiom.equals(map.cell(point).getBiom()))
+                    List<Cell> aroundCells = map.cell(x, y).getAroundCells(1);
+                    for (Cell cell : aroundCells) {
+                        if (thisBiom.equals(cell.getBiom()))
                             sameBiomAroundAmount++;
-                        else if (map.cell(point).getBiom().equals(Water.getInstance()))
+                        else if (cell.getBiom().equals(Water.getInstance()))
                             waterAround++;
                     }
                     // denoise if there are no same bioms around and this cell is not one-cell island
                     if (waterAround < 6 && sameBiomAroundAmount == 0) {
                         denoisedAmount++;
-                        map.cell(x, y).setBiom(map.cell(random(aroundCells)).getBiom());
+                        map.cell(x, y).setBiom(random(aroundCells).getBiom());
                     }
                 }
             }
@@ -694,10 +553,7 @@ public class Generator {
             List<Point> newPoints = createStartPoints().stream()
                     .filter(newPoint -> {
                         Set<Point> existingPoints = new HashSet<>(startingPoints);
-                        startingPoints.forEach(sp -> {
-                            existingPoints.addAll(getAroundCells(sp, 1));
-                            existingPoints.addAll(getAroundCells(sp, 2));
-                        });
+                        startingPoints.forEach(sp -> map.cell(sp).getArea(2).forEach(cell -> existingPoints.add(cell.point())));
                         return !existingPoints.contains(newPoint);
                     })
                     .collect(Collectors.toList());
@@ -708,8 +564,8 @@ public class Generator {
         for (int i = 0; i < citiesAmount; i++) {
             Point point = startingPoints.get(i);
             while (map.cell(point).getBiom() == Water.getInstance()) {
-                List<Point> unsteppedCells = findUnSteppedCells(point, CellProperty.Type.OBJECT);
-                point = Functions.random(unsteppedCells);
+                List<Cell> unsteppedCells = findUnSteppedCells(map.cell(point), CellProperty.Type.OBJECT);
+                point = Functions.random(unsteppedCells).point();
             }
             City city = createCity(currentID);
             map.cell(point).setObject(city);
@@ -733,15 +589,14 @@ public class Generator {
                 if (tries > 100) {
                     break;
                 }
-                Point point = new Point(random(width), random(height));
-                if (map.cell(point).getObject() == null
-                        && getAroundCells(point, 1).stream().noneMatch(cell -> map.cell(cell).getObject() != null)
-                        && getAroundCells(point, 2).stream().noneMatch(cell -> map.cell(cell).getObject() != null)) {
+                Cell cell = map.cell(random(width), random(height));
+                if (cell.getObject() == null
+                        && cell.getArea(2).stream().noneMatch(c -> c.getObject() != null)) {
                     notAllowedToPlace = false;
                     tries = 0;
-                    map.cell(point).setObject(currentDungeon);
+                    cell.setObject(currentDungeon);
                     dungeons.add(currentDungeon);
-                    mapObjectsPoints.add(point);
+                    mapObjectsPoints.add(cell.point());
                 }
                 tries++;
             }
@@ -757,9 +612,7 @@ public class Generator {
             for (int y = 0; y < height; y++) {
                 Cell cell = map.cell(x, y);
                 nodes.add(cell);
-                Set<Cell> aroundCells = getAroundCells(x, y, 1)
-                        .stream().map(map::cell)
-                        .collect(Collectors.toSet());
+                Set<Cell> aroundCells = new HashSet<>(cell.getAroundCells(1));
                 connections.put(cell, aroundCells);
             }
         }
@@ -781,12 +634,6 @@ public class Generator {
             Point first = remainedObjects.get(remainedObjects.size() - 1);
             Point second = remainedObjects.get(random(remainedObjects.size() - 1));
             createRoad(routeFinder, map.cell(first), map.cell(second));
-/*            if (randomBoolean()) {
-                remainedObjects.remove(first);
-            }
-            if (randomBoolean()) {
-                remainedObjects.remove(second);
-            }*/
             remainedObjects.remove(first);
             remainedObjects.remove(second);
         }
@@ -797,12 +644,15 @@ public class Generator {
         for (int i = 0; i < route.size() - 1; i++) {
             Cell cell = route.get(i);
             Road road = cell.getRoad() == null ? new Road() : cell.getRoad();
+            if (cell.getObject() != null) {
+                road.addDestination(cell.getObject().getPosition());
+            }
             if (i > 0) {
-                CellSide destination = getRelativeLocation(cell, route.get(i - 1));
+                CellSide destination = cell.getRelativeLocation(route.get(i - 1));
                 road.addDestination(destination);
             }
             if (i < route.size() - 1) {
-                CellSide destination = getRelativeLocation(cell, route.get(i + 1));
+                CellSide destination = cell.getRelativeLocation(route.get(i + 1));
                 road.addDestination(destination);
             }
             cell.setRoad(road);
@@ -816,11 +666,10 @@ public class Generator {
                 Cell cell = map.cell(x, y);
                 if (cell.getObject() instanceof City || cell.getRoad() != null) {
                     lvl = Functions.random(1, 6);
-                }
-                else {
+                } else {
                     int howFarIsRoadOrCity = 5;
-                    for (int i = 1; i < 5 ; i++) {
-                        boolean hasRoadOrCity = getAroundCells(x, y, i).stream()
+                    for (int i = 1; i < 5; i++) {
+                        boolean hasRoadOrCity = cell.getAroundCells(i).stream()
                                 .anyMatch(point -> cell.getRoad() != null || cell.getObject() instanceof City);
                         if (hasRoadOrCity) {
                             howFarIsRoadOrCity = i;
