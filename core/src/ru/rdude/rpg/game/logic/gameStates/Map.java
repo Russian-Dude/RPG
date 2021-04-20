@@ -1,11 +1,16 @@
 package ru.rdude.rpg.game.logic.gameStates;
 
 import ru.rdude.rpg.game.logic.entities.beings.Party;
+import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.GameMap;
+import ru.rdude.rpg.game.logic.map.PlaceObserver;
+import ru.rdude.rpg.game.logic.time.TimeForMovingCalculator;
 import ru.rdude.rpg.game.mapVisual.MapStage;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Map extends GameStateBase {
 
@@ -13,6 +18,7 @@ public class Map extends GameStateBase {
     private final MapStage mapStage;
     private final HashMap<Cell, CellProperties> cellProperties = new HashMap();
     private Cell playerPosition;
+    private Set<PlaceObserver> placePositionSubscribers = new HashSet<>();
 
     public Map(GameMap gameMap) {
         this.gameMap = gameMap;
@@ -45,6 +51,9 @@ public class Map extends GameStateBase {
         this.playerPosition = playerPosition;
         playerPosition.getArea(2, true).forEach(cell -> cellProperties.get(cell).setVisible(true));
         mapStage.playerChangedPosition(oldPosition, playerPosition);
+        notifySubscribers(cellProperties.get(oldPosition), cellProperties.get(playerPosition));
+        Game.getCurrentGame().getTimeManager()
+                .increaseTime(TimeForMovingCalculator.calculate(cellProperties.get(oldPosition), cellProperties.get(playerPosition)));
     }
 
     public boolean cellHasMonster(Cell cell) {
@@ -55,9 +64,17 @@ public class Map extends GameStateBase {
         return cellProperties.get(cell).monsters;
     }
 
+    public void subscribe(PlaceObserver subscriber) {
+        placePositionSubscribers.add(subscriber);
+    }
+
+    private void notifySubscribers(CellProperties oldPosition, CellProperties newPosition) {
+        placePositionSubscribers.forEach(subscriber -> subscriber.update(oldPosition, newPosition));
+    }
+
     public class CellProperties {
 
-        Cell cell;
+        final Cell cell;
         Party monsters;
         boolean visible = false;
 
@@ -79,6 +96,10 @@ public class Map extends GameStateBase {
 
         public void setVisible(boolean visible) {
             this.visible = visible;
+        }
+
+        public Cell getCell() {
+            return cell;
         }
     }
 }

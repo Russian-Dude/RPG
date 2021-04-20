@@ -13,6 +13,7 @@ import ru.rdude.rpg.game.logic.map.GameMap;
 import ru.rdude.rpg.game.logic.map.aStarImpl.MapMovingScorer;
 import ru.rdude.rpg.game.logic.map.aStarImpl.MapPathFinder;
 import ru.rdude.rpg.game.logic.map.bioms.Water;
+import ru.rdude.rpg.game.settings.GameSettings;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -168,7 +169,7 @@ public class MapStage extends Stage {
             camera.translate((25 - (Gdx.graphics.getWidth() - Gdx.input.getX())) / 2f * camera.zoom, 0);
         }
         // moving camera with players
-        if (players.isMoving()) {
+        if (GameSettings.isCameraFollowPlayers() && players.isMoving()) {
             camera.position.set(players.getX(), players.getY(), 0);
         }
         // click

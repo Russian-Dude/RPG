@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.map.bioms;
 
+import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.map.CellProperty;
 
 import java.util.List;
@@ -20,6 +21,10 @@ public abstract class BiomCellProperty extends CellProperty {
     }
 
     public abstract BiomCellProperty getThisInstance();
+
+    public Biom asEnum() {
+        return Biom.ofCellProperty(this);
+    }
 
     @Override
     public String toString() {

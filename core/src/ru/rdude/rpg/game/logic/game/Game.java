@@ -45,6 +45,7 @@ public class Game {
         this.moduleFileLoader = new ModuleFileLoader(gameJsonSerializer, itemImageFactory);
         this.monsterFactory = new MonsterFactory();
         this.gameStateHolder = new GameStateHolder();
+        this.timeManager = new TimeManager();
     }
 
     public static Game getCurrentGame() {

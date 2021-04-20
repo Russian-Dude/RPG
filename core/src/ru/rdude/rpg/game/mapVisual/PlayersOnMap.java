@@ -1,11 +1,11 @@
 package ru.rdude.rpg.game.mapVisual;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.map.Cell;
+import ru.rdude.rpg.game.settings.GameSettings;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -20,8 +20,6 @@ public class PlayersOnMap extends Group {
     private int destinationEndPointX = 0;
     private int destinationEndPointY = 0;
     private Queue<Cell> path = new LinkedList<>();
-
-    private final int SPEED = 2;
 
 
     public PlayersOnMap(Cell position) {
@@ -61,6 +59,7 @@ public class PlayersOnMap extends Group {
     }
 
     private void move() {
+        int SPEED = GameSettings.getPlayersMovingSpeedOnMap().value;
         int moveX = destinationEndPointX < getX() ? SPEED * (-1) : SPEED;
         int moveY = destinationEndPointY < getY() ? SPEED * (-1) : SPEED;
         moveBy(moveX, moveY);
