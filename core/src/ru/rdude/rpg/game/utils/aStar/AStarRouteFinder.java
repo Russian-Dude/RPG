@@ -15,7 +15,7 @@ public class AStarRouteFinder<T extends AStarNode> {
         this.targetScorer = targetScorer;
     }
 
-    public List<T> findRoute(T from, T to) {
+    public Optional<List<T>> findRoute(T from, T to) {
 
         Queue<AStarRouteNode<T>> openSet = new PriorityQueue<>();
         Map<T, AStarRouteNode<T>> allNodes = new HashMap<>();
@@ -33,7 +33,7 @@ public class AStarRouteFinder<T extends AStarNode> {
                     route.add(0, current.getCurrent());
                     current = allNodes.get(current.getPrevious());
                 } while (current != null);
-                return route;
+                return Optional.of(route);
             }
 
             graph.getConnections(next.getCurrent()).forEach(connection -> {
@@ -49,6 +49,6 @@ public class AStarRouteFinder<T extends AStarNode> {
                 }
             });
         }
-        throw new IllegalStateException("No route found");
+        return Optional.empty();
     }
 }

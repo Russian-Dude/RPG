@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.map;
 
+import ru.rdude.rpg.game.logic.map.aStarImpl.MapPathFinder;
 import ru.rdude.rpg.game.logic.map.aStarImpl.MapRiverScorer;
 import ru.rdude.rpg.game.logic.map.aStarImpl.MapRoadScorer;
 import ru.rdude.rpg.game.logic.map.bioms.BiomCellProperty;
@@ -10,14 +11,11 @@ import ru.rdude.rpg.game.logic.map.objects.MapObjectRoadAvailability;
 import ru.rdude.rpg.game.logic.map.reliefs.ReliefCellProperty;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.utils.TimeCounter;
-import ru.rdude.rpg.game.utils.aStar.AStarGraph;
-import ru.rdude.rpg.game.utils.aStar.AStarRouteFinder;
-import ru.rdude.rpg.game.utils.aStar.AStarScorer;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.lang.Math.*;
+import static java.lang.Math.floor;
 import static ru.rdude.rpg.game.utils.Functions.*;
 
 public class Generator {
@@ -184,8 +182,8 @@ public class Generator {
 
     private Set<Zone> divideMapToZones() {
         Set<Zone> zones = new HashSet<>();
-        int zonesAmountX = ((int) (Math.log(width) / Math.log(2)));
-        int zonesAmountY = ((int) (Math.log(height) / Math.log(2)));
+        int zonesAmountX = ((int) (Math.log(width)/Math.log(2)));
+        int zonesAmountY = ((int) (Math.log(height)/Math.log(2)));
         int zoneWidth = width / zonesAmountX;
         int zoneHeight = height / zonesAmountY;
 
@@ -197,11 +195,19 @@ public class Generator {
         for (int x = 0; x <= zonesAmountX; x++) {
             for (int y = 0; y <= zonesAmountY; y++) {
                 int endX = x * zoneWidth + zoneWidth;
-                if (endX > width - 1)
+                if (endX > width - 1){
                     endX = width - 1;
+                }
+                else if (x == zonesAmountX && endX < width - 1) {
+                    endX = width - 1;
+                }
                 int endY = y * zoneHeight + zoneHeight;
-                if (endY > height - 1)
+                if (endY > height - 1){
                     endY = height - 1;
+                }
+                else if (y == zonesAmountY && endY < height - 1) {
+                    endY = height - 1;
+                }
                 zones.add(new Zone(x * zoneWidth, y * zoneHeight, endX, endY));
             }
         }
@@ -229,7 +235,7 @@ public class Generator {
         // close cells
         for (int i = 1; i <= 2; i++) {
             for (Cell aroundCell : cell.getAroundCells(i)) {
-                if (cell.get(property) == null)
+                if (aroundCell.get(property) == null)
                     result.add(aroundCell);
             }
             if (!result.isEmpty()) return result;
@@ -256,8 +262,7 @@ public class Generator {
 
         // else check through other zones
         Set<Zone> zonesToRemove = new HashSet<>();
-        zIter:
-        for (Zone z : zones.get(property)) {
+        zIter: for (Zone z : zones.get(property)) {
             for (int x = z.getStartPoint().x; x <= z.getEndPoint().x; x++) {
                 for (int y = z.getStartPoint().y; y <= z.getEndPoint().y; y++) {
                     if (map.cell(x, y).get(property) == null) {
@@ -412,22 +417,7 @@ public class Generator {
     }
 
     private void createRivers() {
-        Set<Cell> nodes = new HashSet<>();
-        Map<Cell, Set<Cell>> connections = new HashMap<>();
-        AStarScorer<Cell> scorer = new MapRiverScorer();
-
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                Cell cell = map.cell(x, y);
-                nodes.add(cell);
-                Set<Cell> aroundCells = new HashSet<>(cell.getAroundCells(1));
-                connections.put(cell, aroundCells);
-            }
-        }
-
-        AStarGraph<Cell> graph = new AStarGraph<>(nodes, connections);
-        AStarRouteFinder<Cell> routeFinder = new AStarRouteFinder<>(graph, scorer, scorer);
-
+        MapPathFinder pathFinder = new MapPathFinder(map, new MapRiverScorer());
         for (int i = 0; i < riversAmount; i++) {
             Cell from = map.cell(Functions.random(width - 1), Functions.random(height - 1));
             Cell to;
@@ -435,7 +425,7 @@ public class Generator {
                 to = Functions.random(map.getCellsWithProperty(Water.getInstance()));
             else
                 to = map.cell(Functions.random(width - 1), Functions.random(height - 1));
-            routeFinder.findRoute(from, to).forEach(cell -> cell.setBiom(Water.getInstance()));
+            pathFinder.find(from, to).ifPresent(cells -> cells.forEach(cell -> cell.setBiom(Water.getInstance())));
         }
     }
 
@@ -604,21 +594,7 @@ public class Generator {
     }
 
     private void createRoads() {
-        Set<Cell> nodes = new HashSet<>();
-        Map<Cell, Set<Cell>> connections = new HashMap<>();
-        AStarScorer<Cell> scorer = new MapRoadScorer();
-
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                Cell cell = map.cell(x, y);
-                nodes.add(cell);
-                Set<Cell> aroundCells = new HashSet<>(cell.getAroundCells(1));
-                connections.put(cell, aroundCells);
-            }
-        }
-
-        AStarGraph<Cell> graph = new AStarGraph<>(nodes, connections);
-        AStarRouteFinder<Cell> routeFinder = new AStarRouteFinder<>(graph, scorer, scorer);
+        MapPathFinder pathFinder = new MapPathFinder(map, new MapRoadScorer());
 
         List<Point> remainedObjects = mapObjectsPoints.stream()
                 .filter(
@@ -632,15 +608,14 @@ public class Generator {
 
         while (remainedObjects.size() > 2) {
             Point first = remainedObjects.get(remainedObjects.size() - 1);
-            Point second = remainedObjects.get(random(remainedObjects.size() - 1));
-            createRoad(routeFinder, map.cell(first), map.cell(second));
             remainedObjects.remove(first);
+            Point second = remainedObjects.get(random(remainedObjects.size() - 1));
+            pathFinder.find(map.cell(first), map.cell(second)).ifPresent(this::createRoad);
             remainedObjects.remove(second);
         }
     }
 
-    private void createRoad(AStarRouteFinder<Cell> routeFinder, Cell from, Cell to) {
-        List<Cell> route = routeFinder.findRoute(from, to);
+    private void createRoad(List<Cell> route) {
         for (int i = 0; i < route.size() - 1; i++) {
             Cell cell = route.get(i);
             Road road = cell.getRoad() == null ? new Road() : cell.getRoad();
@@ -648,12 +623,36 @@ public class Generator {
                 road.addDestination(cell.getObject().getPosition());
             }
             if (i > 0) {
-                CellSide destination = cell.getRelativeLocation(route.get(i - 1));
-                road.addDestination(destination);
+                Cell previousCell = route.get(i - 1);
+                if (cell.getBiom() instanceof Water && previousCell.getBiom() instanceof Water) {
+                    road.setRealRoad(false);
+                }
+                else {
+                    CellSide destination = cell.getRelativeLocation(previousCell);
+                    // TODO: 12.04.2021 remove debug printlns
+                    if (destination == CellSide.NOT_RELATED) {
+                        System.out.println("Not related cells in road route. Cell 1: " +
+                                cell.getX() + " : " + cell.getY() + "; Cell 2: " +
+                                previousCell.getX() + " : " + previousCell.getY());
+                    }
+                    road.addDestination(destination);
+                }
             }
             if (i < route.size() - 1) {
-                CellSide destination = cell.getRelativeLocation(route.get(i + 1));
-                road.addDestination(destination);
+                Cell nextCell = route.get(i + 1);
+                if (cell.getBiom() instanceof Water && nextCell.getBiom() instanceof Water) {
+                    road.setRealRoad(false);
+                }
+                else {
+                    CellSide destination = cell.getRelativeLocation(nextCell);
+                    // TODO: 12.04.2021 remove debug printlns
+                    if (destination == CellSide.NOT_RELATED) {
+                        System.out.println("Not related cells in road route. Cell 1: " +
+                                cell.getX() + " : " + cell.getY() + "; Cell 2: " +
+                                nextCell.getX() + " : " + nextCell.getY());
+                    }
+                    road.addDestination(destination);
+                }
             }
             cell.setRoad(road);
         }

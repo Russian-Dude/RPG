@@ -9,7 +9,8 @@ public class Dungeon extends MapObject {
 
     public Dungeon(long id) {
         super(id);
-        setPositions(Set.of(CellSide.CENTER));
+        setPosition(CellSide.CENTER);
+        // TODO: 11.04.2021 get position from dungeon visual data
     }
 
     @Override

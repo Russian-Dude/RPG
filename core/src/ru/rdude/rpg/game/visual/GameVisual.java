@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import ru.rdude.rpg.game.mapVisual.MapRenderer;
+import ru.rdude.rpg.game.ui.UIStage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 public class GameVisual {
 
     private List<Stage> nonUiStages = new ArrayList<>();
-    private Stage ui;
+    private UIStage ui;
 
     private MapRenderer currentMapRenderer;
 
@@ -21,11 +22,11 @@ public class GameVisual {
         Gdx.input.setInputProcessor(multiplexer);
     }
 
-    public Stage getUi() {
+    public UIStage getUi() {
         return ui;
     }
 
-    public void setUi(Stage ui) {
+    public void setUi(UIStage ui) {
         Stage oldValue = this.ui;
         this.ui = ui;
         if (oldValue != null && ui != null && !oldValue.equals(ui)) {

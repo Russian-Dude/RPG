@@ -18,23 +18,33 @@ import ru.rdude.rpg.game.logic.map.CellSide;
 import ru.rdude.rpg.game.logic.map.GameMap;
 import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.logic.map.reliefs.Plain;
+import ru.rdude.rpg.game.utils.Pair;
 
 import java.util.*;
 
 public class MapVisual extends Actor implements Disposable {
 
-    private OrthographicCamera camera;
+    private final OrthographicCamera camera;
 
-    private TiledMap map;
-    private HexagonalTiledMapRenderer renderer;
+    private final TiledMap map;
+    private final HexagonalTiledMapRenderer renderer;
 
-    private GameMap gameMap;
+    private final GameMap gameMap;
     private TextureAtlas textureAtlasTest;
 
-    private final float CAM_MOVE_BORDER_BOTTOM = 0;
-    private final float CAM_MOVE_BORDER_LEFT = 0;
-    private final float CAM_MOVE_BORDER_RIGHT;
-    private final float CAM_MOVE_BORDER_TOP;
+    private final Vector3 cursorWorldPosition = new Vector3();
+
+    private final TiledMapTileLayer biomLayer;
+    private final List<TiledMapTileLayer> roadLayers;
+    private final TiledMapTileLayer pathLayer;
+    private final TiledMapTileLayer pointLayer;
+
+    private final TiledMapTileLayer reliefLayerBottom;
+    private final TiledMapTileLayer reliefLayerUp;
+    private final Map<Cell, Pair<TiledMapTile, TiledMapTile>> generatedReliefTiles = new HashMap<>();
+
+    private final TiledMapTileLayer monstersLayer;
+
 
     public MapVisual(OrthographicCamera camera, GameMap gameMap) {
         this.camera = camera;
@@ -42,18 +52,16 @@ public class MapVisual extends Actor implements Disposable {
         map = new TiledMap();
         MapLayers layers = map.getLayers();
 
-        CAM_MOVE_BORDER_RIGHT = gameMap.getWidth() * VisualConstants.TILE_WIDTH_0_75;
-        CAM_MOVE_BORDER_TOP = gameMap.getHeight() * VisualConstants.TILE_HEIGHT;
+        biomLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
+        reliefLayerBottom = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
+        reliefLayerUp = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
+        roadLayers = new ArrayList<>();
+        pathLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
+        pointLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
+        monstersLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
 
-        TiledMapTileLayer biomLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), 128, 128);
-
-        TiledMapTileLayer reliefLayerBottom = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), 128, 128);
-        TiledMapTileLayer reliefLayerUp = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), 128, 128);
-
-        List<TiledMapTileLayer> roadLayers = new ArrayList<>();
-
-        for (int x = 0; x < gameMap.getWidth() - 1; x++) {
-            for (int y = 0; y < gameMap.getHeight() - 1; y++) {
+        for (int x = 0; x < gameMap.getWidth(); x++) {
+            for (int y = 0; y < gameMap.getHeight(); y++) {
                 Cell gameMapCell = gameMap.cell(x, y);
 
                 //biom
@@ -62,41 +70,26 @@ public class MapVisual extends Actor implements Disposable {
                 biomLayer.setCell(x, y, biomCell);
 
                 //road
-                if (gameMapCell.getRoad() != null) {
+                if (gameMapCell.getRoad() != null && gameMapCell.getRoad().isRealRoad()) {
 
-                    List<CellSide> destinations = new ArrayList<>(gameMapCell.getRoad().getDestinationsCopy());
-                    Queue<CellSide> queue = new LinkedList<>(destinations);
-                    Set<CellSide> used = new HashSet<>();
                     List<TiledMapTile> tiles = new ArrayList<>();
-
-
-                    while (queue.size() > 1) {
-                        System.out.println(queue);
-
+                    Queue<CellSide> queue = new LinkedList<>(gameMapCell.getRoad().getDestinations());
+                    while (!queue.isEmpty()) {
                         CellSide dest1 = queue.poll();
-                        CellSide dest2 = queue.size() % 2 != 0 ? queue.poll() : queue.peek();
-
-                        if (dest1.isCloseTo(dest2)) {
-                            CellSide destPick = used.contains(dest1) ? dest2 : dest1;
-                            dest1 = destPick;
-                            for (CellSide destination : destinations) {
-                                if (!destination.isCloseTo(destPick))
-                                    dest2 = destination;
-                            }
-                        }
-
-
+                        CellSide dest2 = gameMapCell.getRoad().getDestinations().stream()
+                                .filter(d -> d != dest1 && !dest1.isCloseTo(d))
+                                .findAny()
+                                .orElse(gameMapCell.getRoad().getDestinations().stream()
+                                        .filter(d -> d != dest1)
+                                        .findAny()
+                                        .orElseThrow(() -> new IllegalStateException("Something went wrong in creating road tiles")));
+                        queue.remove(dest2);
                         tiles.add(MapTilesFactory.getRoadTile(gameMapCell, dest1, dest2));
-                        used.add(dest1);
-                        used.add(dest2);
                     }
-
-                    System.out.println("=========");
-
 
                     for (int i = 0; i < tiles.size(); i++) {
                         if (roadLayers.size() < i + 1) {
-                            roadLayers.add(new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), 128, 128));
+                            roadLayers.add(new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT));
                         }
                         TiledMapTileLayer.Cell roadCell = new TiledMapTileLayer.Cell();
                         roadCell.setTile(tiles.get(i));
@@ -104,94 +97,184 @@ public class MapVisual extends Actor implements Disposable {
                     }
                 }
 
-                // relief
-                if (gameMapCell.getBiom() != Water.getInstance() && gameMapCell.getRelief() != Plain.getInstance()) {
+                // void
+                TiledMapTileLayer.Cell voidCell = new TiledMapTileLayer.Cell();
+                TiledMapTileLayer.Cell emptyCell = new TiledMapTileLayer.Cell();
+                voidCell.setTile(MapTilesFactory.getVoid());
+                emptyCell.setTile(MapTilesFactory.getEmpty());
+                reliefLayerBottom.setCell(x, y, voidCell);
+                reliefLayerUp.setCell(x, y, emptyCell);
 
-                    // full tile
-                    if (gameMapCell.getRoad() == null && gameMapCell.getObject() == null) {
-                        TiledMapTileLayer.Cell reliefCell = new TiledMapTileLayer.Cell();
-                        reliefCell.setTile(MapTilesFactory.getReliefTile(gameMapCell));
-                        reliefLayerUp.setCell(x, y, reliefCell);
-                    }
-
-                    // not full tile
-                    else {
-                        TiledMapTile bottomTile = null;
-                        TiledMapTile upTile = null;
-
-                        Set<CellSide> freePositions = new HashSet<>(Set.of(CellSide.values()));
-                        if (gameMapCell.getRoad() != null)
-                            freePositions.removeAll(gameMapCell.getRoad().getDestinations());
-                        if (gameMapCell.getObject() != null)
-                            freePositions.removeAll(gameMapCell.getObject().getPositions());
-
-                        // sides
-                        if (freePositions.contains(CellSide.SE)
-                                && freePositions.contains(CellSide.SW)
-                                && freePositions.contains(CellSide.NE)
-                                && freePositions.contains(CellSide.NW)
-                                && freePositions.contains(CellSide.CENTER)) {
-                            upTile = MapTilesFactory.getReliefTile(gameMapCell, CellSide.SE, true);
-                            bottomTile = MapTilesFactory.getReliefTile(gameMapCell, CellSide.SW, true);
-                        } else if (freePositions.contains(CellSide.NE) && freePositions.contains(CellSide.SE)) {
-                            upTile = MapTilesFactory.getReliefTile(gameMapCell, CellSide.SE, true);
-                        } else if (freePositions.contains(CellSide.NW) && freePositions.contains(CellSide.SW)) {
-                            upTile = MapTilesFactory.getReliefTile(gameMapCell, CellSide.SW, true);
-                        } else {
-                            // bottom
-                            if (freePositions.contains(CellSide.SS) && freePositions.contains(CellSide.SE) && freePositions.contains(CellSide.SW)) {
-                                bottomTile = MapTilesFactory.getReliefTile(gameMapCell, CellSide.SS, false);
-                            } else if (freePositions.contains(CellSide.SW)) {
-                                bottomTile = MapTilesFactory.getReliefTile(gameMapCell, CellSide.SW, false);
-                            } else if (freePositions.contains(CellSide.SE)) {
-                                bottomTile = MapTilesFactory.getReliefTile(gameMapCell, CellSide.SE, false);
-                            }
-
-                            // up
-                            if (freePositions.contains(CellSide.NN) && freePositions.contains(CellSide.NE) && freePositions.contains(CellSide.NW)) {
-                                upTile = MapTilesFactory.getReliefTile(gameMapCell, CellSide.NN, false);
-                            } else if (freePositions.contains(CellSide.NW)) {
-                                upTile = MapTilesFactory.getReliefTile(gameMapCell, CellSide.NW, false);
-                            } else if (freePositions.contains(CellSide.NE)) {
-                                upTile = MapTilesFactory.getReliefTile(gameMapCell, CellSide.NE, false);
-                            }
-                        }
-
-                        if (upTile != null) {
-                            TiledMapTileLayer.Cell upReliefCell = new TiledMapTileLayer.Cell();
-                            upReliefCell.setTile(upTile);
-                            reliefLayerUp.setCell(x, y, upReliefCell);
-                        }
-                        if (bottomTile != null) {
-                            TiledMapTileLayer.Cell bottomReliefCell = new TiledMapTileLayer.Cell();
-                            bottomReliefCell.setTile(bottomTile);
-                            reliefLayerBottom.setCell(x, y, bottomReliefCell);
-                        }
-                    }
-                }
+                // path
+                TiledMapTileLayer.Cell pathCell = new TiledMapTileLayer.Cell();
+                TiledMapTileLayer.Cell pointCell = new TiledMapTileLayer.Cell();
+                pathCell.setTile(MapTilesFactory.getEmpty());
+                pointCell.setTile(MapTilesFactory.getEmpty());
+                pathLayer.setCell(x, y, pathCell);
+                pointLayer.setCell(x, y, pointCell);
             }
         }
+
+        // add layers to tilemap
         layers.add(biomLayer);
         roadLayers.forEach(layers::add);
         layers.add(reliefLayerBottom);
         layers.add(reliefLayerUp);
+        layers.add(monstersLayer);
+        layers.add(pathLayer);
+        layers.add(pointLayer);
         setBounds(getX(), getY(), gameMap.getWidth() * 128, gameMap.getHeight() * 128);
         setTouchable(Touchable.enabled);
 
         renderer = new HexagonalTiledMapRendererWithObjectsLayer(map);
         this.setOrigin(0f, 0f);
 
+        // test
+        // TODO: 15.04.2021 remove test
+/*        for (int x = 0; x < gameMap.getWidth(); x++) {
+            for (int y = 0; y < gameMap.getHeight(); y++) {
+                setVoidOnCell(gameMap.cell(x, y), false);
+            }
+        }*/
     }
 
-    private Vector3 screenToWorld(Vector3 click) {
+    // to let relief overlap void for better picture, void and relief is on the same layer.
+    public void setVoidOnCell(Cell cell, boolean isVoid) {
+        if (isVoid) {
+            reliefLayerBottom.getCell(cell.getX(), cell.getY()).setTile(MapTilesFactory.getVoid());
+            reliefLayerUp.getCell(cell.getX(), cell.getY()).setTile(MapTilesFactory.getVoid());
+        }
+        else {
+            if (generatedReliefTiles.containsKey(cell)) {
+                reliefLayerBottom.getCell(cell.getX(), cell.getY()).setTile(generatedReliefTiles.get(cell).getFirst());
+                reliefLayerUp.getCell(cell.getX(), cell.getY()).setTile(generatedReliefTiles.get(cell).getSecond());
+            }
+            else {
+                createReliefTileOn(cell);
+            }
+        }
+    }
+
+    public void showPath(List<Cell> path) {
+        for (int i = 0; i < path.size(); i++) {
+            CellSide from = i == 0 ? CellSide.CENTER : path.get(i).getRelativeLocation(path.get(i - 1));
+            CellSide to = i == path.size() - 1 ? CellSide.CENTER : path.get(i).getRelativeLocation(path.get(i + 1));
+            pathLayer.getCell(path.get(i).getX(), path.get(i).getY()).setTile(MapTilesFactory.getPathTile(from, to));
+        }
+        pointLayer.getCell(path.get(path.size() - 1).getX(), path.get(path.size() - 1).getY()).setTile(MapTilesFactory.getPathEndPoint());
+    }
+
+    public void removePath(Collection<Cell> path) {
+        path.forEach(this::removePath);
+    }
+
+    public void removePath(Cell cell) {
+        pathLayer.getCell(cell.getX(), cell.getY()).setTile(MapTilesFactory.getEmpty());
+        pointLayer.getCell(cell.getX(), cell.getY()).setTile(MapTilesFactory.getEmpty());
+    }
+
+    private void createReliefTileOn(Cell cell) {
+
+        // empty tile on water and plains
+        if (cell.getBiom() instanceof Water || cell.getRelief() instanceof Plain) {
+            TiledMapTile emptyTile = MapTilesFactory.getEmpty();
+            reliefLayerBottom.getCell(cell.getX(), cell.getY()).setTile(emptyTile);
+            generatedReliefTiles.putIfAbsent(cell, new Pair<>(emptyTile, emptyTile));
+            return;
+        }
+
+        // full tile
+        if (cell.getRoad() == null && cell.getObject() == null) {
+            TiledMapTile reliefTile = MapTilesFactory.getReliefTile(cell);
+            reliefLayerUp.getCell(cell.getX(), cell.getY()).setTile(reliefTile);
+            reliefLayerBottom.getCell(cell.getX(), cell.getY()).setTile(MapTilesFactory.getEmpty());
+            generatedReliefTiles.putIfAbsent(cell, new Pair<>(MapTilesFactory.getEmpty(), reliefTile));
+            return;
+        }
+
+        // not full tile
+        Set<CellSide> freePositions = new HashSet<>(Set.of(CellSide.values()));
+        // do not place relief on part of the tile with road
+        if (cell.getRoad() != null) {
+            freePositions.removeAll(cell.getRoad().getDestinations());
+        }
+
+        TiledMapTile topLayerTile = null;
+        TiledMapTile bottomLayerTile = null;
+
+        // relief on cell top (bottom layer)
+        if (freePositions.contains(CellSide.NW)
+        && freePositions.contains(CellSide.NN)
+        && freePositions.contains(CellSide.NE)) {
+            bottomLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.NN, false);
+        }
+
+        // relief on cell bottom (top layer)
+        if (freePositions.contains(CellSide.SW)
+        && freePositions.contains(CellSide.SS)
+        && freePositions.contains(CellSide.SE)) {
+            topLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.SS, false);
+        }
+
+        // relief on the left
+        // full left
+        if (bottomLayerTile == null
+        && topLayerTile == null
+        && freePositions.contains(CellSide.NW)
+        && freePositions.contains(CellSide.SW)) {
+            topLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.SW, true);
+        }
+        // SW
+        else if (topLayerTile == null
+        && freePositions.contains(CellSide.SW)) {
+            topLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.SW, false);
+        }
+        // NW
+        else if (bottomLayerTile == null
+        && freePositions.contains(CellSide.NW)) {
+            bottomLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.NW, false);
+        }
+
+        // relief on the right
+        // full right
+        if (bottomLayerTile == null
+        && topLayerTile == null
+        && freePositions.contains(CellSide.NE)
+        && freePositions.contains(CellSide.SE)) {
+            topLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.SE, true);
+        }
+        // NE
+        else if (bottomLayerTile == null
+        && freePositions.contains(CellSide.NE)) {
+            bottomLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.NE, false);
+        }
+        // SE
+        else if (topLayerTile == null
+        && freePositions.contains(CellSide.SE)) {
+            topLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.SE, false);
+        }
+
+        topLayerTile = topLayerTile == null ? MapTilesFactory.getEmpty() : topLayerTile;
+        bottomLayerTile = bottomLayerTile == null ? MapTilesFactory.getEmpty() : bottomLayerTile;
+
+        reliefLayerUp.getCell(cell.getX(), cell.getY()).setTile(topLayerTile);
+        reliefLayerBottom.getCell(cell.getX(), cell.getY()).setTile(bottomLayerTile);
+        generatedReliefTiles.putIfAbsent(cell, new Pair<>(bottomLayerTile, topLayerTile));
+    }
+
+    public Vector3 getCursorWorldPosition() {
+        return cursorWorldPosition;
+    }
+
+    public Vector3 screenToWorld(Vector3 click) {
         return camera.unproject(click);
     }
 
-    private Optional<Cell> cellFromClick(Vector3 click) {
+    public Optional<Cell> cellFromClick(Vector3 click) {
         return cellFromWorld(screenToWorld(click));
     }
 
-    private Optional<Cell> cellFromWorld(Vector3 pos) {
+    public Optional<Cell> cellFromWorld(Vector3 pos) {
 
         // tile cell rough
         int x = (int) Math.floor(pos.x / VisualConstants.TILE_WIDTH_0_75);
@@ -222,8 +305,7 @@ public class MapVisual extends Actor implements Disposable {
                     x = x - 1;
                     y = x % 2 == 0 ? y : y + 1;
                 }
-            }
-            else {
+            } else {
                 float m = (middleY - bottomY) / (middleX - bottomX);
                 float lineY = bottomY + m * (pos.x - bottomX);
                 if (pos.y < lineY) {
@@ -256,16 +338,9 @@ public class MapVisual extends Actor implements Disposable {
     @Override
     public void act(float delta) {
         super.act(delta);
-        // camera movement
-        if (Gdx.input.getY() > Gdx.graphics.getHeight() - 25 && camera.position.y > CAM_MOVE_BORDER_BOTTOM) {
-            camera.translate(0, (Gdx.graphics.getHeight() - 25 - Gdx.input.getY()) / 2f, 0);
-        } else if (Gdx.input.getY() < 25 && camera.position.y < CAM_MOVE_BORDER_TOP) {
-            camera.translate(0, (25 - Gdx.input.getY()) / 2f);
-        }
-        if (Gdx.input.getX() < 25 && camera.position.x > CAM_MOVE_BORDER_LEFT) {
-            camera.translate((Gdx.input.getX() - 25) / 2f, 0);
-        } else if (Gdx.input.getX() > Gdx.graphics.getWidth() - 25 && camera.position.x < CAM_MOVE_BORDER_RIGHT) {
-            camera.translate((25 - (Gdx.graphics.getWidth() - Gdx.input.getX())) / 2f, 0);
-        }
+        // cursor position
+        cursorWorldPosition.x = Gdx.input.getX();
+        cursorWorldPosition.y = Gdx.input.getY();
+        screenToWorld(cursorWorldPosition);
     }
 }

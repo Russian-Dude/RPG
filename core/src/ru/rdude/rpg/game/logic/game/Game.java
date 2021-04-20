@@ -75,6 +75,10 @@ public class Game {
         return gameMap;
     }
 
+    public void setGameMap(Map gameMap) {
+        this.gameMap = gameMap;
+    }
+
     public GameLogger getGameLogger() {
         return gameLogger;
     }

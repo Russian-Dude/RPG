@@ -6,6 +6,7 @@ import java.util.Set;
 public class Road extends CellProperty {
 
     private Set<CellSide> destinations;
+    private boolean realRoad = true;
 
     public Road() {
         destinations = new HashSet<>();
@@ -25,5 +26,13 @@ public class Road extends CellProperty {
 
     public void addDestination(CellSide destination) {
         this.destinations.add(destination);
+    }
+
+    public boolean isRealRoad() {
+        return realRoad;
+    }
+
+    public void setRealRoad(boolean realRoad) {
+        this.realRoad = realRoad;
     }
 }

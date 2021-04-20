@@ -8,7 +8,7 @@ import java.util.Set;
 public abstract class MapObject extends CellProperty {
 
     private long id;
-    private Set<CellSide> positions;
+    private CellSide position;
 
     public MapObject(long id) {
         this.id = id;
@@ -22,12 +22,12 @@ public abstract class MapObject extends CellProperty {
         this.id = id;
     }
 
-    public Set<CellSide> getPositions() {
-        return positions;
+    public CellSide getPosition() {
+        return position;
     }
 
-    public void setPositions(Set<CellSide> positions) {
-        this.positions = positions;
+    public void setPosition(CellSide position) {
+        this.position = position;
     }
 
     public abstract MapObjectRoadAvailability roadAvailability();

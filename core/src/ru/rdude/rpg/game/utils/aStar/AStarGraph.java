@@ -24,4 +24,8 @@ public class AStarGraph<T extends AStarNode> {
     public Set<T> getConnections(T node) {
         return connections.get(node);
     }
+
+    public void changeConnections(T node, Set<T> connections) {
+        this.connections.put(node, connections);
+    }
 }

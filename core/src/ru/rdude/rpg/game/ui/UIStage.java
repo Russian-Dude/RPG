@@ -2,9 +2,11 @@ package ru.rdude.rpg.game.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
+import ru.rdude.rpg.game.logic.game.Game;
 
 public class UIStage extends Stage {
 
@@ -26,6 +28,11 @@ public class UIStage extends Stage {
         addActor(new PlayersVisualBottom(new Player(), new Player(), new Player(), p));
         LoggerVisual loggerVisual = new LoggerVisual();
         addActor(loggerVisual);
+    }
+
+    public boolean isHit() {
+        Vector2 stageCoordinates = screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+        return this.hit(stageCoordinates.x, stageCoordinates.y, true) != null;
     }
 
     @Override

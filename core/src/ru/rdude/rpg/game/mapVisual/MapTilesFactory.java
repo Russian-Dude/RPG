@@ -1,6 +1,7 @@
 package ru.rdude.rpg.game.mapVisual;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
@@ -16,9 +17,14 @@ import java.util.stream.Collectors;
 public class MapTilesFactory {
 
     private static Map<String, StaticTiledMapTile> tiles = new HashMap<>();
-    private static TextureAtlas textureAtlas = new TextureAtlas("map_tiles.txt");
+    private static final TextureAtlas textureAtlas = new TextureAtlas("map_tiles.txt");
 
     private static Set<TextureAtlas.AtlasRegion> roadAtlasRegions;
+    private static Set<TextureAtlas.AtlasRegion> pathAtlasRegions;
+
+    static {
+        fillRoadAndPathAtlasRegionsSet();
+    }
 
 
     public static TiledMapTile getBiomTile(Cell cell) {
@@ -49,15 +55,15 @@ public class MapTilesFactory {
         return tile;
     }
 
-    public static TiledMapTile getReliefTile(Cell cell, CellSide side, boolean isFullSide) {
+    public static TiledMapTile getReliefTile(Cell cell, CellSide side, boolean isFullLeftOrRightSide) {
         String sideSuffix;
-        if (isFullSide)
+        if (isFullLeftOrRightSide)
             sideSuffix = "SIDE";
         else if (side == CellSide.NN || side == CellSide.SS)
             sideSuffix = "HALF";
         else
             sideSuffix = "QUARTER";
-        TiledMapTile tile = getTileOrPutAndGet(
+        return getTileOrPutAndGet(
                 cell.getBiom().getClass().getSimpleName().toUpperCase()
                         + "_"
                         + cell.getRelief().getClass().getSimpleName().toUpperCase()
@@ -65,40 +71,66 @@ public class MapTilesFactory {
                         + sideSuffix
                         + Functions.random(1, 3),
                 side);
-        tile.setOffsetX(tile.getOffsetX() - 64);
-        tile.setOffsetY(tile.getOffsetY() - 64);
-        return tile;
     }
 
     public static TiledMapTile getRoadTile(Cell cell, CellSide directionFrom, CellSide directionTo) {
-        if (roadAtlasRegions == null) {
-            fillRoadAtlasRegionsSet();
-        }
         String roadType;
         if (cell.getBiom() == Water.getInstance()) {
-            // here must be implemented logic to use empty tile if road is pseudo-road in deep waters
+            // TODO: 19.04.2021 here must be implemented logic to use empty tile if road is pseudo-road in deep waters
             roadType = "BRIDGE";
         } else {
             roadType = "ROAD";
         }
-        TextureAtlas.AtlasRegion region = roadAtlasRegions.stream()
+        List<TextureAtlas.AtlasRegion> collect = roadAtlasRegions.stream()
                 .filter(atlasRegion -> atlasRegion.name.contains(directionFrom.name())
                         && atlasRegion.name.contains(directionTo.name())
                         && atlasRegion.name.contains(roadType))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No image to represent road ffs! (" + directionFrom + "-" + directionTo + ")"));
+                .collect(Collectors.toList());
+        if (collect.isEmpty()) {
+            throw new IllegalArgumentException("There is no road image with directions: " + directionFrom + " to " + directionTo + ", type: " + roadType);
+        }
+        TextureAtlas.AtlasRegion region = Functions.random(collect);
         return getTileOrPutAndGet(region.name);
     }
 
-    private static void fillRoadAtlasRegionsSet() {
+    public static TiledMapTile getPathTile(CellSide directionFrom, CellSide directionTo) {
+        TextureAtlas.AtlasRegion region = pathAtlasRegions.stream()
+                .filter(atlasRegion -> atlasRegion.name.contains(directionFrom.name()) && atlasRegion.name.contains(directionTo.name()))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("There is no path image with directions: " + directionFrom + " to " + directionTo));
+        return getTileOrPutAndGet(region.name);
+    }
+
+    public static TiledMapTile getPathEndPoint() {
+        return getTileOrPutAndGet("WALKING_POINT");
+    }
+
+    public static TiledMapTile getVoid() {
+        return getTileOrPutAndGet("VOID");
+    }
+
+    public static TiledMapTile getEmpty() {
+        return getTileOrPutAndGet("EMPTY");
+    }
+
+    public static TextureRegion getAvatar(int partySize) {
+        return textureAtlas.findRegion("MAP_AVATAR" + Math.min(partySize, 5));
+    }
+
+    private static void fillRoadAndPathAtlasRegionsSet() {
         roadAtlasRegions = new HashSet<>();
+        pathAtlasRegions = new HashSet<>();
         Array.ArrayIterator<TextureAtlas.AtlasRegion> atlasRegions = new Array.ArrayIterator<>(textureAtlas.getRegions());
         List<String> directionNames = Arrays.stream(CellSide.values()).map(Enum::name).collect(Collectors.toList());
         while (atlasRegions.hasNext()) {
             TextureAtlas.AtlasRegion region = atlasRegions.next();
             for (String directionName : directionNames) {
-                if ((region.name.contains("ROAD") || region.name.contains("BRIDGE")) && region.name.contains(directionName))
+                if ((region.name.contains("ROAD") || region.name.contains("BRIDGE")) && region.name.contains(directionName)) {
                     roadAtlasRegions.add(region);
+                }
+                else if (region.name.contains("WALKING") && region.name.contains(directionName)) {
+                    pathAtlasRegions.add(region);
+                }
             }
         }
     }

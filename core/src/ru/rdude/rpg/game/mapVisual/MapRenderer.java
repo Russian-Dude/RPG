@@ -1,11 +1,7 @@
 package ru.rdude.rpg.game.mapVisual;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.HexagonalTiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import ru.rdude.rpg.game.logic.game.Game;
 
 public class MapRenderer extends HexagonalTiledMapRenderer {

@@ -12,6 +12,7 @@ import ru.rdude.rpg.game.logic.data.io.ModuleFileLoader;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.game.Game;
+import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.map.GameMap;
 import ru.rdude.rpg.game.logic.map.GameMapSize;
 import ru.rdude.rpg.game.logic.map.Generator;
@@ -31,14 +32,17 @@ public class GameApp extends ApplicationAdapter {
         stage.addActor(playerCreationVisual);
         playerCreationVisual.setY(Gdx.graphics.getHeight() - playerCreationVisual.getHeight());*/
 
-        GameMap gameMap = new Generator(GameMapSize.XS).createMap();
-        Game.getGameVisual().addStage(new MapStage(gameMap));
+        GameMap gameMap = new Generator(GameMapSize.S).createMap();
+        Map map = new Map(gameMap);
+        Game.getCurrentGame().setGameMap(map);
+        Game.getGameVisual().addStage(map.getMapStage());
         Game.getGameVisual().setUi(new UIStage());
+        map.setPlayerPosition(gameMap.cell(0, 0));
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0, 1, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Game.getGameVisual().draw();
     }
