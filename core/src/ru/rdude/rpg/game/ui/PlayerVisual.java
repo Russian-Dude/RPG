@@ -1,20 +1,26 @@
 package ru.rdude.rpg.game.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
+import ru.rdude.rpg.game.logic.game.Game;
+import ru.rdude.rpg.game.logic.gameStates.Battle;
+import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
+import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static ru.rdude.rpg.game.ui.UiData.DEFAULT_SKIN;
 
-public class PlayerVisual extends VerticalGroup {
+public class PlayerVisual extends VerticalGroup implements GameStateObserver {
 
     private static List<PlayerVisual> playerVisualList = new ArrayList<>();
 
@@ -34,6 +40,7 @@ public class PlayerVisual extends VerticalGroup {
     private HorizontalGroup buttons;
 
     public PlayerVisual(Player player) {
+        Game.getCurrentGame().getGameStateHolder().subscribe(this);
         playerVisualList.add(this);
         this.player = player;
         avatar = new PlayerAvatar();
@@ -86,16 +93,25 @@ public class PlayerVisual extends VerticalGroup {
         });
 
         // add
-        addActor(avatar);
         buttons.addActor(spells);
         buttons.addActor(attack);
         buttons.addActor(items);
         buttons.setWidth(buttons.getPrefWidth());
         buttons.setHeight(buttons.getPrefHeight());
-        addActor(buttons);
+        Group topGroup = new Group();
+        avatar.setPosition(avatar.getWidth() * (-1) / 2f, 0);
+        buttons.setPosition(buttons.getWidth() * (-1) / 2f, 0);
+        topGroup.addActor(avatar);
+        topGroup.addActor(buttons);
+        addActor(topGroup);
         addActor(hpBar);
         addActor(stmBar);
         setWidth(getPrefWidth());
         setHeight(getPrefHeight());
+    }
+
+    @Override
+    public void update(GameStateBase oldValue, GameStateBase newValue) {
+        attack.setVisible(newValue instanceof Battle);
     }
 }
