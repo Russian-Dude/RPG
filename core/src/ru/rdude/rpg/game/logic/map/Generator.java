@@ -594,7 +594,8 @@ public class Generator {
     }
 
     private void createRoads() {
-        MapPathFinder pathFinder = new MapPathFinder(map, new MapRoadScorer());
+        MapPathFinder pathFinder = new MapPathFinder(map, new MapRoadScorer(),
+                (to, from) -> !(from.getBiom() instanceof Water) || from.getObject() == null);
 
         List<Point> remainedObjects = mapObjectsPoints.stream()
                 .filter(
@@ -608,15 +609,16 @@ public class Generator {
 
         while (remainedObjects.size() > 2) {
             Point first = remainedObjects.get(remainedObjects.size() - 1);
-            remainedObjects.remove(first);
             Point second = remainedObjects.get(random(remainedObjects.size() - 1));
-            pathFinder.find(map.cell(first), map.cell(second)).ifPresent(this::createRoad);
-            remainedObjects.remove(second);
+            pathFinder.find(map.cell(first), map.cell(second)).ifPresent(path -> {
+                createRoad(path);
+                remainedObjects.remove(second);
+            });
         }
     }
 
     private void createRoad(List<Cell> route) {
-        for (int i = 0; i < route.size() - 1; i++) {
+        for (int i = 0; i < route.size(); i++) {
             Cell cell = route.get(i);
             Road road = cell.getRoad() == null ? new Road() : cell.getRoad();
             if (cell.getObject() != null) {

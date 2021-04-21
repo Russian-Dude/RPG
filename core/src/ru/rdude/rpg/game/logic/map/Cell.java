@@ -157,16 +157,6 @@ public class Cell implements AStarNode {
             if (x - 1 == with.x && y == with.y)
                 return CellSide.NW;
         }
-        // TODO: 19.04.2021 remove test sout
-        System.out.println("NOT RELATED CELL!!!");
-        System.out.println("FIRST: ");
-        System.out.println("     x: " + this.getX());
-        System.out.println("     y: " + this.getY());
-        System.out.println("     object:: " + this.getObject());
-        System.out.println("SECOND: ");
-        System.out.println("     x: " + with.getX());
-        System.out.println("     y: " + with.getY());
-        System.out.println("     object:: " + with.getObject());
         return CellSide.NOT_RELATED;
     }
 

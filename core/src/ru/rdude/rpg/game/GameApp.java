@@ -38,6 +38,7 @@ public class GameApp extends ApplicationAdapter {
         Game.getGameVisual().addStage(map.getMapStage());
         Game.getGameVisual().setUi(new UIStage());
         map.setPlayerPosition(gameMap.cell(0, 0));
+        Game.getCurrentGame().getGameStateHolder().setGameState(map);
     }
 
     @Override

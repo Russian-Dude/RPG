@@ -15,7 +15,7 @@ public class Dungeon extends MapObject {
 
     @Override
     public MapObjectRoadAvailability roadAvailability() {
-        // while not implemented uses random availability
+        // TODO: 21.04.2021 while not implemented uses random availability
         return Functions.randomBoolean() ? MapObjectRoadAvailability.CAN : Functions.randomBoolean() ? MapObjectRoadAvailability.MUST : MapObjectRoadAvailability.NO;
     }
 

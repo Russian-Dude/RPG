@@ -196,17 +196,6 @@ public class MapTilesFactory {
                 case NW:
                     tile.setOffsetX(-128f);
                     break;
-/*                case SW:
-                case SE:
-                case SS:
-                    tile.setOffsetX(-64f);
-                    tile.setOffsetY(-64f);
-                    break;
-                case NW:
-                case NN:
-                case NE:
-                    tile.setOffsetX(-64f);
-                    break;*/
             }
         }
         return tiles.get(name + side);
