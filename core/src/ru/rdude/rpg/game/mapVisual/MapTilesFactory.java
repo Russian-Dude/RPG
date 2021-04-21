@@ -9,6 +9,7 @@ import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.CellSide;
 import ru.rdude.rpg.game.logic.map.bioms.BiomCellProperty;
 import ru.rdude.rpg.game.logic.map.bioms.Water;
+import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.utils.Functions;
 
 import java.util.*;
@@ -28,6 +29,9 @@ public class MapTilesFactory {
 
 
     public static TiledMapTile getBiomTile(Cell cell) {
+        if (cell.getObject() instanceof City) {
+            return getTileOrPutAndGet("BRICK");
+        }
         BiomCellProperty biom = cell.getBiom();
         if (biom == Water.getInstance()) {
             switch (cell.getDeepProperty()) {
@@ -113,6 +117,16 @@ public class MapTilesFactory {
         return getTileOrPutAndGet("EMPTY");
     }
 
+    public static TiledMapTile getCity() {
+        if (!tiles.containsKey("CITY")) {
+            StaticTiledMapTile tile = new StaticTiledMapTile(textureAtlas.findRegion("CITY"));
+            tile.setOffsetX(-64);
+            tile.setOffsetY(-64);
+            tiles.put("CITY", tile);
+        }
+        return tiles.get("CITY");
+    }
+
     public static TextureRegion getAvatar(int partySize) {
         return textureAtlas.findRegion("MAP_AVATAR" + Math.min(partySize, 5));
     }
@@ -145,21 +159,54 @@ public class MapTilesFactory {
 
     private static TiledMapTile getTileOrPutAndGet(String name, CellSide side) {
         if (!tiles.containsKey(name + side)) {
-            StaticTiledMapTile tile = new StaticTiledMapTile(textureAtlas.findRegion(name));
-            tiles.put(name + side, tile);
+
             // default position for quarter tile - SW, for half-vertical tile - SS
+            // if tile is on the right - create new flipped region
+            // relief tile is twice bigger than biome tile so default offset is -64
+            // so tiles that on the top of a tile should not be offset
+
+            TextureAtlas.AtlasRegion rawRegion = textureAtlas.findRegion(name);
+            TextureAtlas.AtlasRegion region;
+            if (side == CellSide.NW || side == CellSide.SE) {
+                region = new TextureAtlas.AtlasRegion(
+                        rawRegion.getTexture(), rawRegion.getRegionX(), rawRegion.getRegionY(),
+                        rawRegion.getRegionWidth(), rawRegion.getRegionHeight());
+                region.flip(true, false);
+            }
+            else {
+                region = rawRegion;
+            }
+
+            StaticTiledMapTile tile = new StaticTiledMapTile(region);
+            tiles.put(name + side, tile);
+
             switch (side) {
+                case SW:
+                case SS:
                 case SE:
-                    tile.setOffsetX(64);
+                    tile.setOffsetX(-64f);
+                    tile.setOffsetY(-64f);
+                    break;
+                case NE:
+                    // not move
+                    break;
+                case NN:
+                    tile.setOffsetX(-64);
+                    break;
+                case NW:
+                    tile.setOffsetX(-128f);
+                    break;
+/*                case SW:
+                case SE:
+                case SS:
+                    tile.setOffsetX(-64f);
+                    tile.setOffsetY(-64f);
                     break;
                 case NW:
                 case NN:
-                    tile.setOffsetY(64);
-                    break;
                 case NE:
-                    tile.setOffsetX(64);
-                    tile.setOffsetY(64);
-                    break;
+                    tile.setOffsetX(-64f);
+                    break;*/
             }
         }
         return tiles.get(name + side);
