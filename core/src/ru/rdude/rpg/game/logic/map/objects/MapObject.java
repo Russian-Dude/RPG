@@ -1,11 +1,8 @@
 package ru.rdude.rpg.game.logic.map.objects;
 
-import ru.rdude.rpg.game.logic.map.CellProperty;
 import ru.rdude.rpg.game.logic.map.CellSide;
 
-import java.util.Set;
-
-public abstract class MapObject extends CellProperty {
+public abstract class MapObject {
 
     private long id;
     private CellSide position;

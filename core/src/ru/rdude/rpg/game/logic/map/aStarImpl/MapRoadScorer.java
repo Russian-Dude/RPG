@@ -1,14 +1,10 @@
 package ru.rdude.rpg.game.logic.map.aStarImpl;
 
+import ru.rdude.rpg.game.logic.enums.Biom;
+import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.CellSide;
-import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.logic.map.objects.MapObjectRoadAvailability;
-import ru.rdude.rpg.game.logic.map.reliefs.Forest;
-import ru.rdude.rpg.game.logic.map.reliefs.Hills;
-import ru.rdude.rpg.game.logic.map.reliefs.Mountains;
-import ru.rdude.rpg.game.logic.map.reliefs.Plain;
-import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.utils.aStar.AStarScorer;
 
 public class MapRoadScorer implements AStarScorer<Cell> {
@@ -18,19 +14,17 @@ public class MapRoadScorer implements AStarScorer<Cell> {
         if (from.getRelativeLocation(to) == CellSide.NOT_RELATED) {
             return 500000;
         }
-        if (to.getBiom() == Water.getInstance()) {
-            return from.getBiom() == Water.getInstance() ? 25000 : to.getRoad() != null ? 0 : 35;
+        if (to.getBiom() == Biom.WATER) {
+            return from.getBiom() == Biom.WATER ? 25000 : to.getRoad() != null ? 0 : 35;
         }
         if (to.getRoad() != null
-                || (to.getObject() != null && to.getBiom() instanceof Water && to.getObject().roadAvailability() != MapObjectRoadAvailability.NO ))
+                || (to.getObject() != null && to.getBiom() == Biom.WATER && to.getObject().roadAvailability() != MapObjectRoadAvailability.NO ))
             return 0;
-        if (to.getRelief() instanceof Mountains)
+        if (to.getRelief() == Relief.MOUNTAINS)
             return 10;
-        else if (to.getRelief() instanceof Hills)
+        else if (to.getRelief() == Relief.FOREST)
             return 7;
-        else if (to.getRelief() instanceof Forest)
-            return 7;
-        else if (to.getRelief() instanceof Plain)
+        else if (to.getRelief() == Relief.PLAIN)
             return 5;
         return 0;
     }

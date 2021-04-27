@@ -5,10 +5,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
+import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.CellSide;
-import ru.rdude.rpg.game.logic.map.bioms.BiomCellProperty;
-import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.utils.Functions;
 
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class MapTilesFactory {
 
-    private static Map<String, StaticTiledMapTile> tiles = new HashMap<>();
+    private static final Map<String, StaticTiledMapTile> tiles = new HashMap<>();
     private static final TextureAtlas textureAtlas = new TextureAtlas("map_tiles.txt");
     private static final TextureAtlas miniMapAtlas = new TextureAtlas("minimap_tiles.txt");
 
@@ -33,9 +32,9 @@ public class MapTilesFactory {
         if (cell.getObject() instanceof City) {
             return getTileOrPutAndGet("BRICK");
         }
-        BiomCellProperty biom = cell.getBiom();
-        if (biom == Water.getInstance()) {
-            switch (cell.getDeepProperty()) {
+        Biom biom = cell.getBiom();
+        if (biom == Biom.WATER) {
+            switch (cell.getWaterDepth()) {
                 case DEEP:
                     return getTileOrPutAndGet("WATER_DEEP");
                 case SMALL:
@@ -45,14 +44,14 @@ public class MapTilesFactory {
                     return getTileOrPutAndGet("WATER");
             }
         }
-        return getTileOrPutAndGet(cell.getBiom().getClass().getSimpleName().toUpperCase());
+        return getTileOrPutAndGet(cell.getBiom().name().toUpperCase());
     }
 
     public static TiledMapTile getReliefTile(Cell cell) {
         TiledMapTile tile = getTileOrPutAndGet(
-                cell.getBiom().getClass().getSimpleName().toUpperCase()
+                cell.getBiom().name().toUpperCase()
                         + "_"
-                        + cell.getRelief().getClass().getSimpleName().toUpperCase()
+                        + cell.getRelief().name().toUpperCase()
                         + "_FULL"
                         + Functions.random(1, 3));
         tile.setOffsetX(- 64);
@@ -69,9 +68,9 @@ public class MapTilesFactory {
         else
             sideSuffix = "QUARTER";
         return getTileOrPutAndGet(
-                cell.getBiom().getClass().getSimpleName().toUpperCase()
+                cell.getBiom().name().toUpperCase()
                         + "_"
-                        + cell.getRelief().getClass().getSimpleName().toUpperCase()
+                        + cell.getRelief().name().toUpperCase()
                         + "_"
                         + sideSuffix
                         + Functions.random(1, 3),
@@ -80,7 +79,7 @@ public class MapTilesFactory {
 
     public static TiledMapTile getRoadTile(Cell cell, CellSide directionFrom, CellSide directionTo) {
         String roadType;
-        if (cell.getBiom() == Water.getInstance()) {
+        if (cell.getBiom() == Biom.WATER) {
             // TODO: 19.04.2021 here must be implemented logic to use empty tile if road is pseudo-road in deep waters
             roadType = "BRIDGE";
         } else {
@@ -151,9 +150,9 @@ public class MapTilesFactory {
             if (cell.getObject() instanceof City) {
                 return getMiniTileOrPutAndGet("MINIMAP_BRICK");
             }
-            BiomCellProperty biom = cell.getBiom();
-            if (biom == Water.getInstance()) {
-                switch (cell.getDeepProperty()) {
+            Biom biom = cell.getBiom();
+            if (biom == Biom.WATER) {
+                switch (cell.getWaterDepth()) {
                     case DEEP:
                         return getMiniTileOrPutAndGet("MINIMAP_WATER_DEEP");
                     case SMALL:
@@ -163,7 +162,7 @@ public class MapTilesFactory {
                         return getMiniTileOrPutAndGet("MINIMAP_WATER");
                 }
             }
-            return getMiniTileOrPutAndGet("MINIMAP_" + cell.getBiom().getClass().getSimpleName().toUpperCase());
+            return getMiniTileOrPutAndGet("MINIMAP_" + cell.getBiom().name().toUpperCase());
         }
     }
 

@@ -18,9 +18,9 @@ public final class TimeForMovingCalculator {
     }
 
     private static int biomTime(Map.CellProperties cell) {
-        switch (cell.getCell().getBiom().asEnum()) {
+        switch (cell.getCell().getBiom()) {
             case SAND:
-            case DEAD_LAND:
+            case DEADLAND:
             case VOLCANIC:
                 return 2;
             case SNOW:
@@ -38,7 +38,7 @@ public final class TimeForMovingCalculator {
     }
 
     private static int reliefTime(Map.CellProperties cell) {
-        switch (cell.getCell().getRelief().asEnum()) {
+        switch (cell.getCell().getRelief()) {
             case FOREST:
                 return 5;
             case MOUNTAINS:

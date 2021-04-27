@@ -6,13 +6,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import ru.rdude.rpg.game.logic.enums.Biom;
+import ru.rdude.rpg.game.logic.enums.WaterDepth;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.GameMap;
 import ru.rdude.rpg.game.logic.map.aStarImpl.MapMovingScorer;
 import ru.rdude.rpg.game.logic.map.aStarImpl.MapPathFinder;
-import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.settings.GameSettings;
 
 import java.util.LinkedList;
@@ -80,8 +80,8 @@ public class MapStage extends Stage {
             mapVisual.setVoidOnCell(c, false);
             pathFinder.changeConnections(c, c.getAroundCells(1).stream()
                     .filter(c2 -> Game.getCurrentGame().getGameMap().getCellProperties().get(c2).isVisible()
-                            && (Biom.ofCellProperty(c2.getBiom()) != Biom.WATER || c2.getDeepProperty() == Water.DeepProperty.SMALL
-                            || c2.getDeepProperty() == Water.DeepProperty.RIVER))
+                            && (c2.getBiom() != Biom.WATER || c2.getWaterDepth() == WaterDepth.SMALL
+                            || c2.getWaterDepth() == WaterDepth.RIVER))
                     .collect(Collectors.toSet()));
         });
         if (oldPosition != null) {

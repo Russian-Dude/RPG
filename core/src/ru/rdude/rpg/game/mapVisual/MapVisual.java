@@ -12,12 +12,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Disposable;
+import ru.rdude.rpg.game.logic.enums.Biom;
+import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.CellSide;
 import ru.rdude.rpg.game.logic.map.GameMap;
-import ru.rdude.rpg.game.logic.map.bioms.Water;
 import ru.rdude.rpg.game.logic.map.objects.City;
-import ru.rdude.rpg.game.logic.map.reliefs.Plain;
 import ru.rdude.rpg.game.utils.Pair;
 
 import java.util.*;
@@ -183,7 +183,7 @@ public class MapVisual extends Actor implements Disposable {
         }
 
         // empty tile on water and plains
-        if (cell.getBiom() instanceof Water || cell.getRelief() instanceof Plain) {
+        if (cell.getBiom() == Biom.WATER || cell.getRelief() == Relief.PLAIN) {
             TiledMapTile emptyTile = MapTilesFactory.getEmpty();
             reliefLayerBehind.getCell(cell.getX(), cell.getY()).setTile(emptyTile);
             generatedReliefTiles.putIfAbsent(cell, new Pair<>(emptyTile, emptyTile));

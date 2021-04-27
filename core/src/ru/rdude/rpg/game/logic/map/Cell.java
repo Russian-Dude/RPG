@@ -1,9 +1,9 @@
 package ru.rdude.rpg.game.logic.map;
 
-import ru.rdude.rpg.game.logic.map.bioms.BiomCellProperty;
-import ru.rdude.rpg.game.logic.map.bioms.Water;
+import ru.rdude.rpg.game.logic.enums.Biom;
+import ru.rdude.rpg.game.logic.enums.Relief;
+import ru.rdude.rpg.game.logic.enums.WaterDepth;
 import ru.rdude.rpg.game.logic.map.objects.MapObject;
-import ru.rdude.rpg.game.logic.map.reliefs.ReliefCellProperty;
 import ru.rdude.rpg.game.utils.aStar.AStarNode;
 
 import java.util.ArrayList;
@@ -23,9 +23,9 @@ public class Cell implements AStarNode {
 
     private Set<Cell> connectedByRoads;
 
-    private BiomCellProperty biom;
-    private Water.DeepProperty deepProperty;
-    private ReliefCellProperty relief;
+    private Biom biom;
+    private WaterDepth waterDepth;
+    private Relief relief;
     private MapObject object;
     private Road road;
 
@@ -39,24 +39,20 @@ public class Cell implements AStarNode {
     }
 
 
-    public BiomCellProperty getBiom() {
+    public Biom getBiom() {
         return biom;
     }
 
-    public void setBiom(BiomCellProperty biom) {
+    public void setBiom(Biom biom) {
         this.biom = biom;
-        if (gameMap != null)
-            gameMap.addCellPropertyMap(this, biom);
     }
 
-    public ReliefCellProperty getRelief() {
+    public Relief getRelief() {
         return relief;
     }
 
-    public void setRelief(ReliefCellProperty relief) {
+    public void setRelief(Relief relief) {
         this.relief = relief;
-        if (gameMap != null)
-            gameMap.addCellPropertyMap(this, relief);
     }
 
     public MapObject getObject() {
@@ -65,8 +61,6 @@ public class Cell implements AStarNode {
 
     public void setObject(MapObject object) {
         this.object = object;
-        if (gameMap != null)
-            gameMap.addCellPropertyMap(this, object);
     }
 
     public Road getRoad() {
@@ -77,27 +71,31 @@ public class Cell implements AStarNode {
         this.road = road;
     }
 
-    public Water.DeepProperty getDeepProperty() {
-        return deepProperty;
+    public WaterDepth getWaterDepth() {
+        return waterDepth;
     }
 
-    public void setDeepProperty(Water.DeepProperty deepProperty) {
-        this.deepProperty = deepProperty;
+    public void setWaterDepth(WaterDepth waterDepth) {
+        this.waterDepth = waterDepth;
     }
 
-    public CellProperty get(CellProperty.Type property) {
+    public boolean has(CellProperty property) {
         switch (property) {
             case ROAD:
-                return road;
+                return road != null;
             case BIOM:
-                return biom;
+                return biom != null;
             case OBJECT:
-                return object;
+                return object != null;
             case RELIEF:
-                return relief;
+                return relief != null;
             default:
                 throw new IllegalArgumentException(property.name() + " not implemented yet");
         }
+    }
+
+    public boolean hasNot(CellProperty property) {
+        return !has(property);
     }
 
     public long getId() {

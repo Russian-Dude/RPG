@@ -6,11 +6,6 @@ import ru.rdude.rpg.game.utils.aStar.AStarScorer;
 
 public class MapRiverScorer implements AStarScorer<Cell> {
 
-/*    @Override
-    public double computeCost(Cell from, Cell to) {
-        return Functions.random(2);
-    }*/
-
     @Override
     public int computeCost(Cell from, Cell to) {
         return Functions.random(0, 2);

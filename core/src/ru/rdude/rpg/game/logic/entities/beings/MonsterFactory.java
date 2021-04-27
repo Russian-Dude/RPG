@@ -42,8 +42,8 @@ public final class MonsterFactory {
                 // filter by describer
                 .filter(data -> !data.isDescriber())
                 // filter monsters by biom and relief
-                .filter(data -> data.getSpawnBioms().contains(Biom.ofCellProperty(cell.getBiom()))
-                        && data.getSpawnReliefs().contains(Relief.ofCellProperty(cell.getRelief())))
+                .filter(data -> data.getSpawnBioms().contains(cell.getBiom())
+                        && data.getSpawnReliefs().contains(cell.getRelief()))
                 // filter monsters by level
                 .filter(data -> {
                     int lvl = (int) data.getMainLvl();

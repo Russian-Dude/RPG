@@ -1,12 +1,9 @@
 package ru.rdude.rpg.game.logic.map.aStarImpl;
 
+import ru.rdude.rpg.game.logic.enums.Biom;
+import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.map.Cell;
-import ru.rdude.rpg.game.logic.map.bioms.Water;
-import ru.rdude.rpg.game.logic.map.reliefs.Forest;
-import ru.rdude.rpg.game.logic.map.reliefs.Hills;
-import ru.rdude.rpg.game.logic.map.reliefs.Mountains;
-import ru.rdude.rpg.game.logic.map.reliefs.Plain;
 import ru.rdude.rpg.game.utils.aStar.AStarScorer;
 
 public class MapMovingScorer implements AStarScorer<Cell> {
@@ -25,8 +22,8 @@ public class MapMovingScorer implements AStarScorer<Cell> {
         if (to.getRoad() != null && from.getRoad() != null) {
             return 0;
         }
-        if (to.getBiom() instanceof Water) {
-            switch (to.getDeepProperty()) {
+        if (to.getBiom() == Biom.WATER) {
+            switch (to.getWaterDepth()) {
                 case RIVER:
                 case SMALL:
                     return 50;
@@ -36,13 +33,13 @@ public class MapMovingScorer implements AStarScorer<Cell> {
                     return 500;
             }
         }
-        if (to.getRelief() instanceof Plain) {
+        if (to.getRelief() == Relief.PLAIN) {
             return 1;
         }
-        if (to.getRelief() instanceof Forest || to.getRelief() instanceof Hills) {
+        if (to.getRelief() == Relief.FOREST) {
             return 2;
         }
-        if (to.getRelief() instanceof Mountains) {
+        if (to.getRelief() == Relief.MOUNTAINS) {
             return 3;
         }
         return 0;

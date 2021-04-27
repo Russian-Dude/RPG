@@ -3,7 +3,7 @@ package ru.rdude.rpg.game.logic.map;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Road extends CellProperty {
+public class Road {
 
     private Set<CellSide> destinations;
     private boolean realRoad = true;

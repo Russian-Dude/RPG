@@ -16,8 +16,6 @@ import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.map.GameMap;
 import ru.rdude.rpg.game.logic.map.GameMapSize;
 import ru.rdude.rpg.game.logic.map.Generator;
-import ru.rdude.rpg.game.logic.map.bioms.BiomCellProperty;
-import ru.rdude.rpg.game.logic.map.reliefs.ReliefCellProperty;
 import ru.rdude.rpg.game.mapVisual.MapStage;
 import ru.rdude.rpg.game.mapVisual.MapVisual;
 import ru.rdude.rpg.game.ui.*;
