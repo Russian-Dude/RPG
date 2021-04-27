@@ -1,5 +1,5 @@
 {
-BitmapFont: {
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
 	huge_white_shadow-black: {
 		file: BLKCHCRY.fnt
 	}
@@ -16,7 +16,7 @@ BitmapFont: {
 		file: simple.fnt
 	}
 }
-Color: {
+com.badlogic.gdx.graphics.Color: {
 	black: {
 		r: 0
 		g: 0
@@ -83,7 +83,7 @@ com.kotcrab.vis.ui.widget.BusyBar$BusyBarStyle: {
 		segmentOverflow: 10
 	}
 }
-ButtonStyle: {
+com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	default: {
 		up: Button_Horizontal_Up
 		down: Button_Horizontal_Pressed
@@ -103,7 +103,7 @@ ButtonStyle: {
 		disabled: Button_Horizontal_Disabled
 	}
 	attack: {
-		up: Button_Attack_Up
+		up: ButtonAttack_Up
 		over: Button_Attack_Over
 	}
 	spells: {
@@ -130,7 +130,16 @@ ButtonStyle: {
 		over: Square_Button_Hover_Red
 	}
 }
-LabelStyle: {
+com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+	Red_Green_mud: {
+		checkboxOn: Square_Button_Pressed_Green
+		checkboxOff: Square_Button_Hover_Red
+		checkboxOnOver: Square_Button_Pressed_Green
+		checkboxOver: Square_Button_Hover_Red
+		font: mud
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	default: {
 		font: Medium_White_Shadow-black
 		fontColor: white
@@ -151,8 +160,12 @@ LabelStyle: {
 	modern: {
 		font: modern
 	}
+	mud_with_background: {
+		parent: mud
+		background: Window_9p
+	}
 }
-ListStyle: {
+com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 	default: {
 		font: Medium_White_Shadow-black
 		fontColorSelected: white
@@ -172,8 +185,26 @@ ListStyle: {
 		parent: default
 		font: modern
 	}
+	no_background: {
+		font: Medium_White_Shadow-black
+		fontColorSelected: white
+		fontColorUnselected: white
+		selection: Window_Transparent_9p
+	}
+	no_background_mud: {
+		parent: no_background
+		font: mud
+		fontColorSelected: white
+		fontColorUnselected: white
+	}
+	no_background_simple: {
+		parent: no_background
+		font: simple
+		fontColorSelected: white
+		fontColorUnselected: white
+	}
 }
-ProgressBarStyle: {
+com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
 	default-horizontal: {
 		background: Progress_Bar_Horizontal_9p
 		knobBefore: Progress_Bar_Before_Knob_Hp
@@ -191,21 +222,49 @@ ProgressBarStyle: {
 		knobBefore: Progress_Bar_Before_Knob_Exp
 	}
 }
-ScrollPaneStyle: {
+com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 	default: {
 		background: Window_Transparent_9p
 	}
 }
-SelectBoxStyle: {
+com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 	default: {
 		font: Medium_White_Shadow-black
 		fontColor: white
 		background: Window_Transparent_9p
 		scrollStyle: default
-		listStyle: default
+		listStyle: no_background
+	}
+	mud: {
+		font: mud
+		fontColor: white
+		background: Window_Transparent_9p
+		scrollStyle: default
+		listStyle: no_background_mud
+	}
+	simple: {
+		font: simple
+		fontColor: white
+		background: Window_Transparent_9p
+		scrollStyle: default
+		listStyle: no_background_simple
 	}
 }
-TextButtonStyle: {
+com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
+	default-horizontal: {
+		knobOver: Slider_Knob
+		knobDown: Slider_Knob
+		background: Slider_Background_9p
+		knob: Slider_Knob
+	}
+	default-vertical: {
+		knobOver: Slider_Knob
+		knobDown: Slider_Knob
+		background: Slider_Background_Vertical_9p
+		knob: Slider_Knob
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	default: {
 		parent: default
 		font: Medium_White_Shadow-black
@@ -310,7 +369,7 @@ TextButtonStyle: {
 		font: modern
 	}
 }
-TextFieldStyle: {
+com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 	default: {
 		font: Medium_White_Shadow-black
 		fontColor: white
@@ -333,7 +392,7 @@ TextFieldStyle: {
 		selection: Text_Selection
 	}
 }
-TextTooltipStyle: {
+com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
 	default: {
 		label: default
 		background: Window_Transparent_9p
@@ -341,8 +400,20 @@ TextTooltipStyle: {
 	background: {
 		label: default
 	}
+	mud: {
+		label: mud
+		background: Window_Transparent_9p
+	}
+	modern: {
+		label: modern
+		background: Window_Transparent_9p
+	}
+	simple: {
+		label: simple
+		background: Window_Transparent_9p
+	}
 }
-WindowStyle: {
+com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 	default: {
 		background: Window_9p
 		titleFont: huge_white_shadow-black

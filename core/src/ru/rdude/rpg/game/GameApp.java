@@ -32,13 +32,16 @@ public class GameApp extends ApplicationAdapter {
         stage.addActor(playerCreationVisual);
         playerCreationVisual.setY(Gdx.graphics.getHeight() - playerCreationVisual.getHeight());*/
 
-        GameMap gameMap = new Generator(GameMapSize.S).createMap();
-        Map map = new Map(gameMap);
-        Game.getCurrentGame().setGameMap(map);
-        Game.getGameVisual().addStage(map.getMapStage());
-        Game.getGameVisual().setUi(new UIStage());
-        map.setPlayerPosition(gameMap.cell(0, 0));
-        Game.getCurrentGame().getGameStateHolder().setGameState(map);
+        //GameMap gameMap = new Generator(GameMapSize.S).createMap();
+        //Map map = new Map(gameMap);
+        //Game.getCurrentGame().setGameMap(map);
+        //Game.getGameVisual().addStage(map.getMapStage());
+        //Game.getGameVisual().setUi(new UIStage());
+
+        //map.setPlayerPosition(gameMap.cell(0, 0));
+        //Game.getCurrentGame().getGameStateHolder().setGameState(map);
+
+        Game.getGameVisual().addStage(new MapGeneratorStage());
     }
 
     @Override

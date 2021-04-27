@@ -19,6 +19,7 @@ public class MapTilesFactory {
 
     private static Map<String, StaticTiledMapTile> tiles = new HashMap<>();
     private static final TextureAtlas textureAtlas = new TextureAtlas("map_tiles.txt");
+    private static final TextureAtlas miniMapAtlas = new TextureAtlas("minimap_tiles.txt");
 
     private static Set<TextureAtlas.AtlasRegion> roadAtlasRegions;
     private static Set<TextureAtlas.AtlasRegion> pathAtlasRegions;
@@ -131,6 +132,41 @@ public class MapTilesFactory {
         return textureAtlas.findRegion("MAP_AVATAR" + Math.min(partySize, 5));
     }
 
+    public static TiledMapTile getMiniMapTile(Cell cell, boolean highlight) {
+        if (highlight) {
+            if (cell.getObject() instanceof City) {
+                return getMiniTileOrPutAndGet("MINIMAP_GREEN");
+            }
+            if (cell.getObject() != null) {
+                return getMiniTileOrPutAndGet("MINIMAP_RED");
+            }
+            if (cell.getRoad() != null) {
+                return getMiniTileOrPutAndGet("MINIMAP_PURPLE");
+            }
+            else {
+                return getMiniTileOrPutAndGet("MINIMAP_EMPTY");
+            }
+        }
+        else {
+            if (cell.getObject() instanceof City) {
+                return getMiniTileOrPutAndGet("MINIMAP_BRICK");
+            }
+            BiomCellProperty biom = cell.getBiom();
+            if (biom == Water.getInstance()) {
+                switch (cell.getDeepProperty()) {
+                    case DEEP:
+                        return getMiniTileOrPutAndGet("MINIMAP_WATER_DEEP");
+                    case SMALL:
+                    case RIVER:
+                        return getMiniTileOrPutAndGet("MINIMAP_WATER_SMALL");
+                    default:
+                        return getMiniTileOrPutAndGet("MINIMAP_WATER");
+                }
+            }
+            return getMiniTileOrPutAndGet("MINIMAP_" + cell.getBiom().getClass().getSimpleName().toUpperCase());
+        }
+    }
+
     private static void fillRoadAndPathAtlasRegionsSet() {
         roadAtlasRegions = new HashSet<>();
         pathAtlasRegions = new HashSet<>();
@@ -147,6 +183,18 @@ public class MapTilesFactory {
                 }
             }
         }
+    }
+
+    public static TiledMapTile getMiniVoid() {
+        return getMiniTileOrPutAndGet("MINIMAP_VOID");
+    }
+
+    private static TiledMapTile getMiniTileOrPutAndGet(String name) {
+        if (!tiles.containsKey(name)) {
+            StaticTiledMapTile tile = new StaticTiledMapTile(miniMapAtlas.findRegion(name));
+            tiles.put(name, tile);
+        }
+        return tiles.get(name);
     }
 
     private static TiledMapTile getTileOrPutAndGet(String name) {

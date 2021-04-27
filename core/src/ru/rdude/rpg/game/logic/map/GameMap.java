@@ -1,5 +1,7 @@
 package ru.rdude.rpg.game.logic.map;
 
+import ru.rdude.rpg.game.utils.Functions;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -7,6 +9,7 @@ import java.util.Set;
 
 public class GameMap {
 
+    public final long guid;
     private Cell[][] map;
     private Map<CellProperty, Set<Cell>> cellsByProperty;
 
@@ -17,6 +20,7 @@ public class GameMap {
                 map[x][y] = new Cell(x, y, this);
             }
         }
+        guid = Functions.generateGuid();
     }
 
     public int getWidth() { return map.length; }

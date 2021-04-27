@@ -13,6 +13,7 @@ import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.utils.TimeCounter;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.floor;
@@ -20,7 +21,11 @@ import static ru.rdude.rpg.game.utils.Functions.*;
 
 public class Generator {
 
-    public enum WaterAlgorithm {AS_BIOM, SEPARATE_FROM_BIOM, MIXED, SMALL_ISLANDS, SUPER_MIXED, NO_WATER}
+    private final AtomicBoolean generating = new AtomicBoolean(false);
+
+    private Set<MapGenerationObserver> observers = new HashSet<>();
+    private float currentProcessMax = 0f;
+    private float currentProcessValue = 0f;
 
     private GameMap map;
     private int width; // 64
@@ -39,7 +44,7 @@ public class Generator {
     private double newReliefCoefficient; // same with relief
     private boolean equalBioms; // generation type where biom trying to be equal size
 
-    private WaterAlgorithm waterAlgorithm;
+    private GeneratorWaterAlgorithm waterAlgorithm;
     private float waterAmount; // works only with separate water algorithm
     private int riversAmount;
 
@@ -74,7 +79,7 @@ public class Generator {
         map = new GameMap(width, height);
         newBiomCoefficient = 0.004;
         newReliefCoefficient = 0.3;
-        waterAlgorithm = WaterAlgorithm.MIXED;
+        waterAlgorithm = GeneratorWaterAlgorithm.MIXED;
         waterAmount = 0.33f;
         riversAmount = 10;
 
@@ -85,12 +90,20 @@ public class Generator {
         dungeons = new ArrayList<>();
     }
 
+    public void subscribe(MapGenerationObserver observer) {
+        observers.add(observer);
+    }
+
+    public void unsubscribe(MapGenerationObserver observer) {
+        observers.remove(observer);
+    }
+
     public void setSize(GameMapSize size) {
         this.width = size.getWidth();
         this.height = size.getHeight();
     }
 
-    public void setWaterAlgorithm(WaterAlgorithm waterAlgorithm) {
+    public void setWaterAlgorithm(GeneratorWaterAlgorithm waterAlgorithm) {
         this.waterAlgorithm = waterAlgorithm;
     }
 
@@ -98,11 +111,21 @@ public class Generator {
         this.newBiomCoefficient = newBiomCoefficient;
     }
 
+    public void setWaterAmount(float waterAmount) {
+        this.waterAmount = waterAmount;
+    }
+
+    public void setRiversAmount(int riversAmount) {
+        this.riversAmount = riversAmount;
+    }
+
     public void setEqualBioms(boolean equalBioms) {
         this.equalBioms = equalBioms;
     }
 
     public GameMap createMap() {
+        generating.set(true);
+        notifySubscribers(GenerationProcess.START, 0f, 0f);
         TimeCounter timeCounter = new TimeCounter("map generation");
         System.out.println(width + "x" + height + " (" + width * height + " cells)");
 
@@ -116,6 +139,10 @@ public class Generator {
                 break;
             case MIXED:
                 createBioms();
+                if (!generating.get()) {
+                    notifySubscribers(GenerationProcess.INTERRUPTED, 0, 0);
+                    return null;
+                }
                 createWater();
                 break;
             case SMALL_ISLANDS:
@@ -124,34 +151,91 @@ public class Generator {
                 break;
             case SUPER_MIXED:
                 createWaterWithSmallIslands();
+                if (!generating.get()) {
+                    notifySubscribers(GenerationProcess.INTERRUPTED, 0, 0);
+                    return null;
+                }
                 createWater();
                 break;
 
         }
         System.out.println(timeCounter.getCount("water creation"));
 
-
+        if (!generating.get()) {
+            notifySubscribers(GenerationProcess.INTERRUPTED, 0, 0);
+            return null;
+        }
         createBioms();
         System.out.println(timeCounter.getCountFromPrevious("bioms creation"));
+
+        if (!generating.get()) {
+            notifySubscribers(GenerationProcess.INTERRUPTED, 0, 0);
+            return null;
+        }
         createRivers();
         System.out.println(timeCounter.getCountFromPrevious("rivers creation"));
+
+        if (!generating.get()) {
+            notifySubscribers(GenerationProcess.INTERRUPTED, 0, 0);
+            return null;
+        }
         denoiseBioms();
         System.out.println(timeCounter.getCountFromPrevious("bioms denoising"));
+
+        if (!generating.get()) {
+            notifySubscribers(GenerationProcess.INTERRUPTED, 0, 0);
+            return null;
+        }
         createRelief();
         System.out.println(timeCounter.getCountFromPrevious("relief creation"));
+
+        if (!generating.get()) {
+            notifySubscribers(GenerationProcess.INTERRUPTED, 0, 0);
+            return null;
+        }
         createCities();
         System.out.println(timeCounter.getCountFromPrevious("cities creation"));
+
+        if (!generating.get()) {
+            notifySubscribers(GenerationProcess.INTERRUPTED, 0, 0);
+            return null;
+        }
         createDungeons();
         System.out.println(timeCounter.getCountFromPrevious("dungeons creation"));
+
+        if (!generating.get()) {
+            notifySubscribers(GenerationProcess.INTERRUPTED, 0, 0);
+            return null;
+        }
         createRoads();
         System.out.println(timeCounter.getCountFromPrevious("roads creation"));
+
+        if (!generating.get()) {
+            notifySubscribers(GenerationProcess.INTERRUPTED, 0, 0);
+            return null;
+        }
         createDeepOfWater();
         System.out.println(timeCounter.getCountFromPrevious("deep of water creation"));
+
+        if (!generating.get()) {
+            notifySubscribers(GenerationProcess.INTERRUPTED, 0, 0);
+            return null;
+        }
         createLevels();
         System.out.println(timeCounter.getCountFromPrevious("leveling cells"));
         System.out.println(timeCounter.getCount());
 
+        if (!generating.get()) {
+            notifySubscribers(GenerationProcess.INTERRUPTED, 0, 0);
+            return null;
+        }
+        notifySubscribers(GenerationProcess.FINISH, 0f, 0f);
+
         return map;
+    }
+
+    public void interrupt() {
+        generating.set(false);
     }
 
     // Passing a list of bioms allows to use specific bioms on created map
@@ -281,7 +365,7 @@ public class Generator {
 
     private boolean isChangeBiom(BiomCellProperty lastBiom, int cellsWithNoBiomAmount) {
         if (equalBioms && biomAmount.get(lastBiom) > cellsWithNoBiomAmount / bioms.size()) {
-            if (lastBiom == Water.getInstance() && (waterAlgorithm == WaterAlgorithm.MIXED || waterAlgorithm == WaterAlgorithm.SUPER_MIXED))
+            if (lastBiom == Water.getInstance() && (waterAlgorithm == GeneratorWaterAlgorithm.MIXED || waterAlgorithm == GeneratorWaterAlgorithm.SUPER_MIXED))
                 return random(1d) < newBiomCoefficient;
             else
                 return true;
@@ -293,6 +377,8 @@ public class Generator {
     private void createBioms() {
         int nonNullCells = map.nonNullCells(CellProperty.Type.BIOM);
         int steps = height * width - nonNullCells;
+        int allSteps = steps;
+        notifySubscribers(GenerationProcess.BIOME_CREATION, 0f, allSteps);
         int cellsWithNoBiomAmount = steps;
         BiomCellProperty lastBiom;
         List<Point> points = createStartPoints();
@@ -312,6 +398,10 @@ public class Generator {
         }
         // move through the map and generate bioms:
         while (steps > 0) {
+            if (!generating.get()) {
+                return;
+            }
+            notifySubscribers(GenerationProcess.BIOME_CREATION, allSteps - steps, allSteps);
             for (Point point : points) {
                 lastBiom = map.cell(point).getBiom();
                 // move to the next position:
@@ -356,13 +446,20 @@ public class Generator {
                 map.cell(point).setBiom(biom);
             }
         }
+        notifySubscribers(GenerationProcess.BIOME_CREATION,allSteps, allSteps);
     }
 
     private void createWater() {
         int steps = (int) (height * width * waterAmount);
+        int allSteps = steps;
+        notifySubscribers(GenerationProcess.WATER_CREATION, 0f, allSteps);
         Water water = Water.getInstance();
         List<Point> points = createStartPoints();
         while (steps > 0) {
+            if (!generating.get()) {
+                return;
+            }
+            notifySubscribers(GenerationProcess.WATER_CREATION, allSteps - steps, allSteps);
             for (Point point : points) {
                 steps--;
                 Point nextPoint = Functions.random(map.cell(point).getAroundCells(1)).point();
@@ -372,11 +469,14 @@ public class Generator {
                 map.cell(point).setBiom(Water.getInstance());
             }
         }
+        notifySubscribers(GenerationProcess.WATER_CREATION,allSteps, allSteps);
     }
 
 
     private void createWaterWithSmallIslands() {
         int steps = (int) (height * width * waterAmount);
+        int allSteps = steps;
+        notifySubscribers(GenerationProcess.WATER_CREATION, 0f, allSteps);
         Water water = Water.getInstance();
         // creating start points for generation:
         List<Point> points = createStartPoints();
@@ -386,6 +486,10 @@ public class Generator {
             steps -= 1;
         }
         while (steps > 0) {
+            if (!generating.get()) {
+                return;
+            }
+            notifySubscribers(GenerationProcess.WATER_CREATION, allSteps - steps, allSteps);
             for (Point point : points) {
                 // move to the next position:
                 Point nextPoint = random(findUnSteppedCells(map.cell(point), CellProperty.Type.BIOM)).point();
@@ -414,11 +518,17 @@ public class Generator {
                 }
             }
         }
+        notifySubscribers(GenerationProcess.WATER_CREATION, allSteps, allSteps);
     }
 
     private void createRivers() {
+        notifySubscribers(GenerationProcess.RIVERS_CREATION, 0f, riversAmount);
         MapPathFinder pathFinder = new MapPathFinder(map, new MapRiverScorer());
         for (int i = 0; i < riversAmount; i++) {
+            if (!generating.get()) {
+                return;
+            }
+            notifySubscribers(GenerationProcess.RIVERS_CREATION, i, riversAmount);
             Cell from = map.cell(Functions.random(width - 1), Functions.random(height - 1));
             Cell to;
             if (!map.getCellsWithProperty(Water.getInstance()).isEmpty())
@@ -427,10 +537,19 @@ public class Generator {
                 to = map.cell(Functions.random(width - 1), Functions.random(height - 1));
             pathFinder.find(from, to).ifPresent(cells -> cells.forEach(cell -> cell.setBiom(Water.getInstance())));
         }
+        notifySubscribers(GenerationProcess.RIVERS_CREATION, 100, riversAmount);
     }
 
     private void createDeepOfWater() {
-        for (Cell cell : map.getCellsWithProperty(Water.getInstance())) {
+        Set<Cell> waterCells = map.getCellsWithProperty(Water.getInstance());
+        int allSteps = waterCells.size();
+        int currentStep = 0;
+        notifySubscribers(GenerationProcess.DEPTH_OF_WATER_CREATION, 0, allSteps);
+        for (Cell cell : waterCells) {
+
+            if (!generating.get()) {
+                return;
+            }
 
             Water.DeepProperty deepProperty;
 
@@ -446,11 +565,16 @@ public class Generator {
             }
 
             cell.setDeepProperty(deepProperty);
+            currentStep++;
+            notifySubscribers(GenerationProcess.DEPTH_OF_WATER_CREATION, currentStep, allSteps);
         }
+        notifySubscribers(GenerationProcess.DEPTH_OF_WATER_CREATION, allSteps, allSteps);
     }
 
     private void createRelief() {
         int steps = height * width;
+        int allSteps = steps;
+        notifySubscribers(GenerationProcess.RELIEF_CREATION, 0f, allSteps);
         List<Point> points = createStartPoints();
         ReliefCellProperty lastRelief;
         // generate random relief at start points:
@@ -464,6 +588,10 @@ public class Generator {
             }
         }
         while (steps > 0) {
+            if (!generating.get()) {
+                return;
+            }
+            notifySubscribers(GenerationProcess.RELIEF_CREATION, allSteps - steps, allSteps);
             for (Point point : points) {
                 // moving through the map:
                 lastRelief = map.cell(point).getRelief();
@@ -500,16 +628,21 @@ public class Generator {
                 map.cell(point).setRelief(relief);
             }
         }
+        notifySubscribers(GenerationProcess.RELIEF_CREATION, allSteps, allSteps);
     }
 
     // reduce single biom cells
     private void denoiseBioms() {
+        notifySubscribers(GenerationProcess.DENOISING, 0f, 1f);
         // denoising stops when next iteration do not denoise anything
         int denoisedAmount = 1;
         while (denoisedAmount > 0) {
             denoisedAmount = 0;
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
+                    if (!generating.get()) {
+                        return;
+                    }
                     int sameBiomAroundAmount = 0;
                     int waterAround = 0;
                     BiomCellProperty thisBiom = map.cell(x, y).getBiom();
@@ -531,6 +664,7 @@ public class Generator {
                 }
             }
         }
+        notifySubscribers(GenerationProcess.DENOISING, 1f, 1f);
     }
 
 
@@ -540,6 +674,9 @@ public class Generator {
 
         // create starting points for cities
         while (startingPoints.size() < citiesAmount) {
+            if (!generating.get()) {
+                return;
+            }
             List<Point> newPoints = createStartPoints().stream()
                     .filter(newPoint -> {
                         Set<Point> existingPoints = new HashSet<>(startingPoints);
@@ -552,6 +689,7 @@ public class Generator {
 
         // create cities
         for (int i = 0; i < citiesAmount; i++) {
+            notifySubscribers(GenerationProcess.CITIES_CREATION, i, citiesAmount);
             Point point = startingPoints.get(i);
             while (map.cell(point).getBiom() == Water.getInstance()) {
                 List<Cell> unsteppedCells = findUnSteppedCells(map.cell(point), CellProperty.Type.OBJECT);
@@ -563,6 +701,7 @@ public class Generator {
             cities.add(city);
             mapObjectsPoints.add(point);
         }
+        notifySubscribers(GenerationProcess.CITIES_CREATION, citiesAmount, citiesAmount);
     }
 
     private City createCity(int id) {
@@ -572,6 +711,10 @@ public class Generator {
     private void createDungeons() {
         int startID = mapObjectsPoints.size();
         for (int i = 0; i < dungeonsAmount; i++) {
+            if (!generating.get()) {
+                return;
+            }
+            notifySubscribers(GenerationProcess.DUNGEONS_CREATION, i, dungeonsAmount);
             Dungeon currentDungeon = new Dungeon(startID + i);
             boolean notAllowedToPlace = true;
             int tries = 0;
@@ -591,6 +734,7 @@ public class Generator {
                 tries++;
             }
         }
+        notifySubscribers(GenerationProcess.DUNGEONS_CREATION, dungeonsAmount, dungeonsAmount);
     }
 
     private void createRoads() {
@@ -607,7 +751,12 @@ public class Generator {
                         }
                 ).collect(Collectors.toList());
 
+        int objectsSize = remainedObjects.size();
         while (remainedObjects.size() > 2) {
+            if (!generating.get()) {
+                return;
+            }
+            notifySubscribers(GenerationProcess.ROADS_CREATION, objectsSize - remainedObjects.size(), objectsSize);
             Point first = remainedObjects.get(remainedObjects.size() - 1);
             Point second = remainedObjects.get(random(remainedObjects.size() - 1));
             pathFinder.find(map.cell(first), map.cell(second)).ifPresent(path -> {
@@ -615,6 +764,7 @@ public class Generator {
                 remainedObjects.remove(second);
             });
         }
+        notifySubscribers(GenerationProcess.ROADS_CREATION, objectsSize, objectsSize);
     }
 
     private void createRoad(List<Cell> route) {
@@ -631,12 +781,6 @@ public class Generator {
                 }
                 else {
                     CellSide destination = cell.getRelativeLocation(previousCell);
-                    // TODO: 12.04.2021 remove debug printlns
-                    if (destination == CellSide.NOT_RELATED) {
-                        System.out.println("Not related cells in road route. Cell 1: " +
-                                cell.getX() + " : " + cell.getY() + "; Cell 2: " +
-                                previousCell.getX() + " : " + previousCell.getY());
-                    }
                     road.addDestination(destination);
                 }
             }
@@ -647,12 +791,6 @@ public class Generator {
                 }
                 else {
                     CellSide destination = cell.getRelativeLocation(nextCell);
-                    // TODO: 12.04.2021 remove debug printlns
-                    if (destination == CellSide.NOT_RELATED) {
-                        System.out.println("Not related cells in road route. Cell 1: " +
-                                cell.getX() + " : " + cell.getY() + "; Cell 2: " +
-                                nextCell.getX() + " : " + nextCell.getY());
-                    }
                     road.addDestination(destination);
                 }
             }
@@ -661,8 +799,13 @@ public class Generator {
     }
 
     private void createLevels() {
+        notifySubscribers(GenerationProcess.LEVELING, 0f, width / 100f);
         for (int x = 0; x < width; x++) {
+            notifySubscribers(GenerationProcess.LEVELING, x / 100f, width / 100f);
             for (int y = 0; y < height; y++) {
+                if (!generating.get()) {
+                    return;
+                }
                 int lvl;
                 Cell cell = map.cell(x, y);
                 if (cell.getObject() instanceof City || cell.getRoad() != null) {
@@ -682,5 +825,10 @@ public class Generator {
                 cell.setLvl(lvl);
             }
         }
+        notifySubscribers(GenerationProcess.LEVELING, width / 100f, width / 100f);
+    }
+
+    private void notifySubscribers(GenerationProcess process, float current, float max) {
+        observers.forEach(observer -> observer.update(process, current, max));
     }
 }

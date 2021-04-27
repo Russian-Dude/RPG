@@ -1,0 +1,124 @@
+minimap_tiles.png
+size: 136, 8
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+MINIMAP_BRICK
+  rotate: false
+  xy: 0, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_DEADLAND
+  rotate: false
+  xy: 8, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_DIRT
+  rotate: false
+  xy: 16, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_EMPTY
+  rotate: false
+  xy: 24, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_GRASS
+  rotate: false
+  xy: 32, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_GREEN
+  rotate: false
+  xy: 40, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_JUNGLE
+  rotate: false
+  xy: 48, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_PURPLE
+  rotate: false
+  xy: 56, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_RED
+  rotate: false
+  xy: 64, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_SAND
+  rotate: false
+  xy: 72, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_SNOW
+  rotate: false
+  xy: 80, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_SWAMP
+  rotate: false
+  xy: 88, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_VOID
+  rotate: false
+  xy: 96, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_VOLCANIC
+  rotate: false
+  xy: 104, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_WATER
+  rotate: false
+  xy: 112, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_WATER_DEEP
+  rotate: false
+  xy: 120, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+MINIMAP_WATER_SMALL
+  rotate: false
+  xy: 128, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1

@@ -16,10 +16,6 @@ public class Road extends CellProperty {
         return destinations;
     }
 
-    public Set<CellSide> getDestinationsCopy() {
-        return new HashSet<>(destinations);
-    }
-
     public void setDestinations(Set<CellSide> destinations) {
         this.destinations = destinations;
     }
