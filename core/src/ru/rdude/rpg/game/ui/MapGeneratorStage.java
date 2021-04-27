@@ -2,8 +2,8 @@ package ru.rdude.rpg.game.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import ru.rdude.rpg.game.logic.data.io.GameMapFileSaver;
 import ru.rdude.rpg.game.logic.map.*;
 import ru.rdude.rpg.game.mapVisual.MapTilesFactory;
 import ru.rdude.rpg.game.mapVisual.SmallMapVisual;
@@ -19,6 +20,7 @@ import ru.rdude.rpg.game.mapVisual.VisualConstants;
 
 public class MapGeneratorStage extends Stage implements MapGenerationObserver {
 
+    private Texture mapTexture;
     private final Image mapImage = new Image(new SpriteDrawable(new Sprite(MapTilesFactory.getEmpty().getTextureRegion())));
     private final Image mapHighlightsImage = new Image(new SpriteDrawable(new Sprite(MapTilesFactory.getEmpty().getTextureRegion())));
 
@@ -182,7 +184,9 @@ public class MapGeneratorStage extends Stage implements MapGenerationObserver {
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // TODO: 26.04.2021 save
+                if (gameMap != null && mapTexture != null) {
+                    GameMapFileSaver.save(gameMap, mapTexture, nameField.getText());
+                }
             }
         });
         bottomHorizontalGroup.addActor(saveButton);
@@ -290,7 +294,8 @@ public class MapGeneratorStage extends Stage implements MapGenerationObserver {
 
             SmallMapVisual smallMapVisual = new SmallMapVisual(camera, gameMap);
 
-            ((SpriteDrawable) mapImage.getDrawable()).getSprite().setRegion(smallMapVisual.getMapTexture());
+            mapTexture = smallMapVisual.getMapTexture();
+            ((SpriteDrawable) mapImage.getDrawable()).getSprite().setRegion(mapTexture);
             ((SpriteDrawable) mapHighlightsImage.getDrawable()).getSprite().setRegion(smallMapVisual.getRoadsAndObjectsTexture());
         }
     }

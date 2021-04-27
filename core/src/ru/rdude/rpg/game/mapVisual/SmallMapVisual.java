@@ -3,6 +3,7 @@ package ru.rdude.rpg.game.mapVisual;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -10,6 +11,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.HexagonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.ScreenUtils;
+import javafx.scene.text.Text;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.GameMap;
 
@@ -69,7 +72,8 @@ public class SmallMapVisual extends Actor implements Disposable {
         camera.zoom = 0.935f;
         renderer.setView(camera);
         renderer.render();
-        Texture texture = frameBuffer.getColorBufferTexture();
+        //Texture texture = frameBuffer.getColorBufferTexture();
+        Texture texture = ScreenUtils.getFrameBufferTexture(0, 0, 1024, 512).getTexture();
         frameBuffer.end();
         //frameBuffer.dispose();
         return texture;

@@ -1,5 +1,8 @@
 package ru.rdude.rpg.game.logic.map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.utils.Functions;
 
 import java.util.HashMap;
@@ -9,7 +12,13 @@ import java.util.Set;
 
 public class GameMap {
 
+    @JsonProperty
     public final long guid;
+
+    private String name = "";
+
+    @JsonProperty
+    @JsonManagedReference
     private final Cell[][] map;
 
     public GameMap(int width, int height) {
@@ -22,7 +31,17 @@ public class GameMap {
         guid = Functions.generateGuid();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @JsonIgnore
     public int getWidth() { return map.length; }
+    @JsonIgnore
     public int getHeight() { return map[0].length; }
 
     public Cell cell(int x, int y) {

@@ -1,9 +1,13 @@
 package ru.rdude.rpg.game.logic.map;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.enums.WaterDepth;
 import ru.rdude.rpg.game.logic.map.objects.MapObject;
+import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.utils.aStar.AStarNode;
 
 import java.util.ArrayList;
@@ -14,14 +18,12 @@ import java.util.stream.Collectors;
 
 public class Cell implements AStarNode {
 
-    private static long count = 0;
+    @JsonBackReference
     private GameMap gameMap;
     private long id;
 
     private int x;
     private int y;
-
-    private Set<Cell> connectedByRoads;
 
     private Biom biom;
     private WaterDepth waterDepth;
@@ -31,11 +33,12 @@ public class Cell implements AStarNode {
 
     private int lvl = 1;
 
-    public Cell(int x, int y, GameMap map) {
+    @JsonCreator
+    public Cell(@JsonProperty("x") int x, @JsonProperty("y") int y, GameMap map) {
         this.x = x;
         this.y = y;
         this.gameMap = map;
-        this.id = count++;
+        this.id = Functions.generateGuid();
     }
 
 
@@ -116,14 +119,6 @@ public class Cell implements AStarNode {
 
     public void setLvl(int lvl) {
         this.lvl = lvl;
-    }
-
-    public boolean isConnectedByRoadWith(Cell cell) {
-        return connectedByRoads.contains(cell);
-    }
-
-    public Set<Cell> getConnectedByRoads() {
-        return connectedByRoads;
     }
 
     // from which side of cell another cell locates
