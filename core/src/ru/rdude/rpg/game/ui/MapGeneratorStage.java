@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -20,7 +21,7 @@ import ru.rdude.rpg.game.mapVisual.VisualConstants;
 
 public class MapGeneratorStage extends Stage implements MapGenerationObserver {
 
-    private Texture mapTexture;
+    private Pixmap pixmap;
     private final Image mapImage = new Image(new SpriteDrawable(new Sprite(MapTilesFactory.getEmpty().getTextureRegion())));
     private final Image mapHighlightsImage = new Image(new SpriteDrawable(new Sprite(MapTilesFactory.getEmpty().getTextureRegion())));
 
@@ -184,8 +185,8 @@ public class MapGeneratorStage extends Stage implements MapGenerationObserver {
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (gameMap != null && mapTexture != null) {
-                    GameMapFileSaver.save(gameMap, mapTexture, nameField.getText());
+                if (gameMap != null && pixmap != null) {
+                    GameMapFileSaver.save(gameMap, pixmap, nameField.getText());
                 }
             }
         });
@@ -294,7 +295,8 @@ public class MapGeneratorStage extends Stage implements MapGenerationObserver {
 
             SmallMapVisual smallMapVisual = new SmallMapVisual(camera, gameMap);
 
-            mapTexture = smallMapVisual.getMapTexture();
+            Texture mapTexture = smallMapVisual.getMapTexture();
+            pixmap = smallMapVisual.getPixmap();
             ((SpriteDrawable) mapImage.getDrawable()).getSprite().setRegion(mapTexture);
             ((SpriteDrawable) mapHighlightsImage.getDrawable()).getSprite().setRegion(smallMapVisual.getRoadsAndObjectsTexture());
         }

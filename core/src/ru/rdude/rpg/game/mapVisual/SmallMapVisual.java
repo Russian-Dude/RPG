@@ -3,7 +3,6 @@ package ru.rdude.rpg.game.mapVisual;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.maps.tiled.renderers.HexagonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
-import javafx.scene.text.Text;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.GameMap;
 
@@ -72,11 +70,25 @@ public class SmallMapVisual extends Actor implements Disposable {
         camera.zoom = 0.935f;
         renderer.setView(camera);
         renderer.render();
-        //Texture texture = frameBuffer.getColorBufferTexture();
-        Texture texture = ScreenUtils.getFrameBufferTexture(0, 0, 1024, 512).getTexture();
+        Texture texture = frameBuffer.getColorBufferTexture();
         frameBuffer.end();
         //frameBuffer.dispose();
         return texture;
+    }
+
+    public Pixmap getPixmap() {
+        voidLayer.setVisible(false);
+        highlightLayer.setVisible(false);
+        mainLayer.setVisible(true);
+        FrameBuffer frameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, 1024, 512, false);
+        frameBuffer.begin();
+        camera.zoom = 0.935f;
+        renderer.setView(camera);
+        renderer.render();
+        final Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, 1024, 512);
+        frameBuffer.end();
+        //frameBuffer.dispose();
+        return pixmap;
     }
 
     public Texture getRoadsAndObjectsTexture() {
