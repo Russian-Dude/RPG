@@ -8,6 +8,7 @@ import ru.rdude.rpg.game.logic.map.aStarImpl.MapRiverScorer;
 import ru.rdude.rpg.game.logic.map.aStarImpl.MapRoadScorer;
 import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.logic.map.objects.Dungeon;
+import ru.rdude.rpg.game.logic.map.objects.MapObject;
 import ru.rdude.rpg.game.logic.map.objects.MapObjectRoadAvailability;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.utils.TimeCounter;
@@ -711,6 +712,18 @@ public class Generator {
             cities.add(city);
             mapObjectsPoints.add(point);
         }
+
+        // create start point
+        Point startPoint = mapObjectsPoints.stream()
+                .map(map::cell)
+                .filter(cell -> cell.getObject() instanceof City)
+                .flatMap(cell -> cell.getAroundCells(1).stream())
+                .filter(cell -> !cell.getBiom().equals(Biom.WATER))
+                .map(Cell::point)
+                .collect(randomCollector());
+
+        map.setStartPoint(startPoint);
+
         notifySubscribers(GenerationProcess.CITIES_CREATION, citiesAmount, citiesAmount);
     }
 

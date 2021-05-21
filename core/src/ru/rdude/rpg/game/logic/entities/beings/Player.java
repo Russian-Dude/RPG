@@ -12,6 +12,8 @@ import java.util.HashSet;
 
 public class Player extends Being {
 
+    private String name;
+
     public Player() {
         super(new BeingDataZglushka().beingData);
         stats = new Stats(true);
@@ -38,6 +40,10 @@ public class Player extends Being {
 
     @Override
     public String getName() {
-        return "Default player name";
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name.isBlank() ? "Default Player Name" : name;
     }
 }

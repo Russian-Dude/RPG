@@ -1,14 +1,8 @@
 package ru.rdude.rpg.game.logic.map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.utils.Functions;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class GameMap {
 
@@ -18,8 +12,18 @@ public class GameMap {
     private String name = "";
 
     @JsonProperty
-    @JsonManagedReference
     private final Cell[][] map;
+    private Point startPoint;
+
+    public GameMap(@JsonProperty("guid") long guid, @JsonProperty("map") Cell[][] map) {
+        this.guid = guid;
+        this.map = map;
+        for (Cell[] cx : map) {
+            for (Cell cy : cx) {
+                cy.setGameMap(this);
+            }
+        }
+    }
 
     public GameMap(int width, int height) {
         map = new Cell[width][height];
@@ -37,6 +41,14 @@ public class GameMap {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Point getStartPoint() {
+        return startPoint;
+    }
+
+    public void setStartPoint(Point startPoint) {
+        this.startPoint = startPoint;
     }
 
     @JsonIgnore

@@ -3,15 +3,14 @@ package ru.rdude.rpg.game.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.utils.Align;
-import ru.rdude.rpg.game.logic.entities.beings.Player;
 
 public class PlayersVisualBottom extends HorizontalGroup {
 
-    public PlayersVisualBottom(Player... players) {
+    public PlayersVisualBottom(PlayerVisual... playersVisual) {
         space(60);
         align(Align.center);
-        for (Player player : players) {
-            addActor(new PlayerVisual(player));
+        for (PlayerVisual player : playersVisual) {
+            addActor(player);
         }
         setWidth(Gdx.graphics.getWidth());
         setHeight(getPrefHeight());

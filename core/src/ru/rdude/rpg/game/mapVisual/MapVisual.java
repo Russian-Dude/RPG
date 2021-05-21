@@ -127,14 +127,6 @@ public class MapVisual extends Actor implements Disposable {
 
         renderer = new HexagonalTiledMapRendererWithObjectsLayer(map);
         this.setOrigin(0f, 0f);
-
-        // test
-        // TODO: 15.04.2021 remove test
-        for (int x = 0; x < gameMap.getWidth(); x++) {
-            for (int y = 0; y < gameMap.getHeight(); y++) {
-                setVoidOnCell(gameMap.cell(x, y), false);
-            }
-        }
     }
 
     // to let relief overlap void for better picture, void and relief is on the same layer.

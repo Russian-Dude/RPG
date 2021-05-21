@@ -1,7 +1,17 @@
 package ru.rdude.rpg.game.logic.map.objects;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import ru.rdude.rpg.game.logic.map.CellSide;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Dungeon.class, name = "Dungeon"),
+        @JsonSubTypes.Type(value = City.class, name = "City")
+})
 public abstract class MapObject {
 
     private long id;

@@ -15,19 +15,23 @@ import java.util.Set;
 public class Map extends GameStateBase {
 
     private final GameMap gameMap;
-    private final MapStage mapStage;
+    private MapStage mapStage;
     private final HashMap<Cell, CellProperties> cellProperties = new HashMap();
     private Cell playerPosition;
     private Set<PlaceObserver> placePositionSubscribers = new HashSet<>();
 
     public Map(GameMap gameMap) {
         this.gameMap = gameMap;
-        this.mapStage = new MapStage(this);
         for (int x = 0; x < gameMap.getWidth(); x++) {
             for (int y = 0; y < gameMap.getHeight(); y++) {
                 cellProperties.put(gameMap.cell(x, y), new CellProperties(gameMap.cell(x, y)));
             }
         }
+    }
+
+    public MapStage createStage() {
+        this.mapStage = new MapStage(this);
+        return this.mapStage;
     }
 
     public GameMap getGameMap() {
@@ -54,6 +58,11 @@ public class Map extends GameStateBase {
         notifySubscribers(cellProperties.get(oldPosition), cellProperties.get(playerPosition));
         Game.getCurrentGame().getTimeManager()
                 .increaseTime(TimeForMovingCalculator.calculate(cellProperties.get(oldPosition), cellProperties.get(playerPosition)));
+    }
+
+    public void placePlayerOnStartPosition() {
+        this.playerPosition = gameMap.cell(gameMap.getStartPoint());
+        playerPosition.getArea(2, true).forEach(cell -> cellProperties.get(cell).setVisible(true));
     }
 
     public boolean cellHasMonster(Cell cell) {

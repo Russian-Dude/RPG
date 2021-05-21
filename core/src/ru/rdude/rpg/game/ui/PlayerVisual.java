@@ -22,34 +22,36 @@ import static ru.rdude.rpg.game.ui.UiData.DEFAULT_SKIN;
 
 public class PlayerVisual extends VerticalGroup implements GameStateObserver {
 
-    private static List<PlayerVisual> playerVisualList = new ArrayList<>();
+    private final static List<PlayerVisual> playerVisualList = new ArrayList<>();
 
-    private Player player;
+    private final Player player;
 
-    private BackpackWindow backpackWindow;
-    private EquipmentWindow equipmentWindow;
+    private final BackpackWindow backpackWindow;
+    private final EquipmentWindow equipmentWindow;
 
-    private StatsWindow statsWindow;
+    private final StatsWindow statsWindow;
 
-    private PlayerAvatar avatar;
-    private HpBar hpBar;
-    private StmBar stmBar;
-    private Button attack;
-    private Button spells;
-    private Button items;
-    private HorizontalGroup buttons;
+    private final PlayerAvatar avatar;
+    private final HpBar hpBar;
+    private final StmBar stmBar;
+    private final Button attack;
+    private final Button spells;
+    private final Button items;
+    private final HorizontalGroup buttons;
+    private final Label nameLabel;
 
-    public PlayerVisual(Player player) {
+    public PlayerVisual(Player player, PlayerAvatar avatar) {
         Game.getCurrentGame().getGameStateHolder().subscribe(this);
         playerVisualList.add(this);
         this.player = player;
-        avatar = new PlayerAvatar();
+        this.avatar = avatar;
         hpBar = new HpBar(player);
         stmBar = new StmBar(player);
         buttons = new HorizontalGroup();
         attack = new Button(DEFAULT_SKIN, "attack");
         items = new Button(DEFAULT_SKIN, "items");
         spells = new Button(DEFAULT_SKIN, "spells");
+        nameLabel = new Label(player.getName(), DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
 
         // items
         backpackWindow = new BackpackWindow(player);
@@ -106,6 +108,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
         addActor(topGroup);
         addActor(hpBar);
         addActor(stmBar);
+        addActor(nameLabel);
         setWidth(getPrefWidth());
         setHeight(getPrefHeight());
     }

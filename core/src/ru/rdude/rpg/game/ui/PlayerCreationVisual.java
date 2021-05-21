@@ -1,6 +1,5 @@
 package ru.rdude.rpg.game.ui;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -49,6 +48,7 @@ public class PlayerCreationVisual extends Table {
         leftVerticalGroup.space(15);
         name = new TextField("", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
         name.setMessageText("enter name here");
+        name.setMaxLength("Default player name".length());
         avatar = new PlayerAvatar();
         randomizeButton = new TextButton("randomize", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
         name.setAlignment(Align.center);
@@ -170,5 +170,21 @@ public class PlayerCreationVisual extends Table {
         eyesColorSelector.selectRandom();
         hairColorSelector.selectRandom();
         faceColorSelector.selectRandom();
+    }
+
+    public void defaultAvatarSize() {
+        avatar.setSize(defaultAvatarWidth, defaultAvatarHeight);
+    }
+
+    public PlayerAvatar getAvatar() {
+        return avatar;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public TextField getNameTextField() {
+        return name;
     }
 }

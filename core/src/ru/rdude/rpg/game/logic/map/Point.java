@@ -1,12 +1,19 @@
 package ru.rdude.rpg.game.logic.map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public class Point {
 
+    @JsonProperty
     int x;
+    @JsonProperty
     int y;
-    public Point(int x, int y) {
+
+    @JsonCreator
+    public Point(@JsonProperty("x") int x, @JsonProperty("y") int y) {
         this.x = x;
         this.y = y;
     }

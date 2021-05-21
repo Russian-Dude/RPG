@@ -4,6 +4,11 @@ import com.badlogic.gdx.math.RandomXS128;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Functions {
@@ -90,6 +95,10 @@ public class Functions {
         throw new IllegalArgumentException("this exception must be unreachable");
     }
 
+    public static <T> RandomCollector<T> randomCollector() {
+        return new RandomCollector<>();
+    }
+
     public static long generateGuid() {
         try {
             long date = new Date().getTime();
@@ -110,43 +119,35 @@ public class Functions {
         return string.substring(Math.max(string.lastIndexOf("/"), string.lastIndexOf("\\")) + 1);
     }
 
-    /*
-    public static class Visual {
+    public static class RandomCollector<T> implements Collector<T, List<T>, T> {
 
-        public static double getGlobalX (Node node) {
-            return node.localToScene(node.getLayoutX() + node.getTranslateX(),
-                    node.getLayoutY() + node.getTranslateY()).getX();
+        @Override
+        public Supplier<List<T>> supplier() {
+            return ArrayList::new;
         }
 
-        public static double getGlobalY (Node node) {
-            return node.localToScene(node.getLayoutX() + node.getTranslateX(),
-                    node.getLayoutY() + node.getTranslateY()).getY();
+        @Override
+        public BiConsumer<List<T>, T> accumulator() {
+            return List::add;
         }
 
-        public static void setGlobalX (Node node, double value) {
-            node.relocate(value, getGlobalY(node));
+        @Override
+        public BinaryOperator<List<T>> combiner() {
+            return (a, b) -> {
+                a.addAll(b);
+                return a;
+            };
         }
 
-        public static void setGlobalX (Node node, Node moveTo) {
-            setGlobalX(node, getGlobalX(moveTo));
+        @Override
+        public Function<List<T>, T> finisher() {
+            return Functions::random;
         }
 
-        public static void setGlobalY (Node node, double value) {
-            node.relocate(getGlobalY(node), value);
+        @Override
+        public Set<Characteristics> characteristics() {
+            return Set.of(Characteristics.UNORDERED);
         }
 
-        public static void setGlobalY (Node node, Node moveTo) {
-            setGlobalY(node, getGlobalY(moveTo));
-        }
-
-        public static void setGlobalXY (Node node, double X, double Y) {
-            node.relocate(X, Y);
-        }
-
-        public static void setGlobalXY (Node node, Node moveTo) {
-            setGlobalXY(node, getGlobalX(moveTo), getGlobalY(moveTo));
-        }
     }
-
-     */
 }

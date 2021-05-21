@@ -61,6 +61,7 @@ public abstract class Being extends Entity implements BuffObserver {
 
     public abstract boolean canParry();
 
+    public abstract String getName();
 
     // return true if receive damage
     public boolean receive(Damage damage) {

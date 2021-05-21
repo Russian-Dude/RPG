@@ -14,19 +14,25 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import ru.rdude.rpg.game.logic.data.io.GameMapFileSaver;
+import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.map.*;
 import ru.rdude.rpg.game.mapVisual.MapTilesFactory;
 import ru.rdude.rpg.game.mapVisual.SmallMapVisual;
 import ru.rdude.rpg.game.mapVisual.VisualConstants;
+import ru.rdude.rpg.game.utils.Functions;
 
 public class MapGeneratorStage extends Stage implements MapGenerationObserver {
+
+    public static MapGeneratorStage instance = new MapGeneratorStage();
 
     private Pixmap pixmap;
     private final Image mapImage = new Image(new SpriteDrawable(new Sprite(MapTilesFactory.getEmpty().getTextureRegion())));
     private final Image mapHighlightsImage = new Image(new SpriteDrawable(new Sprite(MapTilesFactory.getEmpty().getTextureRegion())));
 
-    Button generateButton = new TextButton("Generate", UiData.DEFAULT_SKIN, UiData.YES_BUTTON_STYLE);
-    Button cancelButton = new TextButton(" Cancel ", UiData.DEFAULT_SKIN, UiData.NO_BUTTON_STYLE);
+    private final Button backButton = new TextButton("<< Back", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+
+    private final Button generateButton = new TextButton("Generate", UiData.DEFAULT_SKIN, UiData.YES_BUTTON_STYLE);
+    private final Button cancelButton = new TextButton(" Cancel ", UiData.DEFAULT_SKIN, UiData.NO_BUTTON_STYLE);
 
     private final ProgressBar mainProgressBar = new ProgressBar(0f, 12f, 1f, false, UiData.DEFAULT_SKIN);
     private final ProgressBar currentProgressBar = new ProgressBar(0f, 10f, 0.1f, false, UiData.DEFAULT_SKIN);
@@ -171,6 +177,17 @@ public class MapGeneratorStage extends Stage implements MapGenerationObserver {
         bottomHorizontalGroup.align(Align.left);
         bottomHorizontalGroup.space(20f);
 
+        // back button
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (!backButton.isDisabled()) {
+                    Game.getGameVisual().backMenuStage();
+                }
+            }
+        });
+        bottomHorizontalGroup.addActor(backButton);
+
         // show roads
         bottomHorizontalGroup.addActor(new Label("Show roads", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE));
         bottomHorizontalGroup.addActor(showRoadsCheckBox);
@@ -186,7 +203,9 @@ public class MapGeneratorStage extends Stage implements MapGenerationObserver {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (gameMap != null && pixmap != null) {
-                    GameMapFileSaver.save(gameMap, pixmap, nameField.getText());
+                    String name = nameField.getText().isBlank() ? "Unnamed map " + Functions.generateGuid() : nameField.getText();
+                    gameMap.setName(name);
+                    GameMapFileSaver.save(gameMap, pixmap, name);
                 }
             }
         });
@@ -202,6 +221,7 @@ public class MapGeneratorStage extends Stage implements MapGenerationObserver {
             public void clicked(InputEvent event, float x, float y) {
                 cancelButton.setVisible(true);
                 generateButton.setVisible(false);
+                backButton.setDisabled(true);
                 generateMap();
             }
         });
@@ -213,6 +233,7 @@ public class MapGeneratorStage extends Stage implements MapGenerationObserver {
                 if (currentGenerator != null) {
                     currentGenerator.interrupt();
                 }
+                backButton.setDisabled(false);
             }
         });
         controls.add(generateCancelGroup).align(Align.bottomLeft);
@@ -262,6 +283,7 @@ public class MapGeneratorStage extends Stage implements MapGenerationObserver {
             progressTable.setVisible(false);
             cancelButton.setVisible(false);
             generateButton.setVisible(true);
+            backButton.setDisabled(false);
         }
         else if (generationProcess != process) {
             if (generationProcess != GenerationProcess.START) {

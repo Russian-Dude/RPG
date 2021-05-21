@@ -11,7 +11,7 @@ public class UIStage extends Stage {
 
     private final OrthographicCamera camera = new OrthographicCamera();
 
-    public UIStage() {
+    public UIStage(PlayerVisual... playerVisuals) {
         super(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
         // camera
@@ -22,10 +22,7 @@ public class UIStage extends Stage {
         getViewport().setCamera(camera);
 
         // ui elements
-        // TODO: 20.04.2021 remove hardcoding players
-        Player p = new Player();
-        p.stats().lvl().increase(5);
-        addActor(new PlayersVisualBottom(new Player(), new Player(), new Player(), p));
+        addActor(new PlayersVisualBottom(playerVisuals));
         LoggerVisual loggerVisual = new LoggerVisual();
         addActor(loggerVisual);
         TimeAndPlaceUi timeAndPlaceUi = new TimeAndPlaceUi();

@@ -34,7 +34,7 @@ public final class GameMapFileSaver {
 
         FileHandle imageTempFile = Gdx.files.local("temp\\map_images\\current_saving.png");
         Path imageTempPath = imageTempFile.file().toPath();
-        FileHandle mapFile = Gdx.files.local("map\\" + name + ".map");
+        FileHandle mapFile = Gdx.files.local("maps\\" + name + ".map");
         PixmapIO.writePNG(imageTempFile, pixmap);
 
         try (OutputStream outputStream = Files.newOutputStream(mapFile.file().toPath());

@@ -5,6 +5,8 @@ import ru.rdude.rpg.game.logic.GameLogger;
 import ru.rdude.rpg.game.logic.data.io.GameJsonSerializer;
 import ru.rdude.rpg.game.logic.data.io.ModuleFileLoader;
 import ru.rdude.rpg.game.logic.entities.beings.MonsterFactory;
+import ru.rdude.rpg.game.logic.entities.beings.Party;
+import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
@@ -28,6 +30,7 @@ public class Game {
     private SkillUser skillUser;
     private final GameStateHolder gameStateHolder;
     private Map gameMap;
+    private Party currentPlayers;
     private final AvatarCreator avatarCreator;
     private final ItemImageFactory itemImageFactory;
     private final MonsterFactory monsterFactory;
@@ -78,6 +81,14 @@ public class Game {
 
     public void setGameMap(Map gameMap) {
         this.gameMap = gameMap;
+    }
+
+    public Party getCurrentPlayers() {
+        return currentPlayers;
+    }
+
+    public void setCurrentPlayers(Party currentPlayers) {
+        this.currentPlayers = currentPlayers;
     }
 
     public GameLogger getGameLogger() {

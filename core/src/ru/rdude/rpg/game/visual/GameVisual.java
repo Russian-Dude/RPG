@@ -6,13 +6,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import ru.rdude.rpg.game.mapVisual.MapRenderer;
 import ru.rdude.rpg.game.ui.UIStage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class GameVisual {
 
-    private List<Stage> nonUiStages = new ArrayList<>();
+    private final List<Stage> nonUiStages = new ArrayList<>();
     private UIStage ui;
+    private Stage currentMainMenuStage;
+    private final Stack<Stage> previousMainMenuStages = new Stack<>();
 
     private MapRenderer currentMapRenderer;
 
@@ -60,6 +61,29 @@ public class GameVisual {
         }
     }
 
+    public void setMenuStage(Stage stage) {
+        if (currentMainMenuStage != null) {
+            previousMainMenuStages.add(currentMainMenuStage);
+        }
+        if (!previousMainMenuStages.isEmpty()) {
+            multiplexer.removeProcessor(previousMainMenuStages.peek());
+        }
+        if (stage != null) {
+            multiplexer.addProcessor(stage);
+        }
+        currentMainMenuStage = stage;
+    }
+
+    public void backMenuStage() {
+        if (previousMainMenuStages.isEmpty()) {
+            return;
+        }
+        multiplexer.removeProcessor(currentMainMenuStage);
+        Stage temp = previousMainMenuStages.pop();
+        multiplexer.addProcessor(temp);
+        currentMainMenuStage = temp;
+    }
+
     public MapRenderer getCurrentMapRenderer() {
         return currentMapRenderer;
     }
@@ -69,13 +93,19 @@ public class GameVisual {
     }
 
     public void draw() {
-        for (Stage stage : nonUiStages) {
-            stage.draw();
-            stage.act(Gdx.graphics.getDeltaTime());
+        if (currentMainMenuStage != null) {
+            currentMainMenuStage.draw();
+            currentMainMenuStage.act(Gdx.graphics.getDeltaTime());
         }
-        if (ui != null) {
-            ui.draw();
-            ui.act(Gdx.graphics.getDeltaTime());
+        else {
+            for (Stage stage : nonUiStages) {
+                stage.draw();
+                stage.act(Gdx.graphics.getDeltaTime());
+            }
+            if (ui != null) {
+                ui.draw();
+                ui.act(Gdx.graphics.getDeltaTime());
+            }
         }
     }
 }

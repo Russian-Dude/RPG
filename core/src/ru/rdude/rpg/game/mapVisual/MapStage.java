@@ -56,10 +56,12 @@ public class MapStage extends Stage {
         mapVisual = new MapVisual(camera, gameMap);
         addActor(mapVisual);
         // players on map
-        players = new PlayersOnMap(gameMap.cell(0, 0));
+        players = new PlayersOnMap(map.getPlayerPosition());
         addActor(players);
         // path finder
         pathFinder = new MapPathFinder(gameMap, new MapMovingScorer(map), (c1, c2) -> false);
+        playerChangedPosition(map.getPlayerPosition(), map.getPlayerPosition());
+        camera.position.set(players.getX(), players.getY(), 0);
     }
 
     @Override

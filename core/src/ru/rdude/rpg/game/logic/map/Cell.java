@@ -1,8 +1,6 @@
 package ru.rdude.rpg.game.logic.map;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.enums.WaterDepth;
@@ -18,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class Cell implements AStarNode {
 
-    @JsonBackReference
+    @JsonIgnore
     private GameMap gameMap;
     private long id;
 
@@ -33,14 +31,23 @@ public class Cell implements AStarNode {
 
     private int lvl = 1;
 
-    @JsonCreator
-    public Cell(@JsonProperty("x") int x, @JsonProperty("y") int y, GameMap map) {
+    private Cell() {
+    }
+
+    public Cell(int x, int y, GameMap map) {
         this.x = x;
         this.y = y;
         this.gameMap = map;
         this.id = Functions.generateGuid();
     }
 
+    public GameMap getGameMap() {
+        return gameMap;
+    }
+
+    public void setGameMap(GameMap gameMap) {
+        this.gameMap = gameMap;
+    }
 
     public Biom getBiom() {
         return biom;

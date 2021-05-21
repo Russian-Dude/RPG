@@ -225,6 +225,8 @@ com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
 com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 	default: {
 		background: Window_Transparent_9p
+		vScroll: Slider_Background_Vertical_9p
+		vScrollKnob: Slider_Knob
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
@@ -411,6 +413,13 @@ com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
 	simple: {
 		label: simple
 		background: Window_Transparent_9p
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle: {
+	default: {
+		plus: Slider_Knob
+		minus: Slider_Knob
+		selection: Window_Transparent_9p
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {

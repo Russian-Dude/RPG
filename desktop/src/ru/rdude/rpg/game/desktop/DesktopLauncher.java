@@ -7,8 +7,9 @@ import ru.rdude.rpg.game.GameApp;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.setFromDisplayMode(LwjglApplicationConfiguration.getDesktopDisplayMode());
 		new LwjglApplication(new GameApp(), config);
-		config.width = 1600;
-		config.height = 900;
+		config.forceExit = false;
+		config.fullscreen = true;
 	}
 }
