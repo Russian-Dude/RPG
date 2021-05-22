@@ -94,7 +94,7 @@ public class MapStage extends Stage {
 
     @Override
     public boolean scrolled(int amount) {
-        if (Game.getGameVisual().getUi().isHit()) {
+        if (Game.getGameVisual().isInGameMenuShown() || Game.getGameVisual().getUi().isHit()) {
             return super.scrolled(amount);
         }
         boolean res = super.scrolled(amount);
@@ -119,7 +119,7 @@ public class MapStage extends Stage {
     }
 
     private void lmbClicked() {
-        if (Game.getGameVisual().getUi().isHit()) {
+        if (Game.getGameVisual().isInGameMenuShown() || Game.getGameVisual().getUi().isHit()) {
             return;
         }
         if (players.isMoving()) {
@@ -154,21 +154,26 @@ public class MapStage extends Stage {
     }
 
     private void rmbClicked() {
+        if (Game.getGameVisual().isInGameMenuShown() || Game.getGameVisual().getUi().isHit()) {
+            return;
+        }
     }
 
     @Override
     public void act() {
         super.act();
         // camera movement
-        if (Gdx.input.getY() > Gdx.graphics.getHeight() - 25 && camera.position.y > CAM_MOVE_BORDER_BOTTOM) {
-            camera.translate(0, (Gdx.graphics.getHeight() - 25 - Gdx.input.getY()) / 2f * camera.zoom, 0);
-        } else if (Gdx.input.getY() < 25 && camera.position.y < CAM_MOVE_BORDER_TOP) {
-            camera.translate(0, (25 - Gdx.input.getY()) / 2f * camera.zoom);
-        }
-        if (Gdx.input.getX() < 25 && camera.position.x > CAM_MOVE_BORDER_LEFT) {
-            camera.translate((Gdx.input.getX() - 25) / 2f * camera.zoom, 0);
-        } else if (Gdx.input.getX() > Gdx.graphics.getWidth() - 25 && camera.position.x < CAM_MOVE_BORDER_RIGHT) {
-            camera.translate((25 - (Gdx.graphics.getWidth() - Gdx.input.getX())) / 2f * camera.zoom, 0);
+        if (!Game.getGameVisual().isInGameMenuShown()) {
+            if (Gdx.input.getY() > Gdx.graphics.getHeight() - 25 && camera.position.y > CAM_MOVE_BORDER_BOTTOM) {
+                camera.translate(0, (Gdx.graphics.getHeight() - 25 - Gdx.input.getY()) / 2f * camera.zoom, 0);
+            } else if (Gdx.input.getY() < 25 && camera.position.y < CAM_MOVE_BORDER_TOP) {
+                camera.translate(0, (25 - Gdx.input.getY()) / 2f * camera.zoom);
+            }
+            if (Gdx.input.getX() < 25 && camera.position.x > CAM_MOVE_BORDER_LEFT) {
+                camera.translate((Gdx.input.getX() - 25) / 2f * camera.zoom, 0);
+            } else if (Gdx.input.getX() > Gdx.graphics.getWidth() - 25 && camera.position.x < CAM_MOVE_BORDER_RIGHT) {
+                camera.translate((25 - (Gdx.graphics.getWidth() - Gdx.input.getX())) / 2f * camera.zoom, 0);
+            }
         }
         // moving camera with players
         if (GameSettings.isCameraFollowPlayers() && players.isMoving()) {

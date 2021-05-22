@@ -1,235 +1,250 @@
+
 faces.png
-size: 2040, 240
+size: 2048, 512
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest, Nearest
 repeat: none
 beard
   rotate: false
-  xy: 0, 0
+  xy: 124, 246
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 2
+beard
+  rotate: false
+  xy: 490, 124
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 1
 beard
   rotate: false
-  xy: 120, 0
+  xy: 734, 124
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
-  index: 2
+  index: 3
+empty
+  rotate: false
+  xy: 368, 368
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
 eyebrows
   rotate: false
-  xy: 240, 0
+  xy: 2, 2
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 1
 eyebrows
   rotate: false
-  xy: 360, 0
+  xy: 490, 246
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
-  index: 2
+  index: 3
 eyebrows
   rotate: false
-  xy: 480, 0
-  size: 120, 120
-  orig: 120, 120
-  offset: 0, 0
-  index: 3
-eyes
-  rotate: false
-  xy: 600, 0
-  size: 120, 120
-  orig: 120, 120
-  offset: 0, 0
-  index: 1
-eyes
-  rotate: false
-  xy: 720, 0
+  xy: 978, 368
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 2
 eyes
   rotate: false
-  xy: 840, 0
+  xy: 124, 124
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 4
+eyes
+  rotate: false
+  xy: 368, 246
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 1
+eyes
+  rotate: false
+  xy: 612, 246
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 3
 eyes
   rotate: false
-  xy: 960, 0
-  size: 120, 120
-  orig: 120, 120
-  offset: 0, 0
-  index: 4
-eyes_pupils
-  rotate: false
-  xy: 1080, 0
-  size: 120, 120
-  orig: 120, 120
-  offset: 0, 0
-  index: 1
-eyes_pupils
-  rotate: false
-  xy: 1200, 0
+  xy: 856, 2
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 2
 eyes_pupils
   rotate: false
-  xy: 1320, 0
+  xy: 246, 368
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
-  index: 3
+  index: 2
 eyes_pupils
   rotate: false
-  xy: 1440, 0
+  xy: 368, 124
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 4
-face_cloth
+eyes_pupils
   rotate: false
-  xy: 1560, 0
+  xy: 734, 368
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 1
-face_cloth
+eyes_pupils
   rotate: false
-  xy: 1680, 0
-  size: 120, 120
-  orig: 120, 120
-  offset: 0, 0
-  index: 2
-face_cloth
-  rotate: false
-  xy: 1800, 0
+  xy: 734, 2
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 3
 face_cloth
   rotate: false
-  xy: 1920, 0
+  xy: 2, 368
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 3
+face_cloth
+  rotate: false
+  xy: 490, 368
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 2
+face_cloth
+  rotate: false
+  xy: 490, 2
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 4
-face_skin
+face_cloth
   rotate: false
-  xy: 0, 120
+  xy: 612, 2
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 1
 face_skin
   rotate: false
-  xy: 120, 120
+  xy: 124, 2
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 2
 face_skin
   rotate: false
-  xy: 240, 120
+  xy: 368, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 4
+face_skin
+  rotate: false
+  xy: 612, 124
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 1
+face_skin
+  rotate: false
+  xy: 978, 246
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 3
-face_skin
+hair
   rotate: false
-  xy: 360, 120
+  xy: 2, 246
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 4
 hair
   rotate: false
-  xy: 480, 120
+  xy: 2, 124
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 1
 hair
   rotate: false
-  xy: 600, 120
-  size: 120, 120
-  orig: 120, 120
-  offset: 0, 0
-  index: 2
-hair
-  rotate: false
-  xy: 720, 120
+  xy: 246, 2
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 3
 hair
   rotate: false
-  xy: 840, 120
-  size: 120, 120
-  orig: 120, 120
-  offset: 0, 0
-  index: 4
-hair
-  rotate: false
-  xy: 960, 120
+  xy: 734, 246
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 5
-mouth
+hair
   rotate: false
-  xy: 1080, 120
-  size: 120, 120
-  orig: 120, 120
-  offset: 0, 0
-  index: 1
-mouth
-  rotate: false
-  xy: 1200, 120
+  xy: 856, 246
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 2
 mouth
   rotate: false
-  xy: 1320, 120
-  size: 120, 120
-  orig: 120, 120
-  offset: 0, 0
-  index: 3
-nose
-  rotate: false
-  xy: 1440, 120
+  xy: 246, 246
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 1
-nose
+mouth
   rotate: false
-  xy: 1560, 120
+  xy: 612, 368
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 3
+mouth
+  rotate: false
+  xy: 856, 124
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 2
 nose
   rotate: false
-  xy: 1680, 120
+  xy: 124, 368
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 1
+nose
+  rotate: false
+  xy: 246, 124
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: 3
 nose
   rotate: false
-  xy: 1800, 120
+  xy: 856, 368
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: 2
+nose
+  rotate: false
+  xy: 1100, 368
   size: 120, 120
   orig: 120, 120
   offset: 0, 0

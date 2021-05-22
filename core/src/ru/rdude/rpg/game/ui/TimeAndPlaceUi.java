@@ -4,9 +4,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
+import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.map.PlaceObserver;
+import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.logic.time.TimeManager;
 import ru.rdude.rpg.game.logic.time.TimeObserver;
 
@@ -47,6 +49,7 @@ public class TimeAndPlaceUi extends HorizontalGroup implements TimeObserver, Pla
         space(5);
         addActor(timeTable);
         addActor(placeTable);
+        update(Game.getCurrentGame().getTimeManager());
     }
 
     @Override
@@ -59,7 +62,18 @@ public class TimeAndPlaceUi extends HorizontalGroup implements TimeObserver, Pla
 
     @Override
     public void update(Map.CellProperties oldPosition, Map.CellProperties newPosition) {
-        biom.setText(newPosition.getCell().getBiom().toString());
-        relief.setText(newPosition.getCell().getRelief().toString());
+        if (newPosition.getCell().getObject() instanceof City) {
+            biom.setText("CITY");
+            relief.setText("");
+        }
+        else {
+            biom.setText(newPosition.getCell().getBiom().toString());
+            if (newPosition.getCell().getBiom().equals(Biom.WATER)) {
+                relief.setText(newPosition.getCell().getWaterDepth().name);
+            }
+            else {
+                relief.setText(newPosition.getCell().getRelief().toString());
+            }
+        }
     }
 }

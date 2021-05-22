@@ -59,6 +59,17 @@ public class MainMenuStage extends Stage {
         mainTable.add(mapGeneratorButton);
         mainTable.row();
 
+        // settings
+        Button settingsButton = new TextButton("Settings", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+        settingsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Game.getGameVisual().setMenuStage(SettingsStage.getInstance());
+            }
+        });
+        mainTable.add(settingsButton).pad(25f);
+        mainTable.row();
+
         // exit game button
         Button exitButton = new TextButton("Exit game", UiData.DEFAULT_SKIN, UiData.NO_BUTTON_STYLE);
         exitButton.addListener(new ClickListener() {
@@ -68,7 +79,7 @@ public class MainMenuStage extends Stage {
 
             }
         });
-        mainTable.add(exitButton).pad(25f);
+        mainTable.add(exitButton);
         mainTable.row();
 
         mainTable.pack();

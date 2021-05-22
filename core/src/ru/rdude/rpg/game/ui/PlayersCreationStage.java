@@ -18,12 +18,11 @@ import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PlayersCreationStage extends Stage {
 
-    public static PlayersCreationStage instance = new PlayersCreationStage();
+    private static PlayersCreationStage instance;
     
     private final Group playerCreationTabsGroup = new VerticalGroup();
     private Tree<PlayerCreationElement, Player> playersList = new Tree<>(UiData.DEFAULT_SKIN);
@@ -70,7 +69,7 @@ public class PlayersCreationStage extends Stage {
         startGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Game.getGameVisual().setMenuStage(null);
+                Game.getGameVisual().clearMainMenus();
                 Map map = Game.getCurrentGame().getGameMap();
                 map.placePlayerOnStartPosition();
                 List<PlayerVisual> playerVisuals = new ArrayList<>();
@@ -110,6 +109,13 @@ public class PlayersCreationStage extends Stage {
         mainTable.setY((Gdx.graphics.getHeight() - mainTable.getHeight()) / 2);
         mainTable.setX((Gdx.graphics.getWidth() - mainTable.getWidth()) / 2);
         addPlayer();
+    }
+
+    public static PlayersCreationStage getInstance() {
+        if (Game.getGameVisual().isJustOpenedMainMenu()) {
+            instance = new PlayersCreationStage();
+        }
+        return instance;
     }
 
     private void addPlayer() {

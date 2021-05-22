@@ -26,7 +26,6 @@ public class MapRenderer extends HexagonalTiledMapRenderer {
     public MapRenderer(TiledMap map, int width, int height) {
         super(map);
         spriteObjects = new MapSpriteObject[width][height];
-        Game.getGameVisual().setCurrentMapRenderer(this);
     }
 
 

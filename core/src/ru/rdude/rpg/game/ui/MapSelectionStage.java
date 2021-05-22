@@ -70,7 +70,7 @@ public class MapSelectionStage extends Stage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Game.getCurrentGame().setGameMap(new Map(GameMapFileLoader.load(Gdx.files.internal("maps\\" + mapList.getSelected().text + ".map"))));
-                Game.getGameVisual().setMenuStage(PlayersCreationStage.instance);
+                Game.getGameVisual().setMenuStage(PlayersCreationStage.getInstance());
             }
         });
         bottomButtons.addActor(backButton);

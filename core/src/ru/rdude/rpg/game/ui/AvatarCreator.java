@@ -1,8 +1,6 @@
 package ru.rdude.rpg.game.ui;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +34,12 @@ public class AvatarCreator {
 
         textureAtlas.getRegions().forEach(atlasRegion -> {
             String name = atlasRegion.name;
-            if (name.startsWith("face_skin")) {
+            if (name.contains("empty")) {
+                eyeBrows.add(atlasRegion);
+                beards.add(atlasRegion);
+                hairs.add(atlasRegion);
+            }
+            else if (name.startsWith("face_skin")) {
                 faces.add(atlasRegion);
             }
             else if (name.startsWith("face_cloth")) {
