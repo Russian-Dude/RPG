@@ -1,11 +1,14 @@
 package ru.rdude.rpg.game.logic.entities.beings;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class Party {
 
+    @JsonProperty
     private LinkedList<Being> beings;
 
     public Party() {

@@ -50,6 +50,7 @@ public class InGameMenuStage extends Stage {
                 Game.getGameVisual().backMenuStage();
                 Game.getGameVisual().setJustOpenedMainMenu(true);
                 Game.getGameVisual().goToMainMenu();
+                Game.initNewGame();
             }
         });
 

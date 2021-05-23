@@ -15,14 +15,12 @@ import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.mapVisual.MapTilesFactory;
 
-import java.util.Arrays;
-
 public class MapSelectionStage extends Stage {
 
     private static MapSelectionStage instance = new MapSelectionStage();
 
     private final Image mapImage = new Image(new SpriteDrawable(new Sprite(MapTilesFactory.getEmpty().getTextureRegion())));
-    private List<MapSelectionElement> mapList = new List<>(UiData.DEFAULT_SKIN, "no_background_simple");
+    private List<MapInfo> mapList = new List<>(UiData.DEFAULT_SKIN, "no_background_simple");
 
     public MapSelectionStage() {
         super(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
@@ -69,7 +67,7 @@ public class MapSelectionStage extends Stage {
         selectButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Game.getCurrentGame().setGameMap(new Map(GameMapFileLoader.load(Gdx.files.internal("maps\\" + mapList.getSelected().text + ".map"))));
+                Game.getCurrentGame().setGameMap(new Map(GameMapFileLoader.load(mapList.getSelected().mapFile)));
                 Game.getGameVisual().setMenuStage(PlayersCreationStage.getInstance());
             }
         });
@@ -85,10 +83,7 @@ public class MapSelectionStage extends Stage {
     }
 
     public static MapSelectionStage getInstance() {
-        MapSelectionElement[] maps = Arrays.stream(Gdx.files.internal("maps").list(".map"))
-                .map(GameMapFileLoader::loadAsSelectionElement)
-                .toArray(MapSelectionElement[]::new);
-        instance.mapList.setItems(maps);
+        instance.mapList.setItems(Game.getMapFiles().values().toArray(MapInfo[]::new));
         if (instance.mapList.getItems().notEmpty()) {
             instance.mapList.setSelected(instance.mapList.getItems().first());
         }

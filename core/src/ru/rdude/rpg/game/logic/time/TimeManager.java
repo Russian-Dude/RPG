@@ -1,13 +1,12 @@
 package ru.rdude.rpg.game.logic.time;
-import ru.rdude.rpg.game.logic.game.Game;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class TimeManager implements TurnChangeObserver {
 
-    private Set<TimeObserver> timeObservers;
-    private Set<TimeChangeObserver> timeChangeObservers;
+    private final Set<TimeObserver> timeObservers;
+    private final Set<TimeChangeObserver> timeChangeObservers;
 
     private int minute = 0;
     private int hour = 12;
@@ -77,6 +76,13 @@ public class TimeManager implements TurnChangeObserver {
         notifySubscribers(minutes);
     }
 
+    public void setTime(int minute, int hour, int day, int month, int year) {
+        this.minute = minute;
+        this.hour = hour;
+        this.day = day;
+        this.month = month;
+        this.year = year;
+    }
 
     public void subscribe(TimeObserver observer) { timeObservers.add(observer); }
     public void subscribe(TimeChangeObserver observer) { timeChangeObservers.add(observer); }

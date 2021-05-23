@@ -9,11 +9,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import ru.rdude.rpg.game.logic.data.MonsterData;
+import ru.rdude.rpg.game.logic.data.PlayerData;
+import ru.rdude.rpg.game.logic.data.resources.PlayerResources;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Battle;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
+import ru.rdude.rpg.game.ui.colors.EyesColor;
+import ru.rdude.rpg.game.ui.colors.HairColor;
+import ru.rdude.rpg.game.ui.colors.SkinColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +45,10 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
     private final Button items;
     private final HorizontalGroup buttons;
     private final Label nameLabel;
+
+    public PlayerVisual(Player player) {
+        this(player, createAvatarFromData(((PlayerData) player.getBeingData())));
+    }
 
     public PlayerVisual(Player player, PlayerAvatar avatar) {
         Game.getCurrentGame().getGameStateHolder().subscribe(this);
@@ -111,6 +121,26 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
         addActor(nameLabel);
         setWidth(getPrefWidth());
         setHeight(getPrefHeight());
+    }
+
+    private static PlayerAvatar createAvatarFromData(PlayerData playerData) {
+        PlayerAvatar avatar = new PlayerAvatar();
+        avatar.setName(playerData.getName());
+        PlayerResources resources = (PlayerResources) playerData.getResources();
+        AvatarCreator creator = Game.getAvatarCreator();
+        avatar.setFace(creator.faces().get((int) resources.getFaceIndex()));
+        avatar.setCloth(creator.clothes().get((int) resources.getClothIndex()));
+        avatar.setMouth(creator.mouths().get((int) resources.getMouthIndex()));
+        avatar.setNose(creator.noses().get((int) resources.getNoseIndex()));
+        avatar.setEyes(creator.eyes().get((int) resources.getEyesIndex()));
+        avatar.setEyePupils(creator.eyePupils().get((int) resources.getEyePupilsIndex()));
+        avatar.setEyeBrows(creator.eyeBrows().get((int) resources.getEyeBrowsIndex()));
+        avatar.setBeard(creator.beards().get((int) resources.getBeardIndex()));
+        avatar.setHair(creator.hairs().get((int) resources.getHairIndex()));
+        avatar.setFaceColor(SkinColor.values()[(int) resources.getFaceColorIndex()].getColor());
+        avatar.setEyesColor(EyesColor.values()[(int) resources.getEyesColorIndex()].getColor());
+        avatar.setHairColor(HairColor.values()[(int) resources.getHairColorIndex()].getColor());
+        return avatar;
     }
 
     @Override

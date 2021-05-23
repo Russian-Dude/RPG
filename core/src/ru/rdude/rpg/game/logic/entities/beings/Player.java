@@ -1,6 +1,6 @@
 package ru.rdude.rpg.game.logic.entities.beings;
 
-import ru.rdude.rpg.game.logic.data.BeingDataZglushka;
+import ru.rdude.rpg.game.logic.data.PlayerData;
 import ru.rdude.rpg.game.logic.entities.states.StateHolder;
 import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.logic.enums.BeingType;
@@ -15,7 +15,7 @@ public class Player extends Being {
     private String name;
 
     public Player() {
-        super(new BeingDataZglushka().beingData);
+        super(new PlayerData());
         stats = new Stats(true);
         beingTypes = new StateHolder<>(BeingType.HUMAN);
         elements = new StateHolder<>(Element.NEUTRAL);
@@ -45,5 +45,6 @@ public class Player extends Being {
 
     public void setName(String name) {
         this.name = name.isBlank() ? "Default Player Name" : name;
+        this.beingData.setName(this.name);
     }
 }

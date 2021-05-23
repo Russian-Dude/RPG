@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import ru.rdude.rpg.game.logic.data.resources.PlayerResources;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.ui.colors.EyesColor;
@@ -64,29 +65,57 @@ public class PlayerCreationVisual extends Table {
         // face
         faceSelector.addListener((region, index) -> {
             avatar.setFace(region);
-            avatar.setCloth(Game.getCurrentGame().getAvatarCreator().clothes().get(index));
+            avatar.setCloth(Game.getAvatarCreator().clothes().get(index));
+            ((PlayerResources) player.getBeingData().getResources()).setFaceIndex(index);
+            ((PlayerResources) player.getBeingData().getResources()).setClothIndex(index);
         });
         // mouth
-        mouthSelector.addListener((region, index) -> avatar.setMouth(region));
+        mouthSelector.addListener((region, index) -> {
+            avatar.setMouth(region);
+            ((PlayerResources) player.getBeingData().getResources()).setMouthIndex(index);
+        });
         // nose
-        noseSelector.addListener((region, index) -> avatar.setNose(region));
+        noseSelector.addListener((region, index) -> {
+            avatar.setNose(region);
+            ((PlayerResources) player.getBeingData().getResources()).setNoseIndex(index);
+        });
         // eyes
         eyesSelector.addListener((region, index) -> {
             avatar.setEyes(region);
-            avatar.setEyePupils(Game.getCurrentGame().getAvatarCreator().eyePupils().get(index));
+            avatar.setEyePupils(Game.getAvatarCreator().eyePupils().get(index));
+            ((PlayerResources) player.getBeingData().getResources()).setEyesIndex(index);
+            ((PlayerResources) player.getBeingData().getResources()).setEyePupilsIndex(index);
         });
         // eyeBrows
-        eyeBrowsSelector.addListener((region, index) -> avatar.setEyeBrows(region));
+        eyeBrowsSelector.addListener((region, index) -> {
+            avatar.setEyeBrows(region);
+            ((PlayerResources) player.getBeingData().getResources()).setEyeBrowsIndex(index);
+        });
         // beard
-        beardSelector.addListener((region, index) -> avatar.setBeard(region));
+        beardSelector.addListener((region, index) -> {
+            avatar.setBeard(region);
+            ((PlayerResources) player.getBeingData().getResources()).setBeardIndex(index);
+        });
         // hair
-        hairSelector.addListener((region, index) -> avatar.setHair(region));
+        hairSelector.addListener((region, index) -> {
+            avatar.setHair(region);
+            ((PlayerResources) player.getBeingData().getResources()).setHairIndex(index);
+        });
         // faceColor
-        faceColorSelector.addListener((skinColor, index) -> avatar.setFaceColor(skinColor.getColor()));
+        faceColorSelector.addListener((skinColor, index) -> {
+            avatar.setFaceColor(skinColor.getColor());
+            ((PlayerResources) player.getBeingData().getResources()).setFaceColorIndex(index);
+        });
         // hair color
-        hairColorSelector.addListener((hairColor, index) -> avatar.setHairColor(hairColor.getColor()));
+        hairColorSelector.addListener((hairColor, index) -> {
+            avatar.setHairColor(hairColor.getColor());
+            ((PlayerResources) player.getBeingData().getResources()).setHairColorIndex(index);
+        });
         // eyes color
-        eyesColorSelector.addListener((eyesColor, index) -> avatar.setEyesColor(eyesColor.getColor()));
+        eyesColorSelector.addListener((eyesColor, index) -> {
+            avatar.setEyesColor(eyesColor.getColor());
+            ((PlayerResources) player.getBeingData().getResources()).setEyesColorIndex(index);
+        });
 
         // add
         //left vertical group

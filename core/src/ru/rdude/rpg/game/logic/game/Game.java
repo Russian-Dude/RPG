@@ -1,21 +1,30 @@
 package ru.rdude.rpg.game.logic.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import ru.rdude.rpg.game.logic.GameLogger;
 import ru.rdude.rpg.game.logic.data.io.GameJsonSerializer;
+import ru.rdude.rpg.game.logic.data.io.GameMapFileLoader;
 import ru.rdude.rpg.game.logic.data.io.ModuleFileLoader;
 import ru.rdude.rpg.game.logic.entities.beings.MonsterFactory;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
-import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.time.TimeManager;
-import ru.rdude.rpg.game.mapVisual.MapRenderer;
 import ru.rdude.rpg.game.ui.AvatarCreator;
 import ru.rdude.rpg.game.ui.ItemImageFactory;
+import ru.rdude.rpg.game.ui.MapInfo;
+import ru.rdude.rpg.game.utils.Pair;
 import ru.rdude.rpg.game.visual.GameVisual;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Game {
 
@@ -23,32 +32,35 @@ public class Game {
 
     private static final GameVisual gameVisual = new GameVisual();
 
-
-    private final DragAndDrop itemsDragAndDrop;
     private final GameLogger gameLogger;
     private TimeManager timeManager;
     private SkillUser skillUser;
     private final GameStateHolder gameStateHolder;
     private Map gameMap;
     private Party currentPlayers;
-    private final AvatarCreator avatarCreator;
-    private final ItemImageFactory itemImageFactory;
-    private final MonsterFactory monsterFactory;
+    private static final DragAndDrop itemsDragAndDrop = new DragAndDrop();
+    private static final AvatarCreator avatarCreator = new AvatarCreator();
+    private static final ItemImageFactory itemImageFactory = new ItemImageFactory();
+    private static final MonsterFactory monsterFactory = new MonsterFactory();
 
     // io
-    private ModuleFileLoader moduleFileLoader;
-    private GameJsonSerializer gameJsonSerializer;
+    private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
+    private static ModuleFileLoader moduleFileLoader = new ModuleFileLoader(gameJsonSerializer, itemImageFactory);
+    // map files by guid
+    private static java.util.Map<Long, MapInfo> mapFiles = new HashMap<>();
 
     public Game() {
-        this.itemsDragAndDrop = new DragAndDrop();
         this.gameLogger = new GameLogger();
-        this.avatarCreator = new AvatarCreator();
-        this.itemImageFactory = new ItemImageFactory();
-        this.gameJsonSerializer = new GameJsonSerializer();
-        this.moduleFileLoader = new ModuleFileLoader(gameJsonSerializer, itemImageFactory);
-        this.monsterFactory = new MonsterFactory();
         this.gameStateHolder = new GameStateHolder();
         this.timeManager = new TimeManager();
+    }
+
+    public static void initNewGame() {
+        currentGame = new Game();
+    }
+
+    public static void setCurrentGame(Game game) {
+        currentGame = game;
     }
 
     public static Game getCurrentGame() {
@@ -57,6 +69,34 @@ public class Game {
 
     public static GameVisual getGameVisual() {
         return gameVisual;
+    }
+
+    public static DragAndDrop getItemsDragAndDrop() {
+        return itemsDragAndDrop;
+    }
+
+    public static AvatarCreator getAvatarCreator() {
+        return avatarCreator;
+    }
+
+    public static ItemImageFactory getItemImageFactory() {
+        return itemImageFactory;
+    }
+
+    public static GameJsonSerializer getGameJsonSerializer() {
+        return gameJsonSerializer;
+    }
+
+    public static MonsterFactory getMonsterFactory() {
+        return monsterFactory;
+    }
+
+    public static ModuleFileLoader getModuleFileLoader() {
+        return moduleFileLoader;
+    }
+
+    public static java.util.Map<Long, MapInfo> getMapFiles() {
+        return mapFiles;
     }
 
     public TimeManager getTimeManager() {
@@ -93,29 +133,5 @@ public class Game {
 
     public GameLogger getGameLogger() {
         return gameLogger;
-    }
-
-    public DragAndDrop getItemsDragAndDrop() {
-        return itemsDragAndDrop;
-    }
-
-    public AvatarCreator getAvatarCreator() {
-        return avatarCreator;
-    }
-
-    public ItemImageFactory getItemImageFactory() {
-        return itemImageFactory;
-    }
-
-    public GameJsonSerializer getGameJsonSerializer() {
-        return gameJsonSerializer;
-    }
-
-    public MonsterFactory getMonsterFactory() {
-        return monsterFactory;
-    }
-
-    public ModuleFileLoader getModuleFileLoader() {
-        return moduleFileLoader;
     }
 }

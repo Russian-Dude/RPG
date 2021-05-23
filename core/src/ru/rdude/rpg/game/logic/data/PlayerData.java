@@ -1,0 +1,34 @@
+package ru.rdude.rpg.game.logic.data;
+
+import ru.rdude.rpg.game.logic.data.resources.PlayerResources;
+import ru.rdude.rpg.game.logic.enums.BeingType;
+import ru.rdude.rpg.game.logic.enums.Element;
+import ru.rdude.rpg.game.logic.enums.Size;
+import ru.rdude.rpg.game.utils.Functions;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class PlayerData extends BeingData {
+
+    public PlayerData() {
+        super(Functions.generateGuid());
+        Set<BeingType> beingTypes = new HashSet<>();
+        beingTypes.add(BeingType.HUMAN);
+        super.setBeingTypes(beingTypes);
+        Set<Element> elements = new HashSet<>();
+        elements.add(Element.NEUTRAL);
+        super.setElements(elements);
+        super.setSize(Size.MEDIUM);
+        super.setResources(new PlayerResources());
+    }
+
+    @Override
+    public boolean hasEntityDependency(long guid) {
+        return false;
+    }
+
+    @Override
+    public void replaceEntityDependency(long oldValue, long newValue) {
+    }
+}
