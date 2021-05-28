@@ -33,8 +33,9 @@ public class ConfirmSaveStage extends Stage {
         yesButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Game.getGameSaver().save(Game.getCurrentGame(), saveName);
-                Game.getGameVisual().closeMenus();
+                Runnable savingRunnable = () -> Game.getGameSaver().save(Game.getCurrentGame(), saveName);
+                Runnable endSaving = () -> Game.getGameVisual().closeMenus();
+                Game.getGameVisual().setMenuStage(LoadingStage.instance("Saving", savingRunnable, endSaving));
             }
         });
         horizontalGroup.space(10f);

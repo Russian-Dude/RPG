@@ -102,8 +102,9 @@ public class SaveGameStage extends Stage {
             Game.getGameVisual().setMenuStage(ConfirmSaveStage.instance(saveName));
         }
         else {
-            Game.getGameSaver().save(Game.getCurrentGame(), saveName);
-            Game.getGameVisual().closeMenus();
+            Runnable savingRunnable = () -> Game.getGameSaver().save(Game.getCurrentGame(), saveName);
+            Runnable endSaving = () -> Game.getGameVisual().closeMenus();
+            Game.getGameVisual().setMenuStage(LoadingStage.instance("Saving", savingRunnable, endSaving));
         }
     }
 

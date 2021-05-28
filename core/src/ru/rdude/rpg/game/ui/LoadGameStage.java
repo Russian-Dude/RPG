@@ -82,15 +82,19 @@ public class LoadGameStage extends Stage {
         if (saveEntry == null) {
             return;
         }
-        Game.getGameVisual().clear();
-        Game game = Game.getGameLoader().load(saveEntry.file);
-        Game.setCurrentGame(game);
-        game.getGameMap().createStage();
-        Game.getGameVisual().setUi(new UIStage(game.getCurrentPlayers().getBeings().stream()
-                .filter(being -> being instanceof Player)
-                .map(being -> new PlayerVisual((Player) being))
-                .toArray(PlayerVisual[]::new)));
-        Game.getGameVisual().addStage(Game.getCurrentGame().getGameMap().getMapStage());
+        Runnable loadingRunnable = () -> {
+            Game.getGameVisual().clear();
+            Game game = Game.getGameLoader().load(saveEntry.file);
+            Game.setCurrentGame(game);
+            game.getGameMap().createStage();
+            Game.getGameVisual().setUi(new UIStage(game.getCurrentPlayers().getBeings().stream()
+                    .filter(being -> being instanceof Player)
+                    .map(being -> new PlayerVisual((Player) being))
+                    .toArray(PlayerVisual[]::new)));
+            Game.getGameVisual().addStage(Game.getCurrentGame().getGameMap().getMapStage());
+        };
+        Runnable onEndLoading = () -> Game.getGameVisual().closeMenus();
+        Game.getGameVisual().setMenuStage(LoadingStage.instance("Loading", loadingRunnable, onEndLoading));
     }
 
     public static LoadGameStage getInstance() {

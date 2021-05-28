@@ -7,8 +7,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
-import ru.rdude.rpg.game.logic.data.resources.*;
-import ru.rdude.rpg.game.logic.enums.ResourcesType;
 import ru.rdude.rpg.game.logic.enums.StatName;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.Stats;
@@ -21,7 +19,7 @@ public class CustomObjectMapper extends ObjectMapper {
 
     public CustomObjectMapper() {
         super();
-        this.enable(SerializationFeature.INDENT_OUTPUT);
+        this.disable(SerializationFeature.INDENT_OUTPUT);
         this.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         createModules();
     }
