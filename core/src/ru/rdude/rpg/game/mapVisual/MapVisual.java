@@ -205,14 +205,14 @@ public class MapVisual extends Actor implements Disposable {
         if (freePositions.contains(CellSide.NW)
         && freePositions.contains(CellSide.NN)
         && freePositions.contains(CellSide.NE)) {
-            behindLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.NN, false);
+            behindLayerTile = MapTilesFactory.getReliefTile(cell, false, CellSide.NN, false);
         }
 
         // relief on cell bottom (top layer)
         if (freePositions.contains(CellSide.SW)
         && freePositions.contains(CellSide.SS)
         && freePositions.contains(CellSide.SE)) {
-            frontLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.SS, false);
+            frontLayerTile = MapTilesFactory.getReliefTile(cell, true, CellSide.SS, false);
         }
 
         // relief on the left
@@ -221,17 +221,17 @@ public class MapVisual extends Actor implements Disposable {
         && frontLayerTile == null
         && freePositions.contains(CellSide.NW)
         && freePositions.contains(CellSide.SW)) {
-            frontLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.SW, true);
+            frontLayerTile = MapTilesFactory.getReliefTile(cell, true, CellSide.SW, true);
         }
         // SW
         else if (frontLayerTile == null
         && freePositions.contains(CellSide.SW)) {
-            frontLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.SW, false);
+            frontLayerTile = MapTilesFactory.getReliefTile(cell, true, CellSide.SW, false);
         }
         // NW
         else if (behindLayerTile == null
         && freePositions.contains(CellSide.NW)) {
-            behindLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.NW, false);
+            behindLayerTile = MapTilesFactory.getReliefTile(cell, false, CellSide.NW, false);
         }
 
         // relief on the right
@@ -240,17 +240,17 @@ public class MapVisual extends Actor implements Disposable {
         && frontLayerTile == null
         && freePositions.contains(CellSide.NE)
         && freePositions.contains(CellSide.SE)) {
-            frontLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.SE, true);
+            frontLayerTile = MapTilesFactory.getReliefTile(cell, true, CellSide.SE, true);
         }
         // NE
         else if (behindLayerTile == null
         && freePositions.contains(CellSide.NE)) {
-            behindLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.NE, false);
+            behindLayerTile = MapTilesFactory.getReliefTile(cell, false, CellSide.NE, false);
         }
         // SE
         else if (frontLayerTile == null
         && freePositions.contains(CellSide.SE)) {
-            frontLayerTile = MapTilesFactory.getReliefTile(cell, CellSide.SE, false);
+            frontLayerTile = MapTilesFactory.getReliefTile(cell, true, CellSide.SE, false);
         }
 
         frontLayerTile = frontLayerTile == null ? MapTilesFactory.getEmpty() : frontLayerTile;

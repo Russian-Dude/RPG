@@ -1,6 +1,8 @@
 package ru.rdude.rpg.game.logic.map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.enums.WaterDepth;
@@ -31,7 +33,13 @@ public class Cell implements AStarNode {
 
     private int lvl = 1;
 
-    private Cell() {
+    private final int graphicFront;
+    private final int graphicBack;
+
+    @JsonCreator
+    private Cell(@JsonProperty("graphicTop") int graphicTop, @JsonProperty("graphicBottom") int graphicBottom) {
+        this.graphicFront = graphicTop;
+        this.graphicBack = graphicBottom;
     }
 
     public Cell(int x, int y, GameMap map) {
@@ -39,6 +47,8 @@ public class Cell implements AStarNode {
         this.y = y;
         this.gameMap = map;
         this.id = Functions.generateGuid();
+        this.graphicFront = Functions.random(1, 4);
+        this.graphicBack = Functions.random(1, 4);
     }
 
     public GameMap getGameMap() {
@@ -87,6 +97,14 @@ public class Cell implements AStarNode {
 
     public void setWaterDepth(WaterDepth waterDepth) {
         this.waterDepth = waterDepth;
+    }
+
+    public int getGraphicFront() {
+        return graphicFront;
+    }
+
+    public int getGraphicBack() {
+        return graphicBack;
     }
 
     public boolean has(CellProperty property) {

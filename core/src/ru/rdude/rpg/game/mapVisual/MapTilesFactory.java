@@ -53,13 +53,13 @@ public class MapTilesFactory {
                         + "_"
                         + cell.getRelief().name().toUpperCase()
                         + "_FULL"
-                        + Functions.random(1, 3));
+                        + cell.getGraphicFront());
         tile.setOffsetX(- 64);
         tile.setOffsetY( - 64);
         return tile;
     }
 
-    public static TiledMapTile getReliefTile(Cell cell, CellSide side, boolean isFullLeftOrRightSide) {
+    public static TiledMapTile getReliefTile(Cell cell, boolean isFront, CellSide side, boolean isFullLeftOrRightSide) {
         String sideSuffix;
         if (isFullLeftOrRightSide)
             sideSuffix = "SIDE";
@@ -73,14 +73,13 @@ public class MapTilesFactory {
                         + cell.getRelief().name().toUpperCase()
                         + "_"
                         + sideSuffix
-                        + Functions.random(1, 3),
+                        + (isFront ? cell.getGraphicFront() : cell.getGraphicBack()),
                 side);
     }
 
     public static TiledMapTile getRoadTile(Cell cell, CellSide directionFrom, CellSide directionTo) {
         String roadType;
         if (cell.getBiom() == Biom.WATER) {
-            // TODO: 19.04.2021 here must be implemented logic to use empty tile if road is pseudo-road in deep waters
             roadType = "BRIDGE";
         } else {
             roadType = "ROAD";
