@@ -1,5 +1,8 @@
 package ru.rdude.rpg.game.logic.entities.items.holders;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
@@ -13,11 +16,16 @@ import ru.rdude.rpg.game.logic.holders.SlotsHolder;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.NONE)
 public class EquipmentSlotsHolder extends SlotsHolder<Item> {
+
+    @JsonProperty("being")
+    private Being being;
 
     private Slot<Item> armor;
     private Slot<Item> boots;
@@ -30,41 +38,78 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
     private Slot<Item> jewelry1;
     private Slot<Item> jewelry2;
 
-
     public EquipmentSlotsHolder(Being being) {
+        this.being = being;
         slots = new ArrayList<>(10);
-        slots.add(new Slot<>(ItemType.ARMOR, t -> t.getItemData().getItemType() == ItemType.ARMOR
+        slots.add(new Slot<>(ItemType.ARMOR.name(), t -> t.getItemData().getItemType() == ItemType.ARMOR
                 && being.stats().isMatchRequirementsOf(t.requirements())));
         armor = slots.get(0);
-        slots.add(new Slot<>(ItemType.BOOTS, t -> t.getItemData().getItemType() == ItemType.BOOTS
+        slots.add(new Slot<>(ItemType.BOOTS.name(), t -> t.getItemData().getItemType() == ItemType.BOOTS
                 && being.stats().isMatchRequirementsOf(t.requirements())));
         boots = slots.get(1);
-        slots.add(new Slot<>(ItemType.GLOVES, t -> t.getItemData().getItemType() == ItemType.GLOVES
+        slots.add(new Slot<>(ItemType.GLOVES.name(), t -> t.getItemData().getItemType() == ItemType.GLOVES
                 && being.stats().isMatchRequirementsOf(t.requirements())));
         gloves = slots.get(2);
-        slots.add(new Slot<>(ItemType.HELMET, t -> t.getItemData().getItemType() == ItemType.HELMET
+        slots.add(new Slot<>(ItemType.HELMET.name(), t -> t.getItemData().getItemType() == ItemType.HELMET
                 && being.stats().isMatchRequirementsOf(t.requirements())));
         helmet = slots.get(3);
-        slots.add(new Slot<>(ItemType.NECKLACE, t -> t.getItemData().getItemType() == ItemType.NECKLACE
+        slots.add(new Slot<>(ItemType.NECKLACE.name(), t -> t.getItemData().getItemType() == ItemType.NECKLACE
                 && being.stats().isMatchRequirementsOf(t.requirements())));
         necklace = slots.get(4);
-        slots.add(new Slot<>(ItemType.PANTS, t -> t.getItemData().getItemType() == ItemType.PANTS
+        slots.add(new Slot<>(ItemType.PANTS.name(), t -> t.getItemData().getItemType() == ItemType.PANTS
                 && being.stats().isMatchRequirementsOf(t.requirements())));
         pants = slots.get(5);
-        slots.add(new Slot<>(ItemType.SHIELD, t -> (t.getItemData().getItemType() == ItemType.SHIELD
+        slots.add(new Slot<>(ItemType.SHIELD.name(), t -> (t.getItemData().getItemType() == ItemType.SHIELD
                 || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
                 && being.stats().isMatchRequirementsOf(t.requirements())));
         leftHand = slots.get(6);
-        slots.add(new Slot<>(ItemMainType.WEAPON, t -> (t.getItemData().getItemType() == ItemType.SHIELD
+        slots.add(new Slot<>(ItemMainType.WEAPON.name(), t -> (t.getItemData().getItemType() == ItemType.SHIELD
                 || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
                 && being.stats().isMatchRequirementsOf(t.requirements())));
         rightHand = slots.get(7);
-        slots.add(new Slot<>(ItemType.JEWELRY, t -> t.getItemData().getItemType() == ItemType.JEWELRY
+        slots.add(new Slot<>(ItemType.JEWELRY.name(), t -> t.getItemData().getItemType() == ItemType.JEWELRY
                 && being.stats().isMatchRequirementsOf(t.requirements())));
         jewelry1 = slots.get(8);
-        slots.add(new Slot<>(ItemType.JEWELRY, t -> t.getItemData().getItemType() == ItemType.JEWELRY
+        slots.add(new Slot<>(ItemType.JEWELRY.name(), t -> t.getItemData().getItemType() == ItemType.JEWELRY
                 && being.stats().isMatchRequirementsOf(t.requirements())));
         jewelry2 = slots.get(9);
+    }
+
+    @JsonCreator
+    private EquipmentSlotsHolder(@JsonProperty("slots") List<Slot<Item>> slots, @JsonProperty("being") Being being) {
+        this.slots = slots;
+        armor = slots.get(0);
+        armor.addRequirement(t -> t.getItemData().getItemType() == ItemType.ARMOR
+                && being.stats().isMatchRequirementsOf(t.requirements()));
+        boots = slots.get(1);
+        boots.addRequirement(t -> t.getItemData().getItemType() == ItemType.BOOTS
+                && being.stats().isMatchRequirementsOf(t.requirements()));
+        gloves = slots.get(2);
+        gloves.addRequirement(t -> t.getItemData().getItemType() == ItemType.GLOVES
+                && being.stats().isMatchRequirementsOf(t.requirements()));
+        helmet = slots.get(3);
+        helmet.addRequirement(t -> t.getItemData().getItemType() == ItemType.HELMET
+                && being.stats().isMatchRequirementsOf(t.requirements()));
+        necklace = slots.get(4);
+        necklace.addRequirement(t -> t.getItemData().getItemType() == ItemType.NECKLACE
+                && being.stats().isMatchRequirementsOf(t.requirements()));
+        pants = slots.get(5);
+        pants.addRequirement(t -> t.getItemData().getItemType() == ItemType.PANTS
+                && being.stats().isMatchRequirementsOf(t.requirements()));
+        leftHand = slots.get(6);
+        leftHand.addRequirement(t -> (t.getItemData().getItemType() == ItemType.SHIELD
+                || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+                && being.stats().isMatchRequirementsOf(t.requirements()));
+        rightHand = slots.get(7);
+        rightHand.addRequirement(t -> (t.getItemData().getItemType() == ItemType.SHIELD
+                || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+                && being.stats().isMatchRequirementsOf(t.requirements()));
+        jewelry1 = slots.get(8);
+        jewelry1.addRequirement(t -> t.getItemData().getItemType() == ItemType.JEWELRY
+                && being.stats().isMatchRequirementsOf(t.requirements()));
+        jewelry2 = slots.get(9);
+        jewelry2.addRequirement(t -> t.getItemData().getItemType() == ItemType.JEWELRY
+                && being.stats().isMatchRequirementsOf(t.requirements()));
     }
 
     public Slot<Item> armor() {
@@ -153,8 +198,7 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
             if (leftHand.getEntity() == null && leftHand.isEntityMatchRequirements(entity)) {
                 leftHand.setEntity(entity);
                 return true;
-            }
-            else if (rightHand.getEntity() == null && rightHand.isEntityMatchRequirements(entity)) {
+            } else if (rightHand.getEntity() == null && rightHand.isEntityMatchRequirements(entity)) {
                 rightHand.setEntity(entity);
                 return true;
             } else return false;

@@ -9,6 +9,7 @@ import java.util.Arrays;
 public enum StatName {
     LVL(Lvl.class, "Level", "LVL"),
     EXP(Lvl.Exp.class, "Experience", "EXP"),
+    STAT_POINTS(Lvl.StatPoints.class, "Stat points", "STATPOINT"),
     DEF(Def.class, "Defence", "DEF"),
     AGI(Agi.class, "Agility", "AGI"),
     DEX(Dex.class, "Dexterity", "DEX"),

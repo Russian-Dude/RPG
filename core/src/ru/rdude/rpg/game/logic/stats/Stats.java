@@ -1,10 +1,6 @@
 package ru.rdude.rpg.game.logic.stats;
 
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import ru.rdude.rpg.game.logic.stats.primary.*;
 import ru.rdude.rpg.game.logic.stats.secondary.*;
 
@@ -285,6 +281,7 @@ public class Stats implements StatObserver {
                 stats.values().stream()
                         .filter(stat -> stat.getClass() != Dmg.class),
                 Stream.of(
+                        lvl().statPoints(),
                         lvl().exp(),
                         dmg().melee().min(),
                         dmg().melee().max(),

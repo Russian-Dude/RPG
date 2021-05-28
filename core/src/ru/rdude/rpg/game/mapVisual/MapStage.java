@@ -52,14 +52,26 @@ public class MapStage extends Stage {
         CAM_MOVE_BORDER_RIGHT = gameMap.getWidth() * VisualConstants.TILE_WIDTH_0_75;
         CAM_MOVE_BORDER_TOP = gameMap.getHeight() * VisualConstants.TILE_HEIGHT;
 
+        // path finder
+        pathFinder = new MapPathFinder(gameMap, new MapMovingScorer(map), (c1, c2) -> false);
+
         // map visual
         mapVisual = new MapVisual(camera, gameMap);
+        map.forEachCellProperties((cell, cellProperties) -> {
+            if (cellProperties.isVisible()) {
+                mapVisual.setVoidOnCell(cell, false);
+            }
+            cell.getAroundCells(1).forEach(c -> pathFinder.changeConnections(c, c.getAroundCells(1).stream()
+                    .filter(c2 -> Game.getCurrentGame().getGameMap().isCellVisible(c2)
+                            && (c2.getBiom() != Biom.WATER || c2.getWaterDepth() == WaterDepth.SMALL
+                            || c2.getWaterDepth() == WaterDepth.RIVER))
+                    .collect(Collectors.toSet())));
+        });
         addActor(mapVisual);
         // players on map
         players = new PlayersOnMap(map.getPlayerPosition());
         addActor(players);
-        // path finder
-        pathFinder = new MapPathFinder(gameMap, new MapMovingScorer(map), (c1, c2) -> false);
+
         playerChangedPosition(map.getPlayerPosition(), map.getPlayerPosition());
         camera.position.set(players.getX(), players.getY(), 0);
     }
@@ -81,7 +93,7 @@ public class MapStage extends Stage {
         newPosition.getArea(2, true).forEach(c -> {
             mapVisual.setVoidOnCell(c, false);
             pathFinder.changeConnections(c, c.getAroundCells(1).stream()
-                    .filter(c2 -> Game.getCurrentGame().getGameMap().getCellProperties().get(c2).isVisible()
+                    .filter(c2 -> Game.getCurrentGame().getGameMap().isCellVisible(c2)
                             && (c2.getBiom() != Biom.WATER || c2.getWaterDepth() == WaterDepth.SMALL
                             || c2.getWaterDepth() == WaterDepth.RIVER))
                     .collect(Collectors.toSet()));

@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.game.Game;
 
 public class InGameMenuStage extends Stage {
@@ -30,8 +31,23 @@ public class InGameMenuStage extends Stage {
             }
         });
 
+        // save
         TextButton saveGameButton = new TextButton("Save", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+        saveGameButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Game.getGameVisual().setMenuStage(SaveGameStage.instance());
+            }
+        });
+
+        // load
         TextButton loadGameButton = new TextButton("Load", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+        loadGameButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Game.getGameVisual().setMenuStage(LoadGameStage.getInstance());
+            }
+        });
 
         // settings
         TextButton settingsButton = new TextButton("Settings", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);

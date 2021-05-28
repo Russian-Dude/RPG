@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.entities.skills;
 
+import com.fasterxml.jackson.annotation.*;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.Entity;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
@@ -14,32 +15,44 @@ import ru.rdude.rpg.game.utils.Functions;
 
 import java.util.Set;
 
-
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Buff extends Entity implements TurnChangeObserver, TimeChangeObserver, BeingActionObserver, DurationObserver, StateChanger {
 
     private Set<BuffObserver> subscribers;
 
     private SkillApplier skillApplier;
+    @JsonIgnore
     private SkillData skillData;
     private SkillDuration duration;
     private Double damage;
-    private boolean permanent;
-
-
 
     private Double actsMinutes;
     private Double actsTurns;
 
     private Stats stats;
 
+    private Buff() { }
+
+    @JsonGetter("skillData")
+    private long getJsonSkillData() {
+        return skillData.getGuid();
+    }
+
+    @JsonSetter("skillData")
+    private void setJsonSkillData(long guid) {
+        skillData = SkillData.getSkillByGuid(guid);
+    }
 
     public Buff(SkillApplier skillApplier) {
         this.skillApplier = skillApplier;
         this.skillData = skillApplier.skillData;
         this.actsMinutes = skillData.getActsEveryMinute() > 0 ? skillData.getActsEveryMinute() : null;
         this.actsTurns = skillData.getActsEveryTurn() > 0 ? skillData.getActsEveryTurn() : null;
-        this.permanent = skillData.isPermanent();
-        if (!permanent) {
+        if (!skillData.isPermanent()) {
             Game.getCurrentGame().getTimeManager().subscribe(this);
             duration = createDuration();
             duration.subscribe(this);
@@ -94,7 +107,7 @@ public class Buff extends Entity implements TurnChangeObserver, TimeChangeObserv
     }
 
     public boolean isPermanent() {
-        return permanent;
+        return skillData.isPermanent();
     }
 
     public Being getCaster() {

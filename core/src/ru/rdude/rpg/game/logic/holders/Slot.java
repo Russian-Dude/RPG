@@ -1,25 +1,38 @@
 package ru.rdude.rpg.game.logic.holders;
 
+import com.fasterxml.jackson.annotation.*;
 import ru.rdude.rpg.game.logic.entities.Entity;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Slot<T extends Entity> {
 
     // need to drag and drop knows from which slot entity dragged
     private static Map<? super Entity, Slot<? extends Entity>> entitiesInSlots = new HashMap<>();
 
+    @JsonIgnore
     private Set<SlotObserver> subscribers;
 
     protected T entity;
 
+    @JsonIgnore
     protected Set<Predicate<T>> extraRequirements;
 
-    protected Enum<?> marker;
+    protected String marker;
 
-    public Slot(Enum<?> marker, Predicate<T> ... extraRequirements) {
+    @JsonCreator
+    private Slot(@JsonProperty("marker") String marker) {
+        subscribers = new HashSet<>();
+        this.marker = marker;
+        this.extraRequirements = new HashSet<>();
+    }
+
+    public Slot(String marker, Predicate<T>... extraRequirements) {
         subscribers = new HashSet<>();
         this.marker = marker;
         this.extraRequirements = Arrays.stream(extraRequirements).collect(Collectors.toSet());
@@ -37,6 +50,12 @@ public class Slot<T extends Entity> {
         this.entity = item;
         entitiesInSlots.put(item, this);
         notifySubscribers(item);
+    }
+
+    @JsonSetter
+    private void setEntityJson(T item) {
+        this.entity = item;
+        entitiesInSlots.put(item, this);
     }
 
     public boolean hasEntity(T item) {
@@ -61,12 +80,16 @@ public class Slot<T extends Entity> {
         return extraRequirements.stream().allMatch(p -> p.test(t));
     }
 
-    public Enum<?> getMarker() {
+    public String getMarker() {
         return marker;
     }
 
-    public void setMarker(Enum<?> marker) {
+    public void setMarker(String marker) {
         this.marker = marker;
+    }
+
+    public void addRequirement(Predicate<T> requirement) {
+        this.extraRequirements.add(requirement);
     }
 
     public void subscribe(SlotObserver subscriber) {

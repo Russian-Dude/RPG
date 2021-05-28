@@ -1,14 +1,37 @@
 package ru.rdude.rpg.game.logic.data.resources;
 
-import java.util.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = "Type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = MonsterResources.class, name = "Monster"),
+        @JsonSubTypes.Type(value = ItemResources.class, name = "Item"),
+        @JsonSubTypes.Type(value = ModuleResources.class, name = "Module"),
+        @JsonSubTypes.Type(value = SkillResources.class, name = "Skill"),
+        @JsonSubTypes.Type(value = PlayerResources.class, name = "Player"),
+        @JsonSubTypes.Type(value = EventResources.class, name = "Event"),
+        @JsonSubTypes.Type(value = QuestResources.class, name = "Quest")
+})
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public abstract class Resources {
 
     protected Map<String, Resource> imageResources = new HashMap<>();
     protected Map<String, Resource> soundResources = new HashMap<>();
 
-    Resources(){}
+    Resources() {
+    }
 
     protected Resources(String[] imageResources, String[] soundResources) {
         for (String imageResource : imageResources) {

@@ -10,11 +10,13 @@ import java.util.stream.Collectors;
 
 public class ItemSlotsHolder extends SlotsHolder<Item> {
 
+    private ItemSlotsHolder() { }
+
     public ItemSlotsHolder(int capacity) {
         super(capacity);
     }
 
-    public ItemSlotsHolder(int capacity, Enum<?> marker, Predicate<Item>... extraRequirements) {
+    public ItemSlotsHolder(int capacity, String marker, Predicate<Item>... extraRequirements) {
         super(capacity, marker, extraRequirements);
     }
 

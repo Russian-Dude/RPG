@@ -133,7 +133,7 @@ public class MapVisual extends Actor implements Disposable {
     public void setVoidOnCell(Cell cell, boolean isVoid) {
         if (isVoid) {
             reliefLayerBehind.getCell(cell.getX(), cell.getY()).setTile(MapTilesFactory.getVoid());
-            reliefLayerFront.getCell(cell.getX(), cell.getY()).setTile(MapTilesFactory.getVoid());
+            reliefLayerFront.getCell(cell.getX(), cell.getY()).setTile(MapTilesFactory.getEmpty());
         }
         else {
             if (generatedReliefTiles.containsKey(cell)) {

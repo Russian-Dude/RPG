@@ -2,11 +2,8 @@ package ru.rdude.rpg.game.logic.entities.beings;
 
 import ru.rdude.rpg.game.logic.data.MonsterData;
 import ru.rdude.rpg.game.logic.data.SkillData;
-import ru.rdude.rpg.game.logic.entities.skills.Buff;
-import ru.rdude.rpg.game.logic.entities.skills.SkillApplier;
 import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
 import ru.rdude.rpg.game.logic.enums.AttackType;
-import ru.rdude.rpg.game.logic.game.Game;
 
 public class Monster extends Being {
 
@@ -17,7 +14,7 @@ public class Monster extends Being {
 
     public void applyStartBuffs() {
         ((MonsterData) beingData).getStartBuffs().forEach(guid ->
-                Game.getCurrentGame().getSkillUser().use(SkillData.getSkillByGuid(guid), this, this));
+                SkillUser.use(SkillData.getSkillByGuid(guid), this, this));
     }
 
     @Override

@@ -158,6 +158,6 @@ public class StatVisual extends Table implements StatObserver {
                 && !(stat instanceof Vit)
                 && !(stat instanceof Lvl)
                 && !(stat instanceof Lvl.Exp)
-                && !(stat instanceof Lvl.Points);
+                && !(stat instanceof Lvl.StatPoints);
     }
 }

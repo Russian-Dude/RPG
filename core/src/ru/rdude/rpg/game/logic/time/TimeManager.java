@@ -1,10 +1,15 @@
 package ru.rdude.rpg.game.logic.time;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.HashSet;
 import java.util.Set;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class TimeManager implements TurnChangeObserver {
 
+    @JsonIgnore
     private final Set<TimeObserver> timeObservers;
     private final Set<TimeChangeObserver> timeChangeObservers;
 

@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.entities.beings;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.BeingData;
 import ru.rdude.rpg.game.logic.entities.Entity;
@@ -12,17 +13,16 @@ import ru.rdude.rpg.game.logic.entities.skills.Damage;
 import ru.rdude.rpg.game.logic.entities.states.StateHolder;
 import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.stats.Bonus;
-import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Stream;
 
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public abstract class Being extends Entity implements BuffObserver {
 
-    private Set<BeingActionObserver> beingActionObservers;
+    private final Set<BeingActionObserver> beingActionObservers = new HashSet<>();
 
     protected BeingData beingData;
     protected Stats stats;
@@ -61,7 +61,13 @@ public abstract class Being extends Entity implements BuffObserver {
 
     public abstract boolean canParry();
 
-    public abstract String getName();
+    public String getName() {
+        return beingData.getName();
+    }
+
+    public void setName(String name) {
+        beingData.setName(name);
+    }
 
     // return true if receive damage
     public boolean receive(Damage damage) {

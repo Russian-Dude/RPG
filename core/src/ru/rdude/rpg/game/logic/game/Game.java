@@ -1,15 +1,15 @@
 package ru.rdude.rpg.game.logic.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.rdude.rpg.game.logic.GameLogger;
+import ru.rdude.rpg.game.logic.data.io.GameFileLoader;
+import ru.rdude.rpg.game.logic.data.io.GameFileSaver;
 import ru.rdude.rpg.game.logic.data.io.GameJsonSerializer;
-import ru.rdude.rpg.game.logic.data.io.GameMapFileLoader;
 import ru.rdude.rpg.game.logic.data.io.ModuleFileLoader;
 import ru.rdude.rpg.game.logic.entities.beings.MonsterFactory;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
-import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
 import ru.rdude.rpg.game.logic.gameStates.Map;
@@ -17,31 +17,33 @@ import ru.rdude.rpg.game.logic.time.TimeManager;
 import ru.rdude.rpg.game.ui.AvatarCreator;
 import ru.rdude.rpg.game.ui.ItemImageFactory;
 import ru.rdude.rpg.game.ui.MapInfo;
-import ru.rdude.rpg.game.utils.Pair;
 import ru.rdude.rpg.game.visual.GameVisual;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Game {
 
     private static Game currentGame = new Game();
 
     private static final GameVisual gameVisual = new GameVisual();
 
+    @JsonIgnore
     private final GameLogger gameLogger;
     private TimeManager timeManager;
-    private SkillUser skillUser;
     private final GameStateHolder gameStateHolder;
     private Map gameMap;
     private Party currentPlayers;
+
     private static final DragAndDrop itemsDragAndDrop = new DragAndDrop();
     private static final AvatarCreator avatarCreator = new AvatarCreator();
     private static final ItemImageFactory itemImageFactory = new ItemImageFactory();
     private static final MonsterFactory monsterFactory = new MonsterFactory();
+    private static final GameFileSaver gameSaver = new GameFileSaver();
+    private static final GameFileLoader gameLoader = new GameFileLoader();
 
     // io
     private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
@@ -99,12 +101,16 @@ public class Game {
         return mapFiles;
     }
 
-    public TimeManager getTimeManager() {
-        return timeManager;
+    public static GameFileSaver getGameSaver() {
+        return gameSaver;
     }
 
-    public SkillUser getSkillUser() {
-        return skillUser;
+    public static GameFileLoader getGameLoader() {
+        return gameLoader;
+    }
+
+    public TimeManager getTimeManager() {
+        return timeManager;
     }
 
     public GameStateHolder getGameStateHolder() {

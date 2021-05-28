@@ -59,6 +59,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
         stmBar = new StmBar(player);
         buttons = new HorizontalGroup();
         attack = new Button(DEFAULT_SKIN, "attack");
+        attack.setVisible(Game.getCurrentGame().getCurrentGameState() instanceof Battle);
         items = new Button(DEFAULT_SKIN, "items");
         spells = new Button(DEFAULT_SKIN, "spells");
         nameLabel = new Label(player.getName(), DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
@@ -125,7 +126,6 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
 
     private static PlayerAvatar createAvatarFromData(PlayerData playerData) {
         PlayerAvatar avatar = new PlayerAvatar();
-        avatar.setName(playerData.getName());
         PlayerResources resources = (PlayerResources) playerData.getResources();
         AvatarCreator creator = Game.getAvatarCreator();
         avatar.setFace(creator.faces().get((int) resources.getFaceIndex()));

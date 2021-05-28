@@ -12,10 +12,12 @@ import java.util.HashSet;
 
 public class Player extends Being {
 
-    private String name;
-
     public Player() {
-        super(new PlayerData());
+        this(new PlayerData());
+    }
+
+    public Player(PlayerData playerData) {
+        super(playerData);
         stats = new Stats(true);
         beingTypes = new StateHolder<>(BeingType.HUMAN);
         elements = new StateHolder<>(Element.NEUTRAL);
@@ -30,21 +32,13 @@ public class Player extends Being {
 
     @Override
     public boolean canBlock() {
+        // TODO: 24.05.2021 can player block
         return false;
     }
 
     @Override
     public boolean canParry() {
+        // TODO: 24.05.2021 can player parry
         return false;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name.isBlank() ? "Default Player Name" : name;
-        this.beingData.setName(this.name);
     }
 }

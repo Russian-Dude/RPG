@@ -17,14 +17,30 @@ import java.util.stream.Stream;
 
 public class SkillUser {
 
+    private static SkillUser instance = new SkillUser();
+
     private GameStateBase gameState;
     private Party emptyParty;
     private Party allies;
     private Party enemies;
     private List<Being> allBeings;
 
+    private SkillUser() {
+    }
 
-    public void use(SkillData skillData, Being caster) {
+    public static SkillUser instance() {
+        return instance;
+    }
+
+    public static void use(SkillData skillData, Being caster) {
+        instance().useSkill(skillData, caster);
+    }
+
+    public static void use(SkillData skillData, Being caster, Being mainTarget) {
+        instance().useSkill(skillData, caster, mainTarget);
+    }
+
+    public void useSkill(SkillData skillData, Being caster) {
 
         emptyParty = new Party();
 
@@ -44,46 +60,46 @@ public class SkillUser {
         switch (skillData.getMainTarget()) {
             case NO:
                 Game.getCurrentGame().getGameLogger().log(caster, skillData);
-                use(skillData, caster, null);
+                useSkill(skillData, caster, null);
                 break;
 
             case RANDOM_ANY:
-                use(skillData, caster, Functions.random(allBeings));
+                useSkill(skillData, caster, Functions.random(allBeings));
                 break;
 
             case RIGHT_ALLY:
                 Being rightAlly = allies.getBeingRightFrom(caster);
                 if (rightAlly != null) {
-                    use(skillData, caster, rightAlly);
+                    useSkill(skillData, caster, rightAlly);
                 }
                 break;
 
             case LEFT_ALLY:
                 Being leftAlly = allies.getBeingLeftFrom(caster);
                 if (leftAlly != null) {
-                    use(skillData, caster, leftAlly);
+                    useSkill(skillData, caster, leftAlly);
                 }
                 break;
 
             case SELF:
-                use(skillData, caster, caster);
+                useSkill(skillData, caster, caster);
                 break;
 
             case RANDOM_ALLY:
                 Being ally = Functions.random(allies.getBeings());
-                use(skillData, caster, ally);
+                useSkill(skillData, caster, ally);
                 break;
 
             case RANDOM_ENEMY:
                 if (enemies != emptyParty) {
                     Being enemy = Functions.random(enemies.getBeings());
-                    use(skillData, caster, enemy);
+                    useSkill(skillData, caster, enemy);
                 }
                 break;
         }
     }
 
-    public void use(SkillData skillData, Being caster, Being mainTarget) {
+    public void useSkill(SkillData skillData, Being caster, Being mainTarget) {
         if (mainTarget != null) {
             Game.getCurrentGame().getGameLogger().log(caster, mainTarget, skillData);
         }

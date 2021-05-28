@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Align;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Map;
+import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.PlaceObserver;
 import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.logic.time.TimeManager;
@@ -61,18 +62,18 @@ public class TimeAndPlaceUi extends HorizontalGroup implements TimeObserver, Pla
     }
 
     @Override
-    public void update(Map.CellProperties oldPosition, Map.CellProperties newPosition) {
-        if (newPosition.getCell().getObject() instanceof City) {
+    public void update(Cell oldPosition, Cell newPosition) {
+        if (newPosition.getObject() instanceof City) {
             biom.setText("CITY");
             relief.setText("");
         }
         else {
-            biom.setText(newPosition.getCell().getBiom().toString());
-            if (newPosition.getCell().getBiom().equals(Biom.WATER)) {
-                relief.setText(newPosition.getCell().getWaterDepth().name);
+            biom.setText(newPosition.getBiom().toString());
+            if (newPosition.getBiom().equals(Biom.WATER)) {
+                relief.setText(newPosition.getWaterDepth().name);
             }
             else {
-                relief.setText(newPosition.getCell().getRelief().toString());
+                relief.setText(newPosition.getRelief().toString());
             }
         }
     }

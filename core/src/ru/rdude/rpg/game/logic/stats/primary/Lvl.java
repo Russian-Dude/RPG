@@ -12,24 +12,20 @@ public class Lvl extends Stat implements Calculatable {
 
     private Type type;
     private Exp exp;
-    private Points statPoints;
-    private Points skillPoints;
+    private StatPoints statPoints;
 
     public Lvl(Type type) {
         this.type = type;
         if (type == BASE) exp = new ExpBase();
         else if (type == CLASS) exp = new ExpClass();
-        statPoints = new Points();
-        skillPoints = new Points();
+        statPoints = new StatPoints();
     }
 
     public Exp exp() { return exp; }
-    public Points statPoints() { return statPoints; }
-    public Points skillPoints() { return skillPoints; }
+    public StatPoints statPoints() { return statPoints; }
 
     public double expValue() { return exp.value(); }
     public double statPointsValue() { return statPoints.value(); }
-    public double skillPointsValue() { return skillPoints.value(); }
 
     public Type getType() { return type; }
     public void setType(Type type) { this.type = type; }
@@ -50,7 +46,6 @@ public class Lvl extends Stat implements Calculatable {
 
     private void lvlUp() {
         statPoints.increase(2);
-        skillPoints.increase(1);
         if (value() % 3 == 0) statPoints.increase(1);
         if (value() % 10 == 0) statPoints.increase(1);
     }
@@ -66,7 +61,7 @@ public class Lvl extends Stat implements Calculatable {
     }
 
 
-    public class Points extends Stat {
+    public static class StatPoints extends Stat {
         @Override
         public String getName() {
             return "Stat Points";

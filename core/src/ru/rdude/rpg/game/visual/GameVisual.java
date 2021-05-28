@@ -28,6 +28,14 @@ public class GameVisual {
         Gdx.input.setInputProcessor(multiplexer);
     }
 
+    public void clear() {
+        nonUiStages.clear();
+        ui = null;
+        previousMainMenuStages.clear();
+        savedGameProcessors.clear();
+        currentMainMenuStage = null;
+    }
+
     public UIStage getUi() {
         return ui;
     }
@@ -95,6 +103,12 @@ public class GameVisual {
         Stage temp = previousMainMenuStages.pop();
         multiplexer.addProcessor(temp);
         currentMainMenuStage = temp;
+    }
+
+    public void closeMenus() {
+        while (currentMainMenuStage != null) {
+            backMenuStage();
+        }
     }
 
     public boolean isJustOpenedMainMenu() {

@@ -79,7 +79,8 @@ public class PlayersCreationStage extends Stage {
                     el.getPlayerCreationVisual().defaultAvatarSize();
                     Player player = el.getPlayerCreationVisual().getPlayer();
                     players.add(player);
-                    player.setName(el.getPlayerCreationVisual().getNameTextField().getText());
+                    String name = el.getPlayerCreationVisual().getNameTextField().getText();
+                    player.setName(name.isBlank() ? "Default Player Name" : name);
                     playerVisuals.add(new PlayerVisual(player, avatar));
                 });
                 Game.getCurrentGame().setCurrentPlayers(new Party(players));

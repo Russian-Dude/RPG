@@ -1,11 +1,13 @@
 package ru.rdude.rpg.game.logic.entities.skills;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.entities.beings.BeingActionObserver;
 import ru.rdude.rpg.game.logic.time.Duration;
 import ru.rdude.rpg.game.logic.time.TimeManager;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class SkillDuration extends Duration implements BeingActionObserver {
 
     private Double hitsReceived;

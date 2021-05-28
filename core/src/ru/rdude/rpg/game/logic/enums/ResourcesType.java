@@ -8,6 +8,7 @@ public enum ResourcesType {
     MODULE,
     SKILL,
     MONSTER,
+    PLAYER,
     ITEM,
     EVENT,
     QUEST;
@@ -24,6 +25,9 @@ public enum ResourcesType {
         }
         else if (entityData instanceof ItemData) {
             return ITEM;
+        }
+        else if (entityData instanceof PlayerData) {
+            return PLAYER;
         }
         else {
             throw new IllegalArgumentException("entity data of " + entityData.getClass() + " is not implemented in ResourcesType.of() method");
@@ -42,6 +46,9 @@ public enum ResourcesType {
         }
         else if (resources instanceof ItemResources) {
             return ITEM;
+        }
+        else if (resources instanceof PlayerResources) {
+            return PLAYER;
         }
         else {
             throw new IllegalArgumentException("resources of " + resources.getClass() + " is not implemented in ResourcesType.of() method");
@@ -68,6 +75,9 @@ public enum ResourcesType {
                 break;
             case QUEST:
                 resources = new QuestResources();
+                break;
+            case PLAYER:
+                resources = new PlayerResources();
                 break;
             default:
                 throw new IllegalArgumentException("creating instance of " + this + " not implemented");

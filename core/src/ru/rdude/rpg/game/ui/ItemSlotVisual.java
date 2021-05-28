@@ -42,23 +42,26 @@ public class ItemSlotVisual extends Group implements SlotObserver {
     }
 
     private String getDrawableBackgroundName() {
-        if (slot.getMarker() == ItemType.ARMOR)
+        if (slot.getMarker() == null) {
+            return "Empty";
+        }
+        if (slot.getMarker().equals(ItemType.ARMOR.name()))
             return "Body";
-        else if (slot.getMarker() == ItemType.BOOTS)
+        else if (slot.getMarker().equals(ItemType.BOOTS.name()))
             return "Boots";
-        else if (slot.getMarker() == ItemType.GLOVES)
+        else if (slot.getMarker().equals(ItemType.GLOVES.name()))
             return "Gloves";
-        else if (slot.getMarker() == ItemType.HELMET)
+        else if (slot.getMarker().equals(ItemType.HELMET.name()))
             return "Head";
-        else if (slot.getMarker() == ItemType.JEWELRY)
+        else if (slot.getMarker().equals(ItemType.JEWELRY.name()))
             return "Ring";
-        else if (slot.getMarker() == ItemType.NECKLACE)
+        else if (slot.getMarker().equals(ItemType.NECKLACE.name()))
             return "Amulet";
-        else if (slot.getMarker() == ItemType.PANTS)
+        else if (slot.getMarker().equals(ItemType.PANTS.name()))
             return "Legs";
-        else if (slot.getMarker() == ItemType.SHIELD)
+        else if (slot.getMarker().equals(ItemType.SHIELD.name()))
             return "Shield";
-        else if (slot.getMarker() == ItemMainType.WEAPON)
+        else if (slot.getMarker().equals(ItemMainType.WEAPON.name()))
             return "Weapon";
         else
             return "Empty";

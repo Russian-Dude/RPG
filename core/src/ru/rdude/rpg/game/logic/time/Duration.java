@@ -1,7 +1,11 @@
 package ru.rdude.rpg.game.logic.time;
 
+import com.fasterxml.jackson.annotation.*;
+
 import java.util.Set;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Duration implements TimeChangeObserver, TurnChangeObserver {
 
     public enum DurationType  {MINUTES, TURNS}

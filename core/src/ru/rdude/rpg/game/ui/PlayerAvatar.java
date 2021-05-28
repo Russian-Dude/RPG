@@ -37,8 +37,6 @@ public class PlayerAvatar extends Group {
 
     private final List<Image> images = List.of(face, cloth, mouth, nose, eyes, eyePupils, eyeBrows, beard, hair);
 
-    private final Label name = new Label("", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
-
     public PlayerAvatar() {
         addActor(face);
         addActor(cloth);
@@ -49,10 +47,7 @@ public class PlayerAvatar extends Group {
         addActor(eyePupils);
         addActor(eyeBrows);
         addActor(hair);
-        addActor(name);
 
-        name.setAlignment(Align.center);
-        name.setWidth(face.getWidth());
         setSize(face.getWidth(), face.getHeight());
     }
 
@@ -90,10 +85,6 @@ public class PlayerAvatar extends Group {
 
     public void setHair(TextureAtlas.AtlasRegion textureRegion) {
         ((SpriteDrawable) hair.getDrawable()).getSprite().setRegion(textureRegion);
-    }
-
-    public void setName(String name) {
-        this.name.setText(name);
     }
 
     public void setFaceColor(Color color) {

@@ -1,11 +1,13 @@
 package ru.rdude.rpg.game.logic.entities.beings;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Party {
 
     @JsonProperty

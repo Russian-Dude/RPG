@@ -42,7 +42,7 @@ public class MainMenuStage extends Stage {
         loadGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // TODO: 18.05.2021 load game
+                Game.getGameVisual().setMenuStage(LoadGameStage.getInstance());
             }
         });
         mainTable.add(loadGameButton);
