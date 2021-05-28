@@ -5,8 +5,10 @@ import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.resources.ItemResources;
 import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.stats.Stats;
+import ru.rdude.rpg.game.utils.Functions;
 
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -278,6 +280,18 @@ public class ItemData extends EntityData {
 
         public List<ItemData> get() {
             return stream.collect(Collectors.toList());
+        }
+
+        public List<ItemData> getRandomItems(int amount) {
+            return stream.collect(Functions.randomCollector(amount));
+        }
+
+        public ItemData getRandom() {
+            return stream.collect(Functions.randomCollector());
+        }
+
+        public Stream<ItemData> stream() {
+            return stream;
         }
     }
 }

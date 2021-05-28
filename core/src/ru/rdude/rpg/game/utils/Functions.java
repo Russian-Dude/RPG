@@ -99,6 +99,10 @@ public class Functions {
         return new RandomCollector<>();
     }
 
+    public static <T> RandomCollectorList<T> randomCollector(int elementsAmount) {
+        return new RandomCollectorList<>(elementsAmount);
+    }
+
     public static long generateGuid() {
         try {
             long date = new Date().getTime();
@@ -117,6 +121,47 @@ public class Functions {
 
     public static String trimPath(String string) {
         return string.substring(Math.max(string.lastIndexOf("/"), string.lastIndexOf("\\")) + 1);
+    }
+
+    public static class RandomCollectorList<T> implements Collector<T, List<T>, List<T>> {
+
+        private final int elementsCount;
+
+        public RandomCollectorList(int elementsCount) {
+            this.elementsCount = elementsCount;
+        }
+
+        @Override
+        public Supplier<List<T>> supplier() {
+            return ArrayList::new;
+        }
+
+        @Override
+        public BiConsumer<List<T>, T> accumulator() {
+            return List::add;
+        }
+
+        @Override
+        public BinaryOperator<List<T>> combiner() {
+            return (a, b) -> {
+                a.addAll(b);
+                return a;
+            };
+        }
+
+        @Override
+        public Function<List<T>, List<T>> finisher() {
+            return in -> {
+                List<T> pre = new ArrayList<>(in);
+                Collections.shuffle(pre);
+                return pre.subList(0, elementsCount);
+            };
+        }
+
+        @Override
+        public Set<Characteristics> characteristics() {
+            return Set.of(Characteristics.UNORDERED);
+        }
     }
 
     public static class RandomCollector<T> implements Collector<T, List<T>, T> {
