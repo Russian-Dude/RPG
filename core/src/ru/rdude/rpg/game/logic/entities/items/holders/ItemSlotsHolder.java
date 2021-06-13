@@ -5,6 +5,7 @@ import ru.rdude.rpg.game.logic.holders.Slot;
 import ru.rdude.rpg.game.logic.holders.SlotsHolder;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -35,17 +36,17 @@ public class ItemSlotsHolder extends SlotsHolder<Item> {
             }
         }
         // place in empty slots
-        Slot<Item> emptySlot;
-        while ((emptySlot = findEmptySlot()) != null && entity.getAmount() > 0) {
+        Optional<Slot<Item>> emptySlot = findEmptySlot();
+        while (emptySlot.isPresent() && entity.getAmount() > 0) {
            if (entity.getAmount() <= Item.MAX_AMOUNT) {
-               emptySlot.setEntity(entity);
+               emptySlot.get().setEntity(entity);
                return true;
            }
            else {
                Item copy = entity.copy();
                copy.setAmount(0);
                entity.setAmount(copy.increaseAmountAndReturnRest(entity.getAmount()));
-               emptySlot.setEntity(copy);
+               emptySlot.get().setEntity(copy);
            }
         }
         return false;

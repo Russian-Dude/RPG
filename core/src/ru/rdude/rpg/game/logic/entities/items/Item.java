@@ -7,25 +7,30 @@ import ru.rdude.rpg.game.logic.entities.states.StateHolder;
 import ru.rdude.rpg.game.logic.enums.Element;
 import ru.rdude.rpg.game.logic.enums.ItemRarity;
 import ru.rdude.rpg.game.logic.stats.Stats;
-import ru.rdude.rpg.game.logic.stats.secondary.Hp;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Item extends Entity {
 
     public static final int MAX_AMOUNT = 99;
 
+    private Set<ItemCountObserver> subscribers;
+
     protected ItemData itemData;
     protected int amount;
     protected StateHolder<Element> elements;
 
     public Item(ItemData itemData, int amount) {
+        this.subscribers = new HashSet<>();
         this.itemData = itemData;
         this.amount = amount;
-        Double durabilityData;
         Set<Element> elementsData;
         if ((elementsData = itemData.getElements()) != null)
             elements = new StateHolder<>(elementsData);
+        else {
+            elements = new StateHolder<>(new HashSet<>());
+        }
     }
 
     public Item(ItemData itemData) {
@@ -89,5 +94,17 @@ public class Item extends Entity {
         Item copy = new Item(itemData, amount);
         copy.elements = elements.copy();
         return copy;
+    }
+
+    public void subscribe(ItemCountObserver subscriber) {
+        subscribers.add(subscriber);
+    }
+
+    public void unsubscribe(ItemCountObserver subscriber) {
+        subscribers.remove(subscriber);
+    }
+
+    private void notifySubscribers() {
+        subscribers.forEach(subscriber -> subscriber.update(amount, this));
     }
 }

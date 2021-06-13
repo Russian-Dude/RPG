@@ -1,6 +1,6 @@
 package ru.rdude.rpg.game.logic.enums;
 
-public enum ItemType {
+public enum ItemType implements UsedByStatistics {
     // equip:
     ARMOR(ItemMainType.ARMOR),
     BOOTS(ItemMainType.ARMOR),

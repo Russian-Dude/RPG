@@ -1,18 +1,19 @@
 package ru.rdude.rpg.game.ui;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import ru.rdude.rpg.game.logic.entities.items.Item;
+import ru.rdude.rpg.game.logic.entities.items.ItemCountObserver;
 import ru.rdude.rpg.game.logic.game.Game;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-public class ItemVisual extends Group {
+public class ItemVisual extends Group implements ItemCountObserver {
 
     public static Map<Item, ItemVisual> items;
 
@@ -30,9 +31,9 @@ public class ItemVisual extends Group {
         items.put(item, this);
 
         this.item = item;
-        itemImage = new Image(Game.getCurrentGame().getItemImageFactory().getRegion(item.getItemData().getResources().getMainImage().getGuid()));
+        itemImage = new Image(Game.getItemImageFactory().getRegion(item.getItemData().getResources().getMainImage().getGuid()));
         border = UiData.ItemBorder.BRONZE;
-        count = new Label("", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+        count = new Label(String.valueOf(item.getAmount()), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
         tooltip = new ItemInfoTooltip(item);
         addListener(tooltip);
         itemImage.setSize(border.getWidth(), border.getHeight());
@@ -51,5 +52,21 @@ public class ItemVisual extends Group {
 
     public Image getItemImage() {
         return itemImage;
+    }
+
+    @Override
+    public void update(int amount, Item item) {
+        if (Objects.equals(this.item, item)) {
+            this.count.setText(amount);
+        }
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && !Game.getItemsDragAndDrop().isDragging()) {
+            //Game.getItemUser().use(this.item, );
+            // TODO: 14.06.2021 find being who use an item
+        }
     }
 }

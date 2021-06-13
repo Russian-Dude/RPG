@@ -14,6 +14,7 @@ import ru.rdude.rpg.game.logic.entities.items.holders.ItemSlotsHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -57,8 +58,8 @@ public abstract class SlotsHolder<T extends Entity> {
         return slots.stream().anyMatch(Slot::isEmpty);
     }
 
-    public Slot<T> findEmptySlot() {
-        return slots.stream().filter(Slot::isEmpty).findFirst().orElse(null);
+    public Optional<Slot<T>> findEmptySlot() {
+        return slots.stream().filter(Slot::isEmpty).findFirst();
     }
 
     public int size() {
@@ -73,9 +74,9 @@ public abstract class SlotsHolder<T extends Entity> {
     public boolean receiveEntity(T entity) {
         if (slots.isEmpty() || !slots.get(0).isEntityMatchRequirements(entity))
             return false;
-        Slot<T> slot = findEmptySlot();
-        if (slot != null) {
-            slot.setEntity(entity);
+        Optional<Slot<T>> emptySlot = findEmptySlot();
+        if (emptySlot.isPresent()) {
+            emptySlot.get().setEntity(entity);
             return true;
         }
         else return false;

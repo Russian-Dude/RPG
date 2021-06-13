@@ -12,8 +12,8 @@ import ru.rdude.rpg.game.logic.holders.Slot;
 
 public class ItemDragAndDroper {
 
-    private static DragAndDrop dragAndDrop = Game.getCurrentGame().getItemsDragAndDrop();
-    private static Image currentDragImage = new Image(new SpriteDrawable(new Sprite()));
+    private static final DragAndDrop dragAndDrop = Game.getItemsDragAndDrop();
+    private static final Image currentDragImage = new Image(new SpriteDrawable(new Sprite()));
 
     public static void addSlot(ItemSlotVisual slotVisual) {
         dragAndDrop.addTarget(new DragAndDrop.Target(slotVisual) {
@@ -29,6 +29,10 @@ public class ItemDragAndDroper {
         });
     }
 
+    public static boolean isDragging() {
+        return dragAndDrop.isDragging();
+    }
+
     public static void addItem(ItemVisual itemVisual) {
         dragAndDrop.addSource(new DragAndDrop.Source(itemVisual) {
             @Override
@@ -36,7 +40,7 @@ public class ItemDragAndDroper {
                 DragAndDrop.Payload payload = new DragAndDrop.Payload();
                 ((SpriteDrawable) currentDragImage.getDrawable())
                         .getSprite()
-                        .setRegion(Game.getCurrentGame()
+                        .setRegion(Game
                                 .getItemImageFactory()
                                 .getRegion(itemVisual
                                         .getItem()

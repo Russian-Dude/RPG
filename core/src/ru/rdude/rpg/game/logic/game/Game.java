@@ -10,6 +10,7 @@ import ru.rdude.rpg.game.logic.data.io.GameJsonSerializer;
 import ru.rdude.rpg.game.logic.data.io.ModuleFileLoader;
 import ru.rdude.rpg.game.logic.entities.beings.MonsterFactory;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
+import ru.rdude.rpg.game.logic.entities.items.ItemUser;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
 import ru.rdude.rpg.game.logic.gameStates.Map;
@@ -44,6 +45,7 @@ public class Game {
     private static final MonsterFactory monsterFactory = new MonsterFactory();
     private static final GameFileSaver gameSaver = new GameFileSaver();
     private static final GameFileLoader gameLoader = new GameFileLoader();
+    private static final ItemUser itemUser = new ItemUser();
 
     // io
     private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
@@ -107,6 +109,11 @@ public class Game {
 
     public static GameFileLoader getGameLoader() {
         return gameLoader;
+    }
+
+
+    public static ItemUser getItemUser() {
+        return itemUser;
     }
 
     public TimeManager getTimeManager() {

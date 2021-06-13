@@ -38,8 +38,8 @@ public class Slot<T extends Entity> {
         this.extraRequirements = Arrays.stream(extraRequirements).collect(Collectors.toSet());
     }
 
-    public static <E extends Entity> Slot<? extends Entity> withEntity(E entity) {
-        return entitiesInSlots.get(entity);
+    public static <E extends Entity> Slot<E> withEntity(E entity) {
+        return (Slot<E>) entitiesInSlots.get(entity);
     }
 
     public T getEntity() {
@@ -48,8 +48,14 @@ public class Slot<T extends Entity> {
 
     public void setEntity(T item) {
         this.entity = item;
-        entitiesInSlots.put(item, this);
+        if (item != null) {
+            entitiesInSlots.put(item, this);
+        }
         notifySubscribers(item);
+    }
+
+    public void removeEntity() {
+        setEntity(null);
     }
 
     @JsonSetter
@@ -67,7 +73,7 @@ public class Slot<T extends Entity> {
     }
 
     public boolean swapEntities(Slot<T> anotherSlot) {
-        if (!isEntityMatchRequirements(anotherSlot.entity)) {
+        if (!anotherSlot.isEntityMatchRequirements(this.entity) || !isEntityMatchRequirements(anotherSlot.entity)) {
             return false;
         }
         T thisEntity = this.entity;
@@ -77,7 +83,7 @@ public class Slot<T extends Entity> {
     }
 
     public boolean isEntityMatchRequirements(T t) {
-        return extraRequirements.stream().allMatch(p -> p.test(t));
+        return t == null || extraRequirements.stream().allMatch(p -> p.test(t));
     }
 
     public String getMarker() {

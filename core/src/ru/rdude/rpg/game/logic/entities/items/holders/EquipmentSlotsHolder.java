@@ -17,6 +17,7 @@ import ru.rdude.rpg.game.logic.stats.Stats;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -112,6 +113,44 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
                 && being.stats().isMatchRequirementsOf(t.requirements()));
     }
 
+    public Optional<Slot<Item>> slotFor(ItemType itemType) {
+        switch (itemType.getMainType()) {
+            case ARMOR:
+                switch (itemType) {
+                    case ARMOR:
+                        return Optional.of(armor);
+                    case BOOTS:
+                        return Optional.of(boots);
+                    case GLOVES:
+                        return Optional.of(gloves);
+                    case HELMET:
+                        return Optional.of(helmet);
+                    case NECKLACE:
+                        return Optional.of(necklace);
+                    case PANTS:
+                        return Optional.of(pants);
+                    case SHIELD:
+                        return Optional.of(leftHand);
+                    case JEWELRY:
+                        if (jewelry1.isEmpty()) {
+                            return Optional.of(jewelry1);
+                        }
+                        else if (jewelry2.isEmpty()) {
+                            return Optional.of(jewelry2);
+                        }
+                        else {
+                            return Optional.of(jewelry1);
+                        }
+                    default:
+                        return Optional.empty();
+                }
+            case WEAPON:
+                return Optional.of(rightHand);
+            default:
+                return Optional.empty();
+        }
+    }
+
     public Slot<Item> armor() {
         return armor;
     }
@@ -202,7 +241,7 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
                 rightHand.setEntity(entity);
                 return true;
             } else return false;
-        } else throw new UnsupportedOperationException("this type of equippable does not defined");
+        } else return false;
     }
 
     public int weaponsAmount() {

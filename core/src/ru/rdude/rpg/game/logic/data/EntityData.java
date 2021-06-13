@@ -15,7 +15,9 @@ import java.util.Set;
         @JsonSubTypes.Type(value = ItemData.class, name = "Item"),
         @JsonSubTypes.Type(value = Module.class, name = "Module"),
         @JsonSubTypes.Type(value = SkillData.class, name = "Skill"),
-        @JsonSubTypes.Type(value = PlayerData.class, name = "Player")
+        @JsonSubTypes.Type(value = PlayerData.class, name = "Player"),
+        @JsonSubTypes.Type(value = AbilityData.class, name = "Ability"),
+        @JsonSubTypes.Type(value = PlayerClassData.class, name = "PlayerClass")
 })
 public abstract class EntityData {
     private long guid;

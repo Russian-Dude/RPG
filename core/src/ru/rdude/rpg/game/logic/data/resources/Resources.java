@@ -20,7 +20,9 @@ import java.util.stream.Collectors;
         @JsonSubTypes.Type(value = SkillResources.class, name = "Skill"),
         @JsonSubTypes.Type(value = PlayerResources.class, name = "Player"),
         @JsonSubTypes.Type(value = EventResources.class, name = "Event"),
-        @JsonSubTypes.Type(value = QuestResources.class, name = "Quest")
+        @JsonSubTypes.Type(value = QuestResources.class, name = "Quest"),
+        @JsonSubTypes.Type(value = AbilityResources.class, name = "Ability"),
+        @JsonSubTypes.Type(value = PlayerClassResources.class, name = "PlayerClass")
 })
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,

@@ -53,7 +53,7 @@ public class CityInside implements TimeChangeObserver {
     }
 
     private void updateShop() {
-        int removing = 5;
+        int removing = Math.max(5, shop.size());
         while (shop.size() > 5 && removing > 0) {
             shop.remove(Functions.random(shop));
             removing--;
