@@ -94,6 +94,19 @@ public class Stm extends Stat implements Calculatable {
         this.max.set(max);
     }
 
+    @Override
+    public double increase(double value) {
+        if (value == 0) return this.value();
+        this.value += value;
+        if (this.value < 0 && calculatable) {
+            this.value = 0;
+        }
+        else if (this.value > maxValue() && calculatable) {
+            this.value = maxValue();
+        }
+        notifySubscribers();
+        return this.value();
+    }
 
     @Override
     public double increase(Stat stat) {

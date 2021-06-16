@@ -3,10 +3,11 @@ package ru.rdude.rpg.game.logic.data;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.enums.UsedByStatistics;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class PlayerClassData extends EntityData {
+
+    private static Map<Long, PlayerClassData> classes = new HashMap<>();
 
     private final Set<PlayerClassOpenRequirement<?>> openRequirements = new HashSet<>();
     private final Set<Long> abilities = new HashSet<>();
@@ -16,6 +17,10 @@ public class PlayerClassData extends EntityData {
 
     public PlayerClassData(long guid) {
         super(guid);
+    }
+
+    public static void storeClasses(Collection<PlayerClassData> collection) {
+        collection.forEach(classData -> classes.put(classData.getGuid(), classData));
     }
 
     public Set<PlayerClassOpenRequirement<?>> getOpenRequirements() {

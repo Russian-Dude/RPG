@@ -5,7 +5,8 @@ import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.primary.Lvl;
 import ru.rdude.rpg.game.logic.stats.primary.Vit;
-import static java.lang.Math.*;
+
+import static java.lang.Math.floor;
 
 public class Hp extends Stat implements Calculatable {
 
@@ -62,6 +63,20 @@ public class Hp extends Stat implements Calculatable {
 
     public void setMaxValue(double max) {
         this.max.set(max);
+    }
+
+    @Override
+    public double increase(double value) {
+        if (value == 0) return this.value();
+        this.value += value;
+        if (this.value < 0 && calculatable) {
+            this.value = 0;
+        }
+        else if (this.value > maxValue() && calculatable) {
+            this.value = maxValue();
+        }
+        notifySubscribers();
+        return this.value();
     }
 
     @Override

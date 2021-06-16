@@ -39,7 +39,12 @@ public class Slot<T extends Entity> {
     }
 
     public static <E extends Entity> Slot<E> withEntity(E entity) {
-        return (Slot<E>) entitiesInSlots.get(entity);
+        Slot<E> slot = (Slot<E>) entitiesInSlots.get(entity);
+        if (slot.entity == null) {
+            entitiesInSlots.remove(entity);
+            slot = null;
+        }
+        return slot;
     }
 
     public T getEntity() {

@@ -4,10 +4,7 @@ import ru.rdude.rpg.game.logic.data.resources.QuestResources;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.stats.Stats;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class QuestData extends EntityData {
@@ -36,6 +33,10 @@ public class QuestData extends EntityData {
         super(guid);
         setResources(new QuestResources());
         quests.put(guid, this);
+    }
+
+    public static void storeQuests(Collection<QuestData> collection) {
+        collection.forEach(questData -> quests.put(questData.getGuid(), questData));
     }
 
     public Map<Long, Integer> getKillMonsters() {

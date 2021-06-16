@@ -32,9 +32,6 @@ public final class ItemUser {
                 item.getItemData().getSkillsOnUse()
                         .forEach(skillGuid -> SkillUser.use(SkillData.getSkillByGuid(skillGuid), being));
                 item.decreaseAmount(1);
-                if (item.getAmount() <= 0) {
-                    Slot.withEntity(item).removeEntity();
-                }
                 being.notifySubscribers(new BeingAction(BeingAction.Action.ITEM_USED, item, null, 1), being);
                 break;
             case SIMPLE:

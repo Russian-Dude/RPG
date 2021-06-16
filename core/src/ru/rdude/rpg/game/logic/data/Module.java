@@ -17,6 +17,7 @@ public class Module extends EntityData implements Serializable {
     private Set<MonsterData> monsterData;
     private Set<EventData> eventData;
     private Set<QuestData> questData;
+    private Set<PlayerClassData> playerClassData;
 
     // default constructor for Jackson json deserialization
     private Module() {
@@ -70,6 +71,14 @@ public class Module extends EntityData implements Serializable {
 
     public void setQuestData(Set<QuestData> questData) {
         this.questData = questData;
+    }
+
+    public Set<PlayerClassData> getPlayerClassData() {
+        return playerClassData;
+    }
+
+    public void setPlayerClassData(Set<PlayerClassData> playerClassData) {
+        this.playerClassData = playerClassData;
     }
 
     @Override

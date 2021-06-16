@@ -2,10 +2,12 @@ package ru.rdude.rpg.game.logic.gameStates;
 
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
+import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.time.TurnChangeObserver;
 
 public class Battle extends GameStateBase implements TurnChangeObserver {
 
+    private final Party playerSide = Game.getCurrentGame().getCurrentPlayers();
     private Party enemySide;
     private Party turnOf;
 

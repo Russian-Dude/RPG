@@ -30,6 +30,10 @@ public class EventData extends EntityData {
         events.put(guid, this);
     }
 
+    public static void storeEvents(Collection<EventData> collection) {
+        collection.forEach(eventData -> events.put(eventData.getGuid(), eventData));
+    }
+
     public Set<EventAction> getActions() {
         return actions;
     }

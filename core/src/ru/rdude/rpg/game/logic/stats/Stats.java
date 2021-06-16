@@ -1,6 +1,7 @@
 package ru.rdude.rpg.game.logic.stats;
 
 
+import ru.rdude.rpg.game.logic.enums.StatName;
 import ru.rdude.rpg.game.logic.stats.primary.*;
 import ru.rdude.rpg.game.logic.stats.secondary.*;
 
@@ -206,6 +207,10 @@ public class Stats implements StatObserver {
         return stm().value();
     }
 
+    public Stat get(StatName statName) {
+        return get(statName.getClazz());
+    }
+
     public Stat get(Class<? extends Stat> statClass) {
         if (stats.containsKey(statClass)) {
             return stats.get(statClass);
@@ -222,10 +227,6 @@ public class Stats implements StatObserver {
                 throw new IllegalArgumentException();
             }
         }
-    }
-
-    public void addBuffClass(Class<?> clazz) {
-        streamWithNestedStats().forEach(stat -> stat.addBuffClass(clazz));
     }
 
     public void increase(Stats stats) {
@@ -311,10 +312,7 @@ public class Stats implements StatObserver {
         forEachWithNestedStats(stat -> {
             Stat copyStat = stats.get(stat.getClass());
             copyStat.set(stat.pureValue());
-            stat.getBuffs().forEach((cl, val) -> {
-                copyStat.addBuffClass(cl);
-                copyStat.setBuffValue(cl, val);
-            });
+            stat.getBuffs().forEach(copyStat::setBuffValue);
         });
         stats.setCalculatable(calculatable);
     }

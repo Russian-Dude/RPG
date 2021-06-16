@@ -8,8 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import ru.rdude.rpg.game.logic.data.MonsterData;
 import ru.rdude.rpg.game.logic.data.PlayerData;
 import ru.rdude.rpg.game.logic.data.resources.PlayerResources;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
@@ -20,15 +18,11 @@ import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
 import ru.rdude.rpg.game.ui.colors.EyesColor;
 import ru.rdude.rpg.game.ui.colors.HairColor;
 import ru.rdude.rpg.game.ui.colors.SkinColor;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.rdude.rpg.game.utils.Functions;
 
 import static ru.rdude.rpg.game.ui.UiData.DEFAULT_SKIN;
 
 public class PlayerVisual extends VerticalGroup implements GameStateObserver {
-
-    private final static List<PlayerVisual> playerVisualList = new ArrayList<>();
 
     private final Player player;
 
@@ -52,7 +46,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
 
     public PlayerVisual(Player player, PlayerAvatar avatar) {
         Game.getCurrentGame().getGameStateHolder().subscribe(this);
-        playerVisualList.add(this);
+        Game.getCurrentGame().getItemsDragAndDrop().addPlayerArea(this);
         this.player = player;
         this.avatar = avatar;
         hpBar = new HpBar(player);
@@ -141,6 +135,27 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
         avatar.setEyesColor(EyesColor.values()[(int) resources.getEyesColorIndex()].getColor());
         avatar.setHairColor(HairColor.values()[(int) resources.getHairColorIndex()].getColor());
         return avatar;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public BackpackWindow getBackpackWindow() {
+        return backpackWindow;
+    }
+
+    public EquipmentWindow getEquipmentWindow() {
+        return equipmentWindow;
+    }
+
+    public boolean isHit() {
+        return
+                Functions.isMouseOver(this)
+                        || Functions.isMouseOver(backpackWindow)
+                        || Functions.isMouseOver(equipmentWindow)
+                        || Functions.isMouseOver(avatar)
+                        || Functions.isMouseOver(statsWindow);
     }
 
     @Override

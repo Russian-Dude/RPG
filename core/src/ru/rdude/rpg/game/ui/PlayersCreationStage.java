@@ -12,8 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
+import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 
@@ -88,6 +90,11 @@ public class PlayersCreationStage extends Stage {
                 Game.getGameVisual().addStage(map.getMapStage());
                 Game.getGameVisual().setUi(new UIStage(playerVisuals.toArray(PlayerVisual[]::new)));
                 Game.getCurrentGame().getGameStateHolder().setGameState(map);
+                // TODO: 14.06.2021 remove this test
+                for (ItemData itemData : ItemData.getItems().values()) {
+                    Game.getCurrentGame().getCurrentPlayers().getBeings().get(0)
+                            .receive(new Item(itemData));
+                }
             }
         });
         rightTable.add(startGameButton);

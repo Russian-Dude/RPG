@@ -11,16 +11,23 @@ BLKCHCRY
   orig: 506, 78
   offset: 0, 0
   index: -1
+ButtonAttack_Up
+  rotate: false
+  xy: 43, 12
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
 Button_Attack_Over
   rotate: false
-  xy: 1, 138
+  xy: 833, 836
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Button_Attack_Up
   rotate: false
-  xy: 43, 180
+  xy: 1, 138
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -97,28 +104,28 @@ Button_Horizontal_Yes_Up
   index: -1
 Button_Items_Over
   rotate: false
-  xy: 1, 96
+  xy: 85, 264
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Button_Items_Up
   rotate: false
-  xy: 43, 138
+  xy: 85, 222
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Button_Spells_Over
   rotate: false
-  xy: 1, 54
+  xy: 85, 180
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Button_Spells_Up
   rotate: false
-  xy: 43, 96
+  xy: 85, 138
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -197,9 +204,39 @@ Progress_Bar_Horizontal_V2_9p
   index: -1
 Progress_Bar_Knob_Red
   rotate: false
-  xy: 487, 757
+  xy: 123, 456
   size: 8, 50
   orig: 8, 50
+  offset: 0, 0
+  index: -1
+Slider_Background
+  rotate: false
+  xy: 509, 814
+  size: 20, 10
+  orig: 20, 10
+  offset: 0, 0
+  index: -1
+Slider_Background_9p
+  rotate: false
+  xy: 509, 814
+  size: 20, 10
+  split: 6, 6, 5, 4
+  orig: 20, 10
+  offset: 0, 0
+  index: -1
+Slider_Background_Vertical_9p
+  rotate: false
+  xy: 147, 527
+  size: 10, 20
+  split: 4, 4, 6, 5
+  orig: 10, 20
+  offset: 0, 0
+  index: -1
+Slider_Knob
+  rotate: false
+  xy: 487, 797
+  size: 10, 10
+  orig: 10, 10
   offset: 0, 0
   index: -1
 Slot_Amulet
@@ -302,49 +339,49 @@ Slot_Weapon
   index: -1
 Square_Button_Hover_Green
   rotate: false
-  xy: 1, 12
+  xy: 43, 180
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Square_Button_Hover_Neutral
   rotate: false
-  xy: 43, 54
+  xy: 1, 96
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Square_Button_Hover_Red
   rotate: false
-  xy: 43, 12
+  xy: 43, 138
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Square_Button_Pressed_Green
   rotate: false
-  xy: 833, 836
+  xy: 1, 54
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Square_Button_Pressed_Neutral
   rotate: false
-  xy: 85, 264
+  xy: 43, 96
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Square_Button_Pressed_Red
   rotate: false
-  xy: 85, 222
+  xy: 1, 12
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Square_Button_Up
   rotate: false
-  xy: 85, 180
+  xy: 43, 54
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
@@ -358,7 +395,7 @@ Text_Knob
   index: -1
 Text_Selection
   rotate: false
-  xy: 123, 466
+  xy: 85, 96
   size: 2, 40
   orig: 2, 40
   offset: 0, 0

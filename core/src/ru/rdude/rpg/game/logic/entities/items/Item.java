@@ -68,9 +68,13 @@ public class Item extends Entity {
         if (amount > MAX_AMOUNT) {
             int rest = amount - MAX_AMOUNT;
             amount = MAX_AMOUNT;
+            notifySubscribers();
             return rest;
         }
-        else return 0;
+        else {
+            notifySubscribers();
+            return 0;
+        }
     }
 
     @Override
@@ -80,10 +84,12 @@ public class Item extends Entity {
 
     public void decreaseAmount(int value) {
         amount -= value;
+        notifySubscribers();
     }
 
     public void setAmount(int value) {
         amount = value;
+        notifySubscribers();
     }
 
     public ItemData getItemData() {

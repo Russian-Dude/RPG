@@ -6,6 +6,7 @@ import ru.rdude.rpg.game.logic.entities.Entity;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.enums.ItemMainType;
 import ru.rdude.rpg.game.logic.enums.ItemType;
+import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.holders.Slot;
 import ru.rdude.rpg.game.logic.holders.SlotObserver;
 
@@ -23,18 +24,22 @@ public class ItemSlotVisual extends Group implements SlotObserver {
         background = new Image(UiData.DEFAULT_SKIN.getDrawable("Slot_" + getDrawableBackgroundName()));
         addActor(background);
         setSize(background.getWidth(), background.getHeight());
-        ItemDragAndDroper.addSlot(this);
+        Game.getCurrentGame().getItemsDragAndDrop().addSlot(this);
 
         Item inside = slot.getEntity();
         if (inside != null) {
-            ItemVisual itemVisual = ItemVisual.items.get(inside);
-            setItemVisual(itemVisual != null ? itemVisual : new ItemVisual(inside));
+            setItemVisual(ItemVisual.ofItem(inside));
         }
     }
 
     public void setItemVisual(ItemVisual itemVisual) {
+        if (itemVisual != null) {
+            addActor(itemVisual);
+        }
+        else {
+            removeActor(this.item);
+        }
         this.item = itemVisual;
-        addActor(itemVisual);
     }
 
     public Slot<Item> getSlot() {
@@ -69,8 +74,13 @@ public class ItemSlotVisual extends Group implements SlotObserver {
 
     @Override
     public void update(Slot<?> slot, Entity entity) {
-        if (this.slot == slot && entity instanceof Item) {
-            setItemVisual(ItemVisual.items.get(entity));
+        if (this.slot == slot) {
+            if (entity instanceof Item) {
+                setItemVisual(ItemVisual.ofItem((Item) entity));
+            }
+            else {
+                setItemVisual(null);
+            }
         }
     }
 }

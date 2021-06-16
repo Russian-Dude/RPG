@@ -52,7 +52,7 @@ public class SkillUser {
             allies = ((Battle) gameState).getAllySide(caster);
             enemies = ((Battle) gameState).getEnemySide(caster);
         } else if (gameState instanceof Camp || gameState instanceof Map) {
-            allies = gameState.getPlayerSide();
+            allies = Game.getCurrentGame().getCurrentPlayers();
         }
 
         allBeings = Stream.concat(allies.stream(), enemies.stream()).collect(Collectors.toList());
@@ -111,7 +111,7 @@ public class SkillUser {
         if (gameState instanceof Battle) {
             mainTargetParty = ((Battle) gameState).getAllySide(mainTarget);
         } else if (gameState instanceof Camp || gameState instanceof Map) {
-            Party p = gameState.getPlayerSide();
+            Party p = Game.getCurrentGame().getCurrentPlayers();
             if (p != null) mainTargetParty = p;
         }
 

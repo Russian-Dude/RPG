@@ -8,8 +8,8 @@ import java.util.Set;
 public abstract class Stat implements Comparable<Stat>, StatObserver {
 
     protected Set<StatObserver> subscribers;
-    private double value;
-    private Map<String, Double> buffs;
+    protected double value;
+    protected Map<String, Double> buffs;
 
     public Stat() {
         this(0);
@@ -22,14 +22,6 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
     }
 
     public abstract String getName();
-
-    public void addBuffClass(String className) {
-        buffs.put(className, 0d);
-    }
-
-    public void addBuffClass(Class<?> clazz) {
-        addBuffClass(clazz.getSimpleName());
-    }
 
     public double increase(double value) {
         if (value == 0) return this.value();
@@ -71,9 +63,7 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
     }
 
     public void increaseBuffValue(String className, double value) {
-        if (!buffs.containsKey(className))
-            throw new IllegalArgumentException(" class is not presented as buff field");
-        buffs.put(className, buffs.get(className) + value);
+        buffs.merge(className, value, Double::sum);
         notifySubscribers();
     }
 
@@ -90,8 +80,6 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
     }
 
     public void setBuffValue(String className, double value) {
-        if (!buffs.containsKey(className))
-            throw new IllegalArgumentException(className + " class is not presented as buff field");
         buffs.put(className, value);
         notifySubscribers();
     }
@@ -101,9 +89,7 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
     }
 
     public double getBuffValue(String className) {
-        if (!buffs.containsKey(className))
-            throw new IllegalArgumentException(className + " class is not presented as buff field");
-        return buffs.get(className);
+        return buffs.getOrDefault(className, 0d);
     }
 
     public Map<String, Double> getBuffs() {

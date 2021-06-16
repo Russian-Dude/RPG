@@ -3,7 +3,6 @@ package ru.rdude.rpg.game.logic;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
-import ru.rdude.rpg.game.logic.entities.skills.Damage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,7 +24,12 @@ public class GameLogger {
     }
 
     public void log(Being caster, Being target, SkillData skill) {
-        log(caster.getName() + " used " + skill.getName() + ". Target is " + target.getName());
+        if (caster == target) {
+            log(caster.getName() + " used " + skill.getName());
+        }
+        else {
+            log(caster.getName() + " used " + skill.getName() + ". Target is " + target.getName());
+        }
     }
 
     public void log(Being caster, SkillData skill) {

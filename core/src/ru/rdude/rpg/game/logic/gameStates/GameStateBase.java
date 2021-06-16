@@ -2,7 +2,6 @@ package ru.rdude.rpg.game.logic.gameStates;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import ru.rdude.rpg.game.logic.entities.beings.Party;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -14,9 +13,4 @@ import ru.rdude.rpg.game.logic.entities.beings.Party;
 })
 public abstract class GameStateBase {
 
-    protected Party playerSide;
-
-    public Party getPlayerSide() {
-        return playerSide;
-    }
 }

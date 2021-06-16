@@ -1,6 +1,11 @@
 package ru.rdude.rpg.game.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.RandomXS128;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -9,7 +14,6 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 public class Functions {
 
@@ -121,6 +125,32 @@ public class Functions {
 
     public static String trimPath(String string) {
         return string.substring(Math.max(string.lastIndexOf("/"), string.lastIndexOf("\\")) + 1);
+    }
+
+    public static boolean isMouseOver(Stage stage) {
+        Vector2 stageCoordinates = stage.screenToStageCoordinates(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+        return stage.hit(stageCoordinates.x, stageCoordinates.y, true) != null;
+    }
+
+    public static boolean isMouseOver(Actor actor) {
+        final Stage stage = actor.getStage();
+        if (stage == null) {
+            return false;
+        }
+        final Vector2 actorCoordinates = actor instanceof Window ?
+                actor.getStage().stageToScreenCoordinates(new Vector2(actor.getX(), actor.getY())) :
+                actor.localToScreenCoordinates(new Vector2(actor.getX(), actor.getY()));
+
+        float actorX = actorCoordinates.x;
+        float actorY = actorCoordinates.y;
+        float x = Gdx.input.getX();
+        float y = Gdx.input.getY();
+
+        return
+                x >= actorX
+                && x <= actorX + actor.getWidth()
+                && y <= actorY
+                && y >= actorY - actor.getHeight();
     }
 
     public static class RandomCollectorList<T> implements Collector<T, List<T>, List<T>> {

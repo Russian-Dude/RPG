@@ -3,11 +3,8 @@ package ru.rdude.rpg.game.logic.data.io;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.data.Module;
-import ru.rdude.rpg.game.logic.data.MonsterData;
-import ru.rdude.rpg.game.logic.data.SkillData;
-import ru.rdude.rpg.game.logic.game.Game;
+import ru.rdude.rpg.game.logic.data.*;
 import ru.rdude.rpg.game.ui.ItemImageFactory;
 
 import java.io.BufferedInputStream;
@@ -20,15 +17,12 @@ import java.util.zip.ZipInputStream;
 
 public class ModuleFileLoader {
 
-    private static ModuleFileLoader currentLoader;
-
     private GameJsonSerializer gameJsonSerializer;
     private ItemImageFactory itemImageFactory;
 
     public ModuleFileLoader(GameJsonSerializer gameJsonSerializer, ItemImageFactory itemImageFactory) {
         this.gameJsonSerializer = gameJsonSerializer;
         this.itemImageFactory = itemImageFactory;
-        currentLoader = this;
         load();
     }
 
@@ -47,13 +41,16 @@ public class ModuleFileLoader {
                 while ((entry = zipInputStream.getNextEntry()) != null) {
 
                     // main module logic file
-                    if (!entry.isDirectory() && entry.getName().equals("moduledata")) {
+                    if (!entry.isDirectory() && entry.getName().equals("module")) {
                         String jsonString = new String(bufferedInputStream.readAllBytes());
                         Module module = gameJsonSerializer.deSerializeModule(jsonString);
                         // store entities
                         ItemData.storeItems(module.getItemData());
                         SkillData.storeSkills(module.getSkillData());
                         MonsterData.storeMonsters(module.getMonsterData());
+                        EventData.storeEvents(module.getEventData());
+                        QuestData.storeQuests(module.getQuestData());
+                        //PlayerClassData.storeClasses(module.getPlayerClassData());
                     }
 
                     // images
@@ -69,7 +66,7 @@ public class ModuleFileLoader {
         }
 
         // store atlas regions
-        FileHandle[] atlasTextFiles = Gdx.files.local("temp\\images").list(".txt");
+        FileHandle[] atlasTextFiles = Gdx.files.local("temp\\images").list(".atlas");
         for (FileHandle atlasTextFile : atlasTextFiles) {
             TextureAtlas textureAtlas = new TextureAtlas(atlasTextFile);
             textureAtlas.getRegions().forEach(region -> itemImageFactory.addRegion(region));

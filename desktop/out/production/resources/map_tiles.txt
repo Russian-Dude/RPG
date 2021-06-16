@@ -1,1572 +1,1957 @@
 map_tiles.png
-size: 3840, 3456
+size: 4096, 4096
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest,Nearest
 repeat: none
 BRICK
   rotate: false
-  xy: 0, 0
+  xy: 2, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+BRIDGE_NE-SE
+  rotate: false
+  xy: 136, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 BRIDGE_NE_NW
   rotate: false
-  xy: 128, 0
+  xy: 270, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+BRIDGE_NN-NE
+  rotate: false
+  xy: 404, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 BRIDGE_NN_SE
   rotate: false
-  xy: 256, 0
+  xy: 538, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+BRIDGE_NW-NN
+  rotate: false
+  xy: 672, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 BRIDGE_NW-SE
   rotate: false
-  xy: 384, 0
+  xy: 806, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+BRIDGE_NW-SW
+  rotate: false
+  xy: 940, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+BRIDGE_SS-SE
+  rotate: false
+  xy: 1074, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 BRIDGE_SS_NE
   rotate: false
-  xy: 512, 0
+  xy: 1208, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 BRIDGE_SS_NN
   rotate: false
-  xy: 640, 0
+  xy: 1342, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 BRIDGE_SS_NW
   rotate: false
-  xy: 768, 0
+  xy: 1476, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+BRIDGE_SW-SS
+  rotate: false
+  xy: 1610, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 BRIDGE_SW_NE
   rotate: false
-  xy: 896, 0
+  xy: 1744, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 BRIDGE_SW_NN
   rotate: false
-  xy: 1024, 0
+  xy: 1878, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 BRIDGE_SW_SE
   rotate: false
-  xy: 1152, 0
+  xy: 2012, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
+CITY
+  rotate: false
+  xy: 2682, 270
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 DEADLAND
   rotate: false
-  xy: 1280, 0
+  xy: 2146, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 DEADLAND_FOREST_FULL1
   rotate: false
-  xy: 128, 128
+  xy: 2944, 270
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_FOREST_FULL2
   rotate: false
-  xy: 384, 128
+  xy: 3206, 270
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_FOREST_FULL3
   rotate: false
-  xy: 640, 128
+  xy: 3468, 270
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_FOREST_HALF1
   rotate: false
-  xy: 896, 128
+  xy: 3730, 270
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_FOREST_HALF2
   rotate: false
-  xy: 1152, 128
+  xy: 2, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_FOREST_HALF3
   rotate: false
-  xy: 1408, 128
+  xy: 264, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_FOREST_QUARTER1
   rotate: false
-  xy: 1664, 128
+  xy: 526, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_FOREST_QUARTER2
   rotate: false
-  xy: 1920, 128
+  xy: 788, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_FOREST_QUARTER3
   rotate: false
-  xy: 2176, 128
+  xy: 1050, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_FOREST_SIDE1
   rotate: false
-  xy: 2432, 128
+  xy: 1312, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_FOREST_SIDE2
   rotate: false
-  xy: 2688, 128
+  xy: 1574, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_FOREST_SIDE3
   rotate: false
-  xy: 2944, 128
+  xy: 1836, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_MOUNTAINS_FULL1
   rotate: false
-  xy: 3200, 128
+  xy: 2098, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_MOUNTAINS_FULL2
   rotate: false
-  xy: 3456, 128
+  xy: 2360, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_MOUNTAINS_FULL3
   rotate: false
-  xy: 0, 384
+  xy: 2622, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_MOUNTAINS_HALF1
   rotate: false
-  xy: 256, 384
+  xy: 2884, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_MOUNTAINS_HALF2
   rotate: false
-  xy: 512, 384
+  xy: 3146, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_MOUNTAINS_HALF3
   rotate: false
-  xy: 768, 384
+  xy: 3408, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_MOUNTAINS_QUARTER1
   rotate: false
-  xy: 1024, 384
+  xy: 3670, 532
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_MOUNTAINS_QUARTER2
   rotate: false
-  xy: 1280, 384
+  xy: 2, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_MOUNTAINS_QUARTER3
   rotate: false
-  xy: 1536, 384
+  xy: 264, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_MOUNTAINS_SIDE1
   rotate: false
-  xy: 1792, 384
+  xy: 526, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_MOUNTAINS_SIDE2
   rotate: false
-  xy: 2048, 384
+  xy: 788, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DEADLAND_MOUNTAINS_SIDE3
   rotate: false
-  xy: 2304, 384
+  xy: 1050, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT
   rotate: false
-  xy: 1408, 0
+  xy: 2280, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 DIRT_FOREST_ANY
   rotate: false
-  xy: 2560, 384
+  xy: 1312, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_FOREST_FULL1
   rotate: false
-  xy: 2816, 384
+  xy: 1574, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_FOREST_FULL2
   rotate: false
-  xy: 3072, 384
+  xy: 1836, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_FOREST_FULL3
   rotate: false
-  xy: 3328, 384
+  xy: 2098, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_FOREST_HALF1
   rotate: false
-  xy: 3584, 384
+  xy: 2360, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_FOREST_HALF2
   rotate: false
-  xy: 0, 640
+  xy: 2622, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_FOREST_HALF3
   rotate: false
-  xy: 256, 640
+  xy: 2884, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_FOREST_QUARTER1
   rotate: false
-  xy: 512, 640
+  xy: 3146, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_FOREST_QUARTER2
   rotate: false
-  xy: 768, 640
+  xy: 3408, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_FOREST_QUARTER3
   rotate: false
-  xy: 1024, 640
+  xy: 3670, 794
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_FOREST_SIDE1
   rotate: false
-  xy: 1280, 640
+  xy: 2, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_FOREST_SIDE2
   rotate: false
-  xy: 1536, 640
+  xy: 264, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_FOREST_SIDE3
   rotate: false
-  xy: 1792, 640
+  xy: 526, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_MOUNTAINS_FULL1
   rotate: false
-  xy: 2048, 640
+  xy: 788, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_MOUNTAINS_FULL2
   rotate: false
-  xy: 2304, 640
+  xy: 1050, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_MOUNTAINS_FULL3
   rotate: false
-  xy: 2560, 640
+  xy: 1312, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_MOUNTAINS_HALF1
   rotate: false
-  xy: 2816, 640
+  xy: 1574, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_MOUNTAINS_HALF2
   rotate: false
-  xy: 3072, 640
+  xy: 1836, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_MOUNTAINS_HALF3
   rotate: false
-  xy: 3328, 640
+  xy: 2098, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_MOUNTAINS_QUARTER1
   rotate: false
-  xy: 3584, 640
+  xy: 2360, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_MOUNTAINS_QUARTER2
   rotate: false
-  xy: 0, 896
+  xy: 2622, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_MOUNTAINS_QUARTER3
   rotate: false
-  xy: 256, 896
+  xy: 2884, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_MOUNTAINS_SIDE1
   rotate: false
-  xy: 512, 896
+  xy: 3146, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_MOUNTAINS_SIDE2
   rotate: false
-  xy: 768, 896
+  xy: 3408, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 DIRT_MOUNTAINS_SIDE3
   rotate: false
-  xy: 1024, 896
+  xy: 3670, 1056
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
+EMPTY
+  rotate: false
+  xy: 2414, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
 GRASS
   rotate: false
-  xy: 1536, 0
+  xy: 2548, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 GRASS_FOREST_FULL1
   rotate: false
-  xy: 1280, 896
+  xy: 2, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_FOREST_FULL2
   rotate: false
-  xy: 1536, 896
+  xy: 264, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_FOREST_FULL3
   rotate: false
-  xy: 1792, 896
+  xy: 526, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_FOREST_HALF1
   rotate: false
-  xy: 2048, 896
+  xy: 788, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_FOREST_HALF2
   rotate: false
-  xy: 2304, 896
+  xy: 1050, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_FOREST_HALF3
   rotate: false
-  xy: 2560, 896
+  xy: 1312, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_FOREST_QUARTER1
   rotate: false
-  xy: 2816, 896
+  xy: 1574, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_FOREST_QUARTER2
   rotate: false
-  xy: 3072, 896
+  xy: 1836, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_FOREST_QUARTER3
   rotate: false
-  xy: 3328, 896
+  xy: 2098, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_FOREST_SIDE1
   rotate: false
-  xy: 3584, 896
+  xy: 2360, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_FOREST_SIDE2
   rotate: false
-  xy: 0, 1152
+  xy: 2622, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_FOREST_SIDE3
   rotate: false
-  xy: 256, 1152
+  xy: 2884, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_MOUNTAINS_FULL1
   rotate: false
-  xy: 512, 1152
+  xy: 3146, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_MOUNTAINS_FULL2
   rotate: false
-  xy: 768, 1152
+  xy: 3408, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_MOUNTAINS_FULL3
   rotate: false
-  xy: 1024, 1152
+  xy: 3670, 1318
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_MOUNTAINS_HALF1
   rotate: false
-  xy: 1280, 1152
+  xy: 2, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_MOUNTAINS_HALF2
   rotate: false
-  xy: 1536, 1152
+  xy: 264, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_MOUNTAINS_HALF3
   rotate: false
-  xy: 1792, 1152
+  xy: 526, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_MOUNTAINS_QUARTER1
   rotate: false
-  xy: 2048, 1152
+  xy: 788, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_MOUNTAINS_QUARTER2
   rotate: false
-  xy: 2304, 1152
+  xy: 1050, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_MOUNTAINS_QUARTER3
   rotate: false
-  xy: 2560, 1152
+  xy: 1312, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_MOUNTAINS_SIDE1
   rotate: false
-  xy: 2816, 1152
+  xy: 1574, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_MOUNTAINS_SIDE2
   rotate: false
-  xy: 3072, 1152
+  xy: 1836, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 GRASS_MOUNTAINS_SIDE3
   rotate: false
-  xy: 3328, 1152
+  xy: 2098, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE
   rotate: false
-  xy: 1664, 0
+  xy: 2682, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 JUNGLE_FOREST_FULL1
   rotate: false
-  xy: 3584, 1152
+  xy: 2360, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_FOREST_FULL2
   rotate: false
-  xy: 0, 1408
+  xy: 2622, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_FOREST_FULL3
   rotate: false
-  xy: 256, 1408
+  xy: 2884, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_FOREST_HALF1
   rotate: false
-  xy: 512, 1408
+  xy: 3146, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_FOREST_HALF2
   rotate: false
-  xy: 768, 1408
+  xy: 3408, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_FOREST_HALF3
   rotate: false
-  xy: 1024, 1408
+  xy: 3670, 1580
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_FOREST_QUARTER1
   rotate: false
-  xy: 1280, 1408
+  xy: 2, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_FOREST_QUARTER2
   rotate: false
-  xy: 1536, 1408
+  xy: 264, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_FOREST_QUARTER3
   rotate: false
-  xy: 1792, 1408
+  xy: 526, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_FOREST_SIDE1
   rotate: false
-  xy: 2048, 1408
+  xy: 788, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_FOREST_SIDE2
   rotate: false
-  xy: 2304, 1408
+  xy: 1050, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_FOREST_SIDE3
   rotate: false
-  xy: 2560, 1408
+  xy: 1312, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_MOUNTAINS_FULL1
   rotate: false
-  xy: 2816, 1408
+  xy: 1574, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_MOUNTAINS_FULL2
   rotate: false
-  xy: 3072, 1408
+  xy: 1836, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_MOUNTAINS_FULL3
   rotate: false
-  xy: 3328, 1408
+  xy: 2098, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_MOUNTAINS_HALF1
   rotate: false
-  xy: 3584, 1408
+  xy: 2360, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_MOUNTAINS_HALF2
   rotate: false
-  xy: 0, 1664
+  xy: 2622, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_MOUNTAINS_HALF3
   rotate: false
-  xy: 256, 1664
+  xy: 2884, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_MOUNTAINS_QUARTER1
   rotate: false
-  xy: 512, 1664
+  xy: 3146, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_MOUNTAINS_QUARTER2
   rotate: false
-  xy: 768, 1664
+  xy: 3408, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_MOUNTAINS_QUARTER3
   rotate: false
-  xy: 1024, 1664
+  xy: 3670, 1842
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_MOUNTAINS_SIDE1
   rotate: false
-  xy: 1280, 1664
+  xy: 2, 2104
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_MOUNTAINS_SIDE2
   rotate: false
-  xy: 1536, 1664
+  xy: 264, 2104
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 JUNGLE_MOUNTAINS_SIDE3
   rotate: false
-  xy: 1792, 1664
+  xy: 526, 2104
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
+MAP_AVATAR1
+  rotate: false
+  xy: 788, 2104
+  size: 160, 256
+  orig: 160, 256
+  offset: 0, 0
+  index: -1
+MAP_AVATAR2
+  rotate: false
+  xy: 954, 2104
+  size: 160, 256
+  orig: 160, 256
+  offset: 0, 0
+  index: -1
+MAP_AVATAR3
+  rotate: false
+  xy: 1120, 2104
+  size: 160, 256
+  orig: 160, 256
+  offset: 0, 0
+  index: -1
+MAP_AVATAR4
+  rotate: false
+  xy: 1286, 2104
+  size: 160, 256
+  orig: 160, 256
+  offset: 0, 0
+  index: -1
+MAP_AVATAR5
+  rotate: false
+  xy: 1452, 2104
+  size: 160, 256
+  orig: 160, 256
+  offset: 0, 0
+  index: -1
+ROAD_NE-CENTER
+  rotate: false
+  xy: 2816, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
 ROAD_NE-NW
   rotate: false
-  xy: 1792, 0
+  xy: 2950, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_NE-SS
+  rotate: false
+  xy: 3084, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_NN-CENTER
+  rotate: false
+  xy: 3218, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_NN-NE
+  rotate: false
+  xy: 3352, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_NN-NW
+  rotate: false
+  xy: 3486, 2
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 ROAD_NN-SE
   rotate: false
-  xy: 1920, 0
+  xy: 3620, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_NN-SS
+  rotate: false
+  xy: 3754, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_NN-SW
+  rotate: false
+  xy: 3888, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_NW-CENTER
+  rotate: false
+  xy: 2, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_NW-NE
+  rotate: false
+  xy: 136, 136
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 ROAD_NW-SE
   rotate: false
-  xy: 2048, 0
+  xy: 270, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_NW-SS
+  rotate: false
+  xy: 404, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_NW-SW
+  rotate: false
+  xy: 538, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_SE-CENTER
+  rotate: false
+  xy: 672, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_SE-NE
+  rotate: false
+  xy: 806, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_SE-NN
+  rotate: false
+  xy: 940, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_SE-NW
+  rotate: false
+  xy: 1074, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_SE-SW
+  rotate: false
+  xy: 1208, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_SS-CENTER
+  rotate: false
+  xy: 1342, 136
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 ROAD_SS-NE
   rotate: false
-  xy: 2176, 0
+  xy: 1476, 136
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 ROAD_SS-NN
   rotate: false
-  xy: 2304, 0
+  xy: 1610, 136
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 ROAD_SS-NW
   rotate: false
-  xy: 2432, 0
+  xy: 1744, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_SS-SE
+  rotate: false
+  xy: 1878, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_SS-SW
+  rotate: false
+  xy: 2012, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+ROAD_SW-CENTER
+  rotate: false
+  xy: 2146, 136
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 ROAD_SW-NE
   rotate: false
-  xy: 2560, 0
+  xy: 2280, 136
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 ROAD_SW-NN
   rotate: false
-  xy: 2688, 0
+  xy: 2414, 136
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 ROAD_SW-SE
   rotate: false
-  xy: 2816, 0
+  xy: 2548, 136
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SAND
   rotate: false
-  xy: 2944, 0
+  xy: 2682, 136
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SAND_FOREST_FULL1
   rotate: false
-  xy: 2048, 1664
+  xy: 1618, 2104
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_FOREST_FULL2
   rotate: false
-  xy: 2304, 1664
+  xy: 1880, 2104
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_FOREST_FULL3
   rotate: false
-  xy: 2560, 1664
+  xy: 2142, 2104
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_FOREST_HALF1
   rotate: false
-  xy: 2816, 1664
+  xy: 2404, 2104
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_FOREST_HALF2
   rotate: false
-  xy: 3072, 1664
+  xy: 2666, 2104
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_FOREST_HALF3
   rotate: false
-  xy: 3328, 1664
+  xy: 2928, 2104
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_FOREST_QUARTER1
   rotate: false
-  xy: 3584, 1664
+  xy: 3190, 2104
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_FOREST_QUARTER2
   rotate: false
-  xy: 0, 1920
+  xy: 3452, 2104
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_FOREST_QUARTER3
   rotate: false
-  xy: 256, 1920
+  xy: 3714, 2104
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_FOREST_SIDE1
   rotate: false
-  xy: 512, 1920
+  xy: 2, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_FOREST_SIDE2
   rotate: false
-  xy: 768, 1920
+  xy: 264, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_FOREST_SIDE3
   rotate: false
-  xy: 1024, 1920
+  xy: 526, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_MOUNTAINS_FULL1
   rotate: false
-  xy: 1280, 1920
+  xy: 788, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_MOUNTAINS_FULL2
   rotate: false
-  xy: 1536, 1920
+  xy: 1050, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_MOUNTAINS_FULL3
   rotate: false
-  xy: 1792, 1920
+  xy: 1312, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_MOUNTAINS_HALF1
   rotate: false
-  xy: 2048, 1920
+  xy: 1574, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_MOUNTAINS_HALF2
   rotate: false
-  xy: 2304, 1920
+  xy: 1836, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_MOUNTAINS_HALF3
   rotate: false
-  xy: 2560, 1920
+  xy: 2098, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_MOUNTAINS_QUARTER1
   rotate: false
-  xy: 2816, 1920
+  xy: 2360, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_MOUNTAINS_QUARTER2
   rotate: false
-  xy: 3072, 1920
+  xy: 2622, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_MOUNTAINS_QUARTER3
   rotate: false
-  xy: 3328, 1920
+  xy: 2884, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_MOUNTAINS_SIDE1
   rotate: false
-  xy: 3584, 1920
+  xy: 3146, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_MOUNTAINS_SIDE2
   rotate: false
-  xy: 0, 2176
+  xy: 3408, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SAND_MOUNTAINS_SIDE3
   rotate: false
-  xy: 256, 2176
+  xy: 3670, 2366
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW
   rotate: false
-  xy: 3072, 0
+  xy: 2816, 136
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SNOW_FOREST_FULL1
   rotate: false
-  xy: 512, 2176
+  xy: 2, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_FOREST_FULL2
   rotate: false
-  xy: 768, 2176
+  xy: 264, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_FOREST_FULL3
   rotate: false
-  xy: 1024, 2176
+  xy: 526, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_FOREST_HALF1
   rotate: false
-  xy: 1280, 2176
+  xy: 788, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_FOREST_HALF2
   rotate: false
-  xy: 1536, 2176
+  xy: 1050, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_FOREST_HALF3
   rotate: false
-  xy: 1792, 2176
+  xy: 1312, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_FOREST_QUARTER1
   rotate: false
-  xy: 2048, 2176
+  xy: 1574, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_FOREST_QUARTER2
   rotate: false
-  xy: 2304, 2176
+  xy: 1836, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_FOREST_QUARTER3
   rotate: false
-  xy: 2560, 2176
+  xy: 2098, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_FOREST_SIDE1
   rotate: false
-  xy: 2816, 2176
+  xy: 2360, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_FOREST_SIDE2
   rotate: false
-  xy: 3072, 2176
+  xy: 2622, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_FOREST_SIDE3
   rotate: false
-  xy: 3328, 2176
+  xy: 2884, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_MOUNTAINS_FULL1
   rotate: false
-  xy: 3584, 2176
+  xy: 3146, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_MOUNTAINS_FULL2
   rotate: false
-  xy: 0, 2432
+  xy: 3408, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_MOUNTAINS_FULL3
   rotate: false
-  xy: 256, 2432
+  xy: 3670, 2628
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_MOUNTAINS_HALF1
   rotate: false
-  xy: 512, 2432
+  xy: 2, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_MOUNTAINS_HALF2
   rotate: false
-  xy: 768, 2432
+  xy: 264, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_MOUNTAINS_HALF3
   rotate: false
-  xy: 1024, 2432
+  xy: 526, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_MOUNTAINS_QUARTER1
   rotate: false
-  xy: 1280, 2432
+  xy: 788, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_MOUNTAINS_QUARTER2
   rotate: false
-  xy: 1536, 2432
+  xy: 1050, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_MOUNTAINS_QUARTER3
   rotate: false
-  xy: 1792, 2432
+  xy: 1312, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_MOUNTAINS_SIDE1
   rotate: false
-  xy: 2048, 2432
+  xy: 1574, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_MOUNTAINS_SIDE2
   rotate: false
-  xy: 2304, 2432
+  xy: 1836, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SNOW_MOUNTAINS_SIDE3
   rotate: false
-  xy: 2560, 2432
+  xy: 2098, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP
   rotate: false
-  xy: 3200, 0
+  xy: 2950, 136
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 SWAMP_FOREST_FULL1
   rotate: false
-  xy: 2816, 2432
+  xy: 2360, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_FOREST_FULL2
   rotate: false
-  xy: 3072, 2432
+  xy: 2622, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_FOREST_FULL3
   rotate: false
-  xy: 3328, 2432
+  xy: 2884, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_FOREST_HALF1
   rotate: false
-  xy: 3584, 2432
+  xy: 3146, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_FOREST_HALF2
   rotate: false
-  xy: 0, 2688
+  xy: 3408, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_FOREST_HALF3
   rotate: false
-  xy: 256, 2688
+  xy: 3670, 2890
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_FOREST_QUARTER1
   rotate: false
-  xy: 512, 2688
+  xy: 2, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_FOREST_QUARTER2
   rotate: false
-  xy: 768, 2688
+  xy: 264, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_FOREST_QUARTER3
   rotate: false
-  xy: 1024, 2688
+  xy: 526, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_FOREST_SIDE1
   rotate: false
-  xy: 1280, 2688
+  xy: 788, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_FOREST_SIDE2
   rotate: false
-  xy: 1536, 2688
+  xy: 1050, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_FOREST_SIDE3
   rotate: false
-  xy: 1792, 2688
+  xy: 1312, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_MOUNTAINS_FULL1
   rotate: false
-  xy: 2048, 2688
+  xy: 1574, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_MOUNTAINS_FULL2
   rotate: false
-  xy: 2304, 2688
+  xy: 1836, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_MOUNTAINS_FULL3
   rotate: false
-  xy: 2560, 2688
+  xy: 2098, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_MOUNTAINS_HALF1
   rotate: false
-  xy: 2816, 2688
+  xy: 2360, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_MOUNTAINS_HALF2
   rotate: false
-  xy: 3072, 2688
+  xy: 2622, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_MOUNTAINS_HALF3
   rotate: false
-  xy: 3328, 2688
+  xy: 2884, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_MOUNTAINS_QUARTER1
   rotate: false
-  xy: 3584, 2688
+  xy: 3146, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_MOUNTAINS_QUARTER2
   rotate: false
-  xy: 0, 2944
+  xy: 3408, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_MOUNTAINS_QUARTER3
   rotate: false
-  xy: 256, 2944
+  xy: 3670, 3152
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_MOUNTAINS_SIDE1
   rotate: false
-  xy: 512, 2944
+  xy: 2, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_MOUNTAINS_SIDE2
   rotate: false
-  xy: 768, 2944
+  xy: 264, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 SWAMP_MOUNTAINS_SIDE3
   rotate: false
-  xy: 1024, 2944
+  xy: 526, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOID
   rotate: false
-  xy: 3328, 0
+  xy: 3084, 136
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 VOLCANIC
   rotate: false
-  xy: 3456, 0
+  xy: 3218, 136
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 VOLCANIC_FOREST_FULL1
   rotate: false
-  xy: 1280, 2944
+  xy: 788, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_FOREST_FULL2
   rotate: false
-  xy: 1536, 2944
+  xy: 1050, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_FOREST_FULL3
   rotate: false
-  xy: 1792, 2944
+  xy: 1312, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_FOREST_HALF1
   rotate: false
-  xy: 2048, 2944
+  xy: 1574, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_FOREST_HALF2
   rotate: false
-  xy: 2304, 2944
+  xy: 1836, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_FOREST_HALF3
   rotate: false
-  xy: 2560, 2944
+  xy: 2098, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_FOREST_QUARTER1
   rotate: false
-  xy: 2816, 2944
+  xy: 2360, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_FOREST_QUARTER2
   rotate: false
-  xy: 3072, 2944
+  xy: 2622, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_FOREST_QUARTER3
   rotate: false
-  xy: 3328, 2944
+  xy: 2884, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_FOREST_SIDE1
   rotate: false
-  xy: 3584, 2944
+  xy: 3146, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_FOREST_SIDE2
   rotate: false
-  xy: 0, 3200
+  xy: 3408, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_FOREST_SIDE3
   rotate: false
-  xy: 256, 3200
+  xy: 3670, 3414
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_MOUNTAINS_FULL1
   rotate: false
-  xy: 512, 3200
+  xy: 2, 3676
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_MOUNTAINS_FULL2
   rotate: false
-  xy: 768, 3200
+  xy: 264, 3676
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_MOUNTAINS_FULL3
   rotate: false
-  xy: 1024, 3200
+  xy: 526, 3676
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_MOUNTAINS_HALF1
   rotate: false
-  xy: 1280, 3200
+  xy: 788, 3676
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_MOUNTAINS_HALF2
   rotate: false
-  xy: 1536, 3200
+  xy: 1050, 3676
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_MOUNTAINS_HALF3
   rotate: false
-  xy: 1792, 3200
+  xy: 1312, 3676
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_MOUNTAINS_QUARTER1
   rotate: false
-  xy: 2048, 3200
+  xy: 1574, 3676
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_MOUNTAINS_QUARTER2
   rotate: false
-  xy: 2304, 3200
+  xy: 1836, 3676
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_MOUNTAINS_QUARTER3
   rotate: false
-  xy: 2560, 3200
+  xy: 2098, 3676
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_MOUNTAINS_SIDE1
   rotate: false
-  xy: 2816, 3200
+  xy: 2360, 3676
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_MOUNTAINS_SIDE2
   rotate: false
-  xy: 3072, 3200
+  xy: 2622, 3676
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 VOLCANIC_MOUNTAINS_SIDE3
   rotate: false
-  xy: 3328, 3200
+  xy: 2884, 3676
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
+WALKING_CENTER-NE
+  rotate: false
+  xy: 3352, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_CENTER-SW
+  rotate: false
+  xy: 3486, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_NN-CENTER
+  rotate: false
+  xy: 3620, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_NN-NE
+  rotate: false
+  xy: 3754, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_NN-SS
+  rotate: false
+  xy: 3888, 136
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_NW-CENTER
+  rotate: false
+  xy: 2, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_NW-NE
+  rotate: false
+  xy: 136, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_NW-NN
+  rotate: false
+  xy: 270, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_NW-SE
+  rotate: false
+  xy: 404, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_POINT
+  rotate: false
+  xy: 538, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_SE-CENTER
+  rotate: false
+  xy: 672, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_SE-NE
+  rotate: false
+  xy: 806, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_SE-NN
+  rotate: false
+  xy: 940, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_SE-SS
+  rotate: false
+  xy: 1074, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_SE-SW
+  rotate: false
+  xy: 1208, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_SS-CENTER
+  rotate: false
+  xy: 1342, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_SS-NE
+  rotate: false
+  xy: 1476, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_SS-NW
+  rotate: false
+  xy: 1610, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_SW-NE
+  rotate: false
+  xy: 1744, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_SW-NN
+  rotate: false
+  xy: 1878, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_SW-NW
+  rotate: false
+  xy: 2012, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+WALKING_SW-SS
+  rotate: false
+  xy: 2146, 270
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
 WATER
   rotate: false
-  xy: 3584, 0
+  xy: 2280, 270
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 WATER_DEEP
   rotate: false
-  xy: 3712, 0
+  xy: 2414, 270
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 WATER_SMALL
   rotate: false
-  xy: 0, 128
+  xy: 2548, 270
   size: 128, 128
   orig: 128, 128
   offset: 0, 0

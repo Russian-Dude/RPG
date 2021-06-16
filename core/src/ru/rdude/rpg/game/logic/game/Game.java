@@ -1,6 +1,5 @@
 package ru.rdude.rpg.game.logic.game;
 
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.rdude.rpg.game.logic.GameLogger;
@@ -16,6 +15,7 @@ import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.time.TimeManager;
 import ru.rdude.rpg.game.ui.AvatarCreator;
+import ru.rdude.rpg.game.ui.ItemDragAndDroper;
 import ru.rdude.rpg.game.ui.ItemImageFactory;
 import ru.rdude.rpg.game.ui.MapInfo;
 import ru.rdude.rpg.game.visual.GameVisual;
@@ -34,12 +34,13 @@ public class Game {
 
     @JsonIgnore
     private final GameLogger gameLogger;
+    @JsonIgnore
+    private final ItemDragAndDroper itemsDragAndDrop;
     private TimeManager timeManager;
     private final GameStateHolder gameStateHolder;
     private Map gameMap;
     private Party currentPlayers;
 
-    private static final DragAndDrop itemsDragAndDrop = new DragAndDrop();
     private static final AvatarCreator avatarCreator = new AvatarCreator();
     private static final ItemImageFactory itemImageFactory = new ItemImageFactory();
     private static final MonsterFactory monsterFactory = new MonsterFactory();
@@ -54,6 +55,7 @@ public class Game {
     private static java.util.Map<Long, MapInfo> mapFiles = new HashMap<>();
 
     public Game() {
+        this.itemsDragAndDrop = new ItemDragAndDroper();
         this.gameLogger = new GameLogger();
         this.gameStateHolder = new GameStateHolder();
         this.timeManager = new TimeManager();
@@ -73,10 +75,6 @@ public class Game {
 
     public static GameVisual getGameVisual() {
         return gameVisual;
-    }
-
-    public static DragAndDrop getItemsDragAndDrop() {
-        return itemsDragAndDrop;
     }
 
     public static AvatarCreator getAvatarCreator() {
@@ -114,6 +112,10 @@ public class Game {
 
     public static ItemUser getItemUser() {
         return itemUser;
+    }
+
+    public ItemDragAndDroper getItemsDragAndDrop() {
+        return itemsDragAndDrop;
     }
 
     public TimeManager getTimeManager() {

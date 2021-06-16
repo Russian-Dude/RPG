@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
-import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.logic.enums.Element;
@@ -266,9 +265,9 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
         int weaponsAmount = weaponsAmount();
         if (weaponsAmount == 0) return AttackType.MELEE;
         else if (weaponsAmount == 1) {
-            if (leftHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+            if (leftHand.getEntity() != null && leftHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
                 return leftHand.getEntity().getItemData().getWeaponData().getAttackType();
-            else if (rightHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+            else if (rightHand.getEntity() != null && rightHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
                 return rightHand.getEntity().getItemData().getWeaponData().getAttackType();
         } else if (weaponsAmount == 2) {
             return leftHand.getEntity().getItemData().getWeaponData().compareTo(rightHand.getEntity().getItemData().getWeaponData()) > 0 ?

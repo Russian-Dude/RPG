@@ -13,6 +13,7 @@ import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.logic.time.*;
 import ru.rdude.rpg.game.utils.Functions;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
@@ -22,7 +23,7 @@ import java.util.Set;
         setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Buff extends Entity implements TurnChangeObserver, TimeChangeObserver, BeingActionObserver, DurationObserver, StateChanger {
 
-    private Set<BuffObserver> subscribers;
+    private final Set<BuffObserver> subscribers = new HashSet<>();
 
     private SkillApplier skillApplier;
     @JsonIgnore
@@ -68,7 +69,7 @@ public class Buff extends Entity implements TurnChangeObserver, TimeChangeObserv
         Double turns = skillData.getDurationInTurns() == null || skillData.getDurationInTurns().equals("0") ?
                 null : skillParser.parse(skillData.getDurationInTurns());
         Double minutes = skillData.getDurationInMinutes() == null || skillData.getDurationInMinutes().equals("0") ?
-                null : skillParser.parse(skillData.getDurationInTurns());
+                null : skillParser.parse(skillData.getDurationInMinutes());
         Double hitsReceived = skillData.getHitsReceived() == null || skillData.getHitsReceived().equals("0") ?
                 null : skillParser.parse(skillData.getHitsReceived());
         Double hitsMade = skillData.getHitsMade() == null || skillData.getHitsMade().equals("0") ?
@@ -82,8 +83,13 @@ public class Buff extends Entity implements TurnChangeObserver, TimeChangeObserv
 
     private Stats createStats() {
         Stats stats = new Stats(false);
-        stats.forEachWithNestedStats(stat ->
-                stat.set(skillData.getStats().containsKey(StatName.get(stat.getClass())) ? skillApplier.skillParser.parse(skillData.getStats().get(StatName.get(stat.getClass()))) - skillApplier.target.stats().get(stat.getClass()).value() : 0));
+        skillData.getStats().entrySet().stream()
+                .filter(entry -> !entry.getValue().isBlank())
+                .forEach(entry -> {
+                    final StatName statName = entry.getKey();
+                    final String stringValue = entry.getValue();
+                    stats.get(statName).set(skillApplier.skillParser.parse(stringValue) - skillApplier.target.stats().get(statName).value());
+                });
         return stats;
     }
 
@@ -130,7 +136,7 @@ public class Buff extends Entity implements TurnChangeObserver, TimeChangeObserv
         duration.turnUpdate();
         if (actsTurns != null) {
             actsTurns--;
-            if (actsTurns == 0) {
+            if (actsTurns <= 0) {
                 actsTurns = skillData.getActsEveryTurn();
                 onTimeOrTurnUpdate();
             }
@@ -139,11 +145,16 @@ public class Buff extends Entity implements TurnChangeObserver, TimeChangeObserv
 
     @Override
     public void timeUpdate(int minutes) {
+        duration.timeUpdate(minutes);
         if (actsMinutes != null) {
-            actsMinutes--;
-            if (actsMinutes == 0) {
+            actsMinutes -= minutes;
+            if (actsMinutes <= 0) {
+                int remainder = (int) (actsMinutes * (-1));
                 actsMinutes = skillData.getActsEveryMinute();
                 onTimeOrTurnUpdate();
+                if (remainder > 0) {
+                    timeUpdate(remainder);
+                }
             }
         }
     }

@@ -12,28 +12,26 @@ import ru.rdude.rpg.game.logic.holders.Slot;
 
 public class ItemDragAndDroper {
 
-    private static final DragAndDrop dragAndDrop = Game.getItemsDragAndDrop();
-    private static final Image currentDragImage = new Image(new SpriteDrawable(new Sprite()));
+    private final DragAndDrop dragAndDrop = new DragAndDrop();
+    private final Image currentDragImage = new Image(new SpriteDrawable(new Sprite()));
 
-    public static void addSlot(ItemSlotVisual slotVisual) {
-        dragAndDrop.addTarget(new DragAndDrop.Target(slotVisual) {
-            @Override
-            public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
-                return true;
-            }
-
-            @Override
-            public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
-
-            }
-        });
+    public void addSlot(ItemSlotVisual slotVisual) {
+        addTarget(slotVisual);
     }
 
-    public static boolean isDragging() {
+    public boolean isDragging() {
         return dragAndDrop.isDragging();
     }
 
-    public static void addItem(ItemVisual itemVisual) {
+    public void addRemoverArea(ItemRemoverArea area) {
+        addTarget(area);
+    }
+
+    public void addPlayerArea(PlayerVisual playerVisual) {
+        addTarget(playerVisual);
+    }
+
+    public void addItem(ItemVisual itemVisual) {
         dragAndDrop.addSource(new DragAndDrop.Source(itemVisual) {
             @Override
             public DragAndDrop.Payload dragStart(InputEvent inputEvent, float v, float v1, int i) {
@@ -63,16 +61,39 @@ public class ItemDragAndDroper {
                     return;
                 }
                 Actor targetActor = target.getActor();
+                Item item = itemVisual.getItem();
                 if (targetActor instanceof ItemSlotVisual) {
                     Slot<Item> slot = ((ItemSlotVisual) targetActor).getSlot();
-                    Item item = itemVisual.getItem();
                     tryToPutItemInSlot(item, slot);
+                }
+                else if (targetActor instanceof PlayerVisual) {
+                    final Slot<Item> initialSlot = Slot.withEntity(item);
+                    if (((PlayerVisual) targetActor).getPlayer().receive(item)) {
+                        initialSlot.setEntity(null);
+                    }
+                }
+                else if (targetActor instanceof ItemRemoverArea) {
+                    Game.getCurrentGame().getGameLogger().log("remover area");
                 }
             }
         });
     }
 
-    private static void tryToPutItemInSlot(Item item, Slot<Item> slot) {
+    private void addTarget(Actor actor) {
+        dragAndDrop.addTarget(new DragAndDrop.Target(actor) {
+            @Override
+            public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
+                return true;
+            }
+
+            @Override
+            public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
+
+            }
+        });
+    }
+
+    private void tryToPutItemInSlot(Item item, Slot<Item> slot) {
 
         // if putting item in the same slot
         if (Slot.withEntity(item) == slot) {
@@ -93,7 +114,7 @@ public class ItemDragAndDroper {
 
         // if slot contains different item
         if (!slot.getEntity().equals(item)) {
-            Slot<Item> initialSlot = (Slot<Item>) Slot.withEntity(item);
+            Slot<Item> initialSlot = Slot.withEntity(item);
             if (initialSlot != null && initialSlot.isEntityMatchRequirements(slot.getEntity())) {
                 slot.swapEntities(initialSlot);
             } else {
@@ -117,7 +138,7 @@ public class ItemDragAndDroper {
         }
     }
 
-    private static void throwItemRequest(Item item) {
-
+    private void throwItemRequest(Item item) {
+        Game.getCurrentGame().getGameLogger().log("Null target");
     }
 }
