@@ -50,6 +50,7 @@ public class ItemDragAndDroper {
                 currentDragImage.setHeight(itemVisual.getHeight());
                 dragAndDrop.setDragActorPosition(currentDragImage.getWidth() / 2, -currentDragImage.getHeight() / 2);
                 payload.setDragActor(currentDragImage);
+                payload.setObject(itemVisual.getItem());
                 return payload;
             }
 
@@ -73,7 +74,11 @@ public class ItemDragAndDroper {
                     }
                 }
                 else if (targetActor instanceof ItemRemoverArea) {
-                    Game.getCurrentGame().getGameLogger().log("remover area");
+                    final Object object = payload.getObject();
+                    if (object instanceof Item) {
+                        Game.getGameVisual().setMenuStage(ThrowItemRequestStage
+                                .instance(Slot.withEntity((Item) payload.getObject())));
+                    }
                 }
             }
         });
