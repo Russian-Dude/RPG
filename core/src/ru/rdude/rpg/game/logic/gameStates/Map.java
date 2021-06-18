@@ -10,6 +10,7 @@ import ru.rdude.rpg.game.logic.map.PlaceObserver;
 import ru.rdude.rpg.game.logic.map.Point;
 import ru.rdude.rpg.game.logic.time.TimeForMovingCalculator;
 import ru.rdude.rpg.game.mapVisual.MapStage;
+import ru.rdude.rpg.game.utils.SubscribersManager;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -25,7 +26,7 @@ public class Map extends GameStateBase {
     @JsonProperty
     private final CellProperties[][] cellProperties;
     private Cell playerPosition;
-    private Set<PlaceObserver> placePositionSubscribers = new HashSet<>();
+    private SubscribersManager<PlaceObserver> placePositionSubscribers = new SubscribersManager<>();
 
     public Map(GameMap gameMap) {
         this.gameMap = gameMap;
@@ -119,11 +120,11 @@ public class Map extends GameStateBase {
     }
 
     public void subscribe(PlaceObserver subscriber) {
-        placePositionSubscribers.add(subscriber);
+        placePositionSubscribers.subscribe(subscriber);
     }
 
     private void notifySubscribers(Cell oldPosition, Cell newPosition) {
-        placePositionSubscribers.forEach(subscriber -> subscriber.update(oldPosition, newPosition));
+        placePositionSubscribers.notifySubscribers(subscriber -> subscriber.update(oldPosition, newPosition));
     }
 
 

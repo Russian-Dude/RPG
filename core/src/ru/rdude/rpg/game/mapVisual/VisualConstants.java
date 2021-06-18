@@ -16,4 +16,6 @@ public class VisualConstants {
     public static final float MINI_TILE_WIDTH_QUARTER = MINI_TILE_WIDTH * 0.25f;
     public static final float MINI_TILE_HEIGHT_HALF = MINI_TILE_HEIGHT / 2f;
 
+    public static final float BUFF_ICON_SIZE = 30;
+
 }

@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.logic.time;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import ru.rdude.rpg.game.utils.SubscribersManager;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,8 +11,8 @@ import java.util.Set;
 public class TimeManager implements TurnChangeObserver {
 
     @JsonIgnore
-    private final Set<TimeObserver> timeObservers;
-    private final Set<TimeChangeObserver> timeChangeObservers;
+    private final SubscribersManager<TimeObserver> timeObservers;
+    private final SubscribersManager<TimeChangeObserver> timeChangeObservers;
 
     private int minute = 0;
     private int hour = 12;
@@ -21,8 +22,8 @@ public class TimeManager implements TurnChangeObserver {
 
 
     public TimeManager() {
-        timeChangeObservers = new HashSet<>();
-        timeObservers = new HashSet<>();
+        timeChangeObservers = new SubscribersManager<>();
+        timeObservers = new SubscribersManager<>();
     }
 
     public String stringTime() {
@@ -89,15 +90,15 @@ public class TimeManager implements TurnChangeObserver {
         this.year = year;
     }
 
-    public void subscribe(TimeObserver observer) { timeObservers.add(observer); }
-    public void subscribe(TimeChangeObserver observer) { timeChangeObservers.add(observer); }
+    public void subscribe(TimeObserver observer) { timeObservers.subscribe(observer); }
+    public void subscribe(TimeChangeObserver observer) { timeChangeObservers.subscribe(observer); }
 
-    public void unsubscribe(TimeObserver observer) { timeObservers.remove(observer); }
-    public void unsubscribe(TimeChangeObserver observer) { timeChangeObservers.remove(observer); }
+    public void unsubscribe(TimeObserver observer) { timeObservers.unsubscribe(observer); }
+    public void unsubscribe(TimeChangeObserver observer) { timeChangeObservers.unsubscribe(observer); }
 
     private void notifySubscribers(int minutesChanges) {
-        timeObservers.forEach(obs -> obs.update(this));
-        timeChangeObservers.forEach(obs -> obs.timeUpdate(minutesChanges));
+        timeObservers.notifySubscribers(obs -> obs.update(this));
+        timeChangeObservers.notifySubscribers(obs -> obs.timeUpdate(minutesChanges));
     }
 
     @Override

@@ -3,11 +3,9 @@ package ru.rdude.rpg.game.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import ru.rdude.rpg.game.logic.data.PlayerData;
 import ru.rdude.rpg.game.logic.data.resources.PlayerResources;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
@@ -15,6 +13,7 @@ import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Battle;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
+import ru.rdude.rpg.game.mapVisual.VisualConstants;
 import ru.rdude.rpg.game.ui.colors.EyesColor;
 import ru.rdude.rpg.game.ui.colors.HairColor;
 import ru.rdude.rpg.game.ui.colors.SkinColor;
@@ -39,6 +38,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
     private final Button items;
     private final HorizontalGroup buttons;
     private final Label nameLabel;
+    private final PlayerBuffsIcons buffsIcons;
 
     public PlayerVisual(Player player) {
         this(player, createAvatarFromData(((PlayerData) player.getBeingData())));
@@ -57,6 +57,8 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
         items = new Button(DEFAULT_SKIN, "items");
         spells = new Button(DEFAULT_SKIN, "spells");
         nameLabel = new Label(player.getName(), DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+        nameLabel.setAlignment(Align.center);
+        buffsIcons = new PlayerBuffsIcons(this);
 
         // items
         backpackWindow = new BackpackWindow(player);
@@ -105,17 +107,28 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
         buttons.addActor(items);
         buttons.setWidth(buttons.getPrefWidth());
         buttons.setHeight(buttons.getPrefHeight());
+        Table table = new Table();
+        VerticalGroup withoutNameGroup = new VerticalGroup();
+        table.add(buffsIcons.leftSide())
+                .space(4f)
+                .width(VisualConstants.BUFF_ICON_SIZE)
+                .fillY();
         Group topGroup = new Group();
-        avatar.setPosition(avatar.getWidth() * (-1) / 2f, 0);
-        buttons.setPosition(buttons.getWidth() * (-1) / 2f, 0);
+        topGroup.setSize(avatar.getHeight(), avatar.getWidth());
+        avatar.setPosition(0, 0);
         topGroup.addActor(avatar);
         topGroup.addActor(buttons);
-        addActor(topGroup);
-        addActor(hpBar);
-        addActor(stmBar);
+        withoutNameGroup.addActor(topGroup);
+        withoutNameGroup.addActor(hpBar);
+        withoutNameGroup.addActor(stmBar);
+        table.add(withoutNameGroup).space(4f);
+        table.add(buffsIcons.rightSide())
+                .width(VisualConstants.BUFF_ICON_SIZE)
+                .fillY();
+        table.pack();
+        addActor(table);
         addActor(nameLabel);
-        setWidth(getPrefWidth());
-        setHeight(getPrefHeight());
+        align(Align.center);
     }
 
     private static PlayerAvatar createAvatarFromData(PlayerData playerData) {

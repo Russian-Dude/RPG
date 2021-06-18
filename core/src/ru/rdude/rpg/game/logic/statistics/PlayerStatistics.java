@@ -11,6 +11,7 @@ import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.entities.skills.Buff;
 import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.holders.Slot;
+import ru.rdude.rpg.game.utils.SubscribersManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -231,7 +232,7 @@ public class PlayerStatistics implements BeingActionObserver {
             @JsonProperty("statisticsType") private final UsedByStatistics statisticType;
             @JsonProperty("times") private int times;
             @JsonProperty("value") private double value;
-            @JsonIgnore private final Set<StatisticValueObserver> subscribers = new HashSet<>();
+            @JsonIgnore private final SubscribersManager<StatisticValueObserver> subscribers = new SubscribersManager<>();
 
             @JsonCreator
             public Values(@JsonProperty("times") int times,
@@ -265,15 +266,15 @@ public class PlayerStatistics implements BeingActionObserver {
             }
 
             public void subscribe(StatisticValueObserver subscriber) {
-                subscribers.add(subscriber);
+                subscribers.subscribe(subscriber);
             }
 
             public void unsubscribe(StatisticValueObserver subscriber) {
-                subscribers.remove(subscriber);
+                subscribers.unsubscribe(subscriber);
             }
 
             private void notifySubscribers() {
-                subscribers.forEach(subscriber -> subscriber.update(beingAction, statisticType, times, value));
+                subscribers.notifySubscribers(subscriber -> subscriber.update(beingAction, statisticType, times, value));
             }
         }
     }

@@ -17,7 +17,7 @@ public class MapMovingScorer implements AStarScorer<Cell> {
     @Override
     public int computeCost(Cell from, Cell to) {
         if (map.cellHasMonster(to) || to.getObject() != null) {
-            return 5000000;
+            return 25000;
         }
         if (to.getRoad() != null && from.getRoad() != null) {
             return 0;

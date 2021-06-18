@@ -73,13 +73,25 @@ public class SkillApplier {
                 skillApplier.target.notifySubscribers(new BeingAction(BeingAction.Action.RESIST, skillApplier.target, skillApplier.skillData, 0d), skillApplier.target);
                 return false;
             }
-            Buff buff = new Buff(skillApplier);
-            buff.setDamage(damage != null ? damage.value() : null);
-            skillApplier.target.receive(buff);
+            final SkillData skillData = skillApplier.skillData;
+            if (skillApplier.isBuff()) {
+                Buff buff = new Buff(skillApplier);
+                buff.setDamage(damage != null ? damage.value() : null);
+                skillApplier.target.receive(buff);
+            }
         }
         // items part:
         skillApplier.getReceivedItems().forEach(item -> skillApplier.target.receive(item));
         return true;
+    }
+
+    private boolean isBuff() {
+        final boolean isPermanent = skillData.isPermanent();
+        final String turns = skillData.getDurationInTurns();
+        final boolean isTurns = turns != null && !turns.isBlank() && !turns.equals("0");
+        final String minutes = skillData.getDurationInMinutes();
+        final boolean isMinutes = minutes != null && !minutes.isBlank() && !minutes.equals("0");
+        return isPermanent || isTurns || isMinutes;
     }
 
 

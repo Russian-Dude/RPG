@@ -1,12 +1,11 @@
 package ru.rdude.rpg.game.ui;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import ru.rdude.rpg.game.logic.data.Module;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ItemImageFactory {
+public class ImageFactory {
 
     private final Map<Long, TextureAtlas.AtlasRegion> regions = new HashMap<>();
 

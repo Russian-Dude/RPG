@@ -92,8 +92,11 @@ public class PlayersCreationStage extends Stage {
                 Game.getCurrentGame().getGameStateHolder().setGameState(map);
                 // TODO: 14.06.2021 remove this test
                 for (ItemData itemData : ItemData.getItems().values()) {
-                    Game.getCurrentGame().getCurrentPlayers().getBeings().get(0)
-                            .receive(new Item(itemData));
+                    int c = itemData.isStackable() ? 30 : 1;
+                    for (int i = 0; i < c; i++) {
+                        Game.getCurrentGame().getCurrentPlayers().getBeings().get(0)
+                                .receive(new Item(itemData));
+                    }
                 }
             }
         });

@@ -5,7 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import ru.rdude.rpg.game.logic.data.Module;
 import ru.rdude.rpg.game.logic.data.*;
-import ru.rdude.rpg.game.ui.ItemImageFactory;
+import ru.rdude.rpg.game.ui.ImageFactory;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -18,11 +18,11 @@ import java.util.zip.ZipInputStream;
 public class ModuleFileLoader {
 
     private GameJsonSerializer gameJsonSerializer;
-    private ItemImageFactory itemImageFactory;
+    private ImageFactory imageFactory;
 
-    public ModuleFileLoader(GameJsonSerializer gameJsonSerializer, ItemImageFactory itemImageFactory) {
+    public ModuleFileLoader(GameJsonSerializer gameJsonSerializer, ImageFactory imageFactory) {
         this.gameJsonSerializer = gameJsonSerializer;
-        this.itemImageFactory = itemImageFactory;
+        this.imageFactory = imageFactory;
         load();
     }
 
@@ -69,7 +69,7 @@ public class ModuleFileLoader {
         FileHandle[] atlasTextFiles = Gdx.files.local("temp\\images").list(".atlas");
         for (FileHandle atlasTextFile : atlasTextFiles) {
             TextureAtlas textureAtlas = new TextureAtlas(atlasTextFile);
-            textureAtlas.getRegions().forEach(region -> itemImageFactory.addRegion(region));
+            textureAtlas.getRegions().forEach(region -> imageFactory.addRegion(region));
         }
     }
 }

@@ -12,6 +12,7 @@ import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.logic.time.*;
 import ru.rdude.rpg.game.utils.Functions;
+import ru.rdude.rpg.game.utils.SubscribersManager;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +24,7 @@ import java.util.Set;
         setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Buff extends Entity implements TurnChangeObserver, TimeChangeObserver, BeingActionObserver, DurationObserver, StateChanger {
 
-    private final Set<BuffObserver> subscribers = new HashSet<>();
+    private final SubscribersManager<BuffObserver> subscribers = new SubscribersManager<>();
 
     private SkillApplier skillApplier;
     @JsonIgnore
@@ -66,19 +67,23 @@ public class Buff extends Entity implements TurnChangeObserver, TimeChangeObserv
     private SkillDuration createDuration() {
         SkillParser skillParser = skillApplier.skillParser;
         TimeManager timeManager = Game.getCurrentGame().getTimeManager();
-        Double turns = skillData.getDurationInTurns() == null || skillData.getDurationInTurns().equals("0") ?
-                null : skillParser.parse(skillData.getDurationInTurns());
-        Double minutes = skillData.getDurationInMinutes() == null || skillData.getDurationInMinutes().equals("0") ?
-                null : skillParser.parse(skillData.getDurationInMinutes());
-        Double hitsReceived = skillData.getHitsReceived() == null || skillData.getHitsReceived().equals("0") ?
-                null : skillParser.parse(skillData.getHitsReceived());
-        Double hitsMade = skillData.getHitsMade() == null || skillData.getHitsMade().equals("0") ?
-                null : skillParser.parse(skillData.getHitsMade());
-        Double damageReceived = skillData.getDamageReceived() == null || skillData.getDamageReceived().equals("0") ?
-                null : skillParser.parse(skillData.getDamageReceived());
-        Double damageMade = skillData.getDamageMade() == null || skillData.getDamageMade().equals("0") ?
-                null : skillParser.parse(skillData.getDamageMade());
+        Double turns = parsableString(skillData.getDurationInTurns()) ?
+                skillParser.parse(skillData.getDurationInTurns()) : null;
+        Double minutes = parsableString(skillData.getDurationInMinutes()) ?
+                skillParser.parse(skillData.getDurationInMinutes()) : null;
+        Double hitsReceived = parsableString(skillData.getHitsReceived()) ?
+                skillParser.parse(skillData.getHitsReceived()) : null;
+        Double hitsMade = parsableString(skillData.getHitsMade()) ?
+                skillParser.parse(skillData.getHitsMade()) : null;
+        Double damageReceived = parsableString(skillData.getDamageReceived()) ?
+                skillParser.parse(skillData.getDamageReceived()) : null;
+        Double damageMade = parsableString(skillData.getDamageMade()) ?
+                skillParser.parse(skillData.getDamageMade()) : null;
         return new SkillDuration(timeManager, minutes, turns, hitsReceived, hitsMade, damageReceived, damageMade);
+    }
+
+    private boolean parsableString(String string) {
+        return string != null && !string.isBlank() && !string.equals("0");
     }
 
     private Stats createStats() {
@@ -160,15 +165,15 @@ public class Buff extends Entity implements TurnChangeObserver, TimeChangeObserv
     }
 
     public void subscribe(BuffObserver subscriber) {
-        subscribers.add(subscriber);
+        subscribers.subscribe(subscriber);
     }
 
     public void unsubscribe(BuffObserver subscriber) {
-        subscribers.remove(subscriber);
+        subscribers.unsubscribe(subscriber);
     }
 
     private void notifySubscribers(boolean ends) {
-        subscribers.forEach(subscriber -> subscriber.update(this, ends));
+        subscribers.notifySubscribers(subscriber -> subscriber.update(this, ends));
     }
 
     @Override

@@ -16,7 +16,7 @@ import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.time.TimeManager;
 import ru.rdude.rpg.game.ui.AvatarCreator;
 import ru.rdude.rpg.game.ui.ItemDragAndDroper;
-import ru.rdude.rpg.game.ui.ItemImageFactory;
+import ru.rdude.rpg.game.ui.ImageFactory;
 import ru.rdude.rpg.game.ui.MapInfo;
 import ru.rdude.rpg.game.visual.GameVisual;
 
@@ -42,7 +42,7 @@ public class Game {
     private Party currentPlayers;
 
     private static final AvatarCreator avatarCreator = new AvatarCreator();
-    private static final ItemImageFactory itemImageFactory = new ItemImageFactory();
+    private static final ImageFactory imageFactory = new ImageFactory();
     private static final MonsterFactory monsterFactory = new MonsterFactory();
     private static final GameFileSaver gameSaver = new GameFileSaver();
     private static final GameFileLoader gameLoader = new GameFileLoader();
@@ -50,7 +50,7 @@ public class Game {
 
     // io
     private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
-    private static ModuleFileLoader moduleFileLoader = new ModuleFileLoader(gameJsonSerializer, itemImageFactory);
+    private static ModuleFileLoader moduleFileLoader = new ModuleFileLoader(gameJsonSerializer, imageFactory);
     // map files by guid
     private static java.util.Map<Long, MapInfo> mapFiles = new HashMap<>();
 
@@ -81,8 +81,8 @@ public class Game {
         return avatarCreator;
     }
 
-    public static ItemImageFactory getItemImageFactory() {
-        return itemImageFactory;
+    public static ImageFactory getImageFactory() {
+        return imageFactory;
     }
 
     public static GameJsonSerializer getGameJsonSerializer() {

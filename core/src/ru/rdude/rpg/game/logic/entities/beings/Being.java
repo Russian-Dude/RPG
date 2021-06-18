@@ -14,6 +14,7 @@ import ru.rdude.rpg.game.logic.entities.states.StateHolder;
 import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.stats.Stats;
+import ru.rdude.rpg.game.utils.SubscribersManager;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +23,7 @@ import java.util.Set;
         fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public abstract class Being extends Entity implements BuffObserver {
 
-    private final Set<BeingActionObserver> beingActionObservers = new HashSet<>();
+    private final SubscribersManager<BeingActionObserver> beingActionObservers = new SubscribersManager<>();
 
     protected BeingData beingData;
     protected Stats stats;
@@ -209,15 +210,15 @@ public abstract class Being extends Entity implements BuffObserver {
     }
 
     public void subscribe(BeingActionObserver observer) {
-        beingActionObservers.add(observer);
+        beingActionObservers.subscribe(observer);
     }
 
     public void unsubscribe(BeingActionObserver observer) {
-        beingActionObservers.remove(observer);
+        beingActionObservers.unsubscribe(observer);
     }
 
     public void notifySubscribers(BeingAction action, Being being) {
-        beingActionObservers.forEach(obs -> obs.update(action, being));
+        beingActionObservers.notifySubscribers(obs -> obs.update(action, being));
     }
 
     // removing buffs

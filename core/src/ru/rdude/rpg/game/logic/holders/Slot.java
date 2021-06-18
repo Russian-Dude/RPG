@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.logic.holders;
 
 import com.fasterxml.jackson.annotation.*;
 import ru.rdude.rpg.game.logic.entities.Entity;
+import ru.rdude.rpg.game.utils.SubscribersManager;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -16,7 +17,7 @@ public class Slot<T extends Entity> {
     private static Map<? super Entity, Slot<? extends Entity>> entitiesInSlots = new HashMap<>();
 
     @JsonIgnore
-    private Set<SlotObserver> subscribers;
+    private SubscribersManager<SlotObserver> subscribers;
 
     protected T entity;
 
@@ -27,13 +28,13 @@ public class Slot<T extends Entity> {
 
     @JsonCreator
     private Slot(@JsonProperty("marker") String marker) {
-        subscribers = new HashSet<>();
+        subscribers = new SubscribersManager<>();
         this.marker = marker;
         this.extraRequirements = new HashSet<>();
     }
 
     public Slot(String marker, Predicate<T>... extraRequirements) {
-        subscribers = new HashSet<>();
+        subscribers = new SubscribersManager<>();
         this.marker = marker;
         this.extraRequirements = Arrays.stream(extraRequirements).collect(Collectors.toSet());
     }
@@ -104,14 +105,14 @@ public class Slot<T extends Entity> {
     }
 
     public void subscribe(SlotObserver subscriber) {
-        this.subscribers.add(subscriber);
+        this.subscribers.subscribe(subscriber);
     }
 
     public void unsubscribe(SlotObserver subscriber) {
-        this.subscribers.remove(subscriber);
+        this.subscribers.unsubscribe(subscriber);
     }
 
     private void notifySubscribers(T entity) {
-        subscribers.forEach(subscriber -> subscriber.update(this, entity));
+        subscribers.notifySubscribers(subscriber -> subscriber.update(this, entity));
     }
 }

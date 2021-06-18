@@ -1,5 +1,7 @@
 package ru.rdude.rpg.game.logic.stats;
 
+import ru.rdude.rpg.game.utils.SubscribersManager;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -7,7 +9,7 @@ import java.util.Set;
 
 public abstract class Stat implements Comparable<Stat>, StatObserver {
 
-    protected Set<StatObserver> subscribers;
+    protected SubscribersManager<StatObserver> subscribers;
     protected double value;
     protected Map<String, Double> buffs;
 
@@ -18,7 +20,7 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
     public Stat(double value) {
         this.value = value;
         buffs = new HashMap<>();
-        subscribers = new HashSet<>();
+        subscribers = new SubscribersManager<>();
     }
 
     public abstract String getName();
@@ -101,15 +103,15 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
     }
 
     public void subscribe(StatObserver observer) {
-        this.subscribers.add(observer);
+        this.subscribers.subscribe(observer);
     }
 
     public void unsubscribe(StatObserver observer) {
-        this.subscribers.remove(observer);
+        this.subscribers.unsubscribe(observer);
     }
 
     protected void notifySubscribers() {
-        subscribers.forEach(subscriber -> subscriber.update(this));
+        subscribers.notifySubscribers(subscriber -> subscriber.update(this));
     }
 
     @Override

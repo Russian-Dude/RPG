@@ -7,22 +7,24 @@ import ru.rdude.rpg.game.logic.entities.states.StateHolder;
 import ru.rdude.rpg.game.logic.enums.Element;
 import ru.rdude.rpg.game.logic.enums.ItemRarity;
 import ru.rdude.rpg.game.logic.stats.Stats;
+import ru.rdude.rpg.game.utils.SubscribersManager;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class Item extends Entity {
 
     public static final int MAX_AMOUNT = 99;
 
-    private Set<ItemCountObserver> subscribers;
+    private SubscribersManager<ItemCountObserver> subscribers;
 
     protected ItemData itemData;
     protected int amount;
     protected StateHolder<Element> elements;
 
     public Item(ItemData itemData, int amount) {
-        this.subscribers = new HashSet<>();
+        this.subscribers = new SubscribersManager<>();
         this.itemData = itemData;
         this.amount = amount;
         Set<Element> elementsData;
@@ -103,14 +105,27 @@ public class Item extends Entity {
     }
 
     public void subscribe(ItemCountObserver subscriber) {
-        subscribers.add(subscriber);
+        subscribers.subscribe(subscriber);
     }
 
     public void unsubscribe(ItemCountObserver subscriber) {
-        subscribers.remove(subscriber);
+        subscribers.unsubscribe(subscriber);
     }
 
     private void notifySubscribers() {
-        subscribers.forEach(subscriber -> subscriber.update(amount, this));
+        subscribers.notifySubscribers(subscriber -> subscriber.update(amount, this));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Item)) return false;
+        Item item = (Item) o;
+        return Objects.equals(getItemData(), item.getItemData());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getItemData());
     }
 }

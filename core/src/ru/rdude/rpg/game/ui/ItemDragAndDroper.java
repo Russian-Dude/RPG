@@ -39,7 +39,7 @@ public class ItemDragAndDroper {
                 ((SpriteDrawable) currentDragImage.getDrawable())
                         .getSprite()
                         .setRegion(Game
-                                .getItemImageFactory()
+                                .getImageFactory()
                                 .getRegion(itemVisual
                                         .getItem()
                                         .getItemData()

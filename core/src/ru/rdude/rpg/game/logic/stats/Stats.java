@@ -4,6 +4,7 @@ package ru.rdude.rpg.game.logic.stats;
 import ru.rdude.rpg.game.logic.enums.StatName;
 import ru.rdude.rpg.game.logic.stats.primary.*;
 import ru.rdude.rpg.game.logic.stats.secondary.*;
+import ru.rdude.rpg.game.utils.SubscribersManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,13 +16,13 @@ import java.util.stream.Stream;
 
 public class Stats implements StatObserver {
 
-    private Set<StatsObserver> subscribers;
+    private SubscribersManager<StatsObserver> subscribers;
     private boolean calculatable;
     private Map<Class<? extends Stat>, Stat> stats;
 
 
     public Stats(boolean calculatable) {
-        subscribers = new HashSet<>();
+        subscribers = new SubscribersManager<>();
         stats = new HashMap<>();
         // primary:
         stats.put(Agi.class, new Agi());
@@ -318,15 +319,15 @@ public class Stats implements StatObserver {
     }
 
     public void subscribe(StatsObserver subscriber) {
-        subscribers.add(subscriber);
+        subscribers.subscribe(subscriber);
     }
 
     public void unsubscribe(StatsObserver subscriber) {
-        subscribers.remove(subscriber);
+        subscribers.unsubscribe(subscriber);
     }
 
     private void notifySubscribers() {
-        subscribers.forEach(subscriber -> subscriber.update(this));
+        subscribers.notifySubscribers(subscriber -> subscriber.update(this));
     }
 
     @Override

@@ -35,7 +35,7 @@ public class ItemVisual extends Group implements ItemCountObserver {
         item.subscribe(this);
 
         // item image
-        itemImage = new Image(Game.getItemImageFactory().getRegion(item.getItemData().getResources().getMainImage().getGuid()));
+        itemImage = new Image(Game.getImageFactory().getRegion(item.getItemData().getResources().getMainImage().getGuid()));
 
         // rarity border
         switch (item.getItemData().getRarity()) {

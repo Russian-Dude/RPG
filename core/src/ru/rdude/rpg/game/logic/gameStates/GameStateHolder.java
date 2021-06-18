@@ -1,12 +1,11 @@
 package ru.rdude.rpg.game.logic.gameStates;
 
-import java.util.HashSet;
-import java.util.Set;
+import ru.rdude.rpg.game.utils.SubscribersManager;
 
 public class GameStateHolder {
 
     private GameStateBase gameState;
-    private Set<GameStateObserver> subscribers = new HashSet<>();
+    private final SubscribersManager<GameStateObserver> subscribers = new SubscribersManager<>();
 
     public GameStateBase getGameState() {
         return gameState;
@@ -19,18 +18,14 @@ public class GameStateHolder {
     }
 
     public void subscribe(GameStateObserver subscriber) {
-        subscribers.add(subscriber);
+        subscribers.subscribe(subscriber);
     }
 
     public void unsubscribe(GameStateObserver subscriber) {
-        subscribers.remove(subscriber);
-    }
-
-    public void clearSubscriptions() {
-        subscribers.clear();
+        subscribers.unsubscribe(subscriber);
     }
 
     private void notifySubscribers(GameStateBase oldValue, GameStateBase newValue) {
-        subscribers.forEach(subscriber -> subscriber.update(oldValue, newValue));
+        subscribers.notifySubscribers(subscriber -> subscriber.update(oldValue, newValue));
     }
 }
