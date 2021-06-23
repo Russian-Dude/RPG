@@ -1,8 +1,5 @@
 package ru.rdude.rpg.game.logic.entities.items.holders;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.items.Item;
@@ -13,19 +10,17 @@ import ru.rdude.rpg.game.logic.enums.ItemType;
 import ru.rdude.rpg.game.logic.holders.Slot;
 import ru.rdude.rpg.game.logic.holders.SlotsHolder;
 import ru.rdude.rpg.game.logic.stats.Stats;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        fieldVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonPolymorphicSubType("equipment")
 public class EquipmentSlotsHolder extends SlotsHolder<Item> {
 
-    @JsonProperty("being")
-    private Being being;
+    private Being<?> being;
 
     private Slot<Item> armor;
     private Slot<Item> boots;
@@ -38,78 +33,31 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
     private Slot<Item> jewelry1;
     private Slot<Item> jewelry2;
 
-    public EquipmentSlotsHolder(Being being) {
+    private EquipmentSlotsHolder() { }
+
+    public EquipmentSlotsHolder(Being<?> being) {
         this.being = being;
         slots = new ArrayList<>(10);
-        slots.add(new Slot<>(ItemType.ARMOR.name(), t -> t.getItemData().getItemType() == ItemType.ARMOR
-                && being.stats().isMatchRequirementsOf(t.requirements())));
+        slots.add(new EquipmentSlot(being, ItemType.ARMOR));
         armor = slots.get(0);
-        slots.add(new Slot<>(ItemType.BOOTS.name(), t -> t.getItemData().getItemType() == ItemType.BOOTS
-                && being.stats().isMatchRequirementsOf(t.requirements())));
+        slots.add(new EquipmentSlot(being, ItemType.BOOTS));
         boots = slots.get(1);
-        slots.add(new Slot<>(ItemType.GLOVES.name(), t -> t.getItemData().getItemType() == ItemType.GLOVES
-                && being.stats().isMatchRequirementsOf(t.requirements())));
+        slots.add(new EquipmentSlot(being, ItemType.GLOVES));
         gloves = slots.get(2);
-        slots.add(new Slot<>(ItemType.HELMET.name(), t -> t.getItemData().getItemType() == ItemType.HELMET
-                && being.stats().isMatchRequirementsOf(t.requirements())));
+        slots.add(new EquipmentSlot(being, ItemType.HELMET));
         helmet = slots.get(3);
-        slots.add(new Slot<>(ItemType.NECKLACE.name(), t -> t.getItemData().getItemType() == ItemType.NECKLACE
-                && being.stats().isMatchRequirementsOf(t.requirements())));
+        slots.add(new EquipmentSlot(being, ItemType.NECKLACE));
         necklace = slots.get(4);
-        slots.add(new Slot<>(ItemType.PANTS.name(), t -> t.getItemData().getItemType() == ItemType.PANTS
-                && being.stats().isMatchRequirementsOf(t.requirements())));
+        slots.add(new EquipmentSlot(being, ItemType.PANTS));
         pants = slots.get(5);
-        slots.add(new Slot<>(ItemType.SHIELD.name(), t -> (t.getItemData().getItemType() == ItemType.SHIELD
-                || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
-                && being.stats().isMatchRequirementsOf(t.requirements())));
+        slots.add(new EquipmentSlot(being, ItemType.SHIELD, ItemMainType.WEAPON));
         leftHand = slots.get(6);
-        slots.add(new Slot<>(ItemMainType.WEAPON.name(), t -> (t.getItemData().getItemType() == ItemType.SHIELD
-                || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
-                && being.stats().isMatchRequirementsOf(t.requirements())));
+        slots.add(new EquipmentSlot(being, ItemMainType.WEAPON, ItemType.SHIELD));
         rightHand = slots.get(7);
-        slots.add(new Slot<>(ItemType.JEWELRY.name(), t -> t.getItemData().getItemType() == ItemType.JEWELRY
-                && being.stats().isMatchRequirementsOf(t.requirements())));
+        slots.add(new EquipmentSlot(being, ItemType.JEWELRY));
         jewelry1 = slots.get(8);
-        slots.add(new Slot<>(ItemType.JEWELRY.name(), t -> t.getItemData().getItemType() == ItemType.JEWELRY
-                && being.stats().isMatchRequirementsOf(t.requirements())));
+        slots.add(new EquipmentSlot(being, ItemType.JEWELRY));
         jewelry2 = slots.get(9);
-    }
-
-    @JsonCreator
-    private EquipmentSlotsHolder(@JsonProperty("slots") List<Slot<Item>> slots, @JsonProperty("being") Being being) {
-        this.slots = slots;
-        armor = slots.get(0);
-        armor.addRequirement(t -> t.getItemData().getItemType() == ItemType.ARMOR
-                && being.stats().isMatchRequirementsOf(t.requirements()));
-        boots = slots.get(1);
-        boots.addRequirement(t -> t.getItemData().getItemType() == ItemType.BOOTS
-                && being.stats().isMatchRequirementsOf(t.requirements()));
-        gloves = slots.get(2);
-        gloves.addRequirement(t -> t.getItemData().getItemType() == ItemType.GLOVES
-                && being.stats().isMatchRequirementsOf(t.requirements()));
-        helmet = slots.get(3);
-        helmet.addRequirement(t -> t.getItemData().getItemType() == ItemType.HELMET
-                && being.stats().isMatchRequirementsOf(t.requirements()));
-        necklace = slots.get(4);
-        necklace.addRequirement(t -> t.getItemData().getItemType() == ItemType.NECKLACE
-                && being.stats().isMatchRequirementsOf(t.requirements()));
-        pants = slots.get(5);
-        pants.addRequirement(t -> t.getItemData().getItemType() == ItemType.PANTS
-                && being.stats().isMatchRequirementsOf(t.requirements()));
-        leftHand = slots.get(6);
-        leftHand.addRequirement(t -> (t.getItemData().getItemType() == ItemType.SHIELD
-                || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
-                && being.stats().isMatchRequirementsOf(t.requirements()));
-        rightHand = slots.get(7);
-        rightHand.addRequirement(t -> (t.getItemData().getItemType() == ItemType.SHIELD
-                || t.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
-                && being.stats().isMatchRequirementsOf(t.requirements()));
-        jewelry1 = slots.get(8);
-        jewelry1.addRequirement(t -> t.getItemData().getItemType() == ItemType.JEWELRY
-                && being.stats().isMatchRequirementsOf(t.requirements()));
-        jewelry2 = slots.get(9);
-        jewelry2.addRequirement(t -> t.getItemData().getItemType() == ItemType.JEWELRY
-                && being.stats().isMatchRequirementsOf(t.requirements()));
     }
 
     public Optional<Slot<Item>> slotFor(ItemType itemType) {
@@ -193,37 +141,37 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
 
     @Override
     public boolean receiveEntity(Item entity) {
-        if (entity.getItemData().getItemType() == ItemType.ARMOR) {
+        if (entity.getEntityData().getItemType() == ItemType.ARMOR) {
             if (armor.getEntity() == null && armor.isEntityMatchRequirements(entity)) {
                 armor.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity.getItemData().getItemType() == ItemType.BOOTS) {
+        } else if (entity.getEntityData().getItemType() == ItemType.BOOTS) {
             if (boots.getEntity() == null && boots.isEntityMatchRequirements(entity)) {
                 boots.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity.getItemData().getItemType() == ItemType.GLOVES) {
+        } else if (entity.getEntityData().getItemType() == ItemType.GLOVES) {
             if (gloves.getEntity() == null && gloves.isEntityMatchRequirements(entity)) {
                 gloves.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity.getItemData().getItemType() == ItemType.HELMET) {
+        } else if (entity.getEntityData().getItemType() == ItemType.HELMET) {
             if (helmet.getEntity() == null && helmet.isEntityMatchRequirements(entity)) {
                 helmet.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity.getItemData().getItemType() == ItemType.NECKLACE) {
+        } else if (entity.getEntityData().getItemType() == ItemType.NECKLACE) {
             if (necklace.getEntity() == null && necklace.isEntityMatchRequirements(entity)) {
                 necklace.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity.getItemData().getItemType() == ItemType.PANTS) {
+        } else if (entity.getEntityData().getItemType() == ItemType.PANTS) {
             if (pants.getEntity() == null && pants.isEntityMatchRequirements(entity)) {
                 pants.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity.getItemData().getItemType() == ItemType.JEWELRY) {
+        } else if (entity.getEntityData().getItemType() == ItemType.JEWELRY) {
             if (jewelry1.getEntity() == null && jewelry1.isEntityMatchRequirements(entity)) {
                 jewelry1.setEntity(entity);
                 return true;
@@ -231,8 +179,8 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
                 jewelry2.setEntity(entity);
                 return true;
             } else return false;
-        } else if (entity.getItemData().getItemType() == ItemType.SHIELD
-                || entity.getItemData().getItemType().getMainType() == ItemMainType.WEAPON) {
+        } else if (entity.getEntityData().getItemType() == ItemType.SHIELD
+                || entity.getEntityData().getItemType().getMainType() == ItemMainType.WEAPON) {
             if (leftHand.getEntity() == null && leftHand.isEntityMatchRequirements(entity)) {
                 leftHand.setEntity(entity);
                 return true;
@@ -245,18 +193,18 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
 
     public int weaponsAmount() {
         int amount = 0;
-        if (leftHand.getEntity() != null && leftHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+        if (leftHand.getEntity() != null && leftHand.getEntity().getEntityData().getItemType().getMainType() == ItemMainType.WEAPON)
             amount++;
-        if (rightHand.getEntity() != null && rightHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+        if (rightHand.getEntity() != null && rightHand.getEntity().getEntityData().getItemType().getMainType() == ItemMainType.WEAPON)
             amount++;
         return amount;
     }
 
     public int shieldsAmount() {
         int amount = 0;
-        if (leftHand.getEntity() != null && leftHand.getEntity().getItemData().getItemType() == ItemType.SHIELD)
+        if (leftHand.getEntity() != null && leftHand.getEntity().getEntityData().getItemType() == ItemType.SHIELD)
             amount++;
-        if (rightHand.getEntity() != null && rightHand.getEntity().getItemData().getItemType() == ItemType.SHIELD)
+        if (rightHand.getEntity() != null && rightHand.getEntity().getEntityData().getItemType() == ItemType.SHIELD)
             amount++;
         return amount;
     }
@@ -265,14 +213,14 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
         int weaponsAmount = weaponsAmount();
         if (weaponsAmount == 0) return AttackType.MELEE;
         else if (weaponsAmount == 1) {
-            if (leftHand.getEntity() != null && leftHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
-                return leftHand.getEntity().getItemData().getWeaponData().getAttackType();
-            else if (rightHand.getEntity() != null && rightHand.getEntity().getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
-                return rightHand.getEntity().getItemData().getWeaponData().getAttackType();
+            if (leftHand.getEntity() != null && leftHand.getEntity().getEntityData().getItemType().getMainType() == ItemMainType.WEAPON)
+                return leftHand.getEntity().getEntityData().getWeaponData().getAttackType();
+            else if (rightHand.getEntity() != null && rightHand.getEntity().getEntityData().getItemType().getMainType() == ItemMainType.WEAPON)
+                return rightHand.getEntity().getEntityData().getWeaponData().getAttackType();
         } else if (weaponsAmount == 2) {
-            return leftHand.getEntity().getItemData().getWeaponData().compareTo(rightHand.getEntity().getItemData().getWeaponData()) > 0 ?
-                    leftHand.getEntity().getItemData().getWeaponData().getAttackType()
-                    : rightHand.getEntity().getItemData().getWeaponData().getAttackType();
+            return leftHand.getEntity().getEntityData().getWeaponData().compareTo(rightHand.getEntity().getEntityData().getWeaponData()) > 0 ?
+                    leftHand.getEntity().getEntityData().getWeaponData().getAttackType()
+                    : rightHand.getEntity().getEntityData().getWeaponData().getAttackType();
         } else {
             throw new IllegalStateException("there must be 0-2 weapons. Something wrong");
         }
@@ -292,7 +240,7 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
         return slots.stream()
                 .filter(slot -> !slot.isEmpty())
                 .map(Slot::getEntity)
-                .filter(entity -> entity.getItemData().getItemType().getMainType() == ItemMainType.ARMOR)
+                .filter(entity -> entity.getEntityData().getItemType().getMainType() == ItemMainType.ARMOR)
                 .flatMap(entity -> entity.elements().getCurrent().stream())
                 .collect(Collectors.toSet());
     }
@@ -301,7 +249,7 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
         return slots.stream()
                 .filter(slot -> !slot.isEmpty())
                 .map(Slot::getEntity)
-                .filter(entity -> entity.getItemData().getItemType().getMainType() == ItemMainType.WEAPON)
+                .filter(entity -> entity.getEntityData().getItemType().getMainType() == ItemMainType.WEAPON)
                 .flatMap(weapon -> weapon.elements().getCurrent().stream())
                 .collect(Collectors.toSet());
     }
@@ -310,7 +258,7 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
         Stats result = new Stats(false);
         slots.stream()
                 .filter(slot -> !slot.isEmpty())
-                .map(slot -> slot.getEntity().getItemData().getStats())
+                .map(slot -> slot.getEntity().getEntityData().getStats())
                 .forEach(result::increase);
         return result;
     }

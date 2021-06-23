@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.data.PlayerData;
 import ru.rdude.rpg.game.logic.data.resources.PlayerResources;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
@@ -21,6 +22,7 @@ import ru.rdude.rpg.game.utils.Functions;
 
 import static ru.rdude.rpg.game.ui.UiData.DEFAULT_SKIN;
 
+@JsonIgnoreType
 public class PlayerVisual extends VerticalGroup implements GameStateObserver {
 
     private final Player player;
@@ -41,7 +43,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
     private final PlayerBuffsIcons buffsIcons;
 
     public PlayerVisual(Player player) {
-        this(player, createAvatarFromData(((PlayerData) player.getBeingData())));
+        this(player, createAvatarFromData(((PlayerData) player.getEntityData())));
     }
 
     public PlayerVisual(Player player, PlayerAvatar avatar) {

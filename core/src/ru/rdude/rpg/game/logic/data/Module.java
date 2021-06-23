@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.logic.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.rdude.rpg.game.logic.data.resources.ModuleResources;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@JsonPolymorphicSubType("moduleData")
 public class Module extends EntityData implements Serializable {
 
     private Set<SkillData> skillData;

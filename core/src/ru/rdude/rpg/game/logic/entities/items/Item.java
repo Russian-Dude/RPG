@@ -1,5 +1,7 @@
 package ru.rdude.rpg.game.logic.entities.items;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.entities.Entity;
@@ -8,47 +10,52 @@ import ru.rdude.rpg.game.logic.enums.Element;
 import ru.rdude.rpg.game.logic.enums.ItemRarity;
 import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.utils.SubscribersManager;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
-public class Item extends Entity {
+@JsonPolymorphicSubType("item")
+public class Item extends Entity<ItemData> {
 
     public static final int MAX_AMOUNT = 99;
 
     private SubscribersManager<ItemCountObserver> subscribers;
 
-    protected ItemData itemData;
     protected int amount;
     protected StateHolder<Element> elements;
 
-    public Item(ItemData itemData, int amount) {
+    @JsonCreator
+    private Item(@JsonProperty("entityData") long guid) {
+        super(guid);
+    }
+
+    public Item(ItemData entityData, int amount) {
+        super(entityData);
         this.subscribers = new SubscribersManager<>();
-        this.itemData = itemData;
         this.amount = amount;
         Set<Element> elementsData;
-        if ((elementsData = itemData.getElements()) != null)
+        if ((elementsData = entityData.getElements()) != null)
             elements = new StateHolder<>(elementsData);
         else {
             elements = new StateHolder<>(new HashSet<>());
         }
     }
 
-    public Item(ItemData itemData) {
-        this(itemData, 1);
+    public Item(ItemData entityData) {
+        this(entityData, 1);
     }
 
     public boolean isStackable() {
-        return itemData.isStackable();
+        return entityData.isStackable();
     }
 
     public Stats requirements() {
-        return itemData.getRequirements();
+        return entityData.getRequirements();
     }
 
     public ItemRarity rarity() {
-        return itemData.getRarity();
+        return entityData.getRarity();
     }
 
     public StateHolder<Element> elements() {
@@ -56,11 +63,11 @@ public class Item extends Entity {
     }
 
     public Coefficients coefficients() {
-        return itemData.getCoefficients();
+        return entityData.getCoefficients();
     }
 
     public double price() {
-        return itemData.getPrice();
+        return entityData.getPrice();
     }
 
     public int getAmount() { return amount; }
@@ -81,7 +88,12 @@ public class Item extends Entity {
 
     @Override
     public String getName() {
-        return itemData.getName();
+        return entityData.getName();
+    }
+
+    @Override
+    protected ItemData getDataByGuid(long guid) {
+        return ItemData.getItemDataByGuid(guid);
     }
 
     public void decreaseAmount(int value) {
@@ -94,12 +106,8 @@ public class Item extends Entity {
         notifySubscribers();
     }
 
-    public ItemData getItemData() {
-        return itemData;
-    }
-
     public Item copy() {
-        Item copy = new Item(itemData, amount);
+        Item copy = new Item(entityData, amount);
         copy.elements = elements.copy();
         return copy;
     }
@@ -114,18 +122,5 @@ public class Item extends Entity {
 
     private void notifySubscribers() {
         subscribers.notifySubscribers(subscriber -> subscriber.update(amount, this));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Item)) return false;
-        Item item = (Item) o;
-        return Objects.equals(getItemData(), item.getItemData());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getItemData());
     }
 }

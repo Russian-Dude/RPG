@@ -1,13 +1,13 @@
 package ru.rdude.rpg.game.logic.time;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import ru.rdude.rpg.game.utils.SubscribersManager;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
-import java.util.HashSet;
-import java.util.Set;
-
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonPolymorphicSubType("timeManager")
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class TimeManager implements TurnChangeObserver {
 
     @JsonIgnore

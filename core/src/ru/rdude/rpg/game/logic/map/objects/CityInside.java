@@ -7,10 +7,12 @@ import ru.rdude.rpg.game.logic.enums.ItemMainType;
 import ru.rdude.rpg.game.logic.enums.ItemRarity;
 import ru.rdude.rpg.game.logic.time.TimeChangeObserver;
 import ru.rdude.rpg.game.utils.Functions;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonPolymorphicSubType("cityInside")
 public class CityInside implements TimeChangeObserver {
 
     private int timeToNextUpdate = 4320;

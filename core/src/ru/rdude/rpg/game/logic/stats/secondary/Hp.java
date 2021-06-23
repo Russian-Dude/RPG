@@ -1,27 +1,34 @@
 package ru.rdude.rpg.game.logic.stats.secondary;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.primary.Lvl;
 import ru.rdude.rpg.game.logic.stats.primary.Vit;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import static java.lang.Math.floor;
 
+@JsonPolymorphicSubType("hp")
 public class Hp extends Stat implements Calculatable {
 
     private boolean calculatable;
+    @JsonIdentityReference(alwaysAsId = true)
     private Vit vit;
+    @JsonIdentityReference(alwaysAsId = true)
     private Lvl lvl;
 
     private Recovery recovery;
     private Max max;
 
+    private Hp() { }
+
     public Hp(double value) {
         super(value);
         this.calculatable = false;
-        recovery = new Recovery();
-        max = new Max();
+        recovery = new Recovery(this);
+        max = new Max(this);
     }
 
     @Override
@@ -36,8 +43,8 @@ public class Hp extends Stat implements Calculatable {
         this.lvl = lvl;
         vit.subscribe(this);
         lvl.subscribe(this);
-        recovery = new Recovery();
-        max = new Max();
+        recovery = new Recovery(this);
+        max = new Max(this);
     }
 
     @Override
@@ -91,7 +98,6 @@ public class Hp extends Stat implements Calculatable {
         return value();
     }
 
-    // calculate max hp and recovery. Return max hp
     @Override
     public double calculate() {
         if (!calculatable) return max.value();
@@ -100,12 +106,23 @@ public class Hp extends Stat implements Calculatable {
         return max.value();
     }
 
-    public class Max extends Stat implements Calculatable {
+    @JsonPolymorphicSubType("hpMax")
+    public static class Max extends Stat implements Calculatable {
+
+        @JsonIdentityReference(alwaysAsId = true)
+        private Hp hp;
+
+        private Max() { }
+
+        public Max(Hp hp) {
+            this.hp = hp;
+        }
+
         @Override
         public double calculate() {
-            if (!calculatable) return value();
-            double LVL = lvl.value();
-            double VIT = vit.value();
+            if (!hp.calculatable) return value();
+            double LVL = hp.lvl.value();
+            double VIT = hp.vit.value();
             this.set(20 + LVL*5 + floor(LVL / 3) + floor(LVL / 5) + floor(LVL / 7) + VIT + floor(VIT / 3)*2 + floor(VIT / 5) + floor(VIT / 7)*2 + floor(VIT / 10));
             //this.set(20 + Math.floor(LVL * 0.7 + Math.floor(LVL / 2) * 0.7) + Math.floor(VIT * 0.7 + Math.floor(VIT / 2) * 0.7 + Math.floor(VIT / 3)));
             return value();
@@ -115,14 +132,13 @@ public class Hp extends Stat implements Calculatable {
         public void set(double value) {
             double oldValue = this.value();
             super.set(value);
-            if (Hp.this.value() > this.value() || Hp.this.value() == oldValue) {
-                Hp.this.set(this.value());
+            if (hp.calculatable && (hp.value() > this.value() || hp.value() == oldValue)) {
+                hp.set(this.value());
             }
         }
 
         @Override
         public void setCalculatable(boolean calculatable) {
-
         }
 
         @Override
@@ -131,12 +147,23 @@ public class Hp extends Stat implements Calculatable {
         }
     }
 
-    public class Recovery extends Stat implements Calculatable {
+    @JsonPolymorphicSubType("hpRecovery")
+    public static class Recovery extends Stat implements Calculatable {
+
+        @JsonIdentityReference(alwaysAsId = true)
+        private Hp hp;
+
+        private Recovery() { }
+
+        public Recovery(Hp hp) {
+            this.hp = hp;
+        }
+
         @Override
         public double calculate() {
-            if (!calculatable) return value();
-            double LVL = lvl.value();
-            double VIT = vit.value();
+            if (!hp.calculatable) return value();
+            double LVL = hp.lvl.value();
+            double VIT = hp.vit.value();
             this.set(1 + floor(LVL / 2) + floor(VIT / 2) + floor(VIT / 3) + floor(VIT / 5)*2 + floor(VIT / 7));
             //this.set(1 + Math.floor(VIT / 3) + Math.floor(VIT / 7) + LVL);
             return value();
@@ -144,7 +171,6 @@ public class Hp extends Stat implements Calculatable {
 
         @Override
         public void setCalculatable(boolean calculatable) {
-
         }
 
         @Override

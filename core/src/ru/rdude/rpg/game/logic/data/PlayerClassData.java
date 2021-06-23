@@ -2,9 +2,11 @@ package ru.rdude.rpg.game.logic.data;
 
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.enums.UsedByStatistics;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.*;
 
+@JsonPolymorphicSubType("playerClassData")
 public class PlayerClassData extends EntityData {
 
     private static Map<Long, PlayerClassData> classes = new HashMap<>();

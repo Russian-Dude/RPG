@@ -7,19 +7,18 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.entities.items.ItemCountObserver;
 import ru.rdude.rpg.game.logic.game.Game;
+import ru.rdude.rpg.game.logic.game.StaticReferencesHolder;
 import ru.rdude.rpg.game.logic.holders.Slot;
 import ru.rdude.rpg.game.utils.Functions;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
+@JsonIgnoreType
 public class ItemVisual extends Group implements ItemCountObserver {
-
-    private static Map<Item, ItemVisual> items = new HashMap<>();
 
     private Item item;
 
@@ -30,15 +29,15 @@ public class ItemVisual extends Group implements ItemCountObserver {
 
     public ItemVisual(Item item) {
 
-        items.put(item, this);
+        Game.getStaticReferencesHolders().itemsVisuals().put(item, this);
         this.item = item;
         item.subscribe(this);
 
         // item image
-        itemImage = new Image(Game.getImageFactory().getRegion(item.getItemData().getResources().getMainImage().getGuid()));
+        itemImage = new Image(Game.getImageFactory().getRegion(item.getEntityData().getResources().getMainImage().getGuid()));
 
         // rarity border
-        switch (item.getItemData().getRarity()) {
+        switch (item.getEntityData().getRarity()) {
             case BRONZE:
                 border = new Image(UiData.ItemBorder.BRONZE);
                 break;
@@ -73,7 +72,7 @@ public class ItemVisual extends Group implements ItemCountObserver {
     }
 
     public static ItemVisual ofItem(Item item) {
-        ItemVisual res = items.get(item);
+        ItemVisual res = Game.getStaticReferencesHolders().itemsVisuals().get(item);
         return res == null ? new ItemVisual(item) : res;
     }
 

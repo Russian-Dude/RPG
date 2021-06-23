@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.entities.Entity;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.enums.ItemMainType;
@@ -10,11 +11,12 @@ import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.holders.Slot;
 import ru.rdude.rpg.game.logic.holders.SlotObserver;
 
+@JsonIgnoreType
 public class ItemSlotVisual extends Group implements SlotObserver {
 
-    private Slot<Item> slot;
+    private final Slot<Item> slot;
 
-    private Image background;
+    private final Image background;
     private ItemVisual item;
 
 

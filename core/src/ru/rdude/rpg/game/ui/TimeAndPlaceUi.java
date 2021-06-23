@@ -4,23 +4,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.game.Game;
-import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.PlaceObserver;
 import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.logic.time.TimeManager;
 import ru.rdude.rpg.game.logic.time.TimeObserver;
 
+@JsonIgnoreType
 public class TimeAndPlaceUi extends HorizontalGroup implements TimeObserver, PlaceObserver {
 
-    private Label year = new Label("Year 7777", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-    private Label month = new Label("Month 12" , UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-    private Label day = new Label("Day 27", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-    private Label time = new Label("12:55", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-    private Label biom = new Label("Volcanic", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-    private Label relief = new Label("Mountains", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+    private final Label year = new Label("Year 7777", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+    private final Label month = new Label("Month 12" , UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+    private final Label day = new Label("Day 27", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+    private final Label time = new Label("12:55", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+    private final Label biom = new Label("Volcanic", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+    private final Label relief = new Label("Mountains", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
 
     public TimeAndPlaceUi() {
         Game.getCurrentGame().getTimeManager().subscribe(this);

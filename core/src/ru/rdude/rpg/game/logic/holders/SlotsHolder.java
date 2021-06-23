@@ -1,33 +1,14 @@
 package ru.rdude.rpg.game.logic.holders;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import ru.rdude.rpg.game.logic.data.ItemData;
-import ru.rdude.rpg.game.logic.data.Module;
-import ru.rdude.rpg.game.logic.data.MonsterData;
-import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.Entity;
-import ru.rdude.rpg.game.logic.entities.items.holders.EquipmentSlotsHolder;
-import ru.rdude.rpg.game.logic.entities.items.holders.ItemSlotsHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        property = "Implementation")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = EquipmentSlotsHolder.class, name = "Equipment"),
-        @JsonSubTypes.Type(value = ItemSlotsHolder.class, name = "Items")
-})
-public abstract class SlotsHolder<T extends Entity> {
+public abstract class SlotsHolder<T extends Entity<?>> {
 
     @JsonProperty
     protected List<Slot<T>> slots;
@@ -39,7 +20,7 @@ public abstract class SlotsHolder<T extends Entity> {
     public SlotsHolder(int capacity, String marker, Predicate<T> ... extraRequirements) {
         slots = new ArrayList<>(capacity);
         for (int i = 0; i < capacity; i++) {
-            slots.add(new Slot<T>(marker, extraRequirements));
+            slots.add(new SimpleSlot<>(marker, extraRequirements));
         }
     }
 

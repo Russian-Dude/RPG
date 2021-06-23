@@ -5,10 +5,12 @@ import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.stats.Stats;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@JsonPolymorphicSubType("monsterData")
 public class MonsterData extends BeingData {
 
     private static Map<Long, MonsterData> monsters = new HashMap<>();

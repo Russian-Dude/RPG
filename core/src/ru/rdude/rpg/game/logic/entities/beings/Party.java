@@ -1,31 +1,32 @@
 package ru.rdude.rpg.game.logic.entities.beings;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class Party {
 
-    @JsonProperty
-    private LinkedList<Being> beings;
+    private LinkedList<Being<?>> beings;
 
     public Party() {
         this(new LinkedList<>());
     }
 
-    public Party(Collection<? extends Being> collection) {
+    public Party(Collection<? extends Being<?>> collection) {
         beings = new LinkedList<>(collection);
     }
 
-    public boolean add(Being being) {
+    public boolean add(Being<?> being) {
         return beings.add(being);
     }
 
-    public void addToTheLeftFrom(Being being, Being from) {
+    public void addToTheLeftFrom(Being<?> being, Being<?> from) {
 
         int index = beings.indexOf(from);
         if (index == 0)
@@ -34,24 +35,24 @@ public class Party {
             beings.add(index - 1, being);
     }
 
-    public void addToTheRightFrom(Being being, Being from) {
+    public void addToTheRightFrom(Being<?> being, Being<?> from) {
         int index = beings.indexOf(from);
         beings.add(index + 1, being);
     }
 
-    public Being getBeingLeftFrom(Being from) {
+    public Being<?> getBeingLeftFrom(Being<?> from) {
         int index = beings.indexOf(from);
         if (index == 0) return null;
         return beings.get(beings.indexOf(from) - 1);
     }
 
-    public Being getBeingRightFrom(Being from) {
+    public Being<?> getBeingRightFrom(Being<?> from) {
         int index = beings.indexOf(from);
         if (index == beings.size() - 1) return null;
         return beings.get(beings.indexOf(from) + 1);
     }
 
-    public void remove(Being being) {
+    public void remove(Being<?> being) {
         beings.remove(being);
     }
 
@@ -59,11 +60,11 @@ public class Party {
         beings.forEach(action);
     }
 
-    public Stream<Being> stream() {
+    public Stream<Being<?>> stream() {
         return beings.stream();
     }
 
-    public LinkedList<Being> getBeings() {
+    public LinkedList<Being<?>> getBeings() {
         return beings;
     }
 }

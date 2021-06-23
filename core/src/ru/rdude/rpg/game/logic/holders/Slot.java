@@ -2,36 +2,26 @@ package ru.rdude.rpg.game.logic.holders;
 
 import com.fasterxml.jackson.annotation.*;
 import ru.rdude.rpg.game.logic.entities.Entity;
+import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class Slot<T extends Entity> {
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
+public abstract class Slot<T extends Entity<?>> {
 
-    // need to drag and drop knows from which slot entity dragged
-    private static Map<? super Entity, Slot<? extends Entity>> entitiesInSlots = new HashMap<>();
-
-    @JsonIgnore
     private SubscribersManager<SlotObserver> subscribers;
 
     protected T entity;
 
     @JsonIgnore
-    protected Set<Predicate<T>> extraRequirements;
+    protected Set<? extends Predicate<T>> extraRequirements;
 
     protected String marker;
-
-    @JsonCreator
-    private Slot(@JsonProperty("marker") String marker) {
-        subscribers = new SubscribersManager<>();
-        this.marker = marker;
-        this.extraRequirements = new HashSet<>();
-    }
 
     public Slot(String marker, Predicate<T>... extraRequirements) {
         subscribers = new SubscribersManager<>();
@@ -39,10 +29,14 @@ public class Slot<T extends Entity> {
         this.extraRequirements = Arrays.stream(extraRequirements).collect(Collectors.toSet());
     }
 
-    public static <E extends Entity> Slot<E> withEntity(E entity) {
-        Slot<E> slot = (Slot<E>) entitiesInSlots.get(entity);
+    protected Slot(Set<? extends Predicate<T>> extraRequirements) {
+        this.extraRequirements = extraRequirements;
+    }
+
+    public static <E extends Entity<?>> Slot<E> withEntity(E entity) {
+        Slot<E> slot = (Slot<E>) Game.getStaticReferencesHolders().entitiesInSlots().get(entity);
         if (slot.entity == null) {
-            entitiesInSlots.remove(entity);
+            Game.getStaticReferencesHolders().entitiesInSlots().remove(entity);
             slot = null;
         }
         return slot;
@@ -55,7 +49,7 @@ public class Slot<T extends Entity> {
     public void setEntity(T item) {
         this.entity = item;
         if (item != null) {
-            entitiesInSlots.put(item, this);
+            Game.getStaticReferencesHolders().entitiesInSlots().put(item, this);
         }
         notifySubscribers(item);
     }
@@ -64,14 +58,14 @@ public class Slot<T extends Entity> {
         setEntity(null);
     }
 
-    @JsonSetter
+    @JsonSetter("entity")
     private void setEntityJson(T item) {
         this.entity = item;
-        entitiesInSlots.put(item, this);
+        Game.getStaticReferencesHolders().entitiesInSlots().put(item, this);
     }
 
     public boolean hasEntity(T item) {
-        return this.entity != null && this.entity.equals(item);
+        return this.entity != null && this.entity.sameAs(item);
     }
 
     public boolean isEmpty() {
@@ -98,10 +92,6 @@ public class Slot<T extends Entity> {
 
     public void setMarker(String marker) {
         this.marker = marker;
-    }
-
-    public void addRequirement(Predicate<T> requirement) {
-        this.extraRequirements.add(requirement);
     }
 
     public void subscribe(SlotObserver subscriber) {

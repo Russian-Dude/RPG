@@ -3,12 +3,14 @@ package ru.rdude.rpg.game.logic.entities.items.holders;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.holders.Slot;
 import ru.rdude.rpg.game.logic.holders.SlotsHolder;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@JsonPolymorphicSubType("itemSlotsHolder")
 public class ItemSlotsHolder extends SlotsHolder<Item> {
 
     private ItemSlotsHolder() { }

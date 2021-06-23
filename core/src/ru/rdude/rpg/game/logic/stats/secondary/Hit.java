@@ -1,18 +1,26 @@
 package ru.rdude.rpg.game.logic.stats.secondary;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.primary.Agi;
 import ru.rdude.rpg.game.logic.stats.primary.Dex;
 import ru.rdude.rpg.game.logic.stats.primary.Lvl;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
+@JsonPolymorphicSubType("hit")
 public class Hit extends Stat implements Calculatable {
 
     private boolean calculatable;
+    @JsonIdentityReference(alwaysAsId = true)
     private Dex dex;
+    @JsonIdentityReference(alwaysAsId = true)
     private Agi agi;
+    @JsonIdentityReference(alwaysAsId = true)
     private Lvl lvl;
+
+    private Hit() { }
 
     public Hit(double value) {
         super(value);

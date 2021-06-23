@@ -6,10 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.entities.beings.BeingActionObserver;
-import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.entities.skills.Buff;
 import ru.rdude.rpg.game.logic.entities.skills.BuffObserver;
 import ru.rdude.rpg.game.mapVisual.VisualConstants;
@@ -17,6 +17,7 @@ import ru.rdude.rpg.game.mapVisual.VisualConstants;
 import java.util.HashMap;
 import java.util.Map;
 
+@JsonIgnoreType
 public class PlayerBuffsIcons implements BeingActionObserver, BuffObserver {
 
     private final static int maxBuffsOnSide = 6;
@@ -27,7 +28,9 @@ public class PlayerBuffsIcons implements BeingActionObserver, BuffObserver {
     private final Map<Buff, BuffIcon> icons = new HashMap<>();
 
     public PlayerBuffsIcons(PlayerVisual playerVisual) {
+        playerVisual.getPlayer().getBuffs().forEach(this::add);
         playerVisual.getPlayer().subscribe(this);
+
         moreButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

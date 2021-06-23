@@ -1,17 +1,25 @@
 package ru.rdude.rpg.game.logic.stats.secondary;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.primary.*;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
+@JsonPolymorphicSubType("stm")
 public class Stm extends Stat implements Calculatable {
 
     private boolean calculatable;
+    @JsonIdentityReference(alwaysAsId = true)
     private Agi agi;
+    @JsonIdentityReference(alwaysAsId = true)
     private Vit vit;
+    @JsonIdentityReference(alwaysAsId = true)
     private Dex dex;
+    @JsonIdentityReference(alwaysAsId = true)
     private Str str;
+    @JsonIdentityReference(alwaysAsId = true)
     private Lvl lvl;
 
     private Max max;
@@ -22,19 +30,15 @@ public class Stm extends Stat implements Calculatable {
     // how hard to use equipped items
     private Hardness hardness;
 
+    private Stm() { }
 
     public Stm(double value) {
         super(value);
         this.calculatable = false;
-        max = new Max();
-        recovery = new Recovery();
-        perHit = new PerHit();
+        max = new Max(this);
+        recovery = new Recovery(this);
+        perHit = new PerHit(this);
         hardness = new Hardness();
-    }
-
-    @Override
-    public String getName() {
-        return "Stamina";
     }
 
     public Stm(double value, Agi agi, Vit vit, Dex dex, Str str, Lvl lvl) {
@@ -50,11 +54,16 @@ public class Stm extends Stat implements Calculatable {
         dex.subscribe(this);
         str.subscribe(this);
         lvl.subscribe(this);
-        max = new Max();
-        recovery = new Recovery();
-        perHit = new PerHit();
+        max = new Max(this);
+        recovery = new Recovery(this);
+        perHit = new PerHit(this);
         hardness = new Hardness();
         calculate();
+    }
+
+    @Override
+    public String getName() {
+        return "Stamina";
     }
 
     @Override
@@ -133,13 +142,24 @@ public class Stm extends Stat implements Calculatable {
     }
 
 
-    public class Max extends Stat implements Calculatable {
+    @JsonPolymorphicSubType("stmMax")
+    public static class Max extends Stat implements Calculatable {
+
+        @JsonIdentityReference(alwaysAsId = true)
+        private Stm stm;
+
+        private Max() { }
+
+        public Max(Stm stm) {
+            this.stm = stm;
+        }
+
         @Override
         public double calculate() {
-            if (!calculatable) return value();
-            double STR = str.value();
-            double DEX = dex.value();
-            double LVL = lvl.value();
+            if (!stm.calculatable) return value();
+            double STR = stm.str.value();
+            double DEX = stm.dex.value();
+            double LVL = stm.lvl.value();
             this.set(STR + Math.floor(STR / 3) + Math.floor(STR / 5) + Math.floor(DEX / 7) + LVL + Math.floor(LVL / 5) + Math.floor(LVL / 10) + 8);
             return value();
         }
@@ -148,14 +168,13 @@ public class Stm extends Stat implements Calculatable {
         public void set(double value) {
             double oldValue = this.value();
             super.set(value);
-            if (Stm.this.value() > this.value() || Stm.this.value() == oldValue) {
-                Stm.this.set(this.value());
+            if (stm.calculatable && (stm.value() > this.value() || stm.value() == oldValue)) {
+                stm.set(this.value());
             }
         }
 
         @Override
         public void setCalculatable(boolean calculatable) {
-
         }
 
         @Override
@@ -164,19 +183,29 @@ public class Stm extends Stat implements Calculatable {
         }
     }
 
-    public class Recovery extends Stat implements Calculatable {
+    @JsonPolymorphicSubType("stmRecovery")
+    public static class Recovery extends Stat implements Calculatable {
+
+        @JsonIdentityReference(alwaysAsId = true)
+        private Stm stm;
+
+        private Recovery() { }
+
+        public Recovery(Stm stm) {
+            this.stm = stm;
+        }
+
         @Override
         public double calculate() {
-            if (!calculatable) return value();
-            double LVL = lvl.value();
-            double VIT = vit.value();
+            if (!stm.calculatable) return value();
+            double LVL = stm.lvl.value();
+            double VIT = stm.vit.value();
             this.set(Math.floor(VIT / 3) + Math.floor(VIT / 5) + Math.floor(LVL / 2) + Math.floor(LVL / 3) + Math.floor(LVL / 7) + 3);
             return value();
         }
 
         @Override
         public void setCalculatable(boolean calculatable) {
-
         }
 
         @Override
@@ -185,19 +214,29 @@ public class Stm extends Stat implements Calculatable {
         }
     }
 
-    public class PerHit extends Stat implements Calculatable {
+    @JsonPolymorphicSubType("stmPerHit")
+    public static class PerHit extends Stat implements Calculatable {
+
+        @JsonIdentityReference(alwaysAsId = true)
+        private Stm stm;
+
+        private PerHit() { }
+
+        public PerHit(Stm stm) {
+            this.stm = stm;
+        }
+
         @Override
         public double calculate() {
-            if (!calculatable) return value();
-            double LVL = lvl.value();
-            double AGI = agi.value();
-            this.set(3 + hardness.value() - Math.floor(Math.floor(AGI / 3) * 0.4 + Math.floor(AGI / 5) + Math.floor(AGI / 7) * 0.5 + Math.floor(LVL / 7)));
+            if (!stm.calculatable) return value();
+            double LVL = stm.lvl.value();
+            double AGI = stm.agi.value();
+            this.set(3 + stm.hardness.value() - Math.floor(Math.floor(AGI / 3) * 0.4 + Math.floor(AGI / 5) + Math.floor(AGI / 7) * 0.5 + Math.floor(LVL / 7)));
             return value();
         }
 
         @Override
         public void setCalculatable(boolean calculatable) {
-
         }
 
         @Override
@@ -206,7 +245,8 @@ public class Stm extends Stat implements Calculatable {
         }
     }
 
-    public class Hardness extends Stat {
+    @JsonPolymorphicSubType("stmHardness")
+    public static class Hardness extends Stat {
         @Override
         public String getName() {
             return "Hardness";

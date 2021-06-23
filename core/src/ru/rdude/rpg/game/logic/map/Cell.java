@@ -9,6 +9,7 @@ import ru.rdude.rpg.game.logic.enums.WaterDepth;
 import ru.rdude.rpg.game.logic.map.objects.MapObject;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.utils.aStar.AStarNode;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@JsonPolymorphicSubType("cell")
 public class Cell implements AStarNode {
 
     @JsonIgnore

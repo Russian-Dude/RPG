@@ -53,7 +53,7 @@ public class Coefficients {
     }
 
 
-    public class CoefficientsContainer {
+    public static class CoefficientsContainer {
         private Coefficient<AttackType> attackType;
         private Coefficient<BeingType> beingType;
         private Coefficient<Element> element;

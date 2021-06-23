@@ -6,9 +6,11 @@ import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.stats.Stats;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.*;
 
+@JsonPolymorphicSubType("skillData")
 public class SkillData extends EntityData {
 
     private static Map<Long, SkillData> skills = new HashMap<>();

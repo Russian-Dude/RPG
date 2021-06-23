@@ -1,27 +1,30 @@
 package ru.rdude.rpg.game.logic.stats.secondary;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.primary.Agi;
 import ru.rdude.rpg.game.logic.stats.primary.Dex;
 import ru.rdude.rpg.game.logic.stats.primary.Lvl;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
+@JsonPolymorphicSubType("block")
 public class Block extends Stat implements Calculatable {
 
     private boolean calculatable;
+    @JsonIdentityReference(alwaysAsId = true)
     private Dex dex;
+    @JsonIdentityReference(alwaysAsId = true)
     private Agi agi;
+    @JsonIdentityReference(alwaysAsId = true)
     private Lvl lvl;
+
+    private Block() { }
 
     public Block(double value) {
         super(value);
         this.calculatable = false;
-    }
-
-    @Override
-    public String getName() {
-        return "Block";
     }
 
     public Block(Dex dex, Agi agi, Lvl lvl) {
@@ -37,6 +40,12 @@ public class Block extends Stat implements Calculatable {
         dex.subscribe(this);
         agi.subscribe(this);
         lvl.subscribe(this);
+    }
+
+
+    @Override
+    public String getName() {
+        return "Block";
     }
 
     public void setCalculatable(boolean calculatable) {

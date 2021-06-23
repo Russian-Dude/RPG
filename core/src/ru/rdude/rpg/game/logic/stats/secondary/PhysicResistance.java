@@ -1,20 +1,32 @@
 package ru.rdude.rpg.game.logic.stats.secondary;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.primary.*;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
+@JsonPolymorphicSubType("physicResistance")
 public class PhysicResistance extends Stat implements Calculatable {
 
     private boolean calculatable;
+    @JsonIdentityReference(alwaysAsId = true)
     private Int intel;
+    @JsonIdentityReference(alwaysAsId = true)
     private Luck luck;
+    @JsonIdentityReference(alwaysAsId = true)
     private Str str;
+    @JsonIdentityReference(alwaysAsId = true)
     private Dex dex;
+    @JsonIdentityReference(alwaysAsId = true)
     private Agi agi;
+    @JsonIdentityReference(alwaysAsId = true)
     private Vit vit;
+    @JsonIdentityReference(alwaysAsId = true)
     private Lvl lvl;
+
+    private PhysicResistance() { }
 
     public PhysicResistance(double value) {
         super(value);

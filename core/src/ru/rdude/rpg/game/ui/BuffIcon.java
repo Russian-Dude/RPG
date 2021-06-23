@@ -13,7 +13,7 @@ public class BuffIcon extends Group {
 
     public BuffIcon(Buff buff) {
         this.buff = buff;
-        image = new Image(Game.getImageFactory().getRegion(buff.getSkillData().getResources().getSkillIcon().getGuid()));
+        image = new Image(Game.getImageFactory().getRegion(buff.getEntityData().getResources().getSkillIcon().getGuid()));
         image.setSize(VisualConstants.BUFF_ICON_SIZE, VisualConstants.BUFF_ICON_SIZE);
         setSize(VisualConstants.BUFF_ICON_SIZE, VisualConstants.BUFF_ICON_SIZE);
         addActor(image);

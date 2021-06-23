@@ -8,7 +8,7 @@ public class GameSerializer {
     private final CustomObjectMapper objectMapper;
 
     public GameSerializer() {
-        objectMapper = new CustomObjectMapper();
+        objectMapper = Game.getCustomObjectMapper();
     }
 
     public String serialize(Game game) {

@@ -4,29 +4,30 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import ru.rdude.rpg.game.utils.SubscribersManager;
-
-import java.util.HashSet;
-import java.util.Set;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonPolymorphicSubType("duration")
 public class Duration implements TimeChangeObserver, TurnChangeObserver {
 
     public enum DurationType  {MINUTES, TURNS}
 
-    private final SubscribersManager<DurationObserver> observers = new SubscribersManager<>();
+    private SubscribersManager<DurationObserver> observers;
 
     protected Double turns;
     protected Double minutes;
 
+    protected Duration() { }
 
     public Duration(TimeManager timeManager, DurationType type, Double value) {
+        observers = new SubscribersManager<>();
         timeManager.subscribe(this);
         if (type == DurationType.MINUTES) minutes = value;
         else if (type == DurationType.TURNS) turns = value;
     }
 
     public Duration(TimeManager timeManager, Double minutes, Double turns) {
+        observers = new SubscribersManager<>();
         timeManager.subscribe(this);
         this.minutes = minutes;
         this.turns = turns;

@@ -38,7 +38,7 @@ public class SkillParser {
             else if (preResult instanceof Integer) result = (double) (int) preResult;
         } catch (ScriptException e) {
             e.printStackTrace();
-            System.out.printf("Parse trouble in skill: %s, target: %s, caster: %s", skillData.getName(), target.getBeingData().getName(), caster.getBeingData().getName());
+            System.out.printf("Parse trouble in skill: %s, target: %s, caster: %s", skillData.getName(), target.getEntityData().getName(), caster.getEntityData().getName());
             return result;
         }
         return result;

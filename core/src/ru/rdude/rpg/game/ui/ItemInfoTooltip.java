@@ -26,7 +26,7 @@ public class ItemInfoTooltip extends Tooltip<Table> {
 
     public ItemInfoTooltip(Item item) {
         super(new Table(UiData.DEFAULT_SKIN));
-        ItemData itemData = item.getItemData();
+        ItemData itemData = item.getEntityData();
         mainTable = getActor();
         mainTable.background(UiData.DEFAULT_SKIN.getDrawable("Window_Transparent_9p"));
         setInstant(true);

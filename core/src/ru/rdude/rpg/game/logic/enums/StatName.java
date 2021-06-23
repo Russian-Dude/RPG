@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.enums;
 
+import ru.rdude.rpg.game.logic.entities.skills.Damage;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.primary.*;
 import ru.rdude.rpg.game.logic.stats.secondary.*;
@@ -39,6 +40,7 @@ public enum StatName {
     LUCKY_DODGE(Flee.LuckyDodgeChance.class, "Lucky dodge", "LKYDODGE"),
     FLEE(Flee.class, "Flee", "FLEE"),
     PHYSIC_RESISTANCE(PhysicResistance.class, "Physic resistance", "PRES"),
+    DAMAGE(Dmg.class, "Damage", "DMG"),
     MAGIC_RESISTANCE(MagicResistance.class, "Magic resistance", "MRES");
 
     private Class<? extends Stat> cl;

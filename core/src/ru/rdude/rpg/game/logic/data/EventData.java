@@ -4,18 +4,20 @@ import ru.rdude.rpg.game.logic.data.resources.EventResources;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.stats.Stats;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@JsonPolymorphicSubType("eventData")
 public class EventData extends EntityData {
 
     public enum EventActionTarget {NO, SELECTED_PLAYER, RANDOM_PLAYER, ALL_PLAYERS}
 
     public static Map<Long, EventData> events = new HashMap<>();
 
-    public final EventAction END_EVENT = new EventAction();
+    public static final EventAction END_EVENT = new EventAction();
 
 
     public Set<EventAction> actions = new HashSet<>();
@@ -23,6 +25,8 @@ public class EventData extends EntityData {
     public Set<Relief> reliefs = Arrays.stream(Relief.values()).collect(Collectors.toSet());
     public double minLvl = 0d;
     public double maxLvl = Double.POSITIVE_INFINITY;
+
+    private EventData() { }
 
     public EventData(long guid) {
         super(guid);
@@ -110,7 +114,7 @@ public class EventData extends EntityData {
         }
     }
 
-    public class EventAction {
+    public static class EventAction {
 
         private EventActionTarget target = EventActionTarget.NO;
         private Map<Long, Float> skillsCouldCast = new HashMap<>();
@@ -185,7 +189,7 @@ public class EventData extends EntityData {
             this.receiveItems = receiveItems;
         }
 
-        public class Requirements {
+        public static class Requirements {
             private Stats stats;
             private Map<Long, Integer> items; // by guid
             private boolean takeItems;

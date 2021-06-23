@@ -1,17 +1,16 @@
 package ru.rdude.rpg.game.logic.entities.skills;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.ItemData;
+import ru.rdude.rpg.game.logic.data.SkillData;
+import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
+import ru.rdude.rpg.game.logic.entities.items.Item;
+import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.logic.enums.BuffType;
 import ru.rdude.rpg.game.logic.enums.Size;
 import ru.rdude.rpg.game.utils.Functions;
-import ru.rdude.rpg.game.logic.coefficients.Coefficients;
-import ru.rdude.rpg.game.logic.data.SkillData;
-import ru.rdude.rpg.game.logic.entities.beings.Being;
-import ru.rdude.rpg.game.logic.entities.items.Item;
-import ru.rdude.rpg.game.logic.enums.AttackType;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,9 +24,9 @@ public class SkillApplier {
 
     SkillData skillData;
     @JsonProperty
-    Being caster;
+    Being<?> caster;
     @JsonProperty
-    Being target;
+    Being<?> target;
     SkillParser skillParser;
 
     @JsonGetter("skillData")
@@ -36,21 +35,21 @@ public class SkillApplier {
     }
 
     @JsonCreator
-    private SkillApplier(@JsonProperty("skillData") long skillData, @JsonProperty("caster") Being caster, @JsonProperty("target") Being target) {
+    private SkillApplier(@JsonProperty("skillData") long skillData, @JsonProperty("caster") Being<?> caster, @JsonProperty("target") Being target) {
         this.skillData = SkillData.getSkillByGuid(skillData);
         this.caster = caster;
         this.target = target;
         this.skillParser = new SkillParser(this.skillData, caster, target);
     }
 
-    private SkillApplier(SkillData skillData, Being caster, Being target) {
+    private SkillApplier(SkillData skillData, Being<?> caster, Being<?> target) {
         this.skillData = skillData;
         this.caster = caster;
         this.target = target;
         this.skillParser = new SkillParser(skillData, caster, target);
     }
 
-    public static boolean apply(SkillData skillData, Being caster, Being target) {
+    public static boolean apply(SkillData skillData, Being<?> caster, Being<?> target) {
         return apply(new SkillApplier(skillData, caster, target), true);
     }
 

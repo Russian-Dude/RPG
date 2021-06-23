@@ -7,11 +7,11 @@ import java.util.Set;
 public class Coefficient<T extends Enum<T>> {
 
     private Map<T, Double> coefficients;
-    private Class<T> type;
+
+    private Coefficient() { }
 
     public Coefficient(Class<T> cl) {
         coefficients = new HashMap<>();
-        type = cl;
         if (cl == null || !cl.isEnum()) throw new IllegalArgumentException();
         for (T value : cl.getEnumConstants()) {
             coefficients.put(value, 1d);
@@ -29,10 +29,6 @@ public class Coefficient<T extends Enum<T>> {
     }
 
     public Map<T, Double> getCoefficientsMap() { return coefficients; }
-
-    public Class<T> getType() {
-        return type;
-    }
 
     // return last value
     public double set(T t, double value) {

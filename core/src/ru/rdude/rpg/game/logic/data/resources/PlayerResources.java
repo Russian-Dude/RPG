@@ -1,5 +1,8 @@
 package ru.rdude.rpg.game.logic.data.resources;
 
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
+
+@JsonPolymorphicSubType("playerResources")
 public class PlayerResources extends Resources {
 
     public PlayerResources() {

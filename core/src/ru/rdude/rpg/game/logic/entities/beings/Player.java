@@ -1,5 +1,9 @@
 package ru.rdude.rpg.game.logic.entities.beings;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.data.PlayerData;
 import ru.rdude.rpg.game.logic.entities.states.StateHolder;
 import ru.rdude.rpg.game.logic.enums.AttackType;
@@ -7,22 +11,37 @@ import ru.rdude.rpg.game.logic.enums.BeingType;
 import ru.rdude.rpg.game.logic.enums.Element;
 import ru.rdude.rpg.game.logic.enums.Size;
 import ru.rdude.rpg.game.logic.stats.Stats;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.HashSet;
 
-public class Player extends Being {
+@JsonIgnoreProperties("entityData")
+@JsonPolymorphicSubType("player")
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public class Player extends Being<PlayerData> {
 
     public Player() {
         this(new PlayerData());
     }
 
-    public Player(PlayerData playerData) {
+    @JsonCreator
+    public Player(@JsonProperty("playerData") PlayerData playerData) {
         super(playerData);
         stats = new Stats(true);
         beingTypes = new StateHolder<>(BeingType.HUMAN);
         elements = new StateHolder<>(Element.NEUTRAL);
         size = new StateHolder<>(Size.MEDIUM);
         buffs = new HashSet<>();
+    }
+
+    @JsonProperty("playerData")
+    private PlayerData getPlayerData() {
+        return entityData;
+    }
+
+    @Override
+    protected PlayerData getDataByGuid(long guid) {
+        return null;
     }
 
     @Override

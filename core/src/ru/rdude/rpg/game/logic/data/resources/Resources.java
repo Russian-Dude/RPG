@@ -1,32 +1,11 @@
 package ru.rdude.rpg.game.logic.data.resources;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        property = "Type")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = MonsterResources.class, name = "Monster"),
-        @JsonSubTypes.Type(value = ItemResources.class, name = "Item"),
-        @JsonSubTypes.Type(value = ModuleResources.class, name = "Module"),
-        @JsonSubTypes.Type(value = SkillResources.class, name = "Skill"),
-        @JsonSubTypes.Type(value = PlayerResources.class, name = "Player"),
-        @JsonSubTypes.Type(value = EventResources.class, name = "Event"),
-        @JsonSubTypes.Type(value = QuestResources.class, name = "Quest"),
-        @JsonSubTypes.Type(value = AbilityResources.class, name = "Ability"),
-        @JsonSubTypes.Type(value = PlayerClassResources.class, name = "PlayerClass")
-})
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public abstract class Resources {
 
     protected Map<String, Resource> imageResources = new HashMap<>();

@@ -1,12 +1,18 @@
 package ru.rdude.rpg.game.logic.entities.states;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
+
 import java.util.*;
 
 public class StateHolder<T> {
 
-    private static final StateChanger defaultStateChanger = () -> false;
+    private static final StateChanger defaultStateChanger = new DefaultStateChanger();
 
-    private List<StateEntry> cache;
+    private List<StateEntry<T>> cache;
 
     public StateHolder() {
         this(new HashSet<>());
@@ -20,7 +26,7 @@ public class StateHolder<T> {
         if (defaultStateSet == null)
             throw new IllegalArgumentException();
         cache = new ArrayList<>();
-        cache.add(new StateEntry(defaultStateChanger, defaultStateSet));
+        cache.add(new StateEntry<>(defaultStateChanger, defaultStateSet));
     }
 
     public Set<T> getDefault() {
@@ -31,8 +37,8 @@ public class StateHolder<T> {
         return cache.get(cache.size() - 1).value;
     }
 
-    private StateEntry containsStateChanger(StateChanger stateChanger) {
-        for (StateEntry stateEntry : cache) {
+    private StateEntry<T> containsStateChanger(StateChanger stateChanger) {
+        for (StateEntry<T> stateEntry : cache) {
             if (stateEntry.key.equals(stateChanger))
                 return stateEntry;
         }
@@ -47,19 +53,19 @@ public class StateHolder<T> {
         if (stateChanger == null || state == null)
             throw new IllegalArgumentException();
 
-        StateEntry entry;
+        StateEntry<T> entry;
         if ((entry = containsStateChanger(stateChanger)) != null) {
             cache.remove(entry);
         }
 
         if (stateChanger.isStateOverlay()) {
-            cache.add(new StateEntry(stateChanger, state));
+            cache.add(new StateEntry<>(stateChanger, state));
             return;
         }
 
         Set<T> sum = new HashSet<>(getCurrent());
         sum.addAll(state);
-        cache.add(new StateEntry(stateChanger, sum));
+        cache.add(new StateEntry<>(stateChanger, sum));
     }
 
     public void add(StateChanger stateChanger, T... t) {
@@ -67,7 +73,7 @@ public class StateHolder<T> {
     }
 
     public void remove(StateChanger stateChanger) {
-        StateEntry entry = containsStateChanger(stateChanger);
+        StateEntry<T> entry = containsStateChanger(stateChanger);
         if (entry != null)
             cache.remove(entry);
     }
@@ -77,15 +83,15 @@ public class StateHolder<T> {
     }
 
     public void clear() {
-        StateEntry defEntry = cache.get(0);
-        List<StateEntry> newCache = new ArrayList<>();
+        StateEntry<T> defEntry = cache.get(0);
+        List<StateEntry<T>> newCache = new ArrayList<>();
         newCache.add(defEntry);
         cache = newCache;
     }
 
     public StateHolder<T> copy() {
         StateHolder<T> copy = new StateHolder<>();
-        List<StateEntry> cacheCopy = new ArrayList<>();
+        List<StateEntry<T>> cacheCopy = new ArrayList<>();
         cache.forEach(stateEntry -> cacheCopy.add(stateEntry.copy()));
         copy.cache = cacheCopy;
         return copy;
@@ -95,11 +101,12 @@ public class StateHolder<T> {
 
 
 
-    class StateEntry {
+    static class StateEntry<T> {
         StateChanger key;
         Set<T> value;
 
-        public StateEntry(StateChanger key, Set<T> value) {
+        @JsonCreator
+        public StateEntry(@JsonProperty("key") StateChanger key, @JsonProperty("value") Set<T> value) {
             this.key = key;
             this.value = value;
         }
@@ -120,8 +127,18 @@ public class StateHolder<T> {
             this.value = value;
         }
 
-        public StateEntry copy() {
-            return new StateEntry(key, new HashSet<>(value));
+        public StateEntry<T> copy() {
+            return new StateEntry<T>(key, new HashSet<>(value));
+        }
+    }
+
+    // need to create class instead of using lambda for correct save to json
+    @JsonPolymorphicSubType("defaultStateChanger")
+    static class DefaultStateChanger implements StateChanger {
+
+        @Override
+        public boolean isStateOverlay() {
+            return false;
         }
     }
 }

@@ -73,6 +73,9 @@ project(":core") {
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.11.2'
         compile "org.mini2Dx:universal-tween-engine:6.3.3"
 
+        // https://mvnrepository.com/artifact/org.reflections/reflections
+        compile group: 'org.reflections', name: 'reflections', version: '0.9.12'
+
 
     }
 }

@@ -11,6 +11,7 @@ import ru.rdude.rpg.game.logic.map.Point;
 import ru.rdude.rpg.game.logic.time.TimeForMovingCalculator;
 import ru.rdude.rpg.game.mapVisual.MapStage;
 import ru.rdude.rpg.game.utils.SubscribersManager;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -18,7 +19,7 @@ import java.util.function.BiConsumer;
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         fieldVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
+@JsonPolymorphicSubType("map")
 public class Map extends GameStateBase {
 
     private final GameMap gameMap;

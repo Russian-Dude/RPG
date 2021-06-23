@@ -1,6 +1,13 @@
 package ru.rdude.rpg.game.logic.enums;
 
-public enum ItemType implements UsedByStatistics {
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
+
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@JsonPolymorphicSubType("itemType")
+public enum ItemType implements UsedByStatistics, ItemMainOrConcreteType {
     // equip:
     ARMOR(ItemMainType.ARMOR),
     BOOTS(ItemMainType.ARMOR),
@@ -32,6 +39,12 @@ public enum ItemType implements UsedByStatistics {
     STONE(ItemMainType.SIMPLE),
     WOOD(ItemMainType.SIMPLE)
     ;
+
+    public static Set<ItemType> allOf(ItemMainType itemMainType) {
+        return Arrays.stream(values())
+                .filter(type -> type.mainType == itemMainType)
+                .collect(Collectors.toSet());
+    }
 
     private ItemMainType mainType;
 

@@ -3,10 +3,12 @@ package ru.rdude.rpg.game.logic.data;
 import ru.rdude.rpg.game.logic.data.resources.QuestResources;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.stats.Stats;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.*;
 import java.util.stream.Stream;
 
+@JsonPolymorphicSubType("questData")
 public class QuestData extends EntityData {
 
     public static Map<Long, QuestData> quests = new HashMap<>();
@@ -28,6 +30,7 @@ public class QuestData extends EntityData {
     private Set<Long> startQuests = new HashSet<>();
     private Long startEvent = null;
 
+    private QuestData() { }
 
     public QuestData(long guid) {
         super(guid);

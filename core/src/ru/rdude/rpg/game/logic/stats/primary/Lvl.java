@@ -3,21 +3,27 @@ package ru.rdude.rpg.game.logic.stats.primary;
 
 import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.Stat;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
+@JsonPolymorphicSubType("lvl")
 public class Lvl extends Stat implements Calculatable {
 
     public enum Type {BASE, CLASS}
     public static final Type BASE = Type.BASE;
     public static final Type CLASS = Type.CLASS;
 
+    private boolean calculatable;
+
     private Type type;
     private Exp exp;
     private StatPoints statPoints;
 
+    private Lvl() { }
+
     public Lvl(Type type) {
         this.type = type;
-        if (type == BASE) exp = new ExpBase();
-        else if (type == CLASS) exp = new ExpClass();
+        if (type == BASE) exp = new ExpBase(this);
+        else if (type == CLASS) exp = new ExpClass(this);
         statPoints = new StatPoints();
     }
 
@@ -52,15 +58,19 @@ public class Lvl extends Stat implements Calculatable {
 
     @Override
     public double calculate() {
-        exp.calculate();
+        if (calculatable) {
+            exp.calculate();
+        }
         return value();
     }
 
     @Override
     public void setCalculatable(boolean calculatable) {
+        this.calculatable = calculatable;
     }
 
 
+    @JsonPolymorphicSubType("statPoints")
     public static class StatPoints extends Stat {
         @Override
         public String getName() {
@@ -69,7 +79,15 @@ public class Lvl extends Stat implements Calculatable {
     }
 
 
-    public abstract class Exp extends Stat implements Calculatable {
+    public static abstract class Exp extends Stat implements Calculatable {
+
+        protected Lvl lvl;
+
+        Exp() { }
+
+        public Exp(Lvl lvl) {
+            this.lvl = lvl;
+        }
 
         protected abstract double calculate(double lvl);
         protected double max;
@@ -79,7 +97,10 @@ public class Lvl extends Stat implements Calculatable {
 
         @Override
         public double calculate() {
-            return calculate(Lvl.this.value());
+            if (lvl.calculatable) {
+                calculate(lvl.value());
+            }
+            return lvl.value();
         }
 
         // 'max' works like bound exceeding which lvl up
@@ -88,24 +109,33 @@ public class Lvl extends Stat implements Calculatable {
         public double increase(double value) {
             this.set(value() + value);
             for (boolean isLvlUp = this.value() >= this.max; isLvlUp; isLvlUp = this.value() >= this.max) {
-                Lvl.this.increase(1);
+                lvl.increase(1);
                 calculate();
             }
             return value;
         }
     }
 
-    public class ExpClass extends Exp {
+    @JsonPolymorphicSubType("expClass")
+    public static class ExpClass extends Exp {
+
+        private ExpClass() { }
+
+        public ExpClass(Lvl lvl) {
+            super(lvl);
+        }
+
         @Override
         protected double calculate(double lvl) {
-            if (value() < max) return max;
-            max = 170 + lvl*180 + Math.floor(lvl/2)*180 + Math.floor(lvl/3)*240;
+            if (super.lvl.calculatable) {
+                if (value() < max) return max;
+                max = 170 + lvl*180 + Math.floor(lvl/2)*180 + Math.floor(lvl/3)*240;
+            }
             return max;
         }
 
         @Override
         public void setCalculatable(boolean calculatable) {
-
         }
 
         @Override
@@ -114,17 +144,26 @@ public class Lvl extends Stat implements Calculatable {
         }
     }
 
-    public class ExpBase extends Exp {
+    @JsonPolymorphicSubType("expBase")
+    public static class ExpBase extends Exp {
+
+        private ExpBase() { }
+
+        public ExpBase(Lvl lvl) {
+            super(lvl);
+        }
+
         @Override
         protected double calculate(double lvl) {
-            if (value() < max) return max;
-            max = 100 + lvl * 150 + Math.floor(lvl/2)*160 + Math.floor(lvl/3)*185;
+            if (super.lvl.calculatable) {
+                if (value() < max) return max;
+                max = 100 + lvl * 150 + Math.floor(lvl/2)*160 + Math.floor(lvl/3)*185;
+            }
             return max;
         }
 
         @Override
         public void setCalculatable(boolean calculatable) {
-
         }
 
         @Override

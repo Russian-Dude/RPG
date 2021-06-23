@@ -42,7 +42,7 @@ public class ItemDragAndDroper {
                                 .getImageFactory()
                                 .getRegion(itemVisual
                                         .getItem()
-                                        .getItemData()
+                                        .getEntityData()
                                         .getResources()
                                         .getMainImage()
                                         .getGuid()));
@@ -118,7 +118,7 @@ public class ItemDragAndDroper {
         }
 
         // if slot contains different item
-        if (!slot.getEntity().equals(item)) {
+        if (!slot.getEntity().sameAs(item)) {
             Slot<Item> initialSlot = Slot.withEntity(item);
             if (initialSlot != null && initialSlot.isEntityMatchRequirements(slot.getEntity())) {
                 slot.swapEntities(initialSlot);

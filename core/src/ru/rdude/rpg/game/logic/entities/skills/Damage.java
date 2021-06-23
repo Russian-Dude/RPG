@@ -3,7 +3,9 @@ package ru.rdude.rpg.game.logic.entities.skills;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.Entity;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
+@JsonPolymorphicSubType("damage")
 public class Damage extends Skill {
 
     private Entity interactor;

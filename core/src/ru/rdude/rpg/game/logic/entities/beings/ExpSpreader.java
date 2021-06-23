@@ -1,13 +1,20 @@
 package ru.rdude.rpg.game.logic.entities.beings;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.entities.skills.Buff;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
 import ru.rdude.rpg.game.logic.stats.Stat;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,26 +23,31 @@ import java.util.stream.Stream;
  * Calculates how useful each player was in the battle
  */
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
+@JsonPolymorphicSubType("expSpreader")
 public class ExpSpreader implements BeingActionObserver, GameStateObserver {
 
     private Party party;
-    private Map<Being, Effort> effort = new HashMap<>();
+    private Map<Being<?>, Effort> effort;
+
+    private ExpSpreader() { }
 
     public ExpSpreader(Party party) {
         this.party = party;
+        this.effort = new HashMap<>();
         party.forEach(being -> {
             being.subscribe(this);
-            effort.put(being, new Effort(being));
+            effort.put(being, new Effort(being, party));
         });
         Game.getCurrentGame().getGameStateHolder().subscribe(this);
     }
 
-    public Map<Being, Double> spreadExp(double exp) {
+    public Map<Being<?>, Double> spreadExp(double exp) {
         return party.stream()
                 .collect(Collectors.toMap(Function.identity(), being -> expFor(exp, being)));
     }
 
-    public double expFor(double allExp, Being being) {
+    public double expFor(double allExp, Being<?> being) {
         double intBonus = being.stats.intelValue() * 0.01;
         double partySize = party.getBeings().size();
         double totalEffort = effort.values().stream().map(Effort::totalEffort).reduce(Double::sum).orElse(1d);
@@ -52,12 +64,12 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver {
         party.getBeings().stream()
                 .filter(being -> !effort.containsKey(being))
                 .collect(Collectors.toList())
-                .forEach(being -> effort.put(being, new Effort(being)));
+                .forEach(being -> effort.put(being, new Effort(being, party)));
         effort.values().forEach(Effort::clear);
     }
 
     @Override
-    public void update(BeingAction action, Being being) {
+    public void update(BeingAction action, Being<?> being) {
         effort.get(being).madeAction(action);
     }
 
@@ -66,17 +78,20 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver {
         clear();
     }
 
-    private class Effort {
+    private static class Effort {
 
-        private Being being;
+        private final Party party;
+        private final Being<?> being;
         private int hitsDeal = 0;
         private int hitsReceived = 0;
         private int buffsDeal = 0;
 
         private double value = 0d;
 
-        Effort(Being being) {
+        @JsonCreator
+        Effort(@JsonProperty("being") Being<?> being, @JsonProperty("party") Party party) {
             this.being = being;
+            this.party = party;
         }
 
         void clear() {
@@ -91,10 +106,10 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver {
         }
 
         void madeAction(BeingAction action) {
-            Being beingInteractor = null;
+            Being<?> beingInteractor = null;
             Buff buffInteractor = null;
             if (action.interactor() instanceof Being) {
-                beingInteractor = (Being) action.interactor();
+                beingInteractor = (Being<?>) action.interactor();
             } else if (action.interactor() instanceof Buff) {
                 buffInteractor = (Buff) action.interactor();
             } else {
@@ -168,8 +183,8 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver {
             // stat changes
             double statsChange = buff.getStats().stream().map(Stat::value).reduce(Double::sum).orElse(0d);
             // coefficients changes
-            Coefficients.CoefficientsContainer atkCoef = buff.getSkillData().getBuffCoefficients().atk();
-            Coefficients.CoefficientsContainer defCoef = buff.getSkillData().getBuffCoefficients().def();
+            Coefficients.CoefficientsContainer atkCoef = buff.getEntityData().getBuffCoefficients().atk();
+            Coefficients.CoefficientsContainer defCoef = buff.getEntityData().getBuffCoefficients().def();
             // atk
             double atkCoefChange = Stream.of(
                     atkCoef.element().getCoefficientsMap().values(),

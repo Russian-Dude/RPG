@@ -23,10 +23,9 @@ public class ModuleFileLoader {
     public ModuleFileLoader(GameJsonSerializer gameJsonSerializer, ImageFactory imageFactory) {
         this.gameJsonSerializer = gameJsonSerializer;
         this.imageFactory = imageFactory;
-        load();
     }
 
-    private void load() {
+    public void load() {
         // remove old files
         for (FileHandle fileHandle : Gdx.files.local("temp\\images").list()) {
             fileHandle.delete();

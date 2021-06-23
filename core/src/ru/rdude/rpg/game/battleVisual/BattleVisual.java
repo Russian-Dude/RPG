@@ -2,10 +2,12 @@ package ru.rdude.rpg.game.battleVisual;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonIgnoreType
 public class BattleVisual extends Stage {
 
     //private final Cell cell;

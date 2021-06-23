@@ -4,13 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import ru.rdude.rpg.game.logic.data.EntityData;
 import ru.rdude.rpg.game.logic.data.SkillData;
+import ru.rdude.rpg.game.logic.game.Game;
 
 public class EntityDataSerializer {
 
     private final CustomObjectMapper objectMapper;
 
     public EntityDataSerializer() {
-        objectMapper = new CustomObjectMapper();
+        objectMapper = Game.getCustomObjectMapper();
     }
 
     public String serialize(EntityData entity) {

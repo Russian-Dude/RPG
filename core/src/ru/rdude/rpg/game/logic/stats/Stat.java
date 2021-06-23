@@ -1,5 +1,27 @@
 package ru.rdude.rpg.game.logic.stats;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import ru.rdude.rpg.game.logic.entities.beings.BeingActionObserver;
+import ru.rdude.rpg.game.logic.entities.items.ItemCountObserver;
+import ru.rdude.rpg.game.logic.entities.skills.BuffObserver;
+import ru.rdude.rpg.game.logic.game.CurrentGameObserver;
+import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
+import ru.rdude.rpg.game.logic.holders.SlotObserver;
+import ru.rdude.rpg.game.logic.map.MapGenerationObserver;
+import ru.rdude.rpg.game.logic.map.PlaceObserver;
+import ru.rdude.rpg.game.logic.statistics.StatisticValueObserver;
+import ru.rdude.rpg.game.logic.stats.primary.*;
+import ru.rdude.rpg.game.logic.stats.secondary.Block;
+import ru.rdude.rpg.game.logic.stats.secondary.Concentration;
+import ru.rdude.rpg.game.logic.stats.secondary.Crit;
+import ru.rdude.rpg.game.logic.stats.secondary.Dmg;
+import ru.rdude.rpg.game.logic.time.DurationObserver;
+import ru.rdude.rpg.game.logic.time.TimeChangeObserver;
+import ru.rdude.rpg.game.logic.time.TimeObserver;
+import ru.rdude.rpg.game.logic.time.TurnChangeObserver;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 
 import java.util.HashMap;
@@ -7,6 +29,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public abstract class Stat implements Comparable<Stat>, StatObserver {
 
     protected SubscribersManager<StatObserver> subscribers;

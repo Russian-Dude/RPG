@@ -12,12 +12,12 @@ import ru.rdude.rpg.game.logic.entities.skills.Buff;
 import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.holders.Slot;
 import ru.rdude.rpg.game.utils.SubscribersManager;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
+@JsonPolymorphicSubType("playerStatistics")
 public class PlayerStatistics implements BeingActionObserver {
 
     @JsonProperty("statistics")
@@ -36,19 +36,19 @@ public class PlayerStatistics implements BeingActionObserver {
     }
 
     @Override
-    public void update(BeingAction action, Being being) {
+    public void update(BeingAction action, Being<?> being) {
         if (action.interactor().equals(being)) {
             statistics.get(action.action()).withSelf.increase(action.value());
         } else {
             BeingActionStatistic statistic = statistics.get(action.action());
-            Entity interactor = action.interactor();
+            Entity<?> interactor = action.interactor();
             double value = action.value();
             if (interactor instanceof Being) {
-                ((Being) interactor).beingTypes().getCurrent().forEach(type -> statistic.beingTypes.get(type).increase(value));
-                ((Being) interactor).size().getCurrent().forEach(size -> statistic.sizes.get(size).increase(value));
+                ((Being<?>) interactor).beingTypes().getCurrent().forEach(type -> statistic.beingTypes.get(type).increase(value));
+                ((Being<?>) interactor).size().getCurrent().forEach(size -> statistic.sizes.get(size).increase(value));
             }
             if (interactor instanceof Buff) {
-                statistic.buffTypes.get(((Buff) interactor).getSkillData().getBuffType()).increase(value);
+                statistic.buffTypes.get(((Buff) interactor).getEntityData().getBuffType()).increase(value);
             }
             if (action.withSkill() != null) {
                 action.withSkill().getElements().forEach(element -> statistic.elements.get(element).increase(value));
@@ -62,21 +62,21 @@ public class PlayerStatistics implements BeingActionObserver {
                             || action.action() == BeingAction.Action.KILL) {
                         statistic.attackTypes.get(being.getAttackType()).increase(value);
                     } else if (interactor instanceof Being) {
-                        statistic.attackTypes.get(((Being) interactor).getAttackType()).increase(value);
+                        statistic.attackTypes.get(((Being<?>) interactor).getAttackType()).increase(value);
                     }
                 }
             }
             Slot<Item> leftHandSlot = being.equipment().leftHand();
             Slot<Item> rightHandSlot = being.equipment().rightHand();
             if (!leftHandSlot.isEmpty()) {
-                statistic.itemTypes.get(leftHandSlot.getEntity().getItemData().getItemType()).increase(value);
+                statistic.itemTypes.get(leftHandSlot.getEntity().getEntityData().getItemType()).increase(value);
             }
             if (!rightHandSlot.isEmpty()) {
-                statistic.itemTypes.get(rightHandSlot.getEntity().getItemData().getItemType()).increase(value);
+                statistic.itemTypes.get(rightHandSlot.getEntity().getEntityData().getItemType()).increase(value);
             }
             if (interactor instanceof Item) {
-                statistic.itemMainTypes.get(((Item) interactor).getItemData().getItemType().getMainType()).increase(value);
-                statistic.itemTypes.get(((Item) interactor).getItemData().getItemType()).increase(value);
+                statistic.itemMainTypes.get(((Item) interactor).getEntityData().getItemType().getMainType()).increase(value);
+                statistic.itemTypes.get(((Item) interactor).getEntityData().getItemType()).increase(value);
             }
         }
     }

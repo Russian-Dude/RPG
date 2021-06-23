@@ -1,16 +1,19 @@
 package ru.rdude.rpg.game.logic.data;
 
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
+@JsonPolymorphicSubType("abilityData")
 public final class AbilityData extends EntityData {
 
-    public final Map<Long, Integer> requirements = new HashMap<>();
-    public final Set<Long> buffs = new HashSet<>();
-    public final Set<Long> skills = new HashSet<>();
+    public Map<Long, Integer> requirements = new HashMap<>();
+    public Set<Long> buffs = new HashSet<>();
+    public Set<Long> skills = new HashSet<>();
 
     AbilityData() {
         super();

@@ -6,12 +6,14 @@ import ru.rdude.rpg.game.logic.data.resources.ItemResources;
 import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.utils.Functions;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@JsonPolymorphicSubType("itemData")
 public class ItemData extends EntityData {
 
     private static Map<Long, ItemData> items = new HashMap<>();

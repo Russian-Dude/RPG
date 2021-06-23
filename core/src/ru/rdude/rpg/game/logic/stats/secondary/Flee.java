@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.stats.secondary;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.Stat;
@@ -7,23 +8,31 @@ import ru.rdude.rpg.game.logic.stats.primary.Agi;
 import ru.rdude.rpg.game.logic.stats.primary.Dex;
 import ru.rdude.rpg.game.logic.stats.primary.Luck;
 import ru.rdude.rpg.game.logic.stats.primary.Lvl;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
+@JsonPolymorphicSubType("flee")
 public class Flee extends Stat implements Calculatable {
 
     private boolean calculatable;
+    @JsonIdentityReference(alwaysAsId = true)
     private Agi agi;
+    @JsonIdentityReference(alwaysAsId = true)
     private Dex dex;
+    @JsonIdentityReference(alwaysAsId = true)
     private Luck luck;
+    @JsonIdentityReference(alwaysAsId = true)
     private Lvl lvl;
 
     private LuckyDodgeChance luckyDodgeChance;
     private FleeWithLuckyDodge fleeWithLuckyDodge;
 
+    private Flee() { }
+
     public Flee(double value) {
         super(value);
         this.calculatable = false;
-        luckyDodgeChance = new LuckyDodgeChance();
-        fleeWithLuckyDodge = new FleeWithLuckyDodge();
+        luckyDodgeChance = new LuckyDodgeChance(this);
+        fleeWithLuckyDodge = new FleeWithLuckyDodge(this);
     }
 
     @Override
@@ -42,8 +51,8 @@ public class Flee extends Stat implements Calculatable {
         dex.subscribe(this);
         luck.subscribe(this);
         lvl.subscribe(this);
-        luckyDodgeChance = new LuckyDodgeChance();
-        fleeWithLuckyDodge = new FleeWithLuckyDodge();
+        luckyDodgeChance = new LuckyDodgeChance(this);
+        fleeWithLuckyDodge = new FleeWithLuckyDodge(this);
         luckyDodgeChance.calculate();
         fleeWithLuckyDodge.calculate();
     }
@@ -83,21 +92,32 @@ public class Flee extends Stat implements Calculatable {
         return value();
     }
 
-    public class LuckyDodgeChance extends Stat implements Calculatable {
+    @JsonPolymorphicSubType("LuckyDodgeChange")
+    public static class LuckyDodgeChance extends Stat implements Calculatable {
+
+        @JsonIdentityReference(alwaysAsId = true)
+        private Flee flee;
+
+        private LuckyDodgeChance() { }
+
+        public LuckyDodgeChance(Flee flee) {
+            this.flee = flee;
+        }
+
         @Override
         public double calculate() {
-            double LUCK = luck.value();
-            double LVL = lvl.value();
-            this.set((LUCK*0.2 + LVL*0.1 + Math.floor(LUCK/2)*0.1 + Math.floor(LUCK/3)*0.1)
-                    + Math.floor(LUCK/4)*0.1 + Math.floor(LUCK/5)*0.1);
+            if (flee.calculatable) {
+                double LUCK = flee.luck.value();
+                double LVL = flee.lvl.value();
+                this.set((LUCK*0.2 + LVL*0.1 + Math.floor(LUCK/2)*0.1 + Math.floor(LUCK/3)*0.1)
+                        + Math.floor(LUCK/4)*0.1 + Math.floor(LUCK/5)*0.1);
+            }
             return this.value();
         }
 
         @Override
         public void setCalculatable(boolean calculatable) {
-
         }
-
 
         @Override
         public String getName() {
@@ -105,16 +125,28 @@ public class Flee extends Stat implements Calculatable {
         }
     }
 
-    private class FleeWithLuckyDodge extends Stat implements Calculatable {
+    @JsonPolymorphicSubType("fleeWithLuckyDodge")
+    public static class FleeWithLuckyDodge extends Stat implements Calculatable {
+
+        @JsonIdentityReference(alwaysAsId = true)
+        private Flee flee;
+
+        private FleeWithLuckyDodge() { }
+
+        public FleeWithLuckyDodge(Flee flee) {
+            this.flee = flee;
+        }
+
         @Override
         public double calculate() {
-            this.set(Flee.this.value() * 1.8);
+            if (flee.calculatable) {
+                this.set(flee.value() * 1.8);
+            }
             return value();
         }
 
         @Override
         public void setCalculatable(boolean calculatable) {
-
         }
 
         @Override

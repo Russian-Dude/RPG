@@ -1,16 +1,9 @@
 package ru.rdude.rpg.game.logic.gameStates;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        property = "Implementation")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = Map.class, name = "Map"),
-        @JsonSubTypes.Type(value = Camp.class, name = "Camp"),
-        @JsonSubTypes.Type(value = Battle.class, name = "Battle")
-})
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public abstract class GameStateBase {
 
 }

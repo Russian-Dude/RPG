@@ -1,24 +1,11 @@
 package ru.rdude.rpg.game.logic.data;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import ru.rdude.rpg.game.logic.data.resources.Resources;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        property = "EntityType")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = MonsterData.class, name = "Monster"),
-        @JsonSubTypes.Type(value = ItemData.class, name = "Item"),
-        @JsonSubTypes.Type(value = Module.class, name = "Module"),
-        @JsonSubTypes.Type(value = SkillData.class, name = "Skill"),
-        @JsonSubTypes.Type(value = PlayerData.class, name = "Player"),
-        @JsonSubTypes.Type(value = AbilityData.class, name = "Ability"),
-        @JsonSubTypes.Type(value = PlayerClassData.class, name = "PlayerClass")
-})
+
 public abstract class EntityData {
     private long guid;
     private Set<Long> moduleDependencies;

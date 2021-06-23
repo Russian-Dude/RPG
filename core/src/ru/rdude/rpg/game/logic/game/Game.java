@@ -1,12 +1,8 @@
 package ru.rdude.rpg.game.logic.game;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.rdude.rpg.game.logic.GameLogger;
-import ru.rdude.rpg.game.logic.data.io.GameFileLoader;
-import ru.rdude.rpg.game.logic.data.io.GameFileSaver;
-import ru.rdude.rpg.game.logic.data.io.GameJsonSerializer;
-import ru.rdude.rpg.game.logic.data.io.ModuleFileLoader;
+import ru.rdude.rpg.game.logic.data.io.*;
 import ru.rdude.rpg.game.logic.entities.beings.MonsterFactory;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.entities.items.ItemUser;
@@ -15,22 +11,20 @@ import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.time.TimeManager;
 import ru.rdude.rpg.game.ui.AvatarCreator;
-import ru.rdude.rpg.game.ui.ItemDragAndDroper;
 import ru.rdude.rpg.game.ui.ImageFactory;
+import ru.rdude.rpg.game.ui.ItemDragAndDroper;
 import ru.rdude.rpg.game.ui.MapInfo;
+import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.visual.GameVisual;
 
 import java.util.HashMap;
 
-@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
-        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
-        setterVisibility = JsonAutoDetect.Visibility.NONE,
-        fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Game {
 
-    private static Game currentGame = new Game();
+    private static GameVisual gameVisual;
+    private static final SubscribersManager<CurrentGameObserver> currentGameObservers = new SubscribersManager<>();
 
-    private static final GameVisual gameVisual = new GameVisual();
+    private static Game currentGame;
 
     @JsonIgnore
     private final GameLogger gameLogger;
@@ -41,12 +35,14 @@ public class Game {
     private Map gameMap;
     private Party currentPlayers;
 
-    private static final AvatarCreator avatarCreator = new AvatarCreator();
+    private static final CustomObjectMapper customObjectMapper = new CustomObjectMapper("ru.rdude.rpg.game");
+    private static AvatarCreator avatarCreator;
     private static final ImageFactory imageFactory = new ImageFactory();
     private static final MonsterFactory monsterFactory = new MonsterFactory();
     private static final GameFileSaver gameSaver = new GameFileSaver();
     private static final GameFileLoader gameLoader = new GameFileLoader();
     private static final ItemUser itemUser = new ItemUser();
+    private static final StaticReferencesHolders staticReferencesHolders = new StaticReferencesHolders();
 
     // io
     private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
@@ -55,6 +51,14 @@ public class Game {
     private static java.util.Map<Long, MapInfo> mapFiles = new HashMap<>();
 
     public Game() {
+        // game visual and avatar creator uses Gdx static methods which available only when gdx application starts.
+        // this leads to an error when editor started (which do not use LibGdx) so game visual
+        // is being created only when first game instance is created.
+        if (gameVisual == null) {
+            gameVisual = new GameVisual();
+            avatarCreator = new AvatarCreator();
+        }
+        currentGameObservers.notifySubscribers(sub -> sub.update(this, CurrentGameObserver.Action.CREATED));
         this.itemsDragAndDrop = new ItemDragAndDroper();
         this.gameLogger = new GameLogger();
         this.gameStateHolder = new GameStateHolder();
@@ -62,11 +66,12 @@ public class Game {
     }
 
     public static void initNewGame() {
-        currentGame = new Game();
+        setCurrentGame(new Game());
     }
 
     public static void setCurrentGame(Game game) {
         currentGame = game;
+        currentGameObservers.notifySubscribers(sub -> sub.update(currentGame, CurrentGameObserver.Action.BECOME_CURRENT));
     }
 
     public static Game getCurrentGame() {
@@ -109,9 +114,20 @@ public class Game {
         return gameLoader;
     }
 
-
     public static ItemUser getItemUser() {
         return itemUser;
+    }
+
+    public static void subscribe(CurrentGameObserver subscriber) {
+        currentGameObservers.subscribe(subscriber);
+    }
+
+    public static CustomObjectMapper getCustomObjectMapper() {
+        return customObjectMapper;
+    }
+
+    public static StaticReferencesHolders getStaticReferencesHolders() {
+        return staticReferencesHolders;
     }
 
     public ItemDragAndDroper getItemsDragAndDrop() {

@@ -1,11 +1,20 @@
 package ru.rdude.rpg.game.logic.entities.beings;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.data.MonsterData;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
 import ru.rdude.rpg.game.logic.enums.AttackType;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
-public class Monster extends Being {
+@JsonPolymorphicSubType("monster")
+public class Monster extends Being<MonsterData> {
+
+    @JsonCreator
+    private Monster(@JsonProperty("entityData") long guid) {
+        super(guid);
+    }
 
     public Monster(MonsterData monsterData) {
         super(monsterData);
@@ -13,27 +22,32 @@ public class Monster extends Being {
     }
 
     public void applyStartBuffs() {
-        ((MonsterData) beingData).getStartBuffs().forEach(guid ->
+        entityData.getStartBuffs().forEach(guid ->
                 SkillUser.use(SkillData.getSkillByGuid(guid), this, this));
     }
 
     @Override
     public AttackType getAttackType() {
-        return ((MonsterData) beingData).getDefaultAttackType();
+        return entityData.getDefaultAttackType();
     }
 
     @Override
     public boolean canBlock() {
-        return ((MonsterData) beingData).isCanBlock();
+        return entityData.isCanBlock();
     }
 
     @Override
     public boolean canParry() {
-        return ((MonsterData) beingData).isCanParry();
+        return entityData.isCanParry();
     }
 
     @Override
     public String getName() {
-        return beingData.getName();
+        return entityData.getName();
+    }
+
+    @Override
+    protected MonsterData getDataByGuid(long guid) {
+        return MonsterData.getMonsterByGuid(guid);
     }
 }
