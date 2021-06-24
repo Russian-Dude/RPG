@@ -174,6 +174,15 @@ public class Stm extends Stat implements Calculatable {
         }
 
         @Override
+        public void increaseBuffValue(String className, double value) {
+            double oldValue = value();
+            super.increaseBuffValue(className, value);
+            if (stm.calculatable && (stm.value() > this.value() || stm.value() == oldValue)) {
+                stm.set(this.value());
+            }
+        }
+
+        @Override
         public void setCalculatable(boolean calculatable) {
         }
 

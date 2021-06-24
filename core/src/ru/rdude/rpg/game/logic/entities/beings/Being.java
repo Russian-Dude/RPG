@@ -4,6 +4,7 @@ import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.BeingData;
 import ru.rdude.rpg.game.logic.entities.Entity;
 import ru.rdude.rpg.game.logic.entities.items.Item;
+import ru.rdude.rpg.game.logic.entities.items.holders.AvailableSkills;
 import ru.rdude.rpg.game.logic.entities.items.holders.EquipmentSlotsHolder;
 import ru.rdude.rpg.game.logic.entities.items.holders.ItemSlotsHolder;
 import ru.rdude.rpg.game.logic.entities.skills.Buff;
@@ -32,6 +33,7 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
     protected ItemSlotsHolder backpack;
     protected EquipmentSlotsHolder equipment;
     protected Set<Buff> buffs;
+    protected AvailableSkills availableSkills;
 
     protected boolean alive;
 
@@ -50,6 +52,7 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
         buffs = new HashSet<>();
         backpack = new ItemSlotsHolder(16);
         equipment = new EquipmentSlotsHolder(this);
+        availableSkills = new AvailableSkills();
     }
 
 
@@ -206,6 +209,10 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
 
     public Coefficients coefficients() {
         return coefficients;
+    }
+
+    public AvailableSkills getAvailableSkills() {
+        return availableSkills;
     }
 
     public void subscribe(BeingActionObserver observer) {

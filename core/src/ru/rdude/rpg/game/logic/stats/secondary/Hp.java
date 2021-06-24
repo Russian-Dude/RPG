@@ -138,6 +138,15 @@ public class Hp extends Stat implements Calculatable {
         }
 
         @Override
+        public void increaseBuffValue(String className, double value) {
+            double oldValue = value();
+            super.increaseBuffValue(className, value);
+            if (hp.calculatable && (hp.value() > this.value() || hp.value() == oldValue)) {
+                hp.set(this.value());
+            }
+        }
+
+        @Override
         public void setCalculatable(boolean calculatable) {
         }
 

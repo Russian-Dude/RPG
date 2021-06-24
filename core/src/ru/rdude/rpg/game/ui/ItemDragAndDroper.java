@@ -58,7 +58,6 @@ public class ItemDragAndDroper {
             public void dragStop(InputEvent event, float x, float y, int pointer, DragAndDrop.Payload payload, DragAndDrop.Target target) {
                 super.dragStop(event, x, y, pointer, payload, target);
                 if (target == null) {
-                    throwItemRequest(itemVisual.getItem());
                     return;
                 }
                 Actor targetActor = target.getActor();
@@ -141,9 +140,5 @@ public class ItemDragAndDroper {
                 }
             }
         }
-    }
-
-    private void throwItemRequest(Item item) {
-        Game.getCurrentGame().getGameLogger().log("Null target");
     }
 }

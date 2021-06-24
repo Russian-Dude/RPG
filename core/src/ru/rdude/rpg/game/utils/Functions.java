@@ -153,6 +153,11 @@ public class Functions {
                 && y >= actorY - actor.getHeight();
     }
 
+    public static <T, C extends Collection<T>> C addAll(C first, Collection<T> second) {
+        first.addAll(second);
+        return first;
+    }
+
     public static class RandomCollectorList<T> implements Collector<T, List<T>, List<T>> {
 
         private final int elementsCount;

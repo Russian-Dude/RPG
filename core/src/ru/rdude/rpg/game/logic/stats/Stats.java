@@ -223,11 +223,11 @@ public class Stats {
     }
 
     public void increaseBuffValues(Class<?> clazz, Stats stats) {
-        this.stats.values().forEach(stat -> stat.increaseBuffValue(clazz, stats.get(stat.getClass()).value()));
+        this.forEachWithNestedStats(stat -> stat.increaseBuffValue(clazz, stats.get(stat.getClass()).value()));
     }
 
     public void decreaseBuffValues(Class<?> clazz, Stats stats) {
-        this.stats.values().forEach(stat -> stat.decreaseBuffValue(clazz, stats.get(stat.getClass()).value()));
+        this.forEachWithNestedStats(stat -> stat.decreaseBuffValue(clazz, stats.get(stat.getClass()).value()));
     }
 
     public boolean isCalculatable() {
@@ -274,7 +274,13 @@ public class Stats {
                         stm().perHit(),
                         stm().recovery(),
                         hp().max(),
-                        hp().recovery()
+                        hp().recovery(),
+                        dmg().melee().min(),
+                        dmg().melee().max(),
+                        dmg().range().min(),
+                        dmg().range().max(),
+                        dmg().magic().min(),
+                        dmg().magic().max()
                 ));
     }
 
