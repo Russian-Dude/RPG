@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.logic.data;
 
 import ru.rdude.rpg.game.logic.data.resources.EventResources;
 import ru.rdude.rpg.game.logic.enums.Biom;
+import ru.rdude.rpg.game.logic.enums.EventActionTarget;
 import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
@@ -12,8 +13,6 @@ import java.util.stream.Stream;
 
 @JsonPolymorphicSubType("eventData")
 public class EventData extends EntityData {
-
-    public enum EventActionTarget {NO, SELECTED_PLAYER, RANDOM_PLAYER, ALL_PLAYERS}
 
     public static Map<Long, EventData> events = new HashMap<>();
 

@@ -12,7 +12,7 @@ import java.util.List;
 public class BeingAction {
 
     public enum Action {BLOCK, PARRY, DAMAGE_DEAL, DAMAGE_RECEIVE, CRITICAL_RECEIVE, DODGE, MISS, HEAL_DEAL,
-        HEAL_RECEIVE, BUFF_DEAL, BUFF_RECEIVE, RESIST, DIE, KILL, ITEM_USED, NO_ACTION}
+        HEAL_RECEIVE, BUFF_DEAL, BUFF_RECEIVE, BUFF_REMOVED, RESIST, DIE, KILL, ITEM_USED, NO_ACTION}
 
     private Action action;
     private double value;

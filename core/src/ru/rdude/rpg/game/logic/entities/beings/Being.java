@@ -147,6 +147,7 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
         // notify subscribers
         notifySubscribers(new BeingAction(BeingAction.Action.BUFF_RECEIVE, buff, buff.getEntityData(), 0), this);
         notifySubscribers(new BeingAction(BeingAction.Action.BUFF_DEAL, buff, buff.getEntityData(), 0), buff.getCaster());
+        Game.getCurrentGame().getGameLogger().log(this, buff, new BeingAction(BeingAction.Action.BUFF_RECEIVE, buff.getCaster(), buff.getEntityData(), 0));
         // subscribing to buff updates:
         if (!buff.isPermanent())
             buff.subscribe(this);
@@ -234,6 +235,7 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
         if (!buff.isPermanent()) {
             buff.unsubscribe(this);
             stats.decreaseBuffValues(Buff.class, buff.getStats());
+            Game.getCurrentGame().getGameLogger().log(this, buff, new BeingAction(BeingAction.Action.BUFF_REMOVED, buff, buff.getEntityData(), 0));
         }
         beingTypes.remove(buff);
         elements.remove(buff);

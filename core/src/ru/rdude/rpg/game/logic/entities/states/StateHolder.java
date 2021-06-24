@@ -1,9 +1,8 @@
 package ru.rdude.rpg.game.logic.entities.states;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.*;
@@ -12,6 +11,7 @@ public class StateHolder<T> {
 
     private static final StateChanger defaultStateChanger = new DefaultStateChanger();
 
+    private SubscribersManager<StateObserver<T>> subscribers;
     private List<StateEntry<T>> cache;
 
     public StateHolder() {
@@ -27,6 +27,7 @@ public class StateHolder<T> {
             throw new IllegalArgumentException();
         cache = new ArrayList<>();
         cache.add(new StateEntry<>(defaultStateChanger, defaultStateSet));
+        subscribers = new SubscribersManager<>();
     }
 
     public Set<T> getDefault() {
@@ -66,6 +67,7 @@ public class StateHolder<T> {
         Set<T> sum = new HashSet<>(getCurrent());
         sum.addAll(state);
         cache.add(new StateEntry<>(stateChanger, sum));
+        subscribers.notifySubscribers(subscriber -> subscriber.update(getCurrent()));
     }
 
     public void add(StateChanger stateChanger, T... t) {
@@ -76,6 +78,7 @@ public class StateHolder<T> {
         StateEntry<T> entry = containsStateChanger(stateChanger);
         if (entry != null)
             cache.remove(entry);
+        subscribers.notifySubscribers(subscriber -> subscriber.update(getCurrent()));
     }
 
     public int size() {
@@ -87,6 +90,7 @@ public class StateHolder<T> {
         List<StateEntry<T>> newCache = new ArrayList<>();
         newCache.add(defEntry);
         cache = newCache;
+        subscribers.notifySubscribers(subscriber -> subscriber.update(getCurrent()));
     }
 
     public StateHolder<T> copy() {
@@ -97,8 +101,13 @@ public class StateHolder<T> {
         return copy;
     }
 
+    public void subscribe(StateObserver<T> subscriber) {
+        subscribers.subscribe(subscriber);
+    }
 
-
+    public void unsubscribe(StateObserver<T> subscriber) {
+        subscribers.unsubscribe(subscriber);
+    }
 
 
     static class StateEntry<T> {

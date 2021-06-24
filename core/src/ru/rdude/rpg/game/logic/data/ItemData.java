@@ -70,7 +70,7 @@ public class ItemData extends EntityData {
 
     @JsonIgnore
     public boolean isWeapon() {
-        return weaponData != null;
+        return itemType.getMainType() == ItemMainType.WEAPON;
     }
 
     public double getPrice() {

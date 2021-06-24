@@ -3,6 +3,7 @@ package ru.rdude.rpg.game.logic;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
+import ru.rdude.rpg.game.logic.entities.skills.Buff;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,7 +24,7 @@ public class GameLogger {
         listeners = new HashSet<>();
     }
 
-    public void log(Being caster, Being target, SkillData skill) {
+    public void log(Being<?> caster, Being target, SkillData skill) {
         if (caster == target) {
             log(caster.getName() + " used " + skill.getName());
         }
@@ -32,11 +33,11 @@ public class GameLogger {
         }
     }
 
-    public void log(Being caster, SkillData skill) {
+    public void log(Being<?> caster, SkillData skill) {
         log(caster.getName() + " used " + skill.getName());
     }
 
-    public void log(BeingAction beingAction, Being being) {
+    public void log(BeingAction beingAction, Being<?> being) {
         switch (beingAction.action()) {
             case DAMAGE_RECEIVE:
                 log(being.getName() + " received " + (int) beingAction.value() + " damage");
@@ -64,6 +65,17 @@ public class GameLogger {
                 break;
             case CRITICAL_RECEIVE:
                 log(being.getName() + " received  " + (int) beingAction.value() + " critical damage");
+                break;
+        }
+    }
+
+    public void log(Being<?> being, Buff buff, BeingAction beingAction) {
+        switch (beingAction.action()) {
+            case BUFF_RECEIVE:
+                log(being.getName() + " received buff " + buff.getName() + " from " + beingAction.interactor().getName());
+                break;
+            case BUFF_REMOVED:
+                log("Buff " + buff.getName() + " ended on " + being.getName());
                 break;
         }
     }

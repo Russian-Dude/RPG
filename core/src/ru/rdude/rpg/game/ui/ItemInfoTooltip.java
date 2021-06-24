@@ -1,68 +1,135 @@
 package ru.rdude.rpg.game.ui;
 
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Tooltip;
+import com.badlogic.gdx.utils.Align;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.items.Item;
+import ru.rdude.rpg.game.logic.entities.states.StateObserver;
 import ru.rdude.rpg.game.logic.enums.Element;
+import ru.rdude.rpg.game.utils.Functions;
 
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
-public class ItemInfoTooltip extends Tooltip<Table> {
+@JsonIgnoreType
+public class ItemInfoTooltip extends Tooltip<Table> implements StateObserver<Element> {
 
-    private Table mainTable;
-    private Label name;
-    private Label type;
-    private Label damage;
-    private Label stats;
-    private Label coefficients;
-    private Label skillsOnUse;
-    private Label skillsOnEquip;
-    private Label requirements;
-    private Label description;
+    private final Label elements;
 
     public ItemInfoTooltip(Item item) {
-        super(new Table(UiData.DEFAULT_SKIN));
-        ItemData itemData = item.getEntityData();
-        mainTable = getActor();
-        mainTable.background(UiData.DEFAULT_SKIN.getDrawable("Window_Transparent_9p"));
+        super(new Table());
         setInstant(true);
+        ItemData itemData = item.getEntityData();
+        Table mainTable = getActor();
+        mainTable.columnDefaults(0).space(10f);
 
         // name
-        name = new Label(itemData.getName(), UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
-        mainTable.add(name);
-        mainTable.row();
+        Label nameLabel = new Label(itemData.getName(), UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+        nameLabel.setAlignment(Align.center);
+        mainTable.add(nameLabel)
+                .align(Align.center)
+                .row();
 
         // type
-        String typeString = "";
-        if (itemData.isWeapon()) {
-            typeString += itemData.getWeaponData().isDualHanded() ? "TWO-HANDED " : "ONE-HANDED ";
-        }
-        typeString += itemData.getItemType().name();
-        type = new Label(typeString, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-        mainTable.add(type);
-        mainTable.row();
+        Label itemType = new Label(itemData.getItemType().name(), UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+        itemType.setAlignment(Align.center);
+        mainTable.add(itemType)
+                .align(Align.center)
+                .row();
 
-        // weapon damage
+        String elementsString = itemData.getElements().stream()
+                .map(Element::name)
+                .collect(Collectors.joining(" "));
+
+        // damage
         if (itemData.isWeapon()) {
-            StringBuilder damageBuilder = new StringBuilder();
-            damageBuilder
-                    .append((int) itemData.getWeaponData().getMinDmg())
-                    .append(" - ")
-                    .append((int) itemData.getWeaponData().getMaxDmg())
-                    .append(" ");
-            for (Element element : itemData.getElements()) {
-                damageBuilder.append(element.name()).append(" ");
-            }
-            damageBuilder.append(itemData.getWeaponData().getAttackType().name())
-                    .append(" ");
-            damageBuilder.append("damage");
-            damage = new Label(damageBuilder.toString(), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-            mainTable.add(damage);
-            mainTable.row();
+            String damageString =
+                    Functions.trimDouble(itemData.getWeaponData().getMinDmg())
+                            + " - "
+                            + Functions.trimDouble(itemData.getWeaponData().getMaxDmg())
+                            + " " + itemData.getWeaponData().getAttackType().name()
+                            + (elementsString.isEmpty() ? "" : " " + elementsString)
+                            + " DAMAGE";
+            Label damage = new Label(damageString, UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+            itemType.setAlignment(Align.center);
+            mainTable.add(damage)
+                    .align(Align.center)
+                    .row();
+        }
+
+        // elements
+        elements = new Label("", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+        if (!elementsString.isEmpty() && !itemData.isWeapon()) {
+            elements.setText(elementsString);
+            itemType.setAlignment(Align.center);
+            mainTable.add(elements)
+                    .align(Align.center)
+                    .row();
+        }
+
+        // stats
+        Table statsTable = new Table();
+        itemData.getStats().streamWithNestedStats()
+                .filter(stat -> stat.value() != 0.0)
+                .forEach(stat -> {
+                    String value = Functions.trimDouble(stat.value());
+                    if (stat.value() > 0) {
+                        value = "+" + value;
+                    }
+                    Label statName = new Label(stat.getName(), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+                    Label statValue = new Label(value, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+                    statsTable.add(statName)
+                            .space(5f)
+                            .padRight(10f);
+                    statsTable.add(statValue)
+                            .align(Align.left)
+                            .space(5f);
+                    statsTable.row();
+                });
+        if (statsTable.hasChildren()) {
+            statsTable.pack();
+            mainTable.add(statsTable)
+                    .align(Align.center)
+                    .row();
+        }
+
+        // skills on use
+        String skillsOnUseString = itemData.getSkillsOnUse().stream()
+                .map(SkillData::getSkillByGuid)
+                .map(SkillData::getName)
+                .collect(Collectors.joining(", "));
+        if (!skillsOnUseString.isBlank()) {
+            Label cast = new Label("Cast: ", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+            Label skillsOnUse = new Label(skillsOnUseString, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+            HorizontalGroup group = new HorizontalGroup();
+            group.addActor(cast);
+            group.addActor(skillsOnUse);
+            mainTable.add(group)
+                    .align(Align.center)
+                    .row();
+        }
+
+        // skills on equip
+        String skillsOnEquipString = itemData.getSkillsEquip().stream()
+                .map(SkillData::getSkillByGuid)
+                .map(SkillData::getName)
+                .collect(Collectors.joining(", "));
+        if (!skillsOnEquipString.isBlank()) {
+            Label allowsToUse = new Label("Allows to use: ", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+            Label skillsOnEquip = new Label(skillsOnEquipString, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+            HorizontalGroup group = new HorizontalGroup();
+            group.addActor(allowsToUse);
+            group.addActor(skillsOnEquip);
+            mainTable.add(group)
+                    .align(Align.center)
+                    .row();
         }
 
         // coefficients
@@ -102,99 +169,32 @@ public class ItemInfoTooltip extends Tooltip<Table> {
                 String s = createCoefficientString(type, value, "receive ", "from ", " enemies");
                 builder.append(s);
             });
-
             String result = builder.toString();
-            if (!result.isEmpty()) {
-                this.coefficients = new Label(result, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-                mainTable.add(this.coefficients);
+            if (!result.isBlank()) {
+                Label coefficientsLable = new Label(result, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+                mainTable.add(coefficientsLable);
                 mainTable.row();
             }
         }
 
-        // stats
-        if (itemData.getStats() != null) {
-            AtomicInteger count = new AtomicInteger();
-            StringBuilder builder = new StringBuilder();
-            itemData.getStats().forEachWithNestedStats(stat -> {
-                if (stat.value() != 0) {
-                    if (count.get() > 2) {
-                        builder.append("\r\n");
-                    }
-                    builder.append(stat.getName())
-                            .append(" ")
-                            .append((int) stat.value())
-                            .append(" ");
-                    count.getAndIncrement();
-                }
-            });
-            String result = builder.toString();
-            if (!result.isEmpty()) {
-                stats = new Label(result, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-                mainTable.add(stats);
-                mainTable.row();
-            }
-        }
-
-        // skills on use
-        if (itemData.getSkillsOnUse() != null && !itemData.getSkillsOnUse().isEmpty()) {
-            StringBuilder builder = new StringBuilder();
-            itemData.getSkillsOnUse().forEach(skill -> builder.append(SkillData.getSkillByGuid(skill).getName())
-                    .append(" "));
-            if (!builder.toString().isEmpty()) {
-                builder.append(" when used");
-            }
-            String s = builder.toString();
-            if (!s.isEmpty()) {
-                skillsOnUse = new Label(s, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-                mainTable.add(skillsOnUse);
-                mainTable.row();
-            }
-        }
-
-        // skills on equip
-        if (itemData.getSkillsEquip() != null && !itemData.getSkillsOnUse().isEmpty()) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("allows to use ");
-            itemData.getSkillsEquip().forEach(skill -> builder.append(SkillData.getSkillByGuid(skill))
-                    .append(" "));
-            builder.append("when equipped");
-            skillsOnEquip = new Label(builder.toString(), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-            mainTable.add(skillsOnEquip);
-            mainTable.row();
-        }
-
-        // requirements
-        if (itemData.getRequirements() != null) {
-            StringBuilder builder = new StringBuilder();
-            AtomicInteger count = new AtomicInteger();
-            itemData.getRequirements().forEachWithNestedStats(stat -> {
-                if (stat.value() > 0) {
-                    if (count.get() > 2) {
-                        builder.append("\r\n");
-                    }
-                    builder.append(stat.getName())
-                            .append(" ")
-                            .append((int) stat.value())
-                            .append("   ");
-                    count.getAndIncrement();
-                }
-            });
-            String s = builder.toString();
-            if (!s.isEmpty()) {
-                mainTable.add(new Label("REQUIREMENTS", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE));
-                requirements = new Label(s, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-                mainTable.add(requirements);
-                mainTable.row();
-            }
-        }
+        // price
+        Label price = new Label("Price: " + Functions.trimDouble(itemData.getPrice()), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+        mainTable.add(price)
+                .align(Align.center)
+                .row();
 
         // description
-        if (itemData.getDescription() != null && !itemData.getDescription().isEmpty()) {
-            description = new Label(itemData.getDescription(), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-            mainTable.add(description);
+        if (!itemData.getDescription().isBlank()) {
+            Label description = new Label(itemData.getDescription(), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+            mainTable.add(description)
+                    .fillX()
+                    .align(Align.center)
+                    .row();
+            description.setWrap(true);
         }
 
-        mainTable.setSize(mainTable.getPrefWidth(), mainTable.getPrefHeight());
+        mainTable.pack();
+        mainTable.background(UiData.DEFAULT_SKIN.getDrawable("Window_Transparent_9p"));
     }
 
     private String createCoefficientString(Enum<?> type,
@@ -207,7 +207,7 @@ public class ItemInfoTooltip extends Tooltip<Table> {
         double percents = value < 1 ? (1 - value) * 100 : (value - 1) * 100;
         if (value != 1) {
             builder.append(dealOrReceive)
-                    .append(percents)
+                    .append(Functions.trimDouble(percents))
                     .append("% ")
                     .append(lessOrMore)
                     .append(" damage ")
@@ -217,5 +217,13 @@ public class ItemInfoTooltip extends Tooltip<Table> {
                     .append("\r\n");
         }
         return builder.toString();
+    }
+
+    @Override
+    public void update(Set<Element> current) {
+        String elementsString = current.stream()
+                .map(Element::name)
+                .collect(Collectors.joining(" "));
+        elements.setText(elementsString);
     }
 }

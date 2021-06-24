@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
@@ -156,6 +157,10 @@ public class Functions {
     public static <T, C extends Collection<T>> C addAll(C first, Collection<T> second) {
         first.addAll(second);
         return first;
+    }
+
+    public static String trimDouble(double value) {
+        return new DecimalFormat("0.##").format(value);
     }
 
     public static class RandomCollectorList<T> implements Collector<T, List<T>, List<T>> {
