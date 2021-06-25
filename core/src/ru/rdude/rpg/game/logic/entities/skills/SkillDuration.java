@@ -8,6 +8,8 @@ import ru.rdude.rpg.game.logic.time.Duration;
 import ru.rdude.rpg.game.logic.time.TimeManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
+import java.util.Optional;
+
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonPolymorphicSubType("skillDuration")
 public class SkillDuration extends Duration implements BeingActionObserver {
@@ -36,6 +38,22 @@ public class SkillDuration extends Duration implements BeingActionObserver {
                         && (damageReceived == null || damageReceived <= 0)
                         && (damageMade == null || damageMade <= 0);
         notifySubscribers(endsTime && endsAction);
+    }
+
+    public Optional<Double> getHitsReceivedLeft() {
+        return hitsReceived == null ? Optional.empty() : Optional.of(hitsReceived);
+    }
+
+    public Optional<Double> getHitsMadeLeft() {
+        return hitsMade == null ? Optional.empty() : Optional.of(hitsMade);
+    }
+
+    public Optional<Double> getDamageReceivedLeft() {
+        return damageReceived == null ? Optional.empty() : Optional.of(damageReceived);
+    }
+
+    public Optional<Double> getDamageMadeLeft() {
+        return damageMade == null ? Optional.empty() : Optional.of(damageMade);
     }
 
     @Override

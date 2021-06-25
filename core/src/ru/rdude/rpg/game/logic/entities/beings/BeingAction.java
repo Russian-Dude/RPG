@@ -11,8 +11,31 @@ import java.util.List;
 
 public class BeingAction {
 
-    public enum Action {BLOCK, PARRY, DAMAGE_DEAL, DAMAGE_RECEIVE, CRITICAL_RECEIVE, DODGE, MISS, HEAL_DEAL,
-        HEAL_RECEIVE, BUFF_DEAL, BUFF_RECEIVE, BUFF_REMOVED, RESIST, DIE, KILL, ITEM_USED, NO_ACTION}
+    public enum Action {
+        BLOCK ("successful block"),
+        PARRY("successful parry"),
+        DAMAGE_DEAL("damage deal"),
+        DAMAGE_RECEIVE("damage received"),
+        CRITICAL_RECEIVE("critical damage received"),
+        DODGE("successful dodge"),
+        MISS("attack missed"),
+        HEAL_DEAL("heal someone"),
+        HEAL_RECEIVE("being healed"),
+        BUFF_DEAL("cast buff"),
+        BUFF_RECEIVE("receiving a buff"),
+        BUFF_REMOVED("buff ends"),
+        RESIST("resisting a buff"),
+        DIE("death"),
+        KILL("killing"),
+        ITEM_USED("using an item"),
+        NO_ACTION("no action");
+
+        public final String prettyStringAfter;
+
+        Action(String prettyStringAfter) {
+            this.prettyStringAfter = prettyStringAfter;
+        }
+    }
 
     private Action action;
     private double value;

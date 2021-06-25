@@ -411,6 +411,18 @@ public class SkillData extends EntityData {
         this.timeChange = timeChange;
     }
 
+    public boolean hasDuration() {
+        return (durationInMinutes != null && !durationInMinutes.isBlank())
+                        || (durationInTurns != null && !durationInTurns.isBlank());
+    }
+
+    public boolean canBeForceCanceled() {
+        return (damageMade != null && !damageMade.isBlank())
+                || (damageReceived != null && !damageReceived.isBlank())
+                || (hitsMade != null && !hitsMade.isBlank())
+                || (hitsReceived != null && !hitsReceived.isBlank());
+    }
+
     @Override
     public boolean hasEntityDependency(long guid) {
         return

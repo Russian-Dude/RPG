@@ -94,6 +94,10 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
         notifySubscribers(true);
     }
 
+    public Double getDamage() {
+        return damage;
+    }
+
     public void setDamage(Double damage) {
         this.damage = damage;
     }
@@ -108,6 +112,10 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
 
     public Being<?> getCaster() {
         return skillApplier.caster;
+    }
+
+    public SkillDuration getDuration() {
+        return duration;
     }
 
     private void onTimeOrTurnUpdate() {

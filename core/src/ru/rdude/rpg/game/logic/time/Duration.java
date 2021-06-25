@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
+import java.util.Optional;
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 @JsonPolymorphicSubType("duration")
 public class Duration implements TimeChangeObserver, TurnChangeObserver {
@@ -33,7 +35,6 @@ public class Duration implements TimeChangeObserver, TurnChangeObserver {
         this.turns = turns;
     }
 
-    @Override
     public void timeUpdate(int minutes) {
         if (this.minutes != null) {
             this.minutes -= minutes;
@@ -41,12 +42,19 @@ public class Duration implements TimeChangeObserver, TurnChangeObserver {
         }
     }
 
-    @Override
     public void turnUpdate() {
         if (this.turns != null) {
             this.turns--;
             checkDurationEnds();
         }
+    }
+
+    public Optional<Double> getTurnsLeft() {
+        return turns == null ? Optional.empty() : Optional.of(turns);
+    }
+
+    public Optional<Double> getMinutesLeft() {
+        return minutes == null ? Optional.empty() : Optional.of(minutes);
     }
 
     protected void checkDurationEnds() {

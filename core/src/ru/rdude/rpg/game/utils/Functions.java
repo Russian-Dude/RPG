@@ -15,6 +15,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class Functions {
 
@@ -161,6 +162,13 @@ public class Functions {
 
     public static String trimDouble(double value) {
         return new DecimalFormat("0.##").format(value);
+    }
+
+    public static <T> Map<T, Float> normalizePercentsMap(Map<T, Float> map) {
+        Float sum = map.values().stream().reduce(Float::sum).orElse(0f);
+        Float onePercent = sum / 100f;
+        return map.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue() / onePercent));
     }
 
     public static class RandomCollectorList<T> implements Collector<T, List<T>, List<T>> {
