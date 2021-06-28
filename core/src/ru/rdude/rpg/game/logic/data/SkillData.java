@@ -78,6 +78,9 @@ public class SkillData extends EntityData {
         skillsCouldCast = new HashMap<>();
         skillsMustCast = new HashMap<>();
         skillsOnBeingAction = new HashMap<>();
+        canBeBlocked = true;
+        canBeResisted = true;
+        canBeDodged = true;
     }
 
 
@@ -413,7 +416,7 @@ public class SkillData extends EntityData {
 
     public boolean hasDuration() {
         return (durationInMinutes != null && !durationInMinutes.isBlank())
-                        || (durationInTurns != null && !durationInTurns.isBlank());
+                || (durationInTurns != null && !durationInTurns.isBlank());
     }
 
     public boolean canBeForceCanceled() {
@@ -421,6 +424,14 @@ public class SkillData extends EntityData {
                 || (damageReceived != null && !damageReceived.isBlank())
                 || (hitsMade != null && !hitsMade.isBlank())
                 || (hitsReceived != null && !hitsReceived.isBlank());
+    }
+
+    public boolean hasDamage() {
+        return damage != null && !damage.isBlank() && !damage.matches("0+");
+    }
+
+    public boolean hasTransformation() {
+        return !transformation.elements.isEmpty() || !transformation.beingTypes.isEmpty() || transformation.size != null;
     }
 
     @Override

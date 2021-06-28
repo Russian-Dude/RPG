@@ -45,6 +45,19 @@ public class Coefficients {
         }
     }
 
+    public boolean isEmpty() {
+        return
+                atk.attackType.getCoefficientsMap().values().stream().noneMatch(d -> d == 0.0)
+                && def.attackType.getCoefficientsMap().values().stream().noneMatch(d -> d == 0.0)
+                && atk.beingType.getCoefficientsMap().values().stream().noneMatch(d -> d == 0.0)
+                && def.beingType.getCoefficientsMap().values().stream().noneMatch(d -> d == 0.0)
+                && atk.element.getCoefficientsMap().values().stream().noneMatch(d -> d == 0.0)
+                && def.element.getCoefficientsMap().values().stream().noneMatch(d -> d == 0.0)
+                && atk.size.getCoefficientsMap().values().stream().noneMatch(d -> d == 0.0)
+                && def.size.getCoefficientsMap().values().stream().noneMatch(d -> d == 0.0);
+
+    }
+
 
     public static Coefficients getSumOf(Coefficients... coefficients) {
         Coefficients result = new Coefficients();

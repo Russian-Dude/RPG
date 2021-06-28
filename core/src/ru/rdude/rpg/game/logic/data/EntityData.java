@@ -1,6 +1,7 @@
 package ru.rdude.rpg.game.logic.data;
 
 import ru.rdude.rpg.game.logic.data.resources.Resources;
+import ru.rdude.rpg.game.logic.enums.EntityReferenceInfo;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +13,8 @@ public abstract class EntityData {
     private String name;
     private String nameInEditor;
     private String description;
+    private EntityReferenceInfo entityReferenceInfo;
+    private EntityReferenceInfo entityInfo;
 
     private Resources resources;
 
@@ -66,6 +69,22 @@ public abstract class EntityData {
 
     public void setDescriber(boolean describer) {
         this.describer = describer;
+    }
+
+    public EntityReferenceInfo getEntityReferenceInfo() {
+        return entityReferenceInfo;
+    }
+
+    public void setEntityReferenceInfo(EntityReferenceInfo entityReferenceInfo) {
+        this.entityReferenceInfo = entityReferenceInfo;
+    }
+
+    public EntityReferenceInfo getEntityInfo() {
+        return entityInfo;
+    }
+
+    public void setEntityInfo(EntityReferenceInfo entityInfo) {
+        this.entityInfo = entityInfo;
     }
 
     public Resources getResources() {

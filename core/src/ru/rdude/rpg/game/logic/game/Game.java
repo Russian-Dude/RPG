@@ -10,10 +10,7 @@ import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.time.TimeManager;
-import ru.rdude.rpg.game.ui.AvatarCreator;
-import ru.rdude.rpg.game.ui.ImageFactory;
-import ru.rdude.rpg.game.ui.ItemDragAndDroper;
-import ru.rdude.rpg.game.ui.MapInfo;
+import ru.rdude.rpg.game.ui.*;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.visual.GameVisual;
 
@@ -43,6 +40,7 @@ public class Game {
     private static final GameFileLoader gameLoader = new GameFileLoader();
     private static final ItemUser itemUser = new ItemUser();
     private static final StaticReferencesHolders staticReferencesHolders = new StaticReferencesHolders();
+    private static final TooltipInfoFactory tooltipInfoFactory = new TooltipInfoFactory();
 
     // io
     private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
@@ -128,6 +126,10 @@ public class Game {
 
     public static StaticReferencesHolders getStaticReferencesHolders() {
         return staticReferencesHolders;
+    }
+
+    public static TooltipInfoFactory getTooltipInfoFactory() {
+        return tooltipInfoFactory;
     }
 
     public ItemDragAndDroper getItemsDragAndDrop() {

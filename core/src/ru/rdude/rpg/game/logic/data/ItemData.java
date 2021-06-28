@@ -19,6 +19,7 @@ public class ItemData extends EntityData {
     private static Map<Long, ItemData> items = new HashMap<>();
 
     private ItemType itemType;
+    private ItemMainType itemMainType;
     private boolean stackable;
     private Stats requirements = new Stats(false);
     private Stats stats = new Stats(false);
@@ -151,6 +152,14 @@ public class ItemData extends EntityData {
 
     public void setItemType(ItemType itemType) {
         this.itemType = itemType;
+    }
+
+    public ItemMainType getItemMainType() {
+        return isDescriber() ? itemMainType : itemType.getMainType();
+    }
+
+    public void setItemMainType(ItemMainType itemMainType) {
+        this.itemMainType = itemMainType;
     }
 
     @Override

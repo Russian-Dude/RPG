@@ -5,7 +5,10 @@ import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.utils.StringBuilder;
+import ru.rdude.rpg.game.logic.enums.StatName;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -169,6 +172,49 @@ public class Functions {
         Float onePercent = sum / 100f;
         return map.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue() / onePercent));
+    }
+
+    public static String replacePrefix(String prefix, String string) {
+        if (string.startsWith(prefix)) {
+            return string.substring(prefix.length());
+        }
+        else {
+            return string;
+        }
+    }
+
+    public static String convertFormulaToPrettyString(StatName mainStat, String formula) {
+        String withSpaces = formula
+                .replace("/", " / ")
+                .replace("*", " * ")
+                .replace("+", " + ")
+                .replace("-", " - ");
+        return convertFormulaToPrettyString(replacePrefix(mainStat.getVariableName(), withSpaces));
+    }
+
+    public static String convertFormulaToPrettyString(String formula) {
+        String res = formula;
+        final List<StatName> statNames = Arrays.stream(StatName.values())
+                .sorted((a, b) -> b.getVariableName().length() - a.getVariableName().length())
+                .collect(Collectors.toList());
+        for (StatName statName : statNames) {
+            res = res.replaceAll(statName.getVariableName(), statName.getName());
+        }
+        return res;
+    }
+
+    public static String capitalize(String string) {
+        if (string.isEmpty()) {
+            return string;
+        }
+        else if (string.length() == 1) {
+            return string.toUpperCase();
+        }
+        return string.substring(0, 1).toUpperCase() + string.substring(1);
+    }
+
+    public static boolean isNumber(String string) {
+        return string.matches("^-?\\d*\\.?\\d*$");
     }
 
     public static class RandomCollectorList<T> implements Collector<T, List<T>, List<T>> {
