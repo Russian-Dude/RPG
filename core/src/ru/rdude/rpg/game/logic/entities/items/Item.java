@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.entities.Entity;
-import ru.rdude.rpg.game.logic.entities.skills.SkillsProvider;
 import ru.rdude.rpg.game.logic.entities.states.StateHolder;
 import ru.rdude.rpg.game.logic.enums.Element;
 import ru.rdude.rpg.game.logic.enums.ItemRarity;
@@ -13,12 +12,11 @@ import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 @JsonPolymorphicSubType("item")
-public class Item extends Entity<ItemData> implements SkillsProvider {
+public class Item extends Entity<ItemData> {
 
     public static final int MAX_AMOUNT = 99;
 
@@ -112,11 +110,6 @@ public class Item extends Entity<ItemData> implements SkillsProvider {
         Item copy = new Item(entityData, amount);
         copy.elements = elements.copy();
         return copy;
-    }
-
-    @Override
-    public Collection<Long> getAvailableSkills() {
-        return entityData.getSkillsEquip();
     }
 
     public void subscribe(ItemCountObserver subscriber) {

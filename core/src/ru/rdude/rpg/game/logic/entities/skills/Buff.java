@@ -91,6 +91,7 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
     public void remove() {
         Game.getCurrentGame().getTimeManager().unsubscribe(this);
         skillApplier.target.unsubscribe(this);
+        duration.unsubscribe(this);
         notifySubscribers(true);
     }
 

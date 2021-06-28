@@ -54,7 +54,7 @@ public class EquipmentSlot extends Slot<Item> {
                 being.coefficients().removeSumOf(entity.coefficients());
             }
             // available skills
-            being.getAvailableSkills().remove(entity);
+            being.getAvailableSkills().removeAll(entity.getEntityData().getSkillsEquip());
             // weapon
             if (entity.getEntityData().isWeapon()) {
                 switch (entity.getEntityData().getWeaponData().getAttackType()) {
@@ -82,7 +82,7 @@ public class EquipmentSlot extends Slot<Item> {
                 being.coefficients().addSumOf(item.coefficients());
             }
             // available skills
-            being.getAvailableSkills().add(entity);
+            being.getAvailableSkills().addAll(entity.getEntityData().getSkillsEquip());
             // weapon
             if (item.getEntityData().isWeapon()) {
                 switch (item.getEntityData().getWeaponData().getAttackType()) {
