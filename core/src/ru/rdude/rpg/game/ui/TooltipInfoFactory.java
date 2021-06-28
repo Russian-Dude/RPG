@@ -3,6 +3,7 @@ package ru.rdude.rpg.game.ui;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import ru.rdude.rpg.game.logic.data.EntityData;
 import ru.rdude.rpg.game.logic.data.ItemData;
+import ru.rdude.rpg.game.logic.data.MonsterData;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.enums.EntityReferenceInfo;
 
@@ -14,6 +15,7 @@ public final class TooltipInfoFactory {
     private final ItemTooltipInfoFactory itemFactory = new ItemTooltipInfoFactory();
     private final BuffTooltipInfoFactory buffFactory = new BuffTooltipInfoFactory();
     private final SkillTooltipInfoFactory skillFactory = new SkillTooltipInfoFactory();
+    private final MonsterTooltipInfoFactory monsterFactory = new MonsterTooltipInfoFactory();
 
     public List<Actor> get(EntityData entityData,
                            EntityReferenceInfo referenceInfo,
@@ -29,6 +31,11 @@ public final class TooltipInfoFactory {
         else if (entityData instanceof SkillData) {
             return describer ? skillFactory.getDescriber((SkillData) entityData, referenceInfo, infoHolder)
                     : skillFactory.getConcrete((SkillData) entityData, referenceInfo, infoHolder);
+        }
+
+        else if (entityData instanceof MonsterData) {
+            return describer ? monsterFactory.getDescriber((MonsterData) entityData, referenceInfo, infoHolder)
+                    : monsterFactory.getConcrete((MonsterData) entityData, referenceInfo, infoHolder);
         }
 
         else {
