@@ -3,6 +3,7 @@ package ru.rdude.rpg.game.mapVisual;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import ru.rdude.rpg.game.logic.enums.Biom;
@@ -31,6 +32,12 @@ public class MapStage extends Stage {
     private Cell selectedCell;
     private Queue<Cell> movingPath;
     private MapPathFinder pathFinder;
+
+    // camera zooming
+    private float timeToZoom = -1;
+    private float zoomDuration = -1;
+    private float zoomTarget = -1;
+    private float zoomOrigin = -1;
 
     private final float CAM_MOVE_BORDER_BOTTOM = 0;
     private final float CAM_MOVE_BORDER_LEFT = 0;
@@ -104,6 +111,12 @@ public class MapStage extends Stage {
         }
     }
 
+    private void zoomTo (float newZoom, float duration){
+        zoomOrigin = camera.zoom;
+        zoomTarget = newZoom;
+        timeToZoom = zoomDuration = duration;
+    }
+
     @Override
     public boolean scrolled(int amount) {
         if (Game.getGameVisual().isInGameMenuShown() || Game.getGameVisual().getUi().isHit()) {
@@ -111,10 +124,10 @@ public class MapStage extends Stage {
         }
         boolean res = super.scrolled(amount);
         if (amount > 0) {
-            camera.zoom += 0.05f * camera.zoom;
+            zoomTo(camera.zoom + (0.1f * camera.zoom), 0.15f);
         } else if (amount < 0) {
             if (camera.zoom > 1) {
-                camera.zoom -= 0.05f * camera.zoom;
+                zoomTo(camera.zoom - (0.1f * camera.zoom), 0.15f);
                 if (camera.zoom < 1) {
                     camera.zoom = 1;
                 }
@@ -186,6 +199,12 @@ public class MapStage extends Stage {
             } else if (Gdx.input.getX() > Gdx.graphics.getWidth() - 25 && camera.position.x < CAM_MOVE_BORDER_RIGHT) {
                 camera.translate((25 - (Gdx.graphics.getWidth() - Gdx.input.getX())) / 2f * camera.zoom, 0);
             }
+        }
+        // camera zooming
+        if (timeToZoom >= 0) {
+            timeToZoom -= Gdx.graphics.getDeltaTime();
+            float progress = timeToZoom < 0 ? 1 : 1f - timeToZoom / zoomDuration;
+            camera.zoom = Interpolation.pow3Out.apply(zoomOrigin, zoomTarget, progress);
         }
         // moving camera with players
         if (GameSettings.isCameraFollowPlayers() && players.isMoving()) {
