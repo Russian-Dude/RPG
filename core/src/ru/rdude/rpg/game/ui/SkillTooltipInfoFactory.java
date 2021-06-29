@@ -379,7 +379,7 @@ final class SkillTooltipInfoFactory {
 
         // buff coefficients
         if (skillData.getBuffCoefficients() != null && (referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED)) {
-            Coefficients coefficients = skillData.getCoefficients();
+            Coefficients coefficients = skillData.getBuffCoefficients();
             Set<Label> labels = new HashSet<>();
             coefficients.atk().attackType().getCoefficientsMap().forEach((type, value) -> {
                 String s = createCoefficientString(type, value, "deal ", "with ", " attacks");

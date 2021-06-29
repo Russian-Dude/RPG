@@ -4,6 +4,7 @@ import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.entities.skills.Buff;
+import ru.rdude.rpg.game.logic.enums.Target;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,13 +25,21 @@ public class GameLogger {
         listeners = new HashSet<>();
     }
 
-    public void log(Being<?> caster, Being target, SkillData skill) {
+    public void log(Being<?> caster, Being<?> target, SkillData skill) {
         if (caster == target) {
             log(caster.getName() + " used " + skill.getName());
         }
         else {
             log(caster.getName() + " used " + skill.getName() + ". Target is " + target.getName());
         }
+    }
+
+    public void log(Being<?> caster, SkillData skillData, Target target) {
+        String targetString = target.name()
+                .toLowerCase()
+                .replaceAll("_", " ")
+                .replaceAll(" other", "");
+        log(caster.getName() + " used " + skillData.getName() + ", targeting " + targetString);
     }
 
     public void log(Being<?> caster, SkillData skill) {

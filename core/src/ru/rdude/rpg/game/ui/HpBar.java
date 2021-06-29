@@ -32,6 +32,7 @@ public class HpBar extends Group implements StatObserver {
         progressBar = new ProgressBar(0, (float) hp.max().value(),
                 1, false, UiData.DEFAULT_SKIN, "hp");
         progressBar.setValue((float) hp.value());
+        progressBar.setAnimateDuration(0.3f);
 
         horizontalLabelGroup = new HorizontalGroup();
         slash = new Label(" / ", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);

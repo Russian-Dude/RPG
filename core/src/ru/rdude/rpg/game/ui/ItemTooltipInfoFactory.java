@@ -287,7 +287,7 @@ final class ItemTooltipInfoFactory {
                     // use full representation
                     else {
                         Table table = new Table();
-                        table.add(new Label("Cast:", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE)).row();
+                        table.add(new Label("Allows to use:", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE)).row();
                         skills.forEach(skillData -> Game.getTooltipInfoFactory().get(skillData, EntityReferenceInfo.ALL, infoHolder)
                                 .forEach(actor -> table.add(actor).space(10f).row()));
                         table.background(UiData.DEFAULT_SKIN.getDrawable("Window_Transparent_9p"));

@@ -1,8 +1,10 @@
 package ru.rdude.rpg.game.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -41,6 +43,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
     private final HorizontalGroup buttons;
     private final Label nameLabel;
     private final PlayerBuffsIcons buffsIcons;
+    private final SkillSelector skillSelector;
 
     public PlayerVisual(Player player) {
         this(player, createAvatarFromData(((PlayerData) player.getEntityData())));
@@ -87,19 +90,63 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
         backpackWindow.setVisible(false);
         equipmentWindow.setVisible(false);
 
-        // stats
+        // stats and targeting
         statsWindow = new StatsWindow(player);
         avatar.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                statsWindow.setVisible(!statsWindow.isVisible());
-                if (!getStage().getActors().contains(statsWindow, true)) {
-                    getStage().addActor(statsWindow);
-                    statsWindow.setX(PlayerVisual.this.getX());
-                    statsWindow.setY(Gdx.graphics.getHeight() / 2f);
-                    statsWindow.setVisible(true);
+                if (Game.getGameVisual().getSkillTargeter().isTargeting()) {
+                    Game.getGameVisual().getSkillTargeter().target(player);
                 }
-                statsWindow.toFront();
+                else {
+                    statsWindow.setVisible(!statsWindow.isVisible());
+                    if (!getStage().getActors().contains(statsWindow, true)) {
+                        getStage().addActor(statsWindow);
+                        statsWindow.setX(PlayerVisual.this.getX());
+                        statsWindow.setY(Gdx.graphics.getHeight() / 2f);
+                        statsWindow.setVisible(true);
+                    }
+                    statsWindow.toFront();
+                }
+            }
+        });
+
+        // skills
+        Table skillSelectorTable = new Table();
+        this.skillSelector = new SkillSelector(player, skillSelectorTable);
+        ScrollPane skillSelectorScrollPane = new ScrollPane(skillSelector);
+        skillSelectorScrollPane.setVariableSizeKnobs(false);
+        skillSelectorTable.add(skillSelectorScrollPane)
+                .width(220f)
+                .center()
+                .maxHeight(Gdx.graphics.getHeight() / 2f);
+        skillSelectorTable.pack();
+        spells.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (player.getAvailableSkills().isEmpty()) {
+                    return;
+                }
+                if (!getStage().getActors().contains(skillSelectorTable, true)) {
+                    getStage().addActor(skillSelectorTable);
+                    skillSelectorTable.setVisible(false);
+                }
+                skillSelector.getSelection().clear();
+                skillSelectorTable.setVisible(!skillSelectorTable.isVisible());
+                skillSelectorTable.setHeight(skillSelectorTable.getPrefHeight());
+                skillSelectorTable.setX(PlayerVisual.this.getX() + 50f);
+                skillSelectorTable.setY(150f);
+                skillSelectorTable.toFront();
+            }
+        });
+        // scroll without click
+        skillSelectorScrollPane.addListener(new InputListener() {
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                getStage().setScrollFocus(skillSelectorScrollPane);
+            }
+
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                getStage().setScrollFocus(null);
             }
         });
 

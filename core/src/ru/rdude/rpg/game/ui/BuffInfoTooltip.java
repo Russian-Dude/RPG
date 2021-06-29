@@ -135,8 +135,8 @@ public class BuffInfoTooltip extends Tooltip<Table> implements DurationObserver,
         }
 
         // coefficients
-        if (skillData.getCoefficients() != null) {
-            Coefficients coefficients = skillData.getCoefficients();
+        if (skillData.getBuffCoefficients() != null) {
+            Coefficients coefficients = skillData.getBuffCoefficients();
             Set<Label> labels = new HashSet<>();
             coefficients.atk().attackType().getCoefficientsMap().forEach((type, value) -> {
                 String s = createCoefficientString(type, value, "deal ", "with ", " attacks");

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import ru.rdude.rpg.game.logic.entities.skills.SkillTargeter;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.MainMenuGameState;
 import ru.rdude.rpg.game.ui.InGameMenuStage;
@@ -21,6 +22,7 @@ public class GameVisual {
     private final Stack<Stage> previousMainMenuStages = new Stack<>();
     private final Set<InputProcessor> savedGameProcessors = new HashSet<>();
     private boolean justOpenedMainMenu = true;
+    private final SkillTargeter skillTargeter = new SkillTargeter();
 
     InputMultiplexer multiplexer = new InputMultiplexer();
 
@@ -143,6 +145,10 @@ public class GameVisual {
         return currentMainMenuStage;
     }
 
+    public SkillTargeter getSkillTargeter() {
+        return skillTargeter;
+    }
+
     public void draw() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             if (Game.getCurrentGame().getCurrentGameState() instanceof MainMenuGameState) {
@@ -169,26 +175,6 @@ public class GameVisual {
             currentMainMenuStage.draw();
             currentMainMenuStage.act(Gdx.graphics.getDeltaTime());
         }
+        skillTargeter.act();
     }
-
-/*    private class InGameMenuOperator {
-
-        boolean shown = false;
-        Stage inGameMenuStage = InGameMenuStage.getInstance();
-        Set<Stage> gameProcessors = new HashSet<>();
-
-        void escPressed() {
-            shown = !shown;
-            if (shown) {
-                multiplexer.getProcessors().forEach(p -> gameProcessors.add((Stage) p));
-                multiplexer.clear();
-                multiplexer.addProcessor(inGameMenuStage);
-            }
-            else {
-                multiplexer.clear();
-                gameProcessors.forEach(multiplexer::addProcessor);
-            }
-        }
-
-    }*/
 }

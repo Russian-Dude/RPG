@@ -33,6 +33,7 @@ public class StmBar extends Group implements StatObserver {
         progressBar = new ProgressBar(0, (float) stm.max().value(),
                 1, false, UiData.DEFAULT_SKIN, "stm");
         progressBar.setValue((float) stm.value());
+        progressBar.setAnimateDuration(0.3f);
 
         horizontalLabelGroup = new HorizontalGroup();
         slash = new Label(" / ", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
