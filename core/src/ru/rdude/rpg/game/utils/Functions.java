@@ -167,9 +167,9 @@ public class Functions {
         return new DecimalFormat("0.##").format(value);
     }
 
-    public static <T> Map<T, Float> normalizePercentsMap(Map<T, Float> map) {
-        Float sum = map.values().stream().reduce(Float::sum).orElse(0f);
-        Float onePercent = sum / 100f;
+    public static <T> Map<T, Double> normalizePercentsMap(Map<T, Double> map) {
+        Double sum = map.values().stream().reduce(Double::sum).orElse(0.0);
+        Double onePercent = sum / 100f;
         return map.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue() / onePercent));
     }
@@ -215,6 +215,14 @@ public class Functions {
 
     public static boolean isNumber(String string) {
         return string.matches("^-?\\d*\\.?\\d*$");
+    }
+
+    public static <T1, T2> void forEachMerged(Collection<T1> c1, Collection<T2> c2, BiConsumer<T1, T2> consumer) {
+        for (T1 t1 : c1) {
+            for (T2 t2 : c2) {
+                consumer.accept(t1, t2);
+            }
+        }
     }
 
     public static class RandomCollectorList<T> implements Collector<T, List<T>, List<T>> {

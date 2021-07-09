@@ -77,12 +77,13 @@ public class BuffInfoTooltip extends Tooltip<Table> implements DurationObserver,
         }
 
         // damage
-        if (buff.getDamage() != null && buff.getDamage() != 0) {
+        if (buff.getDamage().isPresent()) {
             String stringDamage;
-            if (buff.getDamage() > 0) {
-                stringDamage = "Receive " + Functions.trimDouble(buff.getDamage()) + " damage";
+            final double damageValue = buff.getDamage().get().value();
+            if (damageValue > 0) {
+                stringDamage = "Receive " + Functions.trimDouble(damageValue) + " damage";
             } else {
-                stringDamage = "Heal for " + Functions.trimDouble(buff.getDamage() * (-1));
+                stringDamage = "Heal for " + Functions.trimDouble(damageValue * (-1));
             }
             Label damageLabel = new Label(stringDamage, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
             mainTable.add(damageLabel)
@@ -109,29 +110,31 @@ public class BuffInfoTooltip extends Tooltip<Table> implements DurationObserver,
         }
 
         // stats
-        Table statsTable = new Table();
-        buff.getStats().streamWithNestedStats()
-                .filter(stat -> stat.value() != 0.0)
-                .forEach(stat -> {
-                    String value = Functions.trimDouble(stat.value());
-                    if (stat.value() > 0) {
-                        value = "+" + value;
-                    }
-                    Label statName = new Label(stat.getName(), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-                    Label statValue = new Label(value, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-                    statsTable.add(statName)
-                            .space(5f)
-                            .padRight(10f);
-                    statsTable.add(statValue)
-                            .align(Align.left)
-                            .space(5f);
-                    statsTable.row();
-                });
-        if (statsTable.hasChildren()) {
-            statsTable.pack();
-            mainTable.add(statsTable)
-                    .align(Align.center)
-                    .row();
+        if (buff.getStats().isPresent()) {
+            Table statsTable = new Table();
+            buff.getStats().get().streamWithNestedStats()
+                    .filter(stat -> stat.value() != 0.0)
+                    .forEach(stat -> {
+                        String value = Functions.trimDouble(stat.value());
+                        if (stat.value() > 0) {
+                            value = "+" + value;
+                        }
+                        Label statName = new Label(stat.getName(), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+                        Label statValue = new Label(value, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+                        statsTable.add(statName)
+                                .space(5f)
+                                .padRight(10f);
+                        statsTable.add(statValue)
+                                .align(Align.left)
+                                .space(5f);
+                        statsTable.row();
+                    });
+            if (statsTable.hasChildren()) {
+                statsTable.pack();
+                mainTable.add(statsTable)
+                        .align(Align.center)
+                        .row();
+            }
         }
 
         // coefficients

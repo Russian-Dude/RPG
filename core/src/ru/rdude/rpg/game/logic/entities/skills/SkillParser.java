@@ -1,7 +1,7 @@
 package ru.rdude.rpg.game.logic.entities.skills;
 
-import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
+import ru.rdude.rpg.game.logic.entities.beings.Player;
 
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
@@ -14,21 +14,19 @@ public class SkillParser {
     private static ScriptEngine engine;
     private Bindings bindings;
 
-    private SkillData skillData;
-    private Being caster;
-    private Being target;
+    private Being<?> caster;
+    private Being<?> target;
 
-    public SkillParser(SkillData skillData, Being caster, Being target) {
+    public SkillParser() {
         if (scriptEngineManager == null) {
             scriptEngineManager = new ScriptEngineManager();
             engine = scriptEngineManager.getEngineByName("JavaScript");
         }
-        this.skillData = skillData;
-        this.caster = caster;
-        this.target = target;
     }
 
-    public double parse(String string) {
+    public double parse(String string, Being<?> caster, Being<?> target) {
+        this.caster = caster;
+        this.target = target;
         createBindings();
         double result = Float.MIN_VALUE;
         try {
@@ -38,14 +36,14 @@ public class SkillParser {
             else if (preResult instanceof Integer) result = (double) (int) preResult;
         } catch (ScriptException e) {
             e.printStackTrace();
-            System.out.printf("Parse trouble in skill: %s, target: %s, caster: %s", skillData.getName(), target.getEntityData().getName(), caster.getEntityData().getName());
+            System.out.printf("Parse trouble , target: %s, caster: %s", target.getEntityData().getName(), caster.getEntityData().getName());
             return result;
         }
         return result;
     }
 
     public boolean testParse(String string) {
-        return parse(string) != Float.MIN_VALUE;
+        return parse(string, new Player(), new Player()) != Float.MIN_VALUE;
     }
 
     private void createBindings() {
@@ -121,6 +119,4 @@ public class SkillParser {
         bindings.put("MRES", caster.stats().magicResistance().value());
         bindings.put("TMRES", target.stats().magicResistance().value());
     }
-
-
 }

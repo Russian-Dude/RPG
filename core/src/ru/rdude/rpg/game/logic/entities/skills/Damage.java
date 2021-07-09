@@ -8,20 +8,24 @@ import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 @JsonPolymorphicSubType("damage")
 public class Damage extends Skill {
 
-    private Entity interactor;
+    private Entity<?> interactor;
     private double value;
     private SkillData bySkill;
     private Coefficients coefficients;
     private boolean critical;
     private boolean isMiss;
+    private boolean isDodge;
     private boolean isBlock;
     private boolean isParry;
 
-    public Damage(double value, Entity from, SkillData bySkill) {
+    private Damage() {
+    }
+
+    public Damage(double value, Entity<?> from, SkillData bySkill) {
         this(value, from, bySkill, false);
     }
 
-    public Damage(double value, Entity from, SkillData bySkill, boolean critical) {
+    public Damage(double value, Entity<?> from, SkillData bySkill, boolean critical) {
         this.value = value;
         this.interactor = from;
         this.bySkill = bySkill;
@@ -29,13 +33,14 @@ public class Damage extends Skill {
         isMiss = false;
         isBlock = false;
         isParry = false;
+        isDodge = false;
     }
 
     public double value() {
         return value;
     }
 
-    public Entity interactor() {
+    public Entity<?> interactor() {
         return interactor;
     }
 
@@ -71,6 +76,18 @@ public class Damage extends Skill {
 
     public void setParry(boolean parry) {
         isParry = parry;
+    }
+
+    public boolean isDodge() {
+        return isDodge;
+    }
+
+    public void setDodge(boolean dodge) {
+        isDodge = dodge;
+    }
+
+    public boolean isHit() {
+        return critical || (!isMiss && !isDodge && !isParry && !isBlock);
     }
 
     public Coefficients getCoefficients() {

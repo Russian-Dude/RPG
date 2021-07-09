@@ -4,6 +4,7 @@ import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
+import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.holders.Slot;
 
 public final class ItemUser {
@@ -30,7 +31,10 @@ public final class ItemUser {
                 break;
             case USABLE:
                 item.getEntityData().getSkillsOnUse()
-                        .forEach(skillGuid -> SkillUser.use(SkillData.getSkillByGuid(skillGuid), being));
+                        .forEach(skillGuid -> {
+                            final SkillData skill = SkillData.getSkillByGuid(skillGuid);
+                            Game.getSkillUser().use(skill, being, skill.getMainTarget());
+                        });
                 item.decreaseAmount(1);
                 being.notifySubscribers(new BeingAction(BeingAction.Action.ITEM_USED, item, null, 1), being);
                 break;

@@ -2,10 +2,12 @@ package ru.rdude.rpg.game.logic.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.rdude.rpg.game.logic.GameLogger;
+import ru.rdude.rpg.game.logic.actions.SkillsSequencer;
 import ru.rdude.rpg.game.logic.data.io.*;
 import ru.rdude.rpg.game.logic.entities.beings.MonsterFactory;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.entities.items.ItemUser;
+import ru.rdude.rpg.game.logic.entities.skills.*;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
 import ru.rdude.rpg.game.logic.gameStates.Map;
@@ -27,6 +29,8 @@ public class Game {
     private final GameLogger gameLogger;
     @JsonIgnore
     private final ItemDragAndDroper itemsDragAndDrop;
+    @JsonIgnore
+    private final SkillsSequencer skillsSequencer;
     private TimeManager timeManager;
     private final GameStateHolder gameStateHolder;
     private Map gameMap;
@@ -41,6 +45,11 @@ public class Game {
     private static final ItemUser itemUser = new ItemUser();
     private static final StaticReferencesHolders staticReferencesHolders = new StaticReferencesHolders();
     private static final TooltipInfoFactory tooltipInfoFactory = new TooltipInfoFactory();
+    private static final SkillUser skillUser = new SkillUser();
+    private static final SkillTargeter skillTargeter = new SkillTargeter();
+    private static final SkillParser skillParser = new SkillParser();
+    private static final SkillResultsCreator skillResultsCreator = new SkillResultsCreator();
+    private static final SkillApplier skillApplier = new SkillApplier();
 
     // io
     private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
@@ -61,6 +70,7 @@ public class Game {
         this.gameLogger = new GameLogger();
         this.gameStateHolder = new GameStateHolder();
         this.timeManager = new TimeManager();
+        this.skillsSequencer = new SkillsSequencer();
     }
 
     public static void initNewGame() {
@@ -132,6 +142,26 @@ public class Game {
         return tooltipInfoFactory;
     }
 
+    public static SkillUser getSkillUser() {
+        return skillUser;
+    }
+
+    public static SkillResultsCreator getSkillResultsCreator() {
+        return skillResultsCreator;
+    }
+
+    public static SkillParser getSkillParser() {
+        return skillParser;
+    }
+
+    public static SkillTargeter getSkillTargeter() {
+        return skillTargeter;
+    }
+
+    public static SkillApplier getSkillApplier() {
+        return skillApplier;
+    }
+
     public ItemDragAndDroper getItemsDragAndDrop() {
         return itemsDragAndDrop;
     }
@@ -166,5 +196,9 @@ public class Game {
 
     public GameLogger getGameLogger() {
         return gameLogger;
+    }
+
+    public SkillsSequencer getSkillsSequencer() {
+        return skillsSequencer;
     }
 }

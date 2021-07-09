@@ -34,6 +34,8 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
 
     private final StatsWindow statsWindow;
 
+    private final SkillSelector skillSelector;
+
     private final PlayerAvatar avatar;
     private final HpBar hpBar;
     private final StmBar stmBar;
@@ -43,7 +45,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
     private final HorizontalGroup buttons;
     private final Label nameLabel;
     private final PlayerBuffsIcons buffsIcons;
-    private final SkillSelector skillSelector;
+    private final DamageLabel damageLabel;
 
     public PlayerVisual(Player player) {
         this(player, createAvatarFromData(((PlayerData) player.getEntityData())));
@@ -64,6 +66,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
         nameLabel = new Label(player.getName(), DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
         nameLabel.setAlignment(Align.center);
         buffsIcons = new PlayerBuffsIcons(this);
+        damageLabel = new DamageLabel(player);
 
         // items
         backpackWindow = new BackpackWindow(player);
@@ -167,6 +170,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
         avatar.setPosition(0, 0);
         topGroup.addActor(avatar);
         topGroup.addActor(buttons);
+        topGroup.addActor(damageLabel);
         withoutNameGroup.addActor(topGroup);
         withoutNameGroup.addActor(hpBar);
         withoutNameGroup.addActor(stmBar);

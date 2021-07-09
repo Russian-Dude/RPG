@@ -41,23 +41,43 @@ public class SkillDuration extends Duration implements BeingActionObserver {
     }
 
     public Optional<Double> getHitsReceivedLeft() {
-        return hitsReceived == null ? Optional.empty() : Optional.of(hitsReceived);
+        return Optional.ofNullable(hitsReceived);
     }
 
     public Optional<Double> getHitsMadeLeft() {
-        return hitsMade == null ? Optional.empty() : Optional.of(hitsMade);
+        return Optional.ofNullable(hitsMade);
     }
 
     public Optional<Double> getDamageReceivedLeft() {
-        return damageReceived == null ? Optional.empty() : Optional.of(damageReceived);
+        return Optional.ofNullable(damageReceived);
     }
 
     public Optional<Double> getDamageMadeLeft() {
-        return damageMade == null ? Optional.empty() : Optional.of(damageMade);
+        return Optional.ofNullable(damageMade);
+    }
+
+    public void setHitsReceivedLeft(Double hitsReceived) {
+        this.hitsReceived = hitsReceived;
+        checkDurationEnds();
+    }
+
+    public void setHitsMadeLeft(Double hitsMade) {
+        this.hitsMade = hitsMade;
+        checkDurationEnds();
+    }
+
+    public void setDamageReceivedLeft(Double damageReceived) {
+        this.damageReceived = damageReceived;
+        checkDurationEnds();
+    }
+
+    public void setDamageMadeLeft(Double damageMade) {
+        this.damageMade = damageMade;
+        checkDurationEnds();
     }
 
     @Override
-    public void update(BeingAction action, Being being) {
+    public void update(BeingAction action, Being<?> being) {
         switch (action.action()) {
             case DAMAGE_DEAL:
                 if (damageMade != null) damageMade -= action.value();

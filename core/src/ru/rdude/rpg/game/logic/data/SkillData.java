@@ -22,7 +22,7 @@ public class SkillData extends EntityData {
     private Map<StatName, String> stats;
     private double timeChange;
     private Transformation transformation;
-    private Map<Long, Float> summon; // by guid
+    private Map<Long, Double> summon; // by guid
     private Map<Long, Integer> receiveItems; // by guid
     private Requirements requirements;
     private boolean permanent;
@@ -48,10 +48,10 @@ public class SkillData extends EntityData {
     private SkillOverlay overlay;
     private Target mainTarget;
     private List<Target> targets;
-    private Map<Long, Float> skillsCouldCast;
-    private Map<Long, Float> skillsMustCast;
+    private Map<Long, Double> skillsCouldCast;
+    private Map<Long, Double> skillsMustCast;
     // Skills casted after specific being action:
-    private Map<BeingAction.Action, Map<Long, Float>> skillsOnBeingAction;
+    private Map<BeingAction.Action, Map<Long, Double>> skillsOnBeingAction;
     private boolean onBeingActionCastToEnemy; // if true skill will be casted to interactor else from initial buff caster to buff holder
     // buff type - using magic or physic resistance to resist:
     private BuffType buffType;
@@ -149,11 +149,11 @@ public class SkillData extends EntityData {
         this.transformation = transformation;
     }
 
-    public Map<Long, Float> getSummon() {
+    public Map<Long, Double> getSummon() {
         return summon;
     }
 
-    public void setSummon(Map<Long, Float> summon) {
+    public void setSummon(Map<Long, Double> summon) {
         this.summon = summon;
     }
 
@@ -285,20 +285,19 @@ public class SkillData extends EntityData {
         this.canBeResisted = canBeResisted;
     }
 
-    // TODO: 11.03.2021 skills must cast and could cast. Float value is percent (0 - 100)
-    public Map<Long, Float> getSkillsCouldCast() {
+    public Map<Long, Double> getSkillsCouldCast() {
         return skillsCouldCast;
     }
 
-    public void setSkillsCouldCast(Map<Long, Float> skillsCouldCast) {
+    public void setSkillsCouldCast(Map<Long, Double> skillsCouldCast) {
         this.skillsCouldCast = skillsCouldCast;
     }
 
-    public Map<Long, Float> getSkillsMustCast() {
+    public Map<Long, Double> getSkillsMustCast() {
         return skillsMustCast;
     }
 
-    public void setSkillsMustCast(Map<Long, Float> skillsMustCast) {
+    public void setSkillsMustCast(Map<Long, Double> skillsMustCast) {
         this.skillsMustCast = skillsMustCast;
     }
 
@@ -318,11 +317,11 @@ public class SkillData extends EntityData {
         this.actsEveryTurn = actsEveryTurn;
     }
 
-    public Map<BeingAction.Action, Map<Long, Float>> getSkillsOnBeingAction() {
+    public Map<BeingAction.Action, Map<Long, Double>> getSkillsOnBeingAction() {
         return skillsOnBeingAction;
     }
 
-    public void setSkillsOnBeingAction(Map<BeingAction.Action, Map<Long, Float>> skillsOnBeingAction) {
+    public void setSkillsOnBeingAction(Map<BeingAction.Action, Map<Long, Double>> skillsOnBeingAction) {
         this.skillsOnBeingAction = skillsOnBeingAction;
     }
 
@@ -469,7 +468,7 @@ public class SkillData extends EntityData {
             skillsMustCast.put(newValue, skillsMustCast.get(oldValue));
             skillsMustCast.remove(oldValue);
         }
-        for (Map<Long, Float> map : skillsOnBeingAction.values()) {
+        for (Map<Long, Double> map : skillsOnBeingAction.values()) {
             if (map.containsKey(oldValue)) {
                 map.put(newValue, map.get(oldValue));
                 map.remove(oldValue);

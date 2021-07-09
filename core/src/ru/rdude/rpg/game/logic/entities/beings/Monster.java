@@ -6,6 +6,8 @@ import ru.rdude.rpg.game.logic.data.MonsterData;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
 import ru.rdude.rpg.game.logic.enums.AttackType;
+import ru.rdude.rpg.game.logic.enums.Target;
+import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 @JsonPolymorphicSubType("monster")
@@ -23,7 +25,7 @@ public class Monster extends Being<MonsterData> {
 
     public void applyStartBuffs() {
         entityData.getStartBuffs().forEach(guid ->
-                SkillUser.use(SkillData.getSkillByGuid(guid), this, this));
+                Game.getSkillUser().use(SkillData.getSkillByGuid(guid), this, Target.SELF));
     }
 
     @Override

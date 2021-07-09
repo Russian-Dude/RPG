@@ -181,7 +181,12 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver {
 
         private double calculateBuffValue(Buff buff) {
             // stat changes
-            double statsChange = buff.getStats().stream().map(Stat::value).reduce(Double::sum).orElse(0d);
+            double statsChange = 0;
+            if (buff.getStats().isPresent()) {
+                statsChange = buff.getStats().get().stream()
+                        .map(Stat::value)
+                        .reduce(Double::sum).orElse(0d);
+            }
             // coefficients changes
             Coefficients.CoefficientsContainer atkCoef = buff.getEntityData().getBuffCoefficients().atk();
             Coefficients.CoefficientsContainer defCoef = buff.getEntityData().getBuffCoefficients().def();

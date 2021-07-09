@@ -24,7 +24,7 @@ public class HpBar extends Group implements StatObserver {
 
 
 
-    public HpBar(Being being) {
+    public HpBar(Being<?> being) {
         hp = being.stats().hp();
         hp.subscribe(this);
         hp.max().subscribe(this);

@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import ru.rdude.rpg.game.logic.entities.skills.SkillTargeter;
+import ru.rdude.rpg.game.logic.entities.skills.SkillVisualTargeter;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.MainMenuGameState;
 import ru.rdude.rpg.game.ui.InGameMenuStage;
@@ -22,7 +22,7 @@ public class GameVisual {
     private final Stack<Stage> previousMainMenuStages = new Stack<>();
     private final Set<InputProcessor> savedGameProcessors = new HashSet<>();
     private boolean justOpenedMainMenu = true;
-    private final SkillTargeter skillTargeter = new SkillTargeter();
+    private final SkillVisualTargeter skillVisualTargeter = new SkillVisualTargeter();
 
     InputMultiplexer multiplexer = new InputMultiplexer();
 
@@ -145,8 +145,8 @@ public class GameVisual {
         return currentMainMenuStage;
     }
 
-    public SkillTargeter getSkillTargeter() {
-        return skillTargeter;
+    public SkillVisualTargeter getSkillTargeter() {
+        return skillVisualTargeter;
     }
 
     public void draw() {
@@ -175,6 +175,7 @@ public class GameVisual {
             currentMainMenuStage.draw();
             currentMainMenuStage.act(Gdx.graphics.getDeltaTime());
         }
-        skillTargeter.act();
+        skillVisualTargeter.act();
+        Game.getCurrentGame().getSkillsSequencer().act(Gdx.graphics.getDeltaTime());
     }
 }

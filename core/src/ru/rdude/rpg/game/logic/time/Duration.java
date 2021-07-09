@@ -50,11 +50,21 @@ public class Duration implements TimeChangeObserver, TurnChangeObserver {
     }
 
     public Optional<Double> getTurnsLeft() {
-        return turns == null ? Optional.empty() : Optional.of(turns);
+        return Optional.ofNullable(turns);
     }
 
     public Optional<Double> getMinutesLeft() {
-        return minutes == null ? Optional.empty() : Optional.of(minutes);
+        return Optional.ofNullable(minutes);
+    }
+
+    public void setTurnsLeft(Double turns) {
+        this.turns = turns;
+        checkDurationEnds();
+    }
+
+    public void setMinutesLeft(Double minutes) {
+        this.minutes = minutes;
+        checkDurationEnds();
     }
 
     protected void checkDurationEnds() {

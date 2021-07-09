@@ -17,6 +17,7 @@ public class BeingAction {
         DAMAGE_DEAL("damage deal"),
         DAMAGE_RECEIVE("damage received"),
         CRITICAL_RECEIVE("critical damage received"),
+        CRITICAL_DEAL("critical damage deal"),
         DODGE("successful dodge"),
         MISS("attack missed"),
         HEAL_DEAL("heal someone"),

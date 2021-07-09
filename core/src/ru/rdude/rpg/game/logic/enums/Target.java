@@ -9,6 +9,7 @@ public enum Target {
     ANY_OTHER(true, false),
     ALL(true, true),
     ALL_ALLIES(true, true),
+    ALL_OTHER_ALLIES(true, true),
     ALL_ENEMIES(true, true),
     ALL_OTHER(true, true),
     RANDOM_ALLY(true, true),
