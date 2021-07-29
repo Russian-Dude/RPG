@@ -1,6 +1,5 @@
 package ru.rdude.rpg.game.logic.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
@@ -17,39 +16,24 @@ import java.util.List;
 public class SkillsSequencer extends Actor {
 
     private SequenceAction currentSequence;
-    private ParallelAction mainAction;
-
-    public SkillsSequencer() {
-        mainAction = Actions.parallel(Actions.forever(Actions.delay(1)));
-        addAction(mainAction);
-    }
 
     public void add(Buff buff) {
-        final List<SkillResult> results = Game.getSkillResultsCreator().createFromBuff(buff);
-        results.forEach(Game.getSkillApplier()::apply);
+        add(Game.getSkillResultsCreator().createFromBuff(buff));
     }
 
     public void add(SkillData skillData, Being<?> caster, SkillTargets targets) {
-
-        List<SkillResult> skillResults = Game.getSkillResultsCreator().createFromSkill(skillData, caster, targets);
-
-        skillResults.forEach(Game.getSkillApplier()::apply);
-
-        skillResults.forEach(result -> {
-            if (currentSequence == null || currentSequence.getActor() == null) {
-                currentSequence = Actions.sequence(createSkillAnimationAction(result));
-                mainAction.addAction(currentSequence);
-            }
-            else {
-                currentSequence.addAction(createSkillAnimationAction(result));
-            }
-        });
-
-
-
+        add(Game.getSkillResultsCreator().createFromSkill(skillData, caster, targets));
     }
 
-    private Action createSkillAnimationAction(SkillResult result) {
-        return Actions.run(() -> {});
+    private void add(List<SkillResult> skillResults) {
+        skillResults.forEach(Game.getSkillApplier()::apply);
+
+        if (currentSequence == null || currentSequence.getActor() == null) {
+            currentSequence = Actions.sequence(Game.getSkillAnimator().action(skillResults));
+            addAction(currentSequence);
+        }
+        else {
+            currentSequence.addAction(Game.getSkillAnimator().action(skillResults));
+        }
     }
 }

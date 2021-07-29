@@ -6,7 +6,7 @@ import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 public class EventResources extends Resources {
 
     public EventResources() {
-        super(new String[]{"eventImage"}, new String[]{"eventSound"});
+        super(new String[]{"eventImage"}, new String[]{"eventSound"}, new String[]{});
     }
 
     public Resource getEventImage() {

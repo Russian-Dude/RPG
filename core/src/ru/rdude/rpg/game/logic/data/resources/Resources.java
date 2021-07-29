@@ -1,25 +1,26 @@
 package ru.rdude.rpg.game.logic.data.resources;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class Resources {
 
     protected Map<String, Resource> imageResources = new HashMap<>();
     protected Map<String, Resource> soundResources = new HashMap<>();
+    protected Map<String, List<Resource>> particleResources = new HashMap<>();
 
     Resources() {
     }
 
-    protected Resources(String[] imageResources, String[] soundResources) {
+    protected Resources(String[] imageResources, String[] soundResources, String[] particleResources) {
         for (String imageResource : imageResources) {
             this.imageResources.put(imageResource, null);
         }
         for (String soundResource : soundResources) {
             this.soundResources.put(soundResource, null);
+        }
+        for (String particleResource : particleResources) {
+            this.particleResources.put(particleResource, new ArrayList<>());
         }
     }
 
@@ -43,9 +44,21 @@ public abstract class Resources {
         this.soundResources = soundResources;
     }
 
+    public Set<Resource> getParticleResources() {
+        return particleResources.values().stream()
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
+    public void setParticleResources(Map<String, List<Resource>> particleResources) {
+        this.particleResources = particleResources;
+    }
+
     public void swap(Resource oldV, Resource newV) {
         swapImage(oldV, newV);
         swapSound(oldV, newV);
+        swapParticle(oldV, newV);
     }
 
     public void swapImage(Resource oldV, Resource newV) {
@@ -56,9 +69,14 @@ public abstract class Resources {
         soundResources.replaceAll((name, resource) -> oldV.equals(resource) ? newV : resource);
     }
 
+    public void swapParticle(Resource oldV, Resource newV) {
+        particleResources.values().forEach(list -> list.replaceAll(resource -> oldV.equals(resource) ? newV : resource));
+    }
+
     public void remove(Resource resource) {
         removeFrom(resource, imageResources);
         removeFrom(resource, soundResources);
+        particleResources.values().forEach(list -> list.remove(resource));
     }
 
     private void removeFrom(Resource resource, Map<String, Resource> resourceMap) {

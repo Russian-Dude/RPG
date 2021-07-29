@@ -10,6 +10,7 @@ public class PlayerResources extends Resources {
                 new String[]{"face", "cloth", "mouth", "nose", "eyes", "eyePupils", "eyeBrows", "beard", "hair",
                 "faceColor", "hairColor", "eyesColor"},
                 // sounds (unused)
+                new String[]{},
                 new String[]{});
     }
 

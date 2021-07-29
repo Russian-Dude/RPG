@@ -6,7 +6,7 @@ import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 public class ItemResources extends Resources {
 
     public ItemResources() {
-        super(new String[] {"mainImage"}, new String[]{});
+        super(new String[] {"mainImage"}, new String[]{}, new String[]{});
     }
 
     public Resource getMainImage() {

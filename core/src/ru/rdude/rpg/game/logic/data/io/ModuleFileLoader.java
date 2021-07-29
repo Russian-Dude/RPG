@@ -58,6 +58,13 @@ public class ModuleFileLoader {
                         tempFile.deleteOnExit();
                         Files.write(tempFile.toPath(), new BufferedInputStream(zipInputStream).readAllBytes());
                     }
+
+                    // particle files
+                    else if (!entry.isDirectory() && entry.getName().contains("particles")) {
+                        File tempFile = Gdx.files.local("temp\\particles\\" + entry.getName().replaceAll("\\|/|(particles)", "")).file();
+                        tempFile.deleteOnExit();
+                        Files.write(tempFile.toPath(), new BufferedInputStream(zipInputStream).readAllBytes());
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -68,7 +75,7 @@ public class ModuleFileLoader {
         FileHandle[] atlasTextFiles = Gdx.files.local("temp\\images").list(".atlas");
         for (FileHandle atlasTextFile : atlasTextFiles) {
             TextureAtlas textureAtlas = new TextureAtlas(atlasTextFile);
-            textureAtlas.getRegions().forEach(region -> imageFactory.addRegion(region));
+            imageFactory.addAtlas(textureAtlas);
         }
     }
 }

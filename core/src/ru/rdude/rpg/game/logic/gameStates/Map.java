@@ -3,6 +3,7 @@ package ru.rdude.rpg.game.logic.gameStates;
 import com.fasterxml.jackson.annotation.*;
 import ru.rdude.rpg.game.logic.data.io.GameMapFileLoader;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
+import ru.rdude.rpg.game.logic.enums.GameState;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.GameMap;
@@ -126,6 +127,11 @@ public class Map extends GameStateBase {
 
     private void notifySubscribers(Cell oldPosition, Cell newPosition) {
         placePositionSubscribers.notifySubscribers(subscriber -> subscriber.update(oldPosition, newPosition));
+    }
+
+    @Override
+    public GameState getEnumValue() {
+        return GameState.MAP;
     }
 
 

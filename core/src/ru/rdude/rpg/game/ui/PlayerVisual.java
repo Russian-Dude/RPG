@@ -1,6 +1,7 @@
 package ru.rdude.rpg.game.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -21,11 +22,14 @@ import ru.rdude.rpg.game.ui.colors.EyesColor;
 import ru.rdude.rpg.game.ui.colors.HairColor;
 import ru.rdude.rpg.game.ui.colors.SkinColor;
 import ru.rdude.rpg.game.utils.Functions;
+import ru.rdude.rpg.game.visual.ParticleEffector;
+import ru.rdude.rpg.game.visual.VisualBeing;
 
+import static ru.rdude.rpg.game.ui.UiData.BIG_TEXT_STYLE;
 import static ru.rdude.rpg.game.ui.UiData.DEFAULT_SKIN;
 
 @JsonIgnoreType
-public class PlayerVisual extends VerticalGroup implements GameStateObserver {
+public class PlayerVisual extends VerticalGroup implements GameStateObserver, VisualBeing<Player> {
 
     private final Player player;
 
@@ -45,7 +49,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
     private final HorizontalGroup buttons;
     private final Label nameLabel;
     private final PlayerBuffsIcons buffsIcons;
-    private final DamageLabel damageLabel;
+    private final Label damageLabel;
 
     public PlayerVisual(Player player) {
         this(player, createAvatarFromData(((PlayerData) player.getEntityData())));
@@ -63,10 +67,10 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
         attack.setVisible(Game.getCurrentGame().getCurrentGameState() instanceof Battle);
         items = new Button(DEFAULT_SKIN, "items");
         spells = new Button(DEFAULT_SKIN, "spells");
-        nameLabel = new Label(player.getName(), DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+        nameLabel = new Label(player.getName(), DEFAULT_SKIN, BIG_TEXT_STYLE);
         nameLabel.setAlignment(Align.center);
         buffsIcons = new PlayerBuffsIcons(this);
-        damageLabel = new DamageLabel(player);
+        damageLabel = new Label("", DEFAULT_SKIN, BIG_TEXT_STYLE);
 
         // items
         backpackWindow = new BackpackWindow(player);
@@ -222,6 +226,23 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver {
                         || Functions.isMouseOver(equipmentWindow)
                         || Functions.isMouseOver(avatar)
                         || Functions.isMouseOver(statsWindow);
+    }
+
+    @Override
+    public Label getDamageLabel() {
+        return damageLabel;
+    }
+
+    @Override
+    public Vector2 getCenter() {
+        float x = avatar.getWidth() / 2f;
+        float y = avatar.getHeight() / 2f;
+        return avatar.localToStageCoordinates(new Vector2(x, y));
+    }
+
+    @Override
+    public Player getBeing() {
+        return player;
     }
 
     @Override

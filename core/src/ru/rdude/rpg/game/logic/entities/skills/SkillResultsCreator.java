@@ -119,6 +119,9 @@ public class SkillResultsCreator {
     }
 
     private boolean isMiss(SkillData skillData, Being<?> caster, Being<?> target) {
+        if (caster == null || target == null) {
+            return false;
+        }
         if (!skillData.isCanBeDodged()) return false;
         double HIT = caster.stats().hitValue();
         double SIZE = target.size().getCurrent().stream().findFirst().orElse(Size.SMALL).getSizeNumber();
@@ -130,7 +133,7 @@ public class SkillResultsCreator {
     }
 
     private boolean isDodge(SkillData skillData, Being<?> caster, Being<?> target) {
-        if (!skillData.isCanBeDodged())
+        if (!skillData.isCanBeDodged() || caster == null || target == null)
             return false;
         double chance = Functions.random(100d);
         double FLEE = target.stats().fleeValue();
@@ -140,22 +143,28 @@ public class SkillResultsCreator {
     }
 
     private boolean isBlock(SkillData skillData, Being<?> target) {
-        if (!skillData.isCanBeBlocked())
+        if (!skillData.isCanBeBlocked() || target == null)
             return false;
         return target.canBlock() && target.stats().blockValue() >= Functions.random(100d);
     }
 
     private boolean isParry(SkillData skillData, Being<?> target) {
-        if (!skillData.isCanBeBlocked() || skillData.getAttackType() != AttackType.MELEE)
+        if (!skillData.isCanBeBlocked() || skillData.getAttackType() != AttackType.MELEE || target == null)
             return false;
         return target.canParry() && target.stats().parryValue() >= Functions.random(100d);
     }
 
     private boolean isCritical(Being<?> caster) {
+        if (caster == null) {
+            return false;
+        }
         return caster.stats().critValue() >= Functions.random(100d);
     }
 
     private boolean isResisted(SkillData skillData, Being<?> target) {
+        if (target == null) {
+            return false;
+        }
         double randomValue = Functions.random(100d);
         double resistanceValue = 0;
         if (skillData.getBuffType() == BuffType.MAGIC)
@@ -166,7 +175,7 @@ public class SkillResultsCreator {
     }
 
     private Damage getDamage(SkillData skillData, Being<?> caster, Being<?> target) {
-        if (skillData.getDamage() == null || skillData.getDamage().isEmpty() || skillData.getDamage().matches("0+")) {
+        if (skillData.getDamage() == null || target == null || caster == null || skillData.getDamage().isEmpty() || skillData.getDamage().matches("0+")) {
             return null;
         }
         double damageValue = Game.getSkillParser().parse(skillData.getDamage(), caster, target);

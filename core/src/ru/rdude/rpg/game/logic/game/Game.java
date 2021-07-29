@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.game;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.rdude.rpg.game.logic.GameLogger;
 import ru.rdude.rpg.game.logic.actions.SkillsSequencer;
@@ -15,6 +16,8 @@ import ru.rdude.rpg.game.logic.time.TimeManager;
 import ru.rdude.rpg.game.ui.*;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.visual.GameVisual;
+import ru.rdude.rpg.game.visual.ParticleEffectsPools;
+import ru.rdude.rpg.game.visual.SkillAnimator;
 
 import java.util.HashMap;
 
@@ -50,6 +53,9 @@ public class Game {
     private static final SkillParser skillParser = new SkillParser();
     private static final SkillResultsCreator skillResultsCreator = new SkillResultsCreator();
     private static final SkillApplier skillApplier = new SkillApplier();
+    private static final AssetManager assetManager = new AssetManager();
+    private static final ParticleEffectsPools particleEffectsPool = new ParticleEffectsPools();
+    private static final SkillAnimator skillAnimator = new SkillAnimator();
 
     // io
     private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
@@ -160,6 +166,18 @@ public class Game {
 
     public static SkillApplier getSkillApplier() {
         return skillApplier;
+    }
+
+    public static AssetManager getAssetManager() {
+        return assetManager;
+    }
+
+    public static ParticleEffectsPools getParticleEffectsPool() {
+        return particleEffectsPool;
+    }
+
+    public static SkillAnimator getSkillAnimator() {
+        return skillAnimator;
     }
 
     public ItemDragAndDroper getItemsDragAndDrop() {

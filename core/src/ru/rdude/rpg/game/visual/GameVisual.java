@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import ru.rdude.rpg.game.logic.entities.skills.SkillVisualTargeter;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.MainMenuGameState;
+import ru.rdude.rpg.game.ui.EffectsStage;
 import ru.rdude.rpg.game.ui.InGameMenuStage;
 import ru.rdude.rpg.game.ui.MainMenuStage;
 import ru.rdude.rpg.game.ui.UIStage;
@@ -18,6 +19,8 @@ public class GameVisual {
 
     private final List<Stage> nonUiStages = new ArrayList<>();
     private UIStage ui;
+    private final EffectsStage effectsStageFront = new EffectsStage();
+    private final EffectsStage effectsStageBack = new EffectsStage();
     private Stage currentMainMenuStage;
     private final Stack<Stage> previousMainMenuStages = new Stack<>();
     private final Set<InputProcessor> savedGameProcessors = new HashSet<>();
@@ -149,6 +152,14 @@ public class GameVisual {
         return skillVisualTargeter;
     }
 
+    public EffectsStage getEffectsStageFront() {
+        return effectsStageFront;
+    }
+
+    public EffectsStage getEffectsStageBack() {
+        return effectsStageBack;
+    }
+
     public void draw() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             if (Game.getCurrentGame().getCurrentGameState() instanceof MainMenuGameState) {
@@ -167,10 +178,14 @@ public class GameVisual {
             stage.draw();
             stage.act(Gdx.graphics.getDeltaTime());
         }
+        effectsStageBack.draw();
+        effectsStageBack.act(Gdx.graphics.getDeltaTime());
         if (ui != null) {
             ui.draw();
             ui.act(Gdx.graphics.getDeltaTime());
         }
+        effectsStageFront.draw();
+        effectsStageFront.act(Gdx.graphics.getDeltaTime());
         if (currentMainMenuStage != null) {
             currentMainMenuStage.draw();
             currentMainMenuStage.act(Gdx.graphics.getDeltaTime());

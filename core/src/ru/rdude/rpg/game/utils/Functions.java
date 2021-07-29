@@ -5,11 +5,10 @@ import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.utils.StringBuilder;
 import ru.rdude.rpg.game.logic.enums.StatName;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -129,7 +128,13 @@ public class Functions {
     }
 
     public static String trimPath(String string) {
-        return string.substring(Math.max(string.lastIndexOf("/"), string.lastIndexOf("\\")) + 1);
+        return string.substring(string.lastIndexOf(File.separator) + 1);
+    }
+
+    public static String fileNameWithoutExtension(String string) {
+        final String nameWithExtension = trimPath(string);
+        final int lastDotPosition = nameWithExtension.lastIndexOf(".");
+        return nameWithExtension.substring(lastDotPosition + 1);
     }
 
     public static boolean isMouseOver(Stage stage) {

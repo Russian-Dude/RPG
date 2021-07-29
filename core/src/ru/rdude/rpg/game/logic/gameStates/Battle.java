@@ -4,9 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
+import ru.rdude.rpg.game.logic.enums.GameState;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.time.TurnChangeObserver;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
+import ru.rdude.rpg.game.visual.VisualTarget;
+
+import java.util.Collection;
+import java.util.stream.Stream;
 
 @JsonPolymorphicSubType("battle")
 public class Battle extends GameStateBase implements TurnChangeObserver {
@@ -42,5 +47,10 @@ public class Battle extends GameStateBase implements TurnChangeObserver {
         if (turnOf == playerSide)
             turnOf = enemySide;
         else turnOf = playerSide;
+    }
+
+    @Override
+    public GameState getEnumValue() {
+        return GameState.BATTLE;
     }
 }

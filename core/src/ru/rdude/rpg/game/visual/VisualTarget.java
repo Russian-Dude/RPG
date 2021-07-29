@@ -7,6 +7,4 @@ public interface VisualTarget {
 
     Label getDamageLabel();
     Vector2 getCenter();
-
-
 }

@@ -6,7 +6,7 @@ import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 public class MonsterResources extends Resources {
 
     public MonsterResources() {
-        super(new String[]{"monsterImage"}, new String[]{"greetingSound", "deathSound", "hitReceivedSound"});
+        super(new String[]{"monsterImage"}, new String[]{"greetingSound", "deathSound", "hitReceivedSound"}, new String[]{});
     }
 
     public Resource getMonsterImage() {
