@@ -1,10 +1,7 @@
 package ru.rdude.rpg.game.visual;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
-import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.actions.*;
 import ru.rdude.rpg.game.logic.entities.skills.SkillResult;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.ui.EffectsStage;
@@ -100,6 +97,8 @@ public class SkillAnimator {
         if (!parallelAction.getActions().isEmpty()) {
             sequenceAction.addAction(parallelAction);
         }
+        sequenceAction.addAction(createDelayedBarsAction(skillResult));
+        sequenceAction.addAction(createDamageLabelAction(skillResult));
         return sequenceAction;
     }
 
@@ -187,6 +186,54 @@ public class SkillAnimator {
         });
 
         return Actions.sequence(positionAction, particleAction);
+    }
+
+    private RunnableAction createDelayedBarsAction(SkillResult skillResult) {
+        final Optional<? extends VisualBeing<?>> targetVisual = VisualBeing.VISUAL_BEING_FINDER.find(skillResult.getTarget());
+        return Actions.run(() -> {
+            skillResult.getBuff().ifPresent(buff -> targetVisual.ifPresent(vt -> vt.getHpBar().actDelayed(buff)));
+            skillResult.getDamage().ifPresent(damage -> targetVisual.ifPresent(vt -> vt.getHpBar().actDelayed(damage)));
+        });
+    }
+
+    private RunnableAction createDamageLabelAction(SkillResult skillResult) {
+        return Actions.run(() -> {
+            skillResult.getDamage().ifPresent(damage -> {
+                final MoveByAction moveUp = Actions.moveBy(0, 120, 1f);
+                final MoveByAction moveMoreUp = Actions.moveBy(0, 20, 0.2f);
+                final AlphaAction fadeInAction = Actions.fadeIn(0.2f);
+                final AlphaAction fadeOutAction = Actions.fadeOut(0.2f);
+                final ScaleByAction scaleUpAction = Actions.scaleBy(2f, 2f, 1f);
+                final ScaleByAction scaleDownAction = Actions.scaleBy(-2f, -2f, 0.2f);
+                final MoveByAction moveBackAction = Actions.moveBy(0f, -140f);
+                final ParallelAction showAction = Actions.parallel(moveUp, fadeInAction, scaleUpAction);
+                final ParallelAction hideAction = Actions.parallel(fadeOutAction, moveMoreUp);
+                final SequenceAction resultAction = Actions.sequence(showAction, hideAction, scaleDownAction, moveBackAction);
+                VisualBeing.VISUAL_BEING_FINDER.find(skillResult.getTarget()).ifPresent(b -> {
+                    final String damageText;
+                    if (damage.isHit()) {
+                        damageText = String.valueOf((int) damage.value());
+                    }
+                    else if (damage.isMiss()) {
+                        damageText = "miss";
+                    }
+                    else if (damage.isDodge()) {
+                        damageText = "dodge";
+                    }
+                    else if (damage.isParry()) {
+                        damageText = "parry";
+                    }
+                    else if (damage.isBlock()) {
+                        damageText = "block";
+                    }
+                    else {
+                        damageText = "";
+                    }
+                    b.getDamageLabel().setText(damageText);
+                    b.getDamageLabel().addAction(resultAction);
+                });
+            });
+        });
     }
 
 }

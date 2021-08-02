@@ -8,6 +8,7 @@ import ru.rdude.rpg.game.logic.entities.skills.Damage;
 import ru.rdude.rpg.game.logic.enums.ItemMainType;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.stats.Stats;
+import ru.rdude.rpg.game.visual.VisualBeing;
 
 import java.util.Set;
 
@@ -20,6 +21,7 @@ public final class EntityReceiver {
         }
         // receive
         if (damage.isHit()) {
+            VisualBeing.VISUAL_BEING_FINDER.find(target).ifPresent(vb -> vb.getHpBar().addDelayed(damage));
             target.stats().hp().decrease(damage.value());
         }
         // notify subscribers

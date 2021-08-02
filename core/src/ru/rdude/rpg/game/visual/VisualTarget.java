@@ -1,10 +1,13 @@
 package ru.rdude.rpg.game.visual;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import ru.rdude.rpg.game.ui.HpBar;
+import ru.rdude.rpg.game.ui.StmBar;
 
 public interface VisualTarget {
 
-    Label getDamageLabel();
+    DamageLabel getDamageLabel();
     Vector2 getCenter();
+    HpBar getHpBar();
+    StmBar getStmBar();
 }

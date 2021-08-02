@@ -7,20 +7,31 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.Align;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
+import ru.rdude.rpg.game.logic.entities.skills.Buff;
+import ru.rdude.rpg.game.logic.entities.skills.Damage;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.StatObserver;
 import ru.rdude.rpg.game.logic.stats.secondary.Hp;
+import ru.rdude.rpg.game.utils.Pair;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @JsonIgnoreType
 public class HpBar extends Group implements StatObserver {
 
-    private Hp hp;
+    private final Hp hp;
 
-    private ProgressBar progressBar;
-    private Label current;
-    private Label max;
-    private Label slash;
-    private HorizontalGroup horizontalLabelGroup;
+    private final ProgressBar progressBar;
+    private final Label current;
+    private final Label max;
+    private final Label slash;
+    private final HorizontalGroup horizontalLabelGroup;
+
+    private final List<Damage> delayedDamages = new ArrayList<>();
+    private final Map<Buff, Pair<Double, Double>> delayedBuffs = new HashMap<>();
 
 
 
@@ -54,16 +65,57 @@ public class HpBar extends Group implements StatObserver {
         update(hp.max());
     }
 
+    public void addDelayed(Damage damage) {
+        delayedDamages.add(damage);
+    }
+
+    public void addDelayed(Buff buff, double current, double max) {
+        delayedBuffs.put(buff, new Pair<>(current, max));
+    }
+
+    public void actDelayed(Damage damage) {
+        delayedDamages.remove(damage);
+        if (damage.isHit()) {
+            double value = Math.max(0, progressBar.getValue() - damage.value());
+            setCurrent(value);
+        }
+        delayedDamages.remove(damage);
+        noMoreDelayed();
+    }
+
+    public void actDelayed(Buff buff) {
+        setMax(delayedBuffs.get(buff).getSecond());
+        setCurrent(delayedBuffs.get(buff).getFirst());
+        delayedBuffs.remove(buff);
+        noMoreDelayed();
+    }
+
+    private void noMoreDelayed() {
+        if (delayedDamages.isEmpty() && delayedBuffs.isEmpty()) {
+            setMax(hp.maxValue());
+            setCurrent(hp.value());
+        }
+    }
+
+    private void setCurrent(double value) {
+        current.setText(String.valueOf((int) value));
+        progressBar.setValue((float) value);
+    }
+
+    private void setMax(double value) {
+        max.setText(String.valueOf((int) value));
+        progressBar.setRange(0, (float) value);
+    }
 
     @Override
     public void update(Stat stat) {
-        if (stat == hp) {
-            current.setText(String.valueOf((int) hp.value()));
-            progressBar.setValue((float) hp.value());
-        }
-        else if (stat == hp.max()) {
-            max.setText(String.valueOf((int) hp.max().value()));
-            progressBar.setRange(0, (float) hp.max().value());
+        if (delayedDamages.isEmpty() && delayedBuffs.isEmpty()) {
+            if (stat == hp) {
+                setCurrent(hp.value());
+            }
+            else if (stat == hp.max()) {
+                setMax(hp.maxValue());
+            }
         }
     }
 }

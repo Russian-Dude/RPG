@@ -22,7 +22,7 @@ import ru.rdude.rpg.game.ui.colors.EyesColor;
 import ru.rdude.rpg.game.ui.colors.HairColor;
 import ru.rdude.rpg.game.ui.colors.SkinColor;
 import ru.rdude.rpg.game.utils.Functions;
-import ru.rdude.rpg.game.visual.ParticleEffector;
+import ru.rdude.rpg.game.visual.DamageLabel;
 import ru.rdude.rpg.game.visual.VisualBeing;
 
 import static ru.rdude.rpg.game.ui.UiData.BIG_TEXT_STYLE;
@@ -49,7 +49,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Vi
     private final HorizontalGroup buttons;
     private final Label nameLabel;
     private final PlayerBuffsIcons buffsIcons;
-    private final Label damageLabel;
+    private final DamageLabel damageLabel;
 
     public PlayerVisual(Player player) {
         this(player, createAvatarFromData(((PlayerData) player.getEntityData())));
@@ -70,7 +70,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Vi
         nameLabel = new Label(player.getName(), DEFAULT_SKIN, BIG_TEXT_STYLE);
         nameLabel.setAlignment(Align.center);
         buffsIcons = new PlayerBuffsIcons(this);
-        damageLabel = new Label("", DEFAULT_SKIN, BIG_TEXT_STYLE);
+        damageLabel = new DamageLabel();
 
         // items
         backpackWindow = new BackpackWindow(player);
@@ -175,6 +175,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Vi
         topGroup.addActor(avatar);
         topGroup.addActor(buttons);
         topGroup.addActor(damageLabel);
+        damageLabel.setPosition(topGroup.getWidth() / 2, topGroup.getHeight() / 2);
         withoutNameGroup.addActor(topGroup);
         withoutNameGroup.addActor(hpBar);
         withoutNameGroup.addActor(stmBar);
@@ -229,7 +230,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Vi
     }
 
     @Override
-    public Label getDamageLabel() {
+    public DamageLabel getDamageLabel() {
         return damageLabel;
     }
 
@@ -238,6 +239,16 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Vi
         float x = avatar.getWidth() / 2f;
         float y = avatar.getHeight() / 2f;
         return avatar.localToStageCoordinates(new Vector2(x, y));
+    }
+
+    @Override
+    public HpBar getHpBar() {
+        return hpBar;
+    }
+
+    @Override
+    public StmBar getStmBar() {
+        return stmBar;
     }
 
     @Override

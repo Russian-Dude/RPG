@@ -5,17 +5,19 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import ru.rdude.rpg.game.logic.entities.beings.Monster;
+import ru.rdude.rpg.game.ui.HpBar;
+import ru.rdude.rpg.game.ui.StmBar;
 import ru.rdude.rpg.game.ui.UiData;
 
 public class MonsterVisual extends VerticalGroup implements VisualBeing<Monster>, VisualTarget {
 
     private final Monster monster;
-    private final Label damageLabel;
+    private final DamageLabel damageLabel;
 
     public MonsterVisual(Monster monster) {
         super();
         this.monster = monster;
-        damageLabel = new Label("", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+        damageLabel = new DamageLabel();
 
         Group group = new Group();
         group.addActor(damageLabel);
@@ -27,12 +29,24 @@ public class MonsterVisual extends VerticalGroup implements VisualBeing<Monster>
     }
 
     @Override
-    public Label getDamageLabel() {
+    public DamageLabel getDamageLabel() {
         return damageLabel;
     }
 
     @Override
     public Vector2 getCenter() {
+        return null;
+    }
+
+    @Override
+    public HpBar getHpBar() {
+        // TODO: 02.08.2021 get monster hp bar
+        return null;
+    }
+
+    @Override
+    public StmBar getStmBar() {
+        // TODO: 02.08.2021 get monster stm bar
         return null;
     }
 }
