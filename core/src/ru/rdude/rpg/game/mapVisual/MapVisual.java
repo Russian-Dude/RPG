@@ -3,22 +3,24 @@ package ru.rdude.rpg.game.mapVisual;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.renderers.HexagonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Disposable;
+import ru.rdude.rpg.game.logic.actions.IncrementAction;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
+import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.CellSide;
 import ru.rdude.rpg.game.logic.map.GameMap;
 import ru.rdude.rpg.game.logic.map.objects.City;
-import ru.rdude.rpg.game.utils.Pair;
 
 import java.util.*;
 
@@ -27,7 +29,7 @@ public class MapVisual extends Actor implements Disposable {
     private final OrthographicCamera camera;
 
     private final TiledMap map;
-    private final HexagonalTiledMapRenderer renderer;
+    private final MapRenderer renderer;
 
     private final GameMap gameMap;
 
@@ -37,17 +39,23 @@ public class MapVisual extends Actor implements Disposable {
     private final List<TiledMapTileLayer> roadLayers;
     private final TiledMapTileLayer pathLayer;
     private final TiledMapTileLayer pointLayer;
+    private final TiledMapTileLayer voidLayer;
+    private final TiledMapTileLayer monstersLayer;
 
     private final TiledMapTileLayer reliefLayerBehind;
     private final TiledMapTileLayer reliefLayerFront;
-    private final Map<Cell, Pair<TiledMapTile, TiledMapTile>> generatedReliefTiles = new HashMap<>();
 
-    private final TiledMapTileLayer monstersLayer;
-
+    private float[][] cellsOpacity;
 
     public MapVisual(OrthographicCamera camera, GameMap gameMap) {
         this.camera = camera;
         this.gameMap = gameMap;
+        this.cellsOpacity = new float[gameMap.getWidth()][gameMap.getHeight()];
+        for (int x = 0; x < gameMap.getWidth(); x++) {
+            for (int y = 0; y < gameMap.getHeight(); y++) {
+                cellsOpacity[x][y] = 0f;
+            }
+        }
         map = new TiledMap();
         MapLayers layers = map.getLayers();
 
@@ -58,13 +66,14 @@ public class MapVisual extends Actor implements Disposable {
         pathLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
         pointLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
         monstersLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
+        voidLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
 
         for (int x = 0; x < gameMap.getWidth(); x++) {
             for (int y = 0; y < gameMap.getHeight(); y++) {
                 Cell gameMapCell = gameMap.cell(x, y);
 
                 //biom
-                TiledMapTileLayer.Cell biomCell = new TiledMapTileLayer.Cell();
+                MapTileCell biomCell = new MapTileCell(x, y);
                 biomCell.setTile(MapTilesFactory.getBiomTile(gameMapCell));
                 biomLayer.setCell(x, y, biomCell);
 
@@ -90,23 +99,23 @@ public class MapVisual extends Actor implements Disposable {
                         if (roadLayers.size() < i + 1) {
                             roadLayers.add(new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT));
                         }
-                        TiledMapTileLayer.Cell roadCell = new TiledMapTileLayer.Cell();
+                        MapTileCell roadCell = new MapTileCell(x, y);
                         roadCell.setTile(tiles.get(i));
                         roadLayers.get(i).setCell(x, y, roadCell);
                     }
                 }
 
                 // void
-                TiledMapTileLayer.Cell voidCell = new TiledMapTileLayer.Cell();
-                TiledMapTileLayer.Cell emptyCell = new TiledMapTileLayer.Cell();
+                MapTileCell voidCell = new MapTileCell(x, y);
                 voidCell.setTile(MapTilesFactory.getVoid());
-                emptyCell.setTile(MapTilesFactory.getEmpty());
-                reliefLayerBehind.setCell(x, y, voidCell);
-                reliefLayerFront.setCell(x, y, emptyCell);
+                voidLayer.setCell(x, y, voidCell);
+
+                // relief
+                createReliefTileOn(gameMapCell);
 
                 // path
-                TiledMapTileLayer.Cell pathCell = new TiledMapTileLayer.Cell();
-                TiledMapTileLayer.Cell pointCell = new TiledMapTileLayer.Cell();
+                MapTileCell pathCell = new MapTileCell(x, y);
+                MapTileCell pointCell = new MapTileCell(x, y);
                 pathCell.setTile(MapTilesFactory.getEmpty());
                 pointCell.setTile(MapTilesFactory.getEmpty());
                 pathLayer.setCell(x, y, pathCell);
@@ -117,6 +126,7 @@ public class MapVisual extends Actor implements Disposable {
         // add layers to tilemap
         layers.add(biomLayer);
         roadLayers.forEach(layers::add);
+        layers.add(voidLayer);
         layers.add(reliefLayerBehind);
         layers.add(reliefLayerFront);
         layers.add(monstersLayer);
@@ -125,24 +135,24 @@ public class MapVisual extends Actor implements Disposable {
         setBounds(getX(), getY(), gameMap.getWidth() * 128, gameMap.getHeight() * 128);
         setTouchable(Touchable.enabled);
 
-        renderer = new HexagonalTiledMapRendererWithObjectsLayer(map);
+        renderer = new MapRenderer(map);
         this.setOrigin(0f, 0f);
     }
 
     // to let relief overlap void for better picture, void and relief is on the same layer.
     public void setVoidOnCell(Cell cell, boolean isVoid) {
+        final int x = cell.getX();
+        final int y = cell.getY();
         if (isVoid) {
-            reliefLayerBehind.getCell(cell.getX(), cell.getY()).setTile(MapTilesFactory.getVoid());
-            reliefLayerFront.getCell(cell.getX(), cell.getY()).setTile(MapTilesFactory.getEmpty());
+            cellsOpacity[x][y] = 0f;
         }
         else {
-            if (generatedReliefTiles.containsKey(cell)) {
-                reliefLayerBehind.getCell(cell.getX(), cell.getY()).setTile(generatedReliefTiles.get(cell).getFirst());
-                reliefLayerFront.getCell(cell.getX(), cell.getY()).setTile(generatedReliefTiles.get(cell).getSecond());
-            }
-            else {
-                createReliefTileOn(cell);
-            }
+            final IncrementAction incrementAction = Actions.action(IncrementAction.class);
+            incrementAction.setFrom(0f);
+            incrementAction.setTo(1f);
+            incrementAction.setDuration(0.2f);
+            incrementAction.setValueSetter(o -> cellsOpacity[x][y] = Math.max(cellsOpacity[x][y], o));
+            Game.getGameVisual().addAction(incrementAction);
         }
     }
 
@@ -164,13 +174,32 @@ public class MapVisual extends Actor implements Disposable {
         pointLayer.getCell(cell.getX(), cell.getY()).setTile(MapTilesFactory.getEmpty());
     }
 
+    public float getCellsOpacity(MapLayer layer, int x, int y) {
+        float opacity;
+        if (layer == voidLayer) {
+            final float otherOpacity = cellsOpacity[x][y];
+            opacity = 1f - otherOpacity;
+        }
+        else if (layer == pathLayer || layer == pointLayer) {
+            opacity = 1f;
+        }
+        else {
+            opacity = cellsOpacity[x][y];
+        }
+        return opacity;
+    }
+
     private void createReliefTileOn(Cell cell) {
+
+        MapTileCell frontCell = new MapTileCell(cell.getX(), cell.getY());
+        MapTileCell behindCell = new MapTileCell(cell.getX(), cell.getY());
+        reliefLayerFront.setCell(cell.getX(), cell.getY(), frontCell);
+        reliefLayerBehind.setCell(cell.getX(), cell.getY(), behindCell);
 
         if (cell.getObject() instanceof City) {
             TiledMapTile cityTile = MapTilesFactory.getCity();
             reliefLayerFront.getCell(cell.getX(), cell.getY()).setTile(cityTile);
             reliefLayerBehind.getCell(cell.getX(), cell.getY()).setTile(MapTilesFactory.getEmpty());
-            generatedReliefTiles.putIfAbsent(cell, new Pair<>(MapTilesFactory.getEmpty(), cityTile));
             return;
         }
 
@@ -178,7 +207,6 @@ public class MapVisual extends Actor implements Disposable {
         if (cell.getBiom() == Biom.WATER || cell.getRelief() == Relief.PLAIN) {
             TiledMapTile emptyTile = MapTilesFactory.getEmpty();
             reliefLayerBehind.getCell(cell.getX(), cell.getY()).setTile(emptyTile);
-            generatedReliefTiles.putIfAbsent(cell, new Pair<>(emptyTile, emptyTile));
             return;
         }
 
@@ -187,7 +215,6 @@ public class MapVisual extends Actor implements Disposable {
             TiledMapTile reliefTile = MapTilesFactory.getReliefTile(cell);
             reliefLayerFront.getCell(cell.getX(), cell.getY()).setTile(reliefTile);
             reliefLayerBehind.getCell(cell.getX(), cell.getY()).setTile(MapTilesFactory.getEmpty());
-            generatedReliefTiles.putIfAbsent(cell, new Pair<>(MapTilesFactory.getEmpty(), reliefTile));
             return;
         }
 
@@ -258,7 +285,6 @@ public class MapVisual extends Actor implements Disposable {
 
         reliefLayerFront.getCell(cell.getX(), cell.getY()).setTile(frontLayerTile);
         reliefLayerBehind.getCell(cell.getX(), cell.getY()).setTile(behindLayerTile);
-        generatedReliefTiles.putIfAbsent(cell, new Pair<>(behindLayerTile, frontLayerTile));
     }
 
     public Vector3 getCursorWorldPosition() {

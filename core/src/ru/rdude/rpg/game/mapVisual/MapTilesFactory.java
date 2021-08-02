@@ -100,8 +100,9 @@ public class MapTilesFactory {
         TextureAtlas.AtlasRegion region = pathAtlasRegions.stream()
                 .filter(atlasRegion -> atlasRegion.name.contains(directionFrom.name()) && atlasRegion.name.contains(directionTo.name()))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("There is no path image with directions: " + directionFrom + " to " + directionTo));
-        return getTileOrPutAndGet(region.name);
+                .orElse(null);
+                //.orElseThrow(() -> new IllegalArgumentException("There is no path image with directions: " + directionFrom + " to " + directionTo));
+        return getTileOrPutAndGet(region != null ? region.name : "EMPTY");
     }
 
     public static TiledMapTile getPathEndPoint() {

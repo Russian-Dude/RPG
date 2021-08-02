@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import ru.rdude.rpg.game.logic.entities.skills.SkillVisualTargeter;
 import ru.rdude.rpg.game.logic.game.Game;
@@ -26,6 +28,7 @@ public class GameVisual {
     private final Set<InputProcessor> savedGameProcessors = new HashSet<>();
     private boolean justOpenedMainMenu = true;
     private final SkillVisualTargeter skillVisualTargeter = new SkillVisualTargeter();
+    private final Actor actionsActor = new Actor();
 
     InputMultiplexer multiplexer = new InputMultiplexer();
 
@@ -160,7 +163,12 @@ public class GameVisual {
         return effectsStageBack;
     }
 
+    public void addAction(Action action) {
+        this.actionsActor.addAction(action);
+    }
+
     public void draw() {
+        final float deltaTime = Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             if (Game.getCurrentGame().getCurrentGameState() instanceof MainMenuGameState) {
                 backMenuStage();
@@ -176,21 +184,22 @@ public class GameVisual {
         }
         for (Stage stage : nonUiStages) {
             stage.draw();
-            stage.act(Gdx.graphics.getDeltaTime());
+            stage.act(deltaTime);
         }
         effectsStageBack.draw();
-        effectsStageBack.act(Gdx.graphics.getDeltaTime());
+        effectsStageBack.act(deltaTime);
         if (ui != null) {
             ui.draw();
-            ui.act(Gdx.graphics.getDeltaTime());
+            ui.act(deltaTime);
         }
         effectsStageFront.draw();
-        effectsStageFront.act(Gdx.graphics.getDeltaTime());
+        effectsStageFront.act(deltaTime);
         if (currentMainMenuStage != null) {
             currentMainMenuStage.draw();
-            currentMainMenuStage.act(Gdx.graphics.getDeltaTime());
+            currentMainMenuStage.act(deltaTime);
         }
         skillVisualTargeter.act();
-        Game.getCurrentGame().getSkillsSequencer().act(Gdx.graphics.getDeltaTime());
+        Game.getCurrentGame().getSkillsSequencer().act(deltaTime);
+        actionsActor.act(deltaTime);
     }
 }
