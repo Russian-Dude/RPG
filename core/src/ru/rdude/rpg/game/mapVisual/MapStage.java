@@ -28,6 +28,7 @@ public class MapStage extends Stage {
     private final Map gameStateMap;
     private final MapVisual mapVisual;
     private final PlayersOnMap players;
+    private final MonstersOnMap[][] monsters;
 
     private Cell selectedCell;
     private Queue<Cell> movingPath;
@@ -48,6 +49,7 @@ public class MapStage extends Stage {
         super(new FitViewport(map.getGameMap().getWidth() * VisualConstants.TILE_WIDTH, map.getGameMap().getHeight() * VisualConstants.TILE_HEIGHT));
         this.gameMap = map.getGameMap();
         this.gameStateMap = map;
+        this.monsters = new MonstersOnMap[map.getGameMap().getWidth()][map.getGameMap().getHeight()];
 
         // camera
         float w = Gdx.graphics.getWidth();
@@ -64,9 +66,17 @@ public class MapStage extends Stage {
 
         // map visual
         mapVisual = new MapVisual(camera, gameMap);
+        addActor(mapVisual);
+        // players on map
+        players = new PlayersOnMap(map.getPlayerPosition());
+        addActor(players);
         map.forEachCellProperties((cell, cellProperties) -> {
             if (cellProperties.isVisible()) {
                 mapVisual.setVoidOnCell(cell, false);
+                if (cellProperties.getMonsters() != null && !cellProperties.getMonsters().isEmpty()) {
+                    final MonstersOnMap monstersOnCell = createMonstersOnCell(cell, cellProperties.getMonsters());
+                    this.monsters[cell.getX()][cell.getY()] = monstersOnCell;
+                }
             }
             cell.getAroundCells(1).forEach(c -> pathFinder.changeConnections(c, c.getAroundCells(1).stream()
                     .filter(c2 -> Game.getCurrentGame().getGameMap().isCellVisible(c2)
@@ -74,10 +84,6 @@ public class MapStage extends Stage {
                             || c2.getWaterDepth() == WaterDepth.RIVER))
                     .collect(Collectors.toSet())));
         });
-        addActor(mapVisual);
-        // players on map
-        players = new PlayersOnMap(map.getPlayerPosition());
-        addActor(players);
 
         playerChangedPosition(map.getPlayerPosition(), map.getPlayerPosition());
         camera.position.set(players.getX(), players.getY(), 0);
@@ -98,12 +104,20 @@ public class MapStage extends Stage {
 
     public void playerChangedPosition(Cell oldPosition, Cell newPosition) {
         newPosition.getArea(2, true).forEach(c -> {
-            mapVisual.setVoidOnCell(c, false);
-            pathFinder.changeConnections(c, c.getAroundCells(1).stream()
-                    .filter(c2 -> Game.getCurrentGame().getGameMap().isCellVisible(c2)
-                            && (c2.getBiom() != Biom.WATER || c2.getWaterDepth() == WaterDepth.SMALL
-                            || c2.getWaterDepth() == WaterDepth.RIVER))
-                    .collect(Collectors.toSet()));
+            final Map gameMap = Game.getCurrentGame().getGameMap();
+            if (this.gameMap == gameMap.getGameMap()) {
+                mapVisual.setVoidOnCell(c, false);
+                final Map.MonstersOnCell monsters = gameMap.cellMonsters(c);
+                if (monsters != null && this.monsters[c.getX()][c.getY()] == null) {
+                    final MonstersOnMap monstersOnMap = createMonstersOnCell(c, monsters);
+                    this.monsters[c.getX()][c.getY()] = monstersOnMap;
+                }
+                pathFinder.changeConnections(c, c.getAroundCells(1).stream()
+                        .filter(c2 -> gameMap.isCellVisible(c2)
+                                && (c2.getBiom() != Biom.WATER || c2.getWaterDepth() == WaterDepth.SMALL
+                                || c2.getWaterDepth() == WaterDepth.RIVER))
+                        .collect(Collectors.toSet()));
+            }
         });
         if (oldPosition != null) {
             mapVisual.removePath(oldPosition);
@@ -111,7 +125,17 @@ public class MapStage extends Stage {
         }
     }
 
-    private void zoomTo (float newZoom, float duration){
+    private MonstersOnMap createMonstersOnCell(Cell cell, Map.MonstersOnCell monsters) {
+        final MonstersOnMap monstersOnMap = new MonstersOnMap(monsters);
+        addActor(monstersOnMap);
+        players.toFront();
+        monstersOnMap.setX((int) (cell.getX() * VisualConstants.TILE_WIDTH_0_75));
+        int offset = cell.getX() % 2 == 0 ? (int) VisualConstants.TILE_HEIGHT_HALF : 0;
+        monstersOnMap.setY(cell.getY() * VisualConstants.TILE_HEIGHT + offset);
+        return monstersOnMap;
+    }
+
+    private void zoomTo(float newZoom, float duration) {
         zoomOrigin = camera.zoom;
         zoomTarget = newZoom;
         timeToZoom = zoomDuration = duration;

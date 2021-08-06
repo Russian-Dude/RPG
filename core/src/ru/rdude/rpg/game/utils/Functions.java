@@ -28,7 +28,7 @@ public class Functions {
     }
 
     public static int random(int min, int max) {
-        return random.nextInt(max - min) + min;
+        return min == max ? min : random.nextInt(max - min) + min;
     }
 
     public static float random(float min, float max) {
@@ -40,7 +40,7 @@ public class Functions {
     }
 
     public static long random(long min, long max) {
-        return random.nextLong(min - max) + min;
+        return min == max ? min : random.nextLong(min - max) + min;
     }
 
     public static float random(float max) {

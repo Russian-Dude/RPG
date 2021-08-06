@@ -90,6 +90,7 @@ public class PlayersCreationStage extends Stage {
                 Game.getGameVisual().addStage(map.getMapStage());
                 Game.getGameVisual().setUi(new UIStage(playerVisuals.toArray(PlayerVisual[]::new)));
                 Game.getCurrentGame().getGameStateHolder().setGameState(map);
+                Game.getMonsterFactory().createMonstersOnMap(Game.getCurrentGame().getGameMap());
                 // TODO: 14.06.2021 remove this test
                 for (ItemData itemData : ItemData.getItems().values()) {
                     int c = itemData.isStackable() ? 30 : 1;

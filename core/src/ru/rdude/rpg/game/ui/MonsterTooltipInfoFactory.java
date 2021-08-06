@@ -4,9 +4,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import ru.rdude.rpg.game.logic.data.MonsterData;
 import ru.rdude.rpg.game.logic.enums.EntityReferenceInfo;
+import ru.rdude.rpg.game.logic.gameStates.Map;
+import ru.rdude.rpg.game.mapVisual.MonstersOnMap;
 import ru.rdude.rpg.game.utils.Functions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -112,5 +115,24 @@ final class MonsterTooltipInfoFactory {
         infoHolder.ignore(monsterData);
 
         return result;
+    }
+
+    public List<Actor> getOnMap(Map.MonstersOnCell monsters) {
+        int minLvl = Integer.MAX_VALUE;
+        int maxLvl = 0;
+        final HashMap<String, Integer> monstersCount = new HashMap<>();
+        for (Map.MonstersOnCell.Monster monster : monsters.getMonsters()) {
+            minLvl = Math.min(minLvl, monster.lvl);
+            maxLvl = Math.max(maxLvl, monster.lvl);
+            monstersCount.merge(MonsterData.getMonsterByGuid(monster.guid).getName(), 1, Integer::sum);
+        }
+        final String names = monstersCount.entrySet().stream()
+                .map(entry -> entry.getKey() + (entry.getValue() > 1 ? " (" + entry.getValue() + ")" : ""))
+                .collect(Collectors.joining(", "));
+        final Label namesLabel = new Label(names, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+        String levels = monsters.getMonsters().size() > 1 && minLvl != maxLvl ? "Levels " : "Level ";
+        levels += minLvl == maxLvl ? String.valueOf(minLvl) : minLvl + " - " + maxLvl;
+        final Label levelsLabel = new Label(levels, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+        return List.of(namesLabel, levelsLabel);
     }
 }

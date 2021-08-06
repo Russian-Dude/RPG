@@ -1,7 +1,11 @@
 package ru.rdude.rpg.game.logic.gameStates;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.data.io.GameMapFileLoader;
+import ru.rdude.rpg.game.logic.data.io.saves.CellsVisibilitySaveData;
+import ru.rdude.rpg.game.logic.data.io.saves.MonstersOnCellsSaveData;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.enums.GameState;
 import ru.rdude.rpg.game.logic.game.Game;
@@ -14,7 +18,7 @@ import ru.rdude.rpg.game.mapVisual.MapStage;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
-import java.util.*;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -25,7 +29,6 @@ public class Map extends GameStateBase {
 
     private final GameMap gameMap;
     private MapStage mapStage;
-    @JsonProperty
     private final CellProperties[][] cellProperties;
     private Cell playerPosition;
     private SubscribersManager<PlaceObserver> placePositionSubscribers = new SubscribersManager<>();
@@ -43,9 +46,29 @@ public class Map extends GameStateBase {
     // Json custom getters and setters
 
     @JsonCreator
-    private Map(@JsonProperty("gameMap") long gameMapGuid, @JsonProperty("cellProperties") CellProperties[][] properties) {
+    private Map(@JsonProperty("gameMap") long gameMapGuid,
+                @JsonProperty("cellsVisibility")CellsVisibilitySaveData cellsVisibilitySaveData,
+                @JsonProperty("monstersOnCells")MonstersOnCellsSaveData monstersOnCellsSaveData) {
+
         this.gameMap = GameMapFileLoader.load(Game.getMapFiles().get(gameMapGuid).mapFile);
-        this.cellProperties = properties;
+        cellProperties = new CellProperties[gameMap.getWidth()][gameMap.getHeight()];
+        for (int x = 0; x < gameMap.getWidth(); x++) {
+            for (int y = 0; y < gameMap.getHeight(); y++) {
+                cellProperties[x][y] = new CellProperties();
+            }
+        }
+        cellsVisibilitySaveData.acceptVisibilityTo(cellProperties);
+        monstersOnCellsSaveData.acceptMonstersTo(cellProperties);
+    }
+
+    @JsonProperty("cellsVisibility")
+    private CellsVisibilitySaveData getCellsVisibility() {
+        return new CellsVisibilitySaveData(cellProperties);
+    }
+
+    @JsonProperty("monstersOnCells")
+    private MonstersOnCellsSaveData getMonstersOnCells() {
+        return new MonstersOnCellsSaveData(cellProperties);
     }
 
     @JsonProperty("gameMap")
@@ -105,7 +128,7 @@ public class Map extends GameStateBase {
         return getCellProperties(cell).monsters != null;
     }
 
-    public Party cellMonsters(Cell cell) {
+    public MonstersOnCell cellMonsters(Cell cell) {
         return getCellProperties(cell).monsters;
     }
 
@@ -135,16 +158,46 @@ public class Map extends GameStateBase {
     }
 
 
-    public static class CellProperties {
 
-        Party monsters;
-        boolean visible = false;
+    public static class MonstersOnCell {
 
-        public Party getMonsters() {
+        private final List<Monster> monsters;
+
+        public MonstersOnCell(List<Monster> monsters) {
+            this.monsters = monsters;
+        }
+
+        public List<Monster> getMonsters() {
             return monsters;
         }
 
-        public void setMonsters(Party monsters) {
+        public boolean isEmpty() {
+            return monsters.isEmpty();
+        }
+
+        public static class Monster {
+
+            public final long guid;
+            public final int lvl;
+
+            public Monster(long guid, int lvl) {
+                this.guid = guid;
+                this.lvl = lvl;
+            }
+        }
+
+    }
+
+    public static class CellProperties {
+
+        MonstersOnCell monsters;
+        boolean visible = false;
+
+        public MonstersOnCell getMonsters() {
+            return monsters;
+        }
+
+        public void setMonsters(MonstersOnCell monsters) {
             this.monsters = monsters;
         }
 

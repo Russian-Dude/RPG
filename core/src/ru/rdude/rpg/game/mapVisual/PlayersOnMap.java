@@ -12,7 +12,6 @@ import java.util.Queue;
 
 public class PlayersOnMap extends Group {
 
-    // TODO: 20.04.2021 sprite should depend on player's party size
     private Sprite playersSprite = new Sprite(MapTilesFactory.getAvatar(Game.getCurrentGame().getCurrentPlayers().getBeings().size()));
     private boolean moving;
     private Cell position;

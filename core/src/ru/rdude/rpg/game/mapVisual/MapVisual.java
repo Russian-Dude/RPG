@@ -40,7 +40,6 @@ public class MapVisual extends Actor implements Disposable {
     private final TiledMapTileLayer pathLayer;
     private final TiledMapTileLayer pointLayer;
     private final TiledMapTileLayer voidLayer;
-    private final TiledMapTileLayer monstersLayer;
 
     private final TiledMapTileLayer reliefLayerBehind;
     private final TiledMapTileLayer reliefLayerFront;
@@ -65,7 +64,6 @@ public class MapVisual extends Actor implements Disposable {
         roadLayers = new ArrayList<>();
         pathLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
         pointLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
-        monstersLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
         voidLayer = new TiledMapTileLayer(gameMap.getWidth(), gameMap.getHeight(), VisualConstants.TILE_WIDTH, VisualConstants.TILE_HEIGHT);
 
         for (int x = 0; x < gameMap.getWidth(); x++) {
@@ -129,7 +127,6 @@ public class MapVisual extends Actor implements Disposable {
         layers.add(voidLayer);
         layers.add(reliefLayerBehind);
         layers.add(reliefLayerFront);
-        layers.add(monstersLayer);
         layers.add(pathLayer);
         layers.add(pointLayer);
         setBounds(getX(), getY(), gameMap.getWidth() * 128, gameMap.getHeight() * 128);

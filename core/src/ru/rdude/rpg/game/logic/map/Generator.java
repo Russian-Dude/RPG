@@ -835,13 +835,13 @@ public class Generator {
                     int howFarIsRoadOrCity = 5;
                     for (int i = 1; i < 5; i++) {
                         boolean hasRoadOrCity = cell.getAroundCells(i).stream()
-                                .anyMatch(point -> cell.getRoad() != null || cell.getObject() instanceof City);
+                                .anyMatch(point -> point.getRoad() != null || point.getObject() instanceof City);
                         if (hasRoadOrCity) {
                             howFarIsRoadOrCity = i;
                             break;
                         }
                     }
-                    lvl = Functions.random(10 * howFarIsRoadOrCity - 5, 10 * howFarIsRoadOrCity + 6);
+                    lvl = Functions.random(Math.max(10 * howFarIsRoadOrCity - 20, 1), 10 * howFarIsRoadOrCity + 6);
                 }
                 cell.setLvl(lvl);
             }

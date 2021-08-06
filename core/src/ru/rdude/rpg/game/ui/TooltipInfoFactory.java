@@ -6,6 +6,7 @@ import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.data.MonsterData;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.enums.EntityReferenceInfo;
+import ru.rdude.rpg.game.logic.gameStates.Map;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,10 @@ public final class TooltipInfoFactory {
         else {
             return new ArrayList<>();
         }
+    }
+
+    public List<Actor> get(Map.MonstersOnCell monsters) {
+        return monsterFactory.getOnMap(monsters);
     }
 
 }

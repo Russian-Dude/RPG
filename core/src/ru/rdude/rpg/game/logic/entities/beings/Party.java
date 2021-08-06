@@ -64,6 +64,12 @@ public class Party {
         return beings.stream();
     }
 
+    public <T> Stream<T> streamOnly(Class<T> cl) {
+        return beings.stream()
+                .filter(being -> being != null && cl.isAssignableFrom(being.getClass()))
+                .map(being -> (T) being);
+    }
+
     public LinkedList<Being<?>> getBeings() {
         return beings;
     }
