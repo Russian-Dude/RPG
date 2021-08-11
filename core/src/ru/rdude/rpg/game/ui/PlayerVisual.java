@@ -52,7 +52,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Vi
     private final DamageLabel damageLabel;
 
     public PlayerVisual(Player player) {
-        this(player, createAvatarFromData(((PlayerData) player.getEntityData())));
+        this(player, createAvatarFromData(player.getEntityData()));
     }
 
     public PlayerVisual(Player player, PlayerAvatar avatar) {

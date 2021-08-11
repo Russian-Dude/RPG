@@ -3,18 +3,29 @@ package ru.rdude.rpg.game.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.game.Game;
+import ru.rdude.rpg.game.logic.gameStates.Battle;
+import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
+import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UIStage extends Stage {
+@JsonIgnoreType
+public class UIStage extends Stage implements GameStateObserver {
 
     private final OrthographicCamera camera = new OrthographicCamera();
     private final Set<PlayerVisual> playerVisuals = new HashSet<>();
+    private final Button endTurnButton;
 
     public UIStage(PlayerVisual... playerVisuals) {
         super(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
@@ -35,12 +46,19 @@ public class UIStage extends Stage {
         Game.getCurrentGame().getItemsDragAndDrop().addRemoverArea(itemRemoverArea);
 
         // ui elements
+        // players visuals
         addActor(new PlayersVisualBottom(playerVisuals));
+        // logger
         LoggerVisual loggerVisual = new LoggerVisual();
         addActor(loggerVisual);
+        // time and place
         TimeAndPlaceUi timeAndPlaceUi = new TimeAndPlaceUi();
         addActor(timeAndPlaceUi);
-        timeAndPlaceUi.setPosition(5f, Gdx.graphics.getHeight() - timeAndPlaceUi.getHeight() - 25f);
+        timeAndPlaceUi.setPosition(5f, Gdx.graphics.getHeight() - timeAndPlaceUi.getHeight() - 5f);
+        // end turn button
+        endTurnButton = new EndTurnButton();
+        addActor(endTurnButton);
+        endTurnButton.setPosition(Gdx.graphics.getWidth() - endTurnButton.getWidth() - 25f, Gdx.graphics.getHeight() - endTurnButton.getHeight() - 25f);
     }
 
     public boolean isHit() {
@@ -56,5 +74,10 @@ public class UIStage extends Stage {
     public void draw() {
         super.draw();
         camera.update();
+    }
+
+    @Override
+    public void update(GameStateBase oldValue, GameStateBase newValue) {
+        endTurnButton.setVisible(newValue instanceof Battle);
     }
 }

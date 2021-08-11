@@ -1,8 +1,11 @@
 package ru.rdude.rpg.game.logic.time;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
+import ru.rdude.rpg.game.logic.enums.GameState;
+import ru.rdude.rpg.game.logic.game.Game;
+import ru.rdude.rpg.game.logic.gameStates.Battle;
+import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
+import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
@@ -10,7 +13,6 @@ import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class TimeManager implements TurnChangeObserver {
 
-    @JsonIgnore
     private final SubscribersManager<TimeObserver> timeObservers;
     private final SubscribersManager<TimeChangeObserver> timeChangeObservers;
 
@@ -20,10 +22,18 @@ public class TimeManager implements TurnChangeObserver {
     private int month = 1;
     private int year = 1;
 
+        @JsonCreator
+    private TimeManager(
+            @JsonProperty("timeObservers") SubscribersManager<TimeObserver> timeObservers,
+            @JsonProperty("timeChangeObservers") SubscribersManager<TimeChangeObserver> timeChangeObservers) {
+        this.timeObservers = timeObservers;
+        this.timeChangeObservers = timeChangeObservers;
+    }
 
-    public TimeManager() {
+    public TimeManager(TurnsManager turnsManager) {
         timeChangeObservers = new SubscribersManager<>();
         timeObservers = new SubscribersManager<>();
+        turnsManager.subscribe(this);
     }
 
     public String stringTime() {

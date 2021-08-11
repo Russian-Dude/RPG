@@ -95,7 +95,7 @@ public class MapRenderer extends BatchTiledMapRenderer {
     @Override
     public void renderTileLayer(TiledMapTileLayer layer) {
         final Color batchColor = batch.getColor();
-        MapVisual mapVisual = Game.getCurrentGame().getGameMap().getMapStage().getMapVisual();
+        MapVisual mapVisual = Game.getCurrentGame().getGameMap().getStage().getMapVisual();
 
         final int layerWidth = layer.getWidth();
         final int layerHeight = layer.getHeight();
@@ -169,7 +169,7 @@ public class MapRenderer extends BatchTiledMapRenderer {
      */
     private void renderCell(final TiledMapTileLayer.Cell cell, float x, float y, final Color batchColor, MapLayer layer) {
         if (cell instanceof MapTileCell) {
-            final float opacity = Game.getCurrentGame().getGameMap().getMapStage().getMapVisual().getCellsOpacity(layer, ((MapTileCell) cell).x, ((MapTileCell) cell).y);
+            final float opacity = Game.getCurrentGame().getGameMap().getStage().getMapVisual().getCellsOpacity(layer, ((MapTileCell) cell).x, ((MapTileCell) cell).y);
             final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, opacity);
             final TiledMapTile tile = cell.getTile();
             if (tile != null) {

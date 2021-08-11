@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.actions;
 
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
@@ -34,6 +35,16 @@ public class SkillsSequencer extends Actor {
         }
         else {
             currentSequence.addAction(Game.getSkillAnimator().action(skillResults));
+        }
+    }
+
+    public void add(Action action) {
+        if (currentSequence != null && currentSequence.getActor() != null) {
+            currentSequence.addAction(action);
+        }
+        else {
+            currentSequence = Actions.sequence(action);
+            addAction(currentSequence);
         }
     }
 }

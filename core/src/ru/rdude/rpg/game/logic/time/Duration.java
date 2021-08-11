@@ -3,6 +3,7 @@ package ru.rdude.rpg.game.logic.time;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
@@ -21,16 +22,22 @@ public class Duration implements TimeChangeObserver, TurnChangeObserver {
 
     protected Duration() { }
 
-    public Duration(TimeManager timeManager, DurationType type, Double value) {
+    public Duration(DurationType type, Double value) {
         observers = new SubscribersManager<>();
-        timeManager.subscribe(this);
+        if (type == DurationType.MINUTES) {
+            Game.getCurrentGame().getTimeManager().subscribe(this);
+        }
+        else if (type == DurationType.TURNS) {
+            Game.getCurrentGame().getTurnsManager().subscribe(this);
+        }
         if (type == DurationType.MINUTES) minutes = value;
         else if (type == DurationType.TURNS) turns = value;
     }
 
-    public Duration(TimeManager timeManager, Double minutes, Double turns) {
+    public Duration(Double minutes, Double turns) {
         observers = new SubscribersManager<>();
-        timeManager.subscribe(this);
+        Game.getCurrentGame().getTimeManager().subscribe(this);
+        Game.getCurrentGame().getTurnsManager().subscribe(this);
         this.minutes = minutes;
         this.turns = turns;
     }
@@ -70,6 +77,10 @@ public class Duration implements TimeChangeObserver, TurnChangeObserver {
     protected void checkDurationEnds() {
         boolean ends = (turns == null || turns < 0) && (minutes == null || minutes < 0);
         notifySubscribers(ends);
+        if (ends) {
+            Game.getCurrentGame().getTimeManager().unsubscribe(this);
+            Game.getCurrentGame().getTurnsManager().unsubscribe(this);
+        }
     }
 
     public void subscribe(DurationObserver observer) { observers.subscribe(observer); }

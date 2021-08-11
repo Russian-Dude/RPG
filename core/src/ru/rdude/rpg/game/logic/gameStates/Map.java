@@ -88,16 +88,15 @@ public class Map extends GameStateBase {
 
     ///////////////////////////////////
 
-    public MapStage createStage() {
-        this.mapStage = new MapStage(this);
-        return this.mapStage;
-    }
-
     public GameMap getGameMap() {
         return gameMap;
     }
 
-    public MapStage getMapStage() {
+    @Override
+    public MapStage getStage() {
+        if (mapStage == null) {
+            mapStage = new MapStage(this);
+        }
         return mapStage;
     }
 

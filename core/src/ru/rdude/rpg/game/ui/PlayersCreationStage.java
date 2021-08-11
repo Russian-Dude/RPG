@@ -20,7 +20,9 @@ import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PlayersCreationStage extends Stage {
 
@@ -71,34 +73,11 @@ public class PlayersCreationStage extends Stage {
         startGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Game.getGameVisual().clearMainMenus();
-                Map map = Game.getCurrentGame().getGameMap();
-                map.placePlayerOnStartPosition();
-                List<PlayerVisual> playerVisuals = new ArrayList<>();
-                List<Player> players = new ArrayList<>();
-                playersList.getNodes().forEach(el -> {
-                    PlayerAvatar avatar = el.getPlayerCreationVisual().getAvatar();
-                    el.getPlayerCreationVisual().defaultAvatarSize();
-                    Player player = el.getPlayerCreationVisual().getPlayer();
-                    players.add(player);
-                    String name = el.getPlayerCreationVisual().getNameTextField().getText();
-                    player.setName(name.isBlank() ? "Default Player Name" : name);
-                    playerVisuals.add(new PlayerVisual(player, avatar));
-                });
-                Game.getCurrentGame().setCurrentPlayers(new Party(players));
-                map.createStage();
-                Game.getGameVisual().addStage(map.getMapStage());
-                Game.getGameVisual().setUi(new UIStage(playerVisuals.toArray(PlayerVisual[]::new)));
-                Game.getCurrentGame().getGameStateHolder().setGameState(map);
-                Game.getMonsterFactory().createMonstersOnMap(Game.getCurrentGame().getGameMap());
-                // TODO: 14.06.2021 remove this test
-                for (ItemData itemData : ItemData.getItems().values()) {
-                    int c = itemData.isStackable() ? 30 : 1;
-                    for (int i = 0; i < c; i++) {
-                        Game.getCurrentGame().getCurrentPlayers().getBeings().get(0)
-                                .receive(new Item(itemData));
-                    }
-                }
+                List<Player> players = Arrays.stream(playersList.getNodes().toArray(PlayerCreationElement.class))
+                        .map(PlayerCreationElement::getPlayer)
+                        .collect(Collectors.toList());
+                Game.getGameStateSwitcher().setCreatedPlayers(players);
+                Game.getGameStateSwitcher().startNewGame();
             }
         });
         rightTable.add(startGameButton);

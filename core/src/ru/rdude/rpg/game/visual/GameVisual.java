@@ -29,6 +29,7 @@ public class GameVisual {
     private boolean justOpenedMainMenu = true;
     private final SkillVisualTargeter skillVisualTargeter = new SkillVisualTargeter();
     private final Actor actionsActor = new Actor();
+    private GameStateStage currentGameStateStage;
 
     InputMultiplexer multiplexer = new InputMultiplexer();
 
@@ -42,6 +43,11 @@ public class GameVisual {
         previousMainMenuStages.clear();
         savedGameProcessors.clear();
         currentMainMenuStage = null;
+    }
+
+    public void clearNonUiStages() {
+        nonUiStages.forEach(multiplexer::removeProcessor);
+        nonUiStages.clear();
     }
 
     public UIStage getUi() {
@@ -59,9 +65,16 @@ public class GameVisual {
         }
     }
 
+    public GameStateStage getCurrentGameStateStage() {
+        return currentGameStateStage;
+    }
+
     public void addStage(Stage stage) {
         if (stage == null) {
             throw new NullPointerException("Stage can not be null");
+        }
+        if (stage instanceof GameStateStage) {
+            currentGameStateStage = (GameStateStage) stage;
         }
         nonUiStages.add(stage);
         multiplexer.addProcessor(stage);
@@ -71,8 +84,19 @@ public class GameVisual {
         if (stage == null) {
             throw new NullPointerException("Stage can not be null");
         }
+        if (stage instanceof GameStateStage) {
+            currentGameStateStage = (GameStateStage) stage;
+        }
         nonUiStages.add(index, stage);
         multiplexer.addProcessor(stage);
+    }
+
+    public void removeStage(Stage stage) {
+        if (stage == null) {
+            throw new NullPointerException("Stage can not be null");
+        }
+        nonUiStages.remove(stage);
+        multiplexer.removeProcessor(stage);
     }
 
     public void setMenuStage(Stage stage) {

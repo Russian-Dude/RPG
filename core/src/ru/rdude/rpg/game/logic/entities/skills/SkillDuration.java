@@ -21,8 +21,8 @@ public class SkillDuration extends Duration implements BeingActionObserver {
 
     protected SkillDuration() { }
 
-    public SkillDuration(TimeManager timeManager, Double minutes, Double turns, Double hitsReceived, Double hitsMade, Double damageReceived, Double damageMade) {
-        super(timeManager, minutes, turns);
+    public SkillDuration(Double minutes, Double turns, Double hitsReceived, Double hitsMade, Double damageReceived, Double damageMade) {
+        super(minutes, turns);
         this.hitsReceived = hitsReceived;
         this.hitsMade = hitsMade;
         this.damageReceived = damageReceived;

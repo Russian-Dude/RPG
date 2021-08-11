@@ -67,7 +67,7 @@ public class MapSelectionStage extends Stage {
         selectButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Game.getCurrentGame().setGameMap(new Map(GameMapFileLoader.load(mapList.getSelected().mapFile)));
+                Game.getGameStateSwitcher().setSelectedMap(mapList.getSelected());
                 Game.getGameVisual().setMenuStage(PlayersCreationStage.getInstance());
             }
         });

@@ -30,6 +30,8 @@ public class Cast implements TurnChangeObserver, TimeChangeObserver {
         this.target = target;
         this.required = skillData.getConcentrationReq();
         this.current = caster.stats().concentrationValue();
+        Game.getCurrentGame().getTimeManager().subscribe(this);
+        Game.getCurrentGame().getTurnsManager().subscribe(this);
     }
 
     @JsonProperty("skillData")
@@ -57,7 +59,7 @@ public class Cast implements TurnChangeObserver, TimeChangeObserver {
             if (current >= required) {
 
             }
-            subscribers.notifySubscribers(castObserver -> {}); // TODO: 30.06.2021 notify cast observers
+            subscribers.notifySubscribers(castObserver -> {}); // TODO: 30.06.2021 notify cast observers don't forget to unsubscribe THIS
         }
     }
 
@@ -67,6 +69,6 @@ public class Cast implements TurnChangeObserver, TimeChangeObserver {
         if (current >= required) {
 
         }
-        subscribers.notifySubscribers(castObserver -> {}); // TODO: 30.06.2021 notify cast observers
+        subscribers.notifySubscribers(castObserver -> {}); // TODO: 30.06.2021 notify cast observers dont't forget to unsubscribe THIS
     }
 }

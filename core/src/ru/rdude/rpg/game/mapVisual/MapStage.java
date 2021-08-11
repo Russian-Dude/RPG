@@ -15,13 +15,13 @@ import ru.rdude.rpg.game.logic.map.GameMap;
 import ru.rdude.rpg.game.logic.map.aStarImpl.MapMovingScorer;
 import ru.rdude.rpg.game.logic.map.aStarImpl.MapPathFinder;
 import ru.rdude.rpg.game.settings.GameSettings;
+import ru.rdude.rpg.game.visual.GameStateStage;
+import ru.rdude.rpg.game.visual.VisualBeing;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class MapStage extends Stage {
+public class MapStage extends Stage implements GameStateStage {
 
     private final OrthographicCamera camera = new OrthographicCamera();
     private final GameMap gameMap;
@@ -122,6 +122,10 @@ public class MapStage extends Stage {
         if (oldPosition != null) {
             mapVisual.removePath(oldPosition);
             mapVisual.removePath(newPosition);
+        }
+        final Map.MonstersOnCell monsters = Game.getCurrentGame().getGameMap().getCellProperties(newPosition).getMonsters();
+        if (monsters != null && !monsters.isEmpty()) {
+            Game.getGameStateSwitcher().switchToBattle(monsters, newPosition);
         }
     }
 
@@ -243,4 +247,8 @@ public class MapStage extends Stage {
         }
     }
 
+    @Override
+    public List<VisualBeing<?>> getVisualBeings() {
+        return new ArrayList<>(Game.getGameVisual().getUi().getPlayerVisuals());
+    }
 }

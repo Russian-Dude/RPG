@@ -53,6 +53,7 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
                 entityData.getActsEveryTurn() : null;
         if (!skillData.isPermanent()) {
             Game.getCurrentGame().getTimeManager().subscribe(this);
+            Game.getCurrentGame().getTurnsManager().subscribe(this);
             duration = createDuration();
             duration.subscribe(this);
         }
@@ -67,7 +68,6 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
 
     private SkillDuration createDuration() {
         SkillParser skillParser = Game.getSkillParser();
-        TimeManager timeManager = Game.getCurrentGame().getTimeManager();
         Double turns = parsableString(entityData.getDurationInTurns()) ?
                 skillParser.parse(entityData.getDurationInTurns(), caster, target) : null;
         Double minutes = parsableString(entityData.getDurationInMinutes()) ?
@@ -80,7 +80,7 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
                 skillParser.parse(entityData.getDamageReceived(), caster, target) : null;
         Double damageMade = parsableString(entityData.getDamageMade()) ?
                 skillParser.parse(entityData.getDamageMade(), caster, target) : null;
-        return new SkillDuration(timeManager, minutes, turns, hitsReceived, hitsMade, damageReceived, damageMade);
+        return new SkillDuration(minutes, turns, hitsReceived, hitsMade, damageReceived, damageMade);
     }
 
     public void updateDuration() {
@@ -113,6 +113,7 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
 
     public void remove() {
         Game.getCurrentGame().getTimeManager().unsubscribe(this);
+        Game.getCurrentGame().getTurnsManager().unsubscribe(this);
         target.unsubscribe(this);
         duration.unsubscribe(this);
         notifySubscribers(true);

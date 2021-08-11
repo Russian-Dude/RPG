@@ -5,6 +5,9 @@ import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.Point;
 import ru.rdude.rpg.game.logic.stats.Bonus;
+import ru.rdude.rpg.game.logic.stats.primary.Lvl;
+import ru.rdude.rpg.game.logic.stats.secondary.Hp;
+import ru.rdude.rpg.game.logic.stats.secondary.Stm;
 import ru.rdude.rpg.game.utils.Functions;
 
 import java.util.ArrayList;
@@ -13,27 +16,32 @@ import java.util.stream.Collectors;
 
 public final class MonsterFactory {
 
-    public Monster createMonster(Map.MonstersOnCell.Monster monster) {
-        // TODO: 06.08.2021 create actual monster
-        /*
-        Monster monster = new Monster(data);
+    public Monster createMonster(Map.MonstersOnCell.Monster monsterOnCell) {
+        Monster monster = new Monster(MonsterData.getMonsterByGuid(monsterOnCell.guid));
+        int lvl = monsterOnCell.lvl;
         // if there is no need to calculate stats based on level
-        if (monster.stats.lvl().value() == level) {
+        if (monster.stats.lvl().value() == lvl) {
             return monster;
         }
         // calculate stats
         double mainLvl = monster.stats.lvlValue();
-        monster.stats.lvl().set(level);
+        monster.stats.lvl().set(lvl);
         monster.stats.forEachWithNestedStats(stat -> {
-            double bonus = stat.getBuffValue(Bonus.class);
-            if (bonus != 0) {
-                double bonusPerLvl = bonus / mainLvl;
-                stat.setBuffValue(Bonus.class, bonusPerLvl * level);
+            if (!(stat instanceof Lvl)) {
+                double bonus = stat.getBuffValue(Bonus.class);
+                if (bonus != 0) {
+                    double bonusPerLvl = bonus / mainLvl;
+                    stat.setBuffValue(Bonus.class, bonusPerLvl * lvl);
+                    if (stat instanceof Hp.Max) {
+                        monster.stats.hp().set(stat.value());
+                    }
+                    else if (stat instanceof Stm.Max) {
+                        monster.stats.stm().set(stat.value());
+                    }
+                }
             }
         });
         return monster;
-         */
-        return null;
     }
 
     public Map.MonstersOnCell.Monster createMonsterOnCell(int level, MonsterData data) {
@@ -41,8 +49,9 @@ public final class MonsterFactory {
     }
 
     public Party createParty(Map.MonstersOnCell monsters) {
-        // TODO: 06.08.2021 create party when battle starts
-        return null;
+        return monsters.getMonsters().stream()
+                .map(this::createMonster)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Party::new));
     }
 
     public Map.MonstersOnCell createMonstersOnCell(Cell cell) {

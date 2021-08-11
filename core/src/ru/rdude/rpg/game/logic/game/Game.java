@@ -11,8 +11,10 @@ import ru.rdude.rpg.game.logic.entities.items.ItemUser;
 import ru.rdude.rpg.game.logic.entities.skills.*;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
+import ru.rdude.rpg.game.logic.gameStates.GameStateSwitcher;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.time.TimeManager;
+import ru.rdude.rpg.game.logic.time.TurnsManager;
 import ru.rdude.rpg.game.ui.*;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.visual.GameVisual;
@@ -35,6 +37,7 @@ public class Game {
     @JsonIgnore
     private final SkillsSequencer skillsSequencer;
     private TimeManager timeManager;
+    private TurnsManager turnsManager;
     private final GameStateHolder gameStateHolder;
     private Map gameMap;
     private Party currentPlayers;
@@ -56,6 +59,7 @@ public class Game {
     private static final AssetManager assetManager = new AssetManager();
     private static final ParticleEffectsPools particleEffectsPool = new ParticleEffectsPools();
     private static final SkillAnimator skillAnimator = new SkillAnimator();
+    private static final GameStateSwitcher gameStateSwitcher = new GameStateSwitcher();
 
     // io
     private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
@@ -75,7 +79,8 @@ public class Game {
         this.itemsDragAndDrop = new ItemDragAndDroper();
         this.gameLogger = new GameLogger();
         this.gameStateHolder = new GameStateHolder();
-        this.timeManager = new TimeManager();
+        this.turnsManager = new TurnsManager();
+        this.timeManager = new TimeManager(turnsManager);
         this.skillsSequencer = new SkillsSequencer();
     }
 
@@ -136,6 +141,10 @@ public class Game {
         currentGameObservers.subscribe(subscriber);
     }
 
+    public static void unsubscribe(CurrentGameObserver subscriber) {
+        currentGameObservers.unsubscribe(subscriber);
+    }
+
     public static CustomObjectMapper getCustomObjectMapper() {
         return customObjectMapper;
     }
@@ -180,12 +189,20 @@ public class Game {
         return skillAnimator;
     }
 
+    public static GameStateSwitcher getGameStateSwitcher() {
+        return gameStateSwitcher;
+    }
+
     public ItemDragAndDroper getItemsDragAndDrop() {
         return itemsDragAndDrop;
     }
 
     public TimeManager getTimeManager() {
         return timeManager;
+    }
+
+    public TurnsManager getTurnsManager() {
+        return turnsManager;
     }
 
     public GameStateHolder getGameStateHolder() {

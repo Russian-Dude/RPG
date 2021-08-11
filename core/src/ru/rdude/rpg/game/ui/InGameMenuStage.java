@@ -63,10 +63,7 @@ public class InGameMenuStage extends Stage {
         quitToMainMenuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Game.getGameVisual().backMenuStage();
-                Game.getGameVisual().setJustOpenedMainMenu(true);
-                Game.getGameVisual().goToMainMenu();
-                Game.initNewGame();
+                Game.getGameStateSwitcher().switchToMainMenu();
             }
         });
 
