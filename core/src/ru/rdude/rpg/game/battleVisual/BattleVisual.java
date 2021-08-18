@@ -2,9 +2,7 @@ package ru.rdude.rpg.game.battleVisual;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
@@ -13,8 +11,11 @@ import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Battle;
+import ru.rdude.rpg.game.logic.gameStates.BattleAction;
+import ru.rdude.rpg.game.logic.gameStates.BattleObserver;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.time.TimeManager;
+import ru.rdude.rpg.game.ui.BattleVictoryWindow;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.visual.GameStateStage;
 import ru.rdude.rpg.game.visual.MonsterVisual;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @JsonIgnoreType
-public class BattleVisual extends Stage implements GameStateStage {
+public class BattleVisual extends Stage implements GameStateStage, BattleObserver {
 
     private Cell cell;
     private Battle battle;
@@ -38,6 +39,7 @@ public class BattleVisual extends Stage implements GameStateStage {
         super();
         this.cell = cell;
         this.battle = battle;
+        battle.subscribe(this);
         final Table monstersTable = new Table();
         final float groundHeight = Gdx.graphics.getHeight() / 1.5f;
         final Image ground = Game.getImageFactory().getGroundImage(cell);
@@ -117,5 +119,15 @@ public class BattleVisual extends Stage implements GameStateStage {
                 monsterVisuals)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void update(BattleAction battleAction) {
+        if (battleAction == BattleAction.WIN) {
+            final BattleVictoryWindow victoryWindow = Game.getGameVisual().getUi().getBattleVictoryWindow();
+            victoryWindow.setItemsReward(battle.createItemsReward());
+            victoryWindow.setExpRewards(battleAction.lastExpRewards);
+            victoryWindow.setVisible(true);
+        }
     }
 }

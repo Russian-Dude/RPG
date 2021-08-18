@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.visual;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.*;
+import ru.rdude.rpg.game.logic.entities.beings.Monster;
 import ru.rdude.rpg.game.logic.entities.skills.SkillResult;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.ui.EffectsStage;
@@ -99,6 +100,9 @@ public class SkillAnimator {
         }
         sequenceAction.addAction(createDelayedBarsAction(skillResult));
         sequenceAction.addAction(createDamageLabelAction(skillResult));
+        if (skillResult.getTarget() instanceof Monster && !skillResult.getTarget().isAlive() ) {
+            VisualBeing.VISUAL_BEING_FINDER.find(skillResult.getTarget()).ifPresent(vis -> sequenceAction.addAction(createDisappearMonsterAction((MonsterVisual) vis)));
+        }
         return sequenceAction;
     }
 
@@ -234,6 +238,12 @@ public class SkillAnimator {
                 });
             });
         });
+    }
+
+    private Action createDisappearMonsterAction(MonsterVisual monsterVisual) {
+        final AlphaAction alphaAction = Actions.fadeOut(0.5f);
+        alphaAction.setTarget(monsterVisual);
+        return Actions.sequence(alphaAction, Actions.run(monsterVisual::remove));
     }
 
 }

@@ -63,6 +63,7 @@ public class GameStateSwitcher {
             Game.getGameVisual().clear();
             Game game = Game.getGameLoader().load(saveFile);
             Game.setCurrentGame(game);
+            Game.getCurrentGame().getGameMap().getStage(); // to load map stage even if is not map currently
             Game.getGameVisual().addStage((Stage) Game.getCurrentGame().getCurrentGameState().getStage());
             Game.getGameVisual().setUi(new UIStage(game.getCurrentPlayers().getBeings().stream()
                     .filter(being -> being instanceof Player)
@@ -90,6 +91,8 @@ public class GameStateSwitcher {
 
     public void switchToMap() {
         Game.getCurrentGame().getGameStateHolder().setGameState(Game.getCurrentGame().getGameMap());
+        Game.getGameVisual().clearNonUiStages();
+        Game.getGameVisual().addStage(Game.getCurrentGame().getGameMap().getStage());
     }
 
 }

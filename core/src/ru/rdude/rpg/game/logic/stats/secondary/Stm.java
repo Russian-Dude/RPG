@@ -3,12 +3,13 @@ package ru.rdude.rpg.game.logic.stats.secondary;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
+import ru.rdude.rpg.game.logic.stats.RoundStat;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.primary.*;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 @JsonPolymorphicSubType("stm")
-public class Stm extends Stat implements Calculatable {
+public class Stm extends Stat implements Calculatable, RoundStat {
 
     private boolean calculatable;
     @JsonIdentityReference(alwaysAsId = true)
@@ -143,7 +144,7 @@ public class Stm extends Stat implements Calculatable {
 
 
     @JsonPolymorphicSubType("stmMax")
-    public static class Max extends Stat implements Calculatable {
+    public static class Max extends Stat implements Calculatable, RoundStat {
 
         @JsonIdentityReference(alwaysAsId = true)
         private Stm stm;
@@ -193,7 +194,7 @@ public class Stm extends Stat implements Calculatable {
     }
 
     @JsonPolymorphicSubType("stmRecovery")
-    public static class Recovery extends Stat implements Calculatable {
+    public static class Recovery extends Stat implements Calculatable, RoundStat {
 
         @JsonIdentityReference(alwaysAsId = true)
         private Stm stm;
@@ -224,7 +225,7 @@ public class Stm extends Stat implements Calculatable {
     }
 
     @JsonPolymorphicSubType("stmPerHit")
-    public static class PerHit extends Stat implements Calculatable {
+    public static class PerHit extends Stat implements Calculatable, RoundStat {
 
         @JsonIdentityReference(alwaysAsId = true)
         private Stm stm;

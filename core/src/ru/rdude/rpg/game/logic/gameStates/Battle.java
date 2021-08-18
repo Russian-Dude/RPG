@@ -4,24 +4,30 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.fasterxml.jackson.annotation.*;
 import ru.rdude.rpg.game.battleVisual.BattleVisual;
+import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.data.MonsterData;
 import ru.rdude.rpg.game.logic.data.SkillData;
-import ru.rdude.rpg.game.logic.entities.beings.Being;
-import ru.rdude.rpg.game.logic.entities.beings.Monster;
-import ru.rdude.rpg.game.logic.entities.beings.Party;
+import ru.rdude.rpg.game.logic.entities.beings.*;
+import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.enums.GameState;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.time.TurnChangeObserver;
 import ru.rdude.rpg.game.utils.Functions;
+import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 import ru.rdude.rpg.game.visual.GameStateStage;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @JsonPolymorphicSubType("battle")
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
-public class Battle extends GameStateBase implements TurnChangeObserver, GameStateObserver {
+public class Battle extends GameStateBase implements TurnChangeObserver, BeingActionObserver {
 
     @JsonIgnore private BattleVisual battleStage;
+    private SubscribersManager<BattleObserver> subscribers;
     private final Party playerSide;
     private int cellX;
     private int cellY;
@@ -40,8 +46,10 @@ public class Battle extends GameStateBase implements TurnChangeObserver, GameSta
         this.enemySide = enemySide;
         this.cellX = cell.getX();
         this.cellY = cell.getY();
+        this.subscribers = new SubscribersManager<>();
         Game.getCurrentGame().getTurnsManager().subscribe(this);
-        Game.getCurrentGame().getGameStateHolder().subscribe(this);
+        playerSide.getBeings().forEach(being -> being.subscribe(this));
+        enemySide.getBeings().forEach(being -> being.subscribe(this));
     }
 
     public Party getEnemySide() {
@@ -69,7 +77,11 @@ public class Battle extends GameStateBase implements TurnChangeObserver, GameSta
         // switch side:
         playersTurn = !playersTurn;
         if (!playersTurn) {
+            playerSide.forEach(being -> being.setReady(false));
             aiTurn();
+        }
+        else {
+            playerSide.forEach(being -> being.setReady(true));
         }
     }
 
@@ -86,14 +98,6 @@ public class Battle extends GameStateBase implements TurnChangeObserver, GameSta
         return battleStage;
     }
 
-    @Override
-    public void update(GameStateBase oldValue, GameStateBase newValue) {
-        if (newValue != this) {
-            Game.getCurrentGame().getGameStateHolder().unsubscribe(this);
-            Game.getCurrentGame().getTurnsManager().unsubscribe(this);
-        }
-    }
-
     private void aiTurn() {
         enemySide.forEach(enemy -> {
             if (enemy instanceof Monster) {
@@ -104,5 +108,70 @@ public class Battle extends GameStateBase implements TurnChangeObserver, GameSta
         });
         final RunnableAction startNextTurnAction = Actions.run(() -> Game.getCurrentGame().getTurnsManager().nextTurn());
         Game.getCurrentGame().getSkillsSequencer().add(startNextTurnAction);
+    }
+
+    private boolean checkLose() {
+        return playerSide.getBeings()
+                .stream()
+                .noneMatch(Being::isAlive);
+    }
+
+    private boolean checkWin() {
+        return enemySide.getBeings()
+                .stream()
+                .noneMatch(Being::isAlive);
+    }
+
+    public void win() {
+        Game.getCurrentGame().getGameMap().getCellProperties(cellX, cellY).setMonsters(null);
+        Game.getCurrentGame().getGameMap().getStage().removeMonsterFrom(cellX, cellY);
+        unsubscribeFromAll();
+        final Map<Being<?>, Double> expRewards = Game.getCurrentGame().getExpSpreader().spreadExp(enemySide);
+        expRewards.forEach((player, exp) -> player.stats().lvl().exp().increase(exp));
+        BattleAction.WIN.lastExpRewards = expRewards;
+        subscribers.notifySubscribers(subscriber -> subscriber.update(BattleAction.WIN));
+    }
+
+    public void lose() {
+        unsubscribeFromAll();
+        subscribers.notifySubscribers(subscriber -> subscriber.update(BattleAction.LOSE));
+    }
+
+    public List<Item> createItemsReward() {
+        return enemySide.getBeings().stream()
+                .filter(being -> being instanceof Monster)
+                .flatMap(being -> ((MonsterData) being.getEntityData()).getDrop().entrySet().stream())
+                .filter(entry -> entry.getValue() >= Functions.random(100.0))
+                .map(entry -> new Item(ItemData.getItemDataByGuid(entry.getKey())))
+                .collect(Collectors.toList());
+    }
+
+    private void unsubscribeFromAll() {
+        Game.getCurrentGame().getTurnsManager().unsubscribe(this);
+        enemySide.getBeings().forEach(being -> being.unsubscribe(this));
+        playerSide.getBeings().forEach(being -> being.unsubscribe(this));
+    }
+
+    @Override
+    public void update(BeingAction action, Being<?> being) {
+        if (action.action() == BeingAction.Action.DIE) {
+            final RunnableAction checkWinOrLose = Actions.run(() -> {
+                if (checkLose()) {
+                    lose();
+                }
+                else if (checkWin()) {
+                    win();
+                }
+            });
+            Game.getCurrentGame().getSkillsSequencer().add(checkWinOrLose);
+        }
+    }
+
+    public void subscribe(BattleObserver subscriber) {
+        subscribers.subscribe(subscriber);
+    }
+
+    public void unsubscribe(BattleObserver subscriber) {
+        subscribers.unsubscribe(subscriber);
     }
 }

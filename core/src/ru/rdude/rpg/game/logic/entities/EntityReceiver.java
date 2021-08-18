@@ -22,7 +22,7 @@ public final class EntityReceiver {
         // receive
         if (damage.isHit()) {
             VisualBeing.VISUAL_BEING_FINDER.find(target).ifPresent(vb -> vb.getHpBar().addDelayed(damage));
-            target.stats().hp().decrease(damage.value());
+            target.stats().hp().decrease((int) damage.value());
         }
         // notify subscribers
         // damage
@@ -71,6 +71,7 @@ public final class EntityReceiver {
                 Game.getCurrentGame().getGameLogger().log(beingAction, target);
                 if (damage.interactor() instanceof Being) {
                     final BeingAction beingAction1 = new BeingAction(BeingAction.Action.DAMAGE_DEAL, target, damage.bySkill(), damage.value());
+                    ((Being) damage.interactor()).notifySubscribers(beingAction1, (Being<?>) damage.interactor());
                 }
             }
             if (!target.isAlive()) {

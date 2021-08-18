@@ -3,6 +3,7 @@ package ru.rdude.rpg.game.logic.stats.secondary;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
+import ru.rdude.rpg.game.logic.stats.RoundStat;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.primary.Lvl;
 import ru.rdude.rpg.game.logic.stats.primary.Vit;
@@ -11,7 +12,7 @@ import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 import static java.lang.Math.floor;
 
 @JsonPolymorphicSubType("hp")
-public class Hp extends Stat implements Calculatable {
+public class Hp extends Stat implements Calculatable, RoundStat {
 
     private boolean calculatable;
     @JsonIdentityReference(alwaysAsId = true)
@@ -107,7 +108,7 @@ public class Hp extends Stat implements Calculatable {
     }
 
     @JsonPolymorphicSubType("hpMax")
-    public static class Max extends Stat implements Calculatable {
+    public static class Max extends Stat implements Calculatable, RoundStat {
 
         @JsonIdentityReference(alwaysAsId = true)
         private Hp hp;
@@ -157,7 +158,7 @@ public class Hp extends Stat implements Calculatable {
     }
 
     @JsonPolymorphicSubType("hpRecovery")
-    public static class Recovery extends Stat implements Calculatable {
+    public static class Recovery extends Stat implements Calculatable, RoundStat {
 
         @JsonIdentityReference(alwaysAsId = true)
         private Hp hp;

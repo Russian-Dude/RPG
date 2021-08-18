@@ -108,6 +108,10 @@ public class Map extends GameStateBase {
         return cellProperties[cell.getX()][cell.getY()];
     }
 
+    public CellProperties getCellProperties(int x, int y) {
+        return cellProperties[x][y];
+    }
+
     public void setPlayerPosition(Cell playerPosition) {
         Cell oldPosition = this.playerPosition;
         this.playerPosition = playerPosition;

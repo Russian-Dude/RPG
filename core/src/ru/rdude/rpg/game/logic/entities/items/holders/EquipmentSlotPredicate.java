@@ -22,7 +22,8 @@ public class EquipmentSlotPredicate implements Predicate<Item> {
 
     @Override
     public boolean test(Item item) {
-        return (itemTypes.contains(item.getEntityData().getItemType())
+        return being.isReady()
+                && (itemTypes.contains(item.getEntityData().getItemType())
                 || itemTypes.contains(item.getEntityData().getItemType().getMainType()))
                 && being.stats().isMatchRequirementsOf(item.requirements());
     }

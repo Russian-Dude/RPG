@@ -2,11 +2,12 @@ package ru.rdude.rpg.game.logic.stats.primary;
 
 
 import ru.rdude.rpg.game.logic.stats.Calculatable;
+import ru.rdude.rpg.game.logic.stats.RoundStat;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 @JsonPolymorphicSubType("lvl")
-public class Lvl extends Stat implements Calculatable {
+public class Lvl extends Stat implements Calculatable, RoundStat {
 
     public enum Type {BASE, CLASS}
     public static final Type BASE = Type.BASE;
@@ -71,7 +72,7 @@ public class Lvl extends Stat implements Calculatable {
 
 
     @JsonPolymorphicSubType("statPoints")
-    public static class StatPoints extends Stat {
+    public static class StatPoints extends Stat implements RoundStat {
         @Override
         public String getName() {
             return "Stat Points";
@@ -79,7 +80,7 @@ public class Lvl extends Stat implements Calculatable {
     }
 
 
-    public static abstract class Exp extends Stat implements Calculatable {
+    public static abstract class Exp extends Stat implements Calculatable, RoundStat {
 
         protected Lvl lvl;
 

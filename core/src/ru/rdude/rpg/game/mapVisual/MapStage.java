@@ -103,6 +103,9 @@ public class MapStage extends Stage implements GameStateStage {
     }
 
     public void playerChangedPosition(Cell oldPosition, Cell newPosition) {
+        if (!(Game.getCurrentGame().getCurrentGameState() instanceof Map)) {
+            return;
+        }
         newPosition.getArea(2, true).forEach(c -> {
             final Map gameMap = Game.getCurrentGame().getGameMap();
             if (this.gameMap == gameMap.getGameMap()) {
@@ -126,6 +129,14 @@ public class MapStage extends Stage implements GameStateStage {
         final Map.MonstersOnCell monsters = Game.getCurrentGame().getGameMap().getCellProperties(newPosition).getMonsters();
         if (monsters != null && !monsters.isEmpty()) {
             Game.getGameStateSwitcher().switchToBattle(monsters, newPosition);
+        }
+    }
+
+    public void removeMonsterFrom(int x, int y) {
+        final MonstersOnMap monstersOnMap = monsters[x][y];
+        if (monstersOnMap != null) {
+            monstersOnMap.remove();
+            monsters[x][y] = null;
         }
     }
 

@@ -3,13 +3,14 @@ package ru.rdude.rpg.game.logic.stats.secondary;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
+import ru.rdude.rpg.game.logic.stats.RoundStat;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.primary.Lvl;
 import ru.rdude.rpg.game.logic.stats.primary.Vit;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 @JsonPolymorphicSubType("def")
-public class Def extends Stat implements Calculatable {
+public class Def extends Stat implements Calculatable, RoundStat {
 
     private boolean calculatable;
     @JsonIdentityReference(alwaysAsId = true)

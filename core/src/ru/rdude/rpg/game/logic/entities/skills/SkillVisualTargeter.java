@@ -47,6 +47,7 @@ public class SkillVisualTargeter {
             clear();
         }
         else {
+            currentCaster.setReady(false);
             Game.getCurrentGame().getSkillsSequencer().add(skillData, currentCaster, Game.getSkillTargeter().get(currentCaster, target, skillData.getTargets()));
             clear();
         }

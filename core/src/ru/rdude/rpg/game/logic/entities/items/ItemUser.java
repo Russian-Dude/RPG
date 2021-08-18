@@ -10,6 +10,9 @@ import ru.rdude.rpg.game.logic.holders.Slot;
 public final class ItemUser {
 
     public void use(Item item, Being<?> being) {
+        if (!being.isReady()) {
+            return;
+        }
         switch (item.getEntityData().getItemType().getMainType()) {
             case ARMOR:
             case WEAPON:

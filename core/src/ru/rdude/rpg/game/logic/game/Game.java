@@ -2,9 +2,11 @@ package ru.rdude.rpg.game.logic.game;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import ru.rdude.rpg.game.commands.CommandsInput;
 import ru.rdude.rpg.game.logic.GameLogger;
 import ru.rdude.rpg.game.logic.actions.SkillsSequencer;
 import ru.rdude.rpg.game.logic.data.io.*;
+import ru.rdude.rpg.game.logic.entities.beings.ExpSpreader;
 import ru.rdude.rpg.game.logic.entities.beings.MonsterFactory;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.entities.items.ItemUser;
@@ -41,6 +43,7 @@ public class Game {
     private final GameStateHolder gameStateHolder;
     private Map gameMap;
     private Party currentPlayers;
+    private ExpSpreader expSpreader;
 
     private static final CustomObjectMapper customObjectMapper = new CustomObjectMapper("ru.rdude.rpg.game");
     private static AvatarCreator avatarCreator;
@@ -60,6 +63,7 @@ public class Game {
     private static final ParticleEffectsPools particleEffectsPool = new ParticleEffectsPools();
     private static final SkillAnimator skillAnimator = new SkillAnimator();
     private static final GameStateSwitcher gameStateSwitcher = new GameStateSwitcher();
+    private static final CommandsInput commandsInput = new CommandsInput();
 
     // io
     private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
@@ -193,6 +197,10 @@ public class Game {
         return gameStateSwitcher;
     }
 
+    public static CommandsInput getCommandsInput() {
+        return commandsInput;
+    }
+
     public ItemDragAndDroper getItemsDragAndDrop() {
         return itemsDragAndDrop;
     }
@@ -227,6 +235,11 @@ public class Game {
 
     public void setCurrentPlayers(Party currentPlayers) {
         this.currentPlayers = currentPlayers;
+        this.expSpreader = new ExpSpreader(currentPlayers);
+    }
+
+    public ExpSpreader getExpSpreader() {
+        return expSpreader;
     }
 
     public GameLogger getGameLogger() {

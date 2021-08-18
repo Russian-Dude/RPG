@@ -128,8 +128,9 @@ public class ItemVisual extends Group implements ItemCountObserver {
                                 Math.max(indexBackpackB, indexEquipmentB));
 
                     })
-                    .filter(playerVisual -> playerVisual.getPlayer().backpack().hasEntity(this.item)
+                    .filter(playerVisual -> (playerVisual.getPlayer().backpack().hasEntity(this.item)
                             || playerVisual.getPlayer().equipment().hasEntity(this.item))
+                            && playerVisual.getPlayer().isReady())
                     .ifPresent(playerVisual -> Game.getItemUser().use(this.item, playerVisual.getPlayer()));
         }
     }

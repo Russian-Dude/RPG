@@ -194,6 +194,9 @@ public class GameVisual {
     public void draw() {
         final float deltaTime = Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            if (ui.getCommandsInputVisual().isVisible()) {
+                ui.swapConsoleVisibility();
+            }
             if (Game.getCurrentGame().getCurrentGameState() instanceof MainMenuGameState) {
                 backMenuStage();
             }
@@ -205,6 +208,9 @@ public class GameVisual {
                     backMenuStage();
                 }
             }
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.GRAVE) && ui != null) {
+            ui.swapConsoleVisibility();
         }
         for (Stage stage : nonUiStages) {
             stage.draw();

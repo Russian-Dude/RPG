@@ -41,7 +41,7 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
     }
 
     public Stat(double value) {
-        this.value = value;
+        this.value = (this instanceof RoundStat) ? Math.round(value) : value;
         buffs = new HashMap<>();
         subscribers = new SubscribersManager<>();
     }
@@ -50,7 +50,7 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
 
     public double increase(double value) {
         if (value == 0) return this.value();
-        this.value += value;
+        this.value += (this instanceof RoundStat) ? Math.round(value) : value;
         notifySubscribers();
         return this.value();
     }
@@ -64,7 +64,7 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
     }
 
     public void set(double value) {
-        this.value = value;
+        this.value = (this instanceof RoundStat) ? Math.round(value) : value;
         notifySubscribers();
     }
 
@@ -74,21 +74,22 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
     }
 
     public double value() {
-        return buffs.values().stream().reduce(Double::sum).orElse(0d) + value;
+        final double value = buffs.values().stream().reduce(Double::sum).orElse(0d) + this.value;
+        return (this instanceof RoundStat) ? Math.round(value) : value;
     }
 
-    public double pureValue() { return this.value; }
+    public double pureValue() { return (this instanceof RoundStat) ? Math.round(value) : value; }
 
     public void increaseBuffValue(Class<?> clazz, Stat stat) {
         increaseBuffValue(clazz, stat.value());
     }
 
     public void increaseBuffValue(Class<?> clazz, double value) {
-        increaseBuffValue(clazz.getSimpleName(), value);
+        increaseBuffValue(clazz.getSimpleName(), (this instanceof RoundStat) ? Math.round(value) : value);
     }
 
     public void increaseBuffValue(String className, double value) {
-        buffs.merge(className, value, Double::sum);
+        buffs.merge(className, (this instanceof RoundStat) ? Math.round(value) : value, Double::sum);
         notifySubscribers();
     }
 
@@ -97,7 +98,8 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
     }
 
     public void setBuffValue(Class<?> clazz, Stat stat) {
-        setBuffValue(clazz, stat.value());
+        final double value = stat.value();
+        setBuffValue(clazz, (this instanceof RoundStat) ? Math.round(value) : value);
     }
 
     public void setBuffValue(Class<?> clazz, double value) {
@@ -105,7 +107,7 @@ public abstract class Stat implements Comparable<Stat>, StatObserver {
     }
 
     public void setBuffValue(String className, double value) {
-        buffs.put(className, value);
+        buffs.put(className, (this instanceof RoundStat) ? Math.round(value) : value);
         notifySubscribers();
     }
 

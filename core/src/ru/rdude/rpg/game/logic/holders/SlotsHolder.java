@@ -66,4 +66,10 @@ public abstract class SlotsHolder<T extends Entity<?>> {
     public List<Slot<T>> getSlots() {
         return slots;
     }
+
+    public void clear() {
+        for (Slot<T> slot : slots) {
+            slot.removeEntity();
+        }
+    }
 }

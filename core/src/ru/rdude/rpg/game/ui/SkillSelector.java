@@ -9,6 +9,7 @@ import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.entities.skills.AvailableSkillsObserver;
 import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
+import ru.rdude.rpg.game.logic.enums.Target;
 import ru.rdude.rpg.game.logic.game.Game;
 
 @JsonIgnoreType
@@ -25,6 +26,13 @@ public class SkillSelector extends Tree<SkillSelectionElement, SkillData> implem
             public void changed(ChangeEvent event, Actor actor) {
                 if (!SkillSelector.this.getSelection().isEmpty()) {
                     final SkillData skillData = SkillSelector.this.getSelection().first().getValue();
+                    final Target mainTarget = skillData.getMainTarget();
+                    if (mainTarget != Target.ALLY
+                            && mainTarget != Target.ENEMY
+                            && mainTarget != Target.ANY
+                            && mainTarget != Target.ANY_OTHER) {
+                        player.setReady(false);
+                    }
                     Game.getSkillUser().use(skillData, player, skillData.getMainTarget());
                     parentTable.setVisible(false);
                 }

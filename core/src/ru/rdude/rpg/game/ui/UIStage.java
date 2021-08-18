@@ -25,6 +25,8 @@ public class UIStage extends Stage implements GameStateObserver {
 
     private final OrthographicCamera camera = new OrthographicCamera();
     private final Set<PlayerVisual> playerVisuals = new HashSet<>();
+    private final CommandsInputVisual commandsInputVisual = new CommandsInputVisual();
+    private final BattleVictoryWindow battleVictoryWindow = new BattleVictoryWindow();
     private final Button endTurnButton;
 
     public UIStage(PlayerVisual... playerVisuals) {
@@ -59,6 +61,14 @@ public class UIStage extends Stage implements GameStateObserver {
         endTurnButton = new EndTurnButton();
         addActor(endTurnButton);
         endTurnButton.setPosition(Gdx.graphics.getWidth() - endTurnButton.getWidth() - 25f, Gdx.graphics.getHeight() - endTurnButton.getHeight() - 25f);
+        // commands input (console)
+        addActor(commandsInputVisual);
+        commandsInputVisual.setPosition(Gdx.graphics.getWidth() / 2f - commandsInputVisual.getWidth() / 2f, Gdx.graphics.getHeight() / 2f - commandsInputVisual.getHeight() / 2f);
+        commandsInputVisual.setVisible(false);
+        // battle victory window
+        addActor(battleVictoryWindow);
+        battleVictoryWindow.setPosition(Gdx.graphics.getWidth() / 2f - battleVictoryWindow.getWidth() / 2f, Gdx.graphics.getHeight() / 2f - battleVictoryWindow.getHeight() / 2f);
+        battleVictoryWindow.setVisible(false);
     }
 
     public boolean isHit() {
@@ -68,6 +78,18 @@ public class UIStage extends Stage implements GameStateObserver {
 
     public Set<PlayerVisual> getPlayerVisuals() {
         return playerVisuals;
+    }
+
+    public void swapConsoleVisibility() {
+        commandsInputVisual.setVisible(!commandsInputVisual.isVisible());
+    }
+
+    public CommandsInputVisual getCommandsInputVisual() {
+        return commandsInputVisual;
+    }
+
+    public BattleVictoryWindow getBattleVictoryWindow() {
+        return battleVictoryWindow;
     }
 
     @Override

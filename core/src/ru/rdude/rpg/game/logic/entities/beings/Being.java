@@ -41,6 +41,7 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
     protected AvailableSkills availableSkills;
     protected Cast cast;
 
+    protected boolean ready;
     protected boolean alive;
     protected SkillEffect effect;
 
@@ -51,6 +52,7 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
     public Being(T beingData) {
         super(beingData);
         alive = true;
+        ready = true;
         stats = new Stats(true);
         stats.hp().subscribe(this);
         beingTypes = new StateHolder<>(beingData.getBeingTypes());
@@ -129,6 +131,14 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
 
     public boolean isAlive() {
         return alive;
+    }
+
+    public boolean isReady() {
+        return ready && alive && effect != SkillEffect.EXILE && effect != SkillEffect.STUN;
+    }
+
+    public void setReady(boolean ready) {
+        this.ready = ready;
     }
 
     public boolean receive(Damage damage) {

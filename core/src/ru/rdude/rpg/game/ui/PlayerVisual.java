@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Align;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.data.PlayerData;
 import ru.rdude.rpg.game.logic.data.resources.PlayerResources;
-import ru.rdude.rpg.game.logic.entities.beings.Player;
+import ru.rdude.rpg.game.logic.entities.beings.*;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Battle;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
@@ -29,7 +29,7 @@ import static ru.rdude.rpg.game.ui.UiData.BIG_TEXT_STYLE;
 import static ru.rdude.rpg.game.ui.UiData.DEFAULT_SKIN;
 
 @JsonIgnoreType
-public class PlayerVisual extends VerticalGroup implements GameStateObserver, VisualBeing<Player> {
+public class PlayerVisual extends VerticalGroup implements GameStateObserver, PlayerReadyObserver, VisualBeing<Player> {
 
     private final Player player;
 
@@ -56,6 +56,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Vi
     }
 
     public PlayerVisual(Player player, PlayerAvatar avatar) {
+        player.subscribe(this);
         Game.getCurrentGame().getGameStateHolder().subscribe(this);
         Game.getCurrentGame().getItemsDragAndDrop().addPlayerArea(this);
         this.player = player;
@@ -64,9 +65,10 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Vi
         stmBar = new StmBar(player);
         buttons = new HorizontalGroup();
         attack = new Button(DEFAULT_SKIN, "attack");
-        attack.setVisible(Game.getCurrentGame().getCurrentGameState() instanceof Battle);
+        attack.setVisible(Game.getCurrentGame().getCurrentGameState() instanceof Battle && getBeing().isReady());
         items = new Button(DEFAULT_SKIN, "items");
         spells = new Button(DEFAULT_SKIN, "spells");
+        spells.setVisible(getBeing().isReady());
         nameLabel = new Label(player.getName(), DEFAULT_SKIN, BIG_TEXT_STYLE);
         nameLabel.setAlignment(Align.center);
         buffsIcons = new PlayerBuffsIcons(this);
@@ -258,6 +260,12 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Vi
 
     @Override
     public void update(GameStateBase oldValue, GameStateBase newValue) {
-        attack.setVisible(newValue instanceof Battle);
+        attack.setVisible(newValue instanceof Battle && getBeing().isReady());
+    }
+
+    @Override
+    public void update(Player player, boolean ready) {
+        spells.setVisible(ready);
+        attack.setVisible(ready);
     }
 }

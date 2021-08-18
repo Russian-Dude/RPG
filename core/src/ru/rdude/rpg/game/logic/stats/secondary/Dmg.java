@@ -3,6 +3,7 @@ package ru.rdude.rpg.game.logic.stats.secondary;
 
 import com.fasterxml.jackson.annotation.*;
 import ru.rdude.rpg.game.logic.enums.AttackType;
+import ru.rdude.rpg.game.logic.stats.RoundStat;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.Stat;
@@ -15,7 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @JsonPolymorphicSubType("dmg")
-public class Dmg extends Stat implements Calculatable {
+public class Dmg extends Stat implements Calculatable, RoundStat {
 
     private boolean calculatable;
     @JsonIdentityReference(alwaysAsId = true)
@@ -96,12 +97,12 @@ public class Dmg extends Stat implements Calculatable {
         if (!(stat instanceof Dmg))
             return super.increase(stat);
         else {
-            this.melee.min.increase(((Dmg) stat).melee.min.value());
-            this.melee.max.increase(((Dmg) stat).melee.max.value());
-            this.range.min.increase(((Dmg) stat).range.min.value());
-            this.range.max.increase(((Dmg) stat).range.max.value());
-            this.magic.min.increase(((Dmg) stat).magic.min.value());
-            this.magic.max.increase(((Dmg) stat).magic.max.value());
+            this.melee.min.increase(Math.round(((Dmg) stat).melee.min.value()));
+            this.melee.max.increase(Math.round(((Dmg) stat).melee.max.value()));
+            this.range.min.increase(Math.round(((Dmg) stat).range.min.value()));
+            this.range.max.increase(Math.round(((Dmg) stat).range.max.value()));
+            this.magic.min.increase(Math.round(((Dmg) stat).magic.min.value()));
+            this.magic.max.increase(Math.round(((Dmg) stat).magic.max.value()));
             return value();
         }
     }

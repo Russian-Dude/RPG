@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
+import ru.rdude.rpg.game.logic.data.MonsterData;
 import ru.rdude.rpg.game.logic.entities.skills.Buff;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
@@ -12,9 +13,7 @@ import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,18 +27,32 @@ import java.util.stream.Stream;
 public class ExpSpreader implements BeingActionObserver, GameStateObserver {
 
     private Party party;
-    private Map<Being<?>, Effort> effort;
+    private List<Effort> effort;
 
-    private ExpSpreader() { }
+    private ExpSpreader() {
+    }
 
     public ExpSpreader(Party party) {
         this.party = party;
-        this.effort = new HashMap<>();
+        this.effort = new ArrayList<>();
         party.forEach(being -> {
             being.subscribe(this);
-            effort.put(being, new Effort(being, party));
+            effort.add(new Effort(being, party));
         });
         Game.getCurrentGame().getGameStateHolder().subscribe(this);
+    }
+
+    public Map<Being<?>, Double> spreadExp(Party enemies) {
+        final Double exp = enemies.stream()
+                .filter(being -> being instanceof Monster)
+                .map(being -> {
+                    final double mainLvl = ((MonsterData) being.getEntityData()).getMainLvl();
+                    final double coefficient = being.stats().lvlValue() / mainLvl;
+                    return ((MonsterData) being.getEntityData()).getExpReward() * coefficient;
+                })
+                .reduce(Double::sum)
+                .orElse(0d);
+        return spreadExp(exp);
     }
 
     public Map<Being<?>, Double> spreadExp(double exp) {
@@ -48,29 +61,42 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver {
     }
 
     public double expFor(double allExp, Being<?> being) {
+        if (!being.isAlive()) {
+            return 0d;
+        }
         double intBonus = being.stats.intelValue() * 0.01;
-        double partySize = party.getBeings().size();
-        double totalEffort = effort.values().stream().map(Effort::totalEffort).reduce(Double::sum).orElse(1d);
-        double beingEffort = effort.get(being).totalEffort();
-        return (1 + intBonus) * (allExp * 0.07 + allExp * (1 - partySize * 0.07) * (100 / (totalEffort / beingEffort)));
+        double partySize = party.getBeings().stream()
+                .filter(Being::isAlive)
+                .count();
+        double totalEffort = effort.stream()
+                .map(Effort::totalEffort)
+                .reduce(Double::sum)
+                .orElse(1d);
+        double beingEffort = effort.stream()
+                .filter(effort -> effort.being == being)
+                .findAny()
+                .map(Effort::totalEffort)
+                .orElse(1d);
+        return Math.round((1 + intBonus) * (allExp * 0.07 + allExp * (1 - partySize * 0.07) * (100 / (totalEffort / beingEffort))));
     }
 
     public void clear() {
         // update effort map in case party was was changed
-        effort.keySet().stream()
-                .filter(being -> !party.getBeings().contains(being))
-                .collect(Collectors.toList())
-                .forEach(effort::remove);
+        effort.forEach(Effort::clear);
         party.getBeings().stream()
-                .filter(being -> !effort.containsKey(being))
-                .collect(Collectors.toList())
-                .forEach(being -> effort.put(being, new Effort(being, party)));
-        effort.values().forEach(Effort::clear);
+                .filter(being -> effort.stream().noneMatch(e -> e.being == being))
+                .forEach(being -> {
+                    being.subscribe(this);
+                    effort.add(new Effort(being, party));
+                });
     }
 
     @Override
     public void update(BeingAction action, Being<?> being) {
-        effort.get(being).madeAction(action);
+        effort.stream()
+                .filter(e -> e.being == being)
+                .findAny()
+                .ifPresent(e -> e.madeAction(action));
     }
 
     @Override

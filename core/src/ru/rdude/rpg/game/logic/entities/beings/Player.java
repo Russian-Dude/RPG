@@ -11,6 +11,7 @@ import ru.rdude.rpg.game.logic.enums.BeingType;
 import ru.rdude.rpg.game.logic.enums.Element;
 import ru.rdude.rpg.game.logic.enums.Size;
 import ru.rdude.rpg.game.logic.stats.Stats;
+import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.HashSet;
@@ -20,6 +21,8 @@ import java.util.HashSet;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Player extends Being<PlayerData> {
 
+    private SubscribersManager<PlayerReadyObserver> isReadyObservers;
+
     public Player() {
         this(new PlayerData());
     }
@@ -27,6 +30,7 @@ public class Player extends Being<PlayerData> {
     @JsonCreator
     public Player(@JsonProperty("playerData") PlayerData playerData) {
         super(playerData);
+        isReadyObservers = new SubscribersManager<>();
         stats = new Stats(true);
         beingTypes = new StateHolder<>(BeingType.HUMAN);
         elements = new StateHolder<>(Element.NEUTRAL);
@@ -59,5 +63,19 @@ public class Player extends Being<PlayerData> {
     public boolean canParry() {
         // TODO: 24.05.2021 can player parry
         return false;
+    }
+
+    @Override
+    public void setReady(boolean ready) {
+        super.setReady(ready);
+        isReadyObservers.notifySubscribers(observer -> observer.update(this, isReady()));
+    }
+
+    public void subscribe(PlayerReadyObserver playerReadyObserver) {
+        isReadyObservers.subscribe(playerReadyObserver);
+    }
+
+    public void unsubscribe(PlayerReadyObserver playerReadyObserver) {
+        isReadyObservers.unsubscribe(playerReadyObserver);
     }
 }
