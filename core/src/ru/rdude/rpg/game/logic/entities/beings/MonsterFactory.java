@@ -16,9 +16,24 @@ import java.util.stream.Collectors;
 
 public final class MonsterFactory {
 
-    public Monster createMonster(Map.MonstersOnCell.Monster monsterOnCell) {
-        Monster monster = new Monster(MonsterData.getMonsterByGuid(monsterOnCell.guid));
-        int lvl = monsterOnCell.lvl;
+    public Monster createMonster(MonsterData monsterData) {
+        final MonsterData realData = describerToReal(monsterData);
+        return createMonster(realData, Math.max((int) monsterData.getMinLvl(), (int) realData.getMinLvl()), Math.min((int) monsterData.getMaxLvl(), (int) realData.getMaxLvl()));
+    }
+
+    public Monster createMonster(MonsterData monsterData, int lvlMin, int lvlMax) {
+        final MonsterData realData = describerToReal(monsterData);
+        if (realData == monsterData) {
+            return createMonster(monsterData, Functions.random(lvlMin, lvlMax));
+        }
+        else {
+            return createMonster(realData, Functions.random(Math.max((int) monsterData.getMinLvl(), (int) realData.getMinLvl()), Math.min((int) monsterData.getMaxLvl(), (int) realData.getMaxLvl())));
+        }
+    }
+
+    public Monster createMonster(MonsterData monsterData, int lvl) {
+        final MonsterData realData = describerToReal(monsterData);
+        Monster monster = new Monster(MonsterData.getMonsterByGuid(realData.getGuid()));
         // if there is no need to calculate stats based on level
         if (monster.stats.lvl().value() == lvl) {
             return monster;
@@ -42,6 +57,10 @@ public final class MonsterFactory {
             }
         });
         return monster;
+    }
+
+    public Monster createMonster(Map.MonstersOnCell.Monster monsterOnCell) {
+        return createMonster(MonsterData.getMonsterByGuid(monsterOnCell.guid), monsterOnCell.lvl);
     }
 
     public Map.MonstersOnCell.Monster createMonsterOnCell(int level, MonsterData data) {
@@ -108,5 +127,43 @@ public final class MonsterFactory {
                 amount--;
             }
         }
+    }
+
+    public MonsterData describerToReal(MonsterData monsterData) {
+        if (!monsterData.isDescriber()) {
+            return monsterData;
+        }
+        return MonsterData.getMonsters().values().stream()
+                // filter out describers
+                .filter(data -> !data.isDescriber())
+                // levels
+                .filter(data -> {
+                    final double dataMin = data.getMinLvl();
+                    final double dataMax = data.getMaxLvl();
+                    final double minLvl = monsterData.getMinLvl();
+                    final double maxLvl = monsterData.getMaxLvl();
+                    return !((dataMin < minLvl && dataMax < minLvl) || (dataMin > maxLvl && dataMax > maxLvl));
+                })
+                // attack type
+                .filter(data -> monsterData.getDefaultAttackType() == null || data.getDefaultAttackType() == monsterData.getDefaultAttackType())
+                // size
+                .filter(data -> monsterData.getSize() == null || data.getSize() == monsterData.getSize())
+                // elements
+                .filter(data -> monsterData.getElements() == null
+                                || monsterData.getElements().isEmpty()
+                                || data.getElements().containsAll(monsterData.getElements()))
+                // types
+                .filter(data -> monsterData.getBeingTypes() == null
+                                || monsterData.getBeingTypes().isEmpty()
+                                || data.getBeingTypes().containsAll(monsterData.getBeingTypes()))
+                // spawn biomes
+                .filter(data -> monsterData.getSpawnBioms() == null
+                                || monsterData.getSpawnBioms().isEmpty()
+                                || data.getSpawnBioms().containsAll(monsterData.getSpawnBioms()))
+                // spawn reliefs
+                .filter(data -> monsterData.getSpawnReliefs() == null
+                        || monsterData.getSpawnReliefs().isEmpty()
+                        || data.getSpawnReliefs().containsAll(monsterData.getSpawnReliefs()))
+                .collect(Functions.randomCollector());
     }
 }

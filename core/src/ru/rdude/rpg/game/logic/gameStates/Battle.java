@@ -102,7 +102,7 @@ public class Battle extends GameStateBase implements TurnChangeObserver, BeingAc
         enemySide.forEach(enemy -> {
             if (enemy instanceof Monster) {
                 final Long skillGuid = Functions.randomWithWeights(((MonsterData) enemy.getEntityData()).getSkills());
-                final SkillData skill = SkillData.getSkillByGuid(skillGuid);
+                final SkillData skill = Game.getEntityFactory().skills().describerToReal(skillGuid);
                 Game.getSkillUser().use(skill, enemy, skill.getMainTarget());
             }
         });
@@ -142,7 +142,7 @@ public class Battle extends GameStateBase implements TurnChangeObserver, BeingAc
                 .filter(being -> being instanceof Monster)
                 .flatMap(being -> ((MonsterData) being.getEntityData()).getDrop().entrySet().stream())
                 .filter(entry -> entry.getValue() >= Functions.random(100.0))
-                .map(entry -> new Item(ItemData.getItemDataByGuid(entry.getKey())))
+                .map(entry -> Game.getEntityFactory().items().get(ItemData.getItemDataByGuid(entry.getKey())))
                 .collect(Collectors.toList());
     }
 

@@ -251,22 +251,30 @@ public class ItemData extends EntityData {
         }
 
         public ListOfItemsWithParametersBuilder rarity(ItemRarity rarity) {
-            stream = stream.filter(itemData -> itemData.rarity.equals(rarity));
+            if (rarity != null) {
+                stream = stream.filter(itemData -> itemData.rarity.equals(rarity));
+            }
             return this;
         }
 
         public ListOfItemsWithParametersBuilder type(ItemType itemType) {
-            stream = stream.filter(itemData -> itemData.itemType == itemType);
+            if (itemType != null) {
+                stream = stream.filter(itemData -> itemData.itemType == itemType);
+            }
             return this;
         }
 
         public ListOfItemsWithParametersBuilder type(ItemMainType itemMainType) {
-            stream = stream.filter(itemData -> itemData.itemType.getMainType() == itemMainType);
+            if (itemMainType != null) {
+                stream = stream.filter(itemData -> itemData.itemType.getMainType() == itemMainType);
+            }
             return this;
         }
 
         public ListOfItemsWithParametersBuilder type(AttackType attackType) {
-            stream = stream.filter(itemData -> itemData.isWeapon() && itemData.weaponData.attackType == attackType);
+            if (attackType != null) {
+                stream = stream.filter(itemData -> itemData.isWeapon() && itemData.weaponData.attackType == attackType);
+            }
             return this;
         }
 
@@ -281,7 +289,9 @@ public class ItemData extends EntityData {
         }
 
         public ListOfItemsWithParametersBuilder elements(Set<Element> elements) {
-            stream = stream.filter(itemData -> itemData.elements.containsAll(elements));
+            if (elements != null && !elements.isEmpty()) {
+                stream = stream.filter(itemData -> itemData.elements.containsAll(elements));
+            }
             return this;
         }
 

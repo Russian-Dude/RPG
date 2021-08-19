@@ -41,7 +41,7 @@ public class SkillResultsCreator {
         // skills chaining
         if (!resisted) {
             for (Long castSkill : getCastSkills(skillData)) {
-                final SkillData skill = SkillData.getSkillByGuid(castSkill);
+                final SkillData skill = Game.getEntityFactory().skills().describerToReal(castSkill);
                 final SkillTargets targets = Game.getSkillTargeter().get(skill, buff.getTarget(), Target.SELF);
                 results.addAll(createFromSkill(skill, buff.getTarget(), targets));
             }
@@ -51,7 +51,9 @@ public class SkillResultsCreator {
     }
 
 
-    public List<SkillResult> createFromSkill(SkillData skillData, Being<?> caster, SkillTargets targets) {
+    public List<SkillResult> createFromSkill(SkillData data, Being<?> caster, SkillTargets targets) {
+
+        SkillData skillData = Game.getEntityFactory().skills().describerToReal(data);
 
         List<SkillResult> results = new ArrayList<>();
         Damage mainTargetDamage = getDamage(skillData, caster, targets.getMainTarget());
@@ -99,7 +101,7 @@ public class SkillResultsCreator {
         // skill chaining
         for (Being<?> being : applySkillChaining) {
             for (Long guid : getCastSkills(skillData)) {
-                SkillData castSkill = SkillData.getSkillByGuid(guid);
+                SkillData castSkill = Game.getEntityFactory().skills().describerToReal(guid);
                 SkillTargets skillTargets = Game.getSkillTargeter().get(caster, being, skillData.getTargets());
                 results.addAll(createFromSkill(castSkill, caster, skillTargets));
             }
@@ -256,7 +258,7 @@ public class SkillResultsCreator {
 
     private List<Item> getReceivedItems(SkillData skillData) {
         return skillData.getReceiveItems().entrySet().stream()
-                .map(entry -> new Item(ItemData.getItemDataByGuid(entry.getKey()), entry.getValue()))
+                .map(entry -> Game.getEntityFactory().items().get(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
 

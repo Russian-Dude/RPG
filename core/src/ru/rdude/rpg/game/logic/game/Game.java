@@ -6,8 +6,8 @@ import ru.rdude.rpg.game.commands.CommandsInput;
 import ru.rdude.rpg.game.logic.GameLogger;
 import ru.rdude.rpg.game.logic.actions.SkillsSequencer;
 import ru.rdude.rpg.game.logic.data.io.*;
+import ru.rdude.rpg.game.logic.entities.EntityFactory;
 import ru.rdude.rpg.game.logic.entities.beings.ExpSpreader;
-import ru.rdude.rpg.game.logic.entities.beings.MonsterFactory;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.entities.items.ItemUser;
 import ru.rdude.rpg.game.logic.entities.skills.*;
@@ -48,7 +48,6 @@ public class Game {
     private static final CustomObjectMapper customObjectMapper = new CustomObjectMapper("ru.rdude.rpg.game");
     private static AvatarCreator avatarCreator;
     private static final ImageFactory imageFactory = new ImageFactory();
-    private static final MonsterFactory monsterFactory = new MonsterFactory();
     private static final GameFileSaver gameSaver = new GameFileSaver();
     private static final GameFileLoader gameLoader = new GameFileLoader();
     private static final ItemUser itemUser = new ItemUser();
@@ -64,6 +63,7 @@ public class Game {
     private static final SkillAnimator skillAnimator = new SkillAnimator();
     private static final GameStateSwitcher gameStateSwitcher = new GameStateSwitcher();
     private static final CommandsInput commandsInput = new CommandsInput();
+    private static final EntityFactory entityFactory = new EntityFactory();
 
     // io
     private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
@@ -115,10 +115,6 @@ public class Game {
 
     public static GameJsonSerializer getGameJsonSerializer() {
         return gameJsonSerializer;
-    }
-
-    public static MonsterFactory getMonsterFactory() {
-        return monsterFactory;
     }
 
     public static ModuleFileLoader getModuleFileLoader() {
@@ -199,6 +195,10 @@ public class Game {
 
     public static CommandsInput getCommandsInput() {
         return commandsInput;
+    }
+
+    public static EntityFactory getEntityFactory() {
+        return entityFactory;
     }
 
     public ItemDragAndDroper getItemsDragAndDrop() {

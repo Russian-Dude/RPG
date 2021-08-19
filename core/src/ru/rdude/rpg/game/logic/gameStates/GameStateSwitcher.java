@@ -6,7 +6,6 @@ import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.data.io.GameMapFileLoader;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
-import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.ui.LoadingStage;
@@ -47,13 +46,13 @@ public class GameStateSwitcher {
         Game.getGameVisual().addStage(map.getStage());
         Game.getGameVisual().setUi(new UIStage(playerVisuals.toArray(PlayerVisual[]::new)));
         Game.getCurrentGame().getGameStateHolder().setGameState(map);
-        Game.getMonsterFactory().createMonstersOnMap(Game.getCurrentGame().getGameMap());
+        Game.getEntityFactory().monsters().createMonstersOnMap(Game.getCurrentGame().getGameMap());
         // TODO: 14.06.2021 remove this test
         for (ItemData itemData : ItemData.getItems().values()) {
             int c = itemData.isStackable() ? 30 : 1;
             for (int i = 0; i < c; i++) {
                 Game.getCurrentGame().getCurrentPlayers().getBeings().get(0)
-                        .receive(new Item(itemData));
+                        .receive(Game.getEntityFactory().items().get(itemData));
             }
         }
     }
@@ -82,7 +81,7 @@ public class GameStateSwitcher {
     }
 
     public void switchToBattle(Map.MonstersOnCell monsters, Cell cell) {
-        final Party monstersParty = Game.getMonsterFactory().createParty(monsters);
+        final Party monstersParty = Game.getEntityFactory().monsters().createParty(monsters);
         Battle battle = new Battle(monstersParty, cell);
         Game.getCurrentGame().getGameStateHolder().setGameState(battle);
         Game.getGameVisual().clearNonUiStages();

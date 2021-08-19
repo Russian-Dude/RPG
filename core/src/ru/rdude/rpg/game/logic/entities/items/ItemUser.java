@@ -35,7 +35,7 @@ public final class ItemUser {
             case USABLE:
                 item.getEntityData().getSkillsOnUse()
                         .forEach(skillGuid -> {
-                            final SkillData skill = SkillData.getSkillByGuid(skillGuid);
+                            final SkillData skill = Game.getEntityFactory().skills().describerToReal(skillGuid);
                             Game.getSkillUser().use(skill, being, skill.getMainTarget());
                         });
                 item.decreaseAmount(1);

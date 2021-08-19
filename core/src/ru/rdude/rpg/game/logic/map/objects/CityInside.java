@@ -5,6 +5,7 @@ import ru.rdude.rpg.game.logic.data.QuestData;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.enums.ItemMainType;
 import ru.rdude.rpg.game.logic.enums.ItemRarity;
+import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.time.TimeChangeObserver;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
@@ -46,7 +47,7 @@ public class CityInside implements TimeChangeObserver {
 
         preRes.forEach(itemData -> {
             int amount = itemData.isStackable() ? Functions.random(5, Item.MAX_AMOUNT) : 1;
-            shop.add(new Item(itemData, amount));
+            shop.add(Game.getEntityFactory().items().get(itemData, amount));
         });
     }
 
@@ -61,7 +62,7 @@ public class CityInside implements TimeChangeObserver {
             removing--;
         }
         ItemData.getItemsWith().getRandomItems(Functions.random(5, 8))
-                .forEach(itemData ->  shop.add(new Item(itemData, itemData.isStackable() ? Functions.random(5, Item.MAX_AMOUNT) : 1)));
+                .forEach(itemData -> shop.add(Game.getEntityFactory().items().get(itemData, itemData.isStackable() ? Functions.random(5, Item.MAX_AMOUNT) : 1)));
     }
 
     private void updateQuests() {

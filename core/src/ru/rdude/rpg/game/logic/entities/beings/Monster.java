@@ -25,7 +25,7 @@ public class Monster extends Being<MonsterData> {
 
     public void applyStartBuffs() {
         entityData.getStartBuffs().forEach(guid ->
-                Game.getSkillUser().use(SkillData.getSkillByGuid(guid), this, Target.SELF));
+                Game.getSkillUser().use(Game.getEntityFactory().skills().describerToReal(guid), this, Target.SELF));
     }
 
     @Override
