@@ -4,6 +4,7 @@ import ru.rdude.rpg.game.logic.coefficients.Coefficients;
 import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
+import ru.rdude.rpg.game.logic.entities.beings.Minion;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.logic.enums.BuffType;
@@ -14,6 +15,8 @@ import ru.rdude.rpg.game.utils.Functions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SkillResultsCreator {
@@ -31,7 +34,7 @@ public class SkillResultsCreator {
         }
 
         // summon
-        final Long summon = getSummon(skillData);
+        final Minion summon = getSummon(skillData, buff.getTarget());
 
         // resisted
         final boolean resisted = isResisted(skillData, buff.getTarget());
@@ -72,7 +75,7 @@ public class SkillResultsCreator {
         Buff mainTargetBuff = isBuff(skillData) && !isMainTargetResisted ?
                 new Buff(skillData, caster, targets.getMainTarget(), mainTargetDamage) : null;
         SkillResult mainTargetSkillResult = new SkillResult(
-                skillData, caster, targets.getMainTarget(), mainTargetDamage, getSummon(skillData), mainTargetBuff, isMainTargetResisted);
+                skillData, caster, targets.getMainTarget(), mainTargetDamage, getSummon(skillData, targets.getMainTarget()), mainTargetBuff, isMainTargetResisted);
         results.add(mainTargetSkillResult);
 
         // ignore other targets and skill chaining if skill did not hit and resisted
@@ -90,7 +93,7 @@ public class SkillResultsCreator {
                 boolean isResisted = isResisted(skillData, target);
                 Buff buff = isBuff(skillData) && !isResisted ?
                         new Buff(skillData, caster, target, damage) : null;
-                results.add(new SkillResult(skillData, caster, target, damage, getSummon(skillData), buff, isResisted));
+                results.add(new SkillResult(skillData, caster, target, damage, getSummon(skillData, target), buff, isResisted));
                 applySkillChaining.add(target);
             }
             else {
@@ -247,9 +250,12 @@ public class SkillResultsCreator {
         return list;
     }
 
-    private Long getSummon(SkillData skillData) {
+    private Minion getSummon(SkillData skillData, Being<?> target) {
         if (skillData.getSummon() != null && !skillData.getSummon().isEmpty()) {
-            return Functions.randomWithWeights(Functions.normalizePercentsMap(skillData.getSummon()));
+            final Map<SkillData.Summon, Double> chances = skillData.getSummon().stream()
+                    .collect(Collectors.toMap(Function.identity(), SkillData.Summon::getChance));
+            final SkillData.Summon summon = Functions.randomWithWeights(Functions.normalizePercentsMap(chances));
+            return Game.getEntityFactory().monsters().createMinion(summon.getGuid(), summon.getTurns(), summon.getMinutes(), target);
         }
         else {
             return null;

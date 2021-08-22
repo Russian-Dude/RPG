@@ -10,8 +10,11 @@ import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.entities.beings.BeingActionObserver;
 import ru.rdude.rpg.game.logic.entities.states.StateChanger;
+import ru.rdude.rpg.game.logic.enums.GameState;
 import ru.rdude.rpg.game.logic.enums.StatName;
 import ru.rdude.rpg.game.logic.game.Game;
+import ru.rdude.rpg.game.logic.gameStates.Battle;
+import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.logic.time.*;
 import ru.rdude.rpg.game.utils.Functions;
@@ -149,12 +152,15 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
 
     @Override
     public void turnUpdate() {
-        duration.turnUpdate();
-        if (actsTurns != null) {
-            actsTurns--;
-            if (actsTurns <= 0) {
-                actsTurns = entityData.getActsEveryTurn();
-                onTimeOrTurnUpdate();
+        if (Game.getCurrentGame().getCurrentGameState().getEnumValue() == GameState.BATTLE
+            && ((Battle) Game.getCurrentGame().getCurrentGameState()).getCurrentSide().getBeings().contains(target)) {
+            duration.turnUpdate();
+            if (actsTurns != null) {
+                actsTurns--;
+                if (actsTurns <= 0) {
+                    actsTurns = entityData.getActsEveryTurn();
+                    onTimeOrTurnUpdate();
+                }
             }
         }
     }

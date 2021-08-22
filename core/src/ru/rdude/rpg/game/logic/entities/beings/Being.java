@@ -21,7 +21,9 @@ import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.logic.stats.secondary.Hp;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public abstract class Being<T extends BeingData> extends Entity<T> implements BuffObserver, StatObserver {
@@ -45,6 +47,8 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
     protected boolean alive;
     protected SkillEffect effect;
 
+    protected List<Minion> minions;
+
     protected Being(long guid) {
         super(guid);
     }
@@ -64,6 +68,7 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
         equipment = new EquipmentSlotsHolder(this);
         availableSkills = new AvailableSkills();
         effect = SkillEffect.NO;
+        minions = new ArrayList<>();
     }
 
 
@@ -151,6 +156,18 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
 
     public boolean receive(Item item) {
         return EntityReceiver.item(this, item);
+    }
+
+    public List<Minion> getMinions() {
+        return minions;
+    }
+
+    public void addMinion(Minion minion) {
+        minions.add(minion);
+    }
+
+    public void removeMinion(Minion minion) {
+        minions.remove(minion);
     }
 
     public void subscribe(BeingActionObserver observer) {

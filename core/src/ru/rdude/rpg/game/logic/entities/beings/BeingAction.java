@@ -29,6 +29,7 @@ public class BeingAction {
         DIE("death"),
         KILL("killing"),
         ITEM_USED("using an item"),
+        SUMMON("summon"),
         NO_ACTION("no action");
 
         public final String prettyStringAfter;
@@ -40,10 +41,10 @@ public class BeingAction {
 
     private Action action;
     private double value;
-    private Entity interactionWith;
+    private Entity<?> interactionWith;
     private SkillData withSkill;
 
-    public BeingAction(Action action, Entity interactionWith, SkillData withSkill, double value) {
+    public BeingAction(Action action, Entity<?> interactionWith, SkillData withSkill, double value) {
         if (action == null || interactionWith == null)
             throw new IllegalArgumentException("required non null arguments");
         this.action = action;
@@ -54,7 +55,7 @@ public class BeingAction {
 
     public Action action() { return action; }
     public double value() { return value; }
-    public Entity interactor() { return interactionWith; }
+    public Entity<?> interactor() { return interactionWith; }
     public SkillData withSkill() { return withSkill; }
 }
 

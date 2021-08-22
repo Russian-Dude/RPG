@@ -14,6 +14,8 @@ public class SubscribersManager<T> {
     @JsonIgnore
     private Set<T> readyToUnsubscribe;
     @JsonIgnore
+    private Set<T> readyToSubscribe;
+    @JsonIgnore
     private boolean notifying = false;
 
     public SubscribersManager(Set<T> subscribers) {
@@ -38,11 +40,23 @@ public class SubscribersManager<T> {
         if (readyToUnsubscribe != null) {
             readyToUnsubscribe.forEach(this::unsubscribe);
         }
+        if (readyToSubscribe != null) {
+            readyToSubscribe.forEach(this::subscribe);
+        }
         readyToUnsubscribe = null;
+        readyToSubscribe = null;
     }
 
     public void subscribe(T t) {
-        subscribers.add(t);
+        if (notifying) {
+            if (readyToSubscribe == null) {
+                readyToSubscribe = new HashSet<>();
+            }
+            readyToSubscribe.add(t);
+        }
+        else {
+            subscribers.add(t);
+        }
     }
 
     public void unsubscribe(T t) {

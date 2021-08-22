@@ -30,6 +30,8 @@ public class PlayerCreationElement extends Tree.Node<PlayerCreationElement, Play
 
     public void changeName(String name) {
         this.name.setText(name);
+        this.getPlayer().getEntityData().setName(name);
+        this.getPlayer().setName(name);
     }
 
     public PlayerCreationVisual getPlayerCreationVisual() {

@@ -22,7 +22,7 @@ public class SkillData extends EntityData {
     private Map<StatName, String> stats;
     private double timeChange;
     private Transformation transformation;
-    private Map<Long, Double> summon; // by guid
+    private List<Summon> summon;
     private Map<Long, Integer> receiveItems; // by guid
     private Requirements requirements;
     private boolean permanent;
@@ -66,7 +66,7 @@ public class SkillData extends EntityData {
         coefficients = new Coefficients();
         stats = new HashMap<>();
         transformation = new Transformation();
-        summon = new HashMap<>();
+        summon = new ArrayList<>();
         receiveItems = new HashMap<>();
         requirements = new Requirements();
         elements = new HashSet<>();
@@ -149,11 +149,11 @@ public class SkillData extends EntityData {
         this.transformation = transformation;
     }
 
-    public Map<Long, Double> getSummon() {
+    public List<Summon> getSummon() {
         return summon;
     }
 
-    public void setSummon(Map<Long, Double> summon) {
+    public void setSummon(List<Summon> summon) {
         this.summon = summon;
     }
 
@@ -436,7 +436,7 @@ public class SkillData extends EntityData {
     @Override
     public boolean hasEntityDependency(long guid) {
         return
-                summon.containsKey(guid)
+                summon.stream().anyMatch(s -> s.guid == guid)
                         || receiveItems.containsKey(guid)
                         || requirements.items.containsKey(guid)
                         || skillsCouldCast.containsKey(guid)
@@ -448,10 +448,9 @@ public class SkillData extends EntityData {
 
     @Override
     public void replaceEntityDependency(long oldValue, long newValue) {
-        if (summon.containsKey(oldValue)) {
-            summon.put(newValue, summon.get(oldValue));
-            summon.remove(oldValue);
-        }
+        summon.stream()
+                .filter(s -> s.guid == oldValue)
+                .forEach(s -> s.setGuid(newValue));
         if (receiveItems.containsKey(oldValue)) {
             receiveItems.put(newValue, receiveItems.get(oldValue));
             receiveItems.remove(oldValue);
@@ -510,6 +509,45 @@ public class SkillData extends EntityData {
             this.takeItems = takeItems;
         }
 
+    }
+
+    public static class Summon {
+        private long guid;
+        private double chance;
+        private Integer turns;
+        private Integer minutes;
+
+        public long getGuid() {
+            return guid;
+        }
+
+        public void setGuid(long guid) {
+            this.guid = guid;
+        }
+
+        public double getChance() {
+            return chance;
+        }
+
+        public void setChance(double chance) {
+            this.chance = chance;
+        }
+
+        public Integer getTurns() {
+            return turns;
+        }
+
+        public void setTurns(Integer turns) {
+            this.turns = turns;
+        }
+
+        public Integer getMinutes() {
+            return minutes;
+        }
+
+        public void setMinutes(Integer minutes) {
+            this.minutes = minutes;
+        }
     }
 
     public class Transformation {

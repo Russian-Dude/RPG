@@ -2,9 +2,12 @@ package ru.rdude.rpg.game.visual;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.*;
+import ru.rdude.rpg.game.battleVisual.BattleVisual;
 import ru.rdude.rpg.game.logic.entities.beings.Monster;
 import ru.rdude.rpg.game.logic.entities.skills.SkillResult;
 import ru.rdude.rpg.game.logic.game.Game;
+import ru.rdude.rpg.game.logic.gameStates.Battle;
+import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.ui.EffectsStage;
 
 import java.util.ArrayList;
@@ -98,6 +101,15 @@ public class SkillAnimator {
         if (!parallelAction.getActions().isEmpty()) {
             sequenceAction.addAction(parallelAction);
         }
+        // summon animation
+        skillResult.getSummon().ifPresent(minion -> {
+            final GameStateBase currentGameState = Game.getCurrentGame().getCurrentGameState();
+            // if monster summoned to enemy side
+            if (currentGameState instanceof Battle && ((Battle) currentGameState).getEnemySide().getBeings().contains(skillResult.getTarget())) {
+                final int index = ((Battle) currentGameState).getEnemySide().getBeings().indexOf(skillResult.getTarget()) + 1;
+                sequenceAction.addAction(((BattleVisual) Game.getGameVisual().getCurrentGameStateStage()).addEnemyAndCreateAction(index, minion));
+            }
+        });
         sequenceAction.addAction(createDelayedBarsAction(skillResult));
         sequenceAction.addAction(createDamageLabelAction(skillResult));
         if (skillResult.getTarget() instanceof Monster && !skillResult.getTarget().isAlive() ) {

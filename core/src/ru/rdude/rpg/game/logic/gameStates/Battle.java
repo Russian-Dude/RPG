@@ -72,15 +72,21 @@ public class Battle extends GameStateBase implements TurnChangeObserver, BeingAc
         return getAllySide(of) == playerSide ? enemySide : playerSide;
     }
 
+    public Party getCurrentSide() {
+        return playersTurn ? playerSide : enemySide;
+    }
+
     @Override
     public void turnUpdate() {
         // switch side:
         playersTurn = !playersTurn;
         if (!playersTurn) {
             playerSide.forEach(being -> being.setReady(false));
+            enemySide.forEach(being -> being.setReady(true));
             aiTurn();
         }
         else {
+            enemySide.forEach(being -> being.setReady(false));
             playerSide.forEach(being -> being.setReady(true));
         }
     }
@@ -99,11 +105,20 @@ public class Battle extends GameStateBase implements TurnChangeObserver, BeingAc
     }
 
     private void aiTurn() {
-        enemySide.forEach(enemy -> {
-            if (enemy instanceof Monster) {
-                final Long skillGuid = Functions.randomWithWeights(((MonsterData) enemy.getEntityData()).getSkills());
+        playerSide.forEach(being -> {
+            if (being instanceof Monster && being.isReady()) {
+                final Long skillGuid = Functions.randomWithWeights(((MonsterData) being.getEntityData()).getSkills());
                 final SkillData skill = Game.getEntityFactory().skills().describerToReal(skillGuid);
-                Game.getSkillUser().use(skill, enemy, skill.getMainTarget());
+                Game.getSkillUser().use(skill, being, skill.getMainTarget());
+            }
+        });
+        enemySide.forEach(enemy -> {
+            if (enemy instanceof Monster && enemy.isReady()) {
+                final Long skillGuid = Functions.randomWithWeights(((MonsterData) enemy.getEntityData()).getSkills());
+                if (skillGuid != null) {
+                    final SkillData skill = Game.getEntityFactory().skills().describerToReal(skillGuid);
+                    Game.getSkillUser().use(skill, enemy, skill.getMainTarget());
+                }
             }
         });
         final RunnableAction startNextTurnAction = Actions.run(() -> Game.getCurrentGame().getTurnsManager().nextTurn());

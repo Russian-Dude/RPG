@@ -93,7 +93,7 @@ public class BattleVictoryWindow extends Table {
         expRewards.forEach((being, exp) -> {
             final Label label = expLabels.get(being);
             if (label != null) {
-                label.setText(exp == 0d ? "-" : "+ " + exp);
+                label.setText(exp == 0d ? "-" : String.valueOf((int) (double) exp));
             }
         });
     }

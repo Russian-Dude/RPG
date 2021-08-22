@@ -19,6 +19,7 @@ import ru.rdude.rpg.game.utils.Functions;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -205,10 +206,12 @@ public class BuffInfoTooltip extends Tooltip<Table> implements DurationObserver,
         }
 
         // summon
-        if (!skillData.getSummon().isEmpty()) {
-            String summonString = "Summon " + skillData.getSummon().entrySet().stream()
+        if (skillData.getSummon() != null && !skillData.getSummon().isEmpty()) {
+            String summonString = "Summon " + skillData.getSummon().stream()
+                    .collect(Collectors.collectingAndThen(Collectors.toMap(s -> MonsterData.getMonsterByGuid(s.getGuid()).getName(), SkillData.Summon::getChance), Functions::normalizePercentsMap))
+                    .entrySet().stream()
                     .map(entry -> {
-                        String name = MonsterData.getMonsterByGuid(entry.getKey()).getName();
+                        String name = entry.getKey();
                         String percent = " (" + Functions.trimDouble(entry.getValue()) + "%)";
                         return name + percent;
                     })

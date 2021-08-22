@@ -8,6 +8,7 @@ import ru.rdude.rpg.game.logic.actions.SkillsSequencer;
 import ru.rdude.rpg.game.logic.data.io.*;
 import ru.rdude.rpg.game.logic.entities.EntityFactory;
 import ru.rdude.rpg.game.logic.entities.beings.ExpSpreader;
+import ru.rdude.rpg.game.logic.entities.beings.MonsterSummoner;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.entities.items.ItemUser;
 import ru.rdude.rpg.game.logic.entities.skills.*;
@@ -64,6 +65,7 @@ public class Game {
     private static final GameStateSwitcher gameStateSwitcher = new GameStateSwitcher();
     private static final CommandsInput commandsInput = new CommandsInput();
     private static final EntityFactory entityFactory = new EntityFactory();
+    private static final MonsterSummoner monsterSummoner = new MonsterSummoner();
 
     // io
     private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
@@ -199,6 +201,10 @@ public class Game {
 
     public static EntityFactory getEntityFactory() {
         return entityFactory;
+    }
+
+    public static MonsterSummoner getMonsterSummoner() {
+        return monsterSummoner;
     }
 
     public ItemDragAndDroper getItemsDragAndDrop() {

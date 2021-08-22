@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 @JsonPolymorphicSubType("expSpreader")
-public class ExpSpreader implements BeingActionObserver, GameStateObserver {
+public class ExpSpreader implements BeingActionObserver, GameStateObserver, PartyObserver {
 
     private Party party;
     private List<Effort> effort;
@@ -39,6 +39,7 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver {
             being.subscribe(this);
             effort.add(new Effort(being, party));
         });
+        //party.subscribe(this);
         Game.getCurrentGame().getGameStateHolder().subscribe(this);
     }
 
@@ -57,7 +58,26 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver {
 
     public Map<Being<?>, Double> spreadExp(double exp) {
         return party.stream()
+                .filter(being -> being instanceof Player)
                 .collect(Collectors.toMap(Function.identity(), being -> expFor(exp, being)));
+    }
+
+    private double effortFromMinions(Being<?> being) {
+        if (being.minions == null) {
+            return 0d;
+        }
+        double result = 0d;
+        for (Minion minion : being.minions) {
+            final Effort minionEffort = this.effort.stream()
+                    .filter(ef -> ef.being == minion)
+                    .findAny()
+                    .orElse(null);
+            if (minionEffort != null) {
+                result += minionEffort.totalEffort();
+                result += effortFromMinions(minion);
+            }
+        }
+        return result * 0.5;
     }
 
     public double expFor(double allExp, Being<?> being) {
@@ -66,12 +86,15 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver {
         }
         double intBonus = being.stats.intelValue() * 0.01;
         double partySize = party.getBeings().stream()
+                .filter(b -> b instanceof Player)
                 .filter(Being::isAlive)
                 .count();
         double totalEffort = effort.stream()
+                .filter(ef -> !(ef.being instanceof Minion))
                 .map(Effort::totalEffort)
                 .reduce(Double::sum)
                 .orElse(1d);
+        totalEffort += effortFromMinions(being);
         double beingEffort = effort.stream()
                 .filter(effort -> effort.being == being)
                 .findAny()
@@ -81,14 +104,29 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver {
     }
 
     public void clear() {
-        // update effort map in case party was was changed
         effort.forEach(Effort::clear);
+        actualizeEffort();
+    }
+
+    private void actualizeEffort() {
+        // add new
         party.getBeings().stream()
                 .filter(being -> effort.stream().noneMatch(e -> e.being == being))
                 .forEach(being -> {
                     being.subscribe(this);
                     effort.add(new Effort(being, party));
                 });
+        // remove dead minions or minions with dead master or beings that are not in a party anymore
+        effort.stream()
+                .filter(ef -> {
+                    final Being<?> being = ef.being;
+                    final boolean isMinion = being instanceof Minion;
+                    final boolean masterOrMinionDead = isMinion && (!being.isAlive() || !((Minion) being).getMaster().isAlive());
+                    final boolean notInParty = !party.getBeings().contains(being);
+                    return masterOrMinionDead || notInParty;
+                })
+                .collect(Collectors.toList())
+                .forEach(effort::remove);
     }
 
     @Override
@@ -102,6 +140,13 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver {
     @Override
     public void update(GameStateBase oldValue, GameStateBase newValue) {
         clear();
+    }
+
+    @Override
+    public void partyUpdate(Party party, boolean added, Being<?> being, int position) {
+        if (added && effort.stream().noneMatch(ef -> ef.being == being)) {
+            effort.add(new Effort(being, party));
+        }
     }
 
     private static class Effort {
@@ -213,29 +258,33 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver {
                         .map(Stat::value)
                         .reduce(Double::sum).orElse(0d);
             }
+            double atkCoefChange = 0d;
+            double defCoefChange = 0d;
             // coefficients changes
-            Coefficients.CoefficientsContainer atkCoef = buff.getEntityData().getBuffCoefficients().atk();
-            Coefficients.CoefficientsContainer defCoef = buff.getEntityData().getBuffCoefficients().def();
-            // atk
-            double atkCoefChange = Stream.of(
-                    atkCoef.element().getCoefficientsMap().values(),
-                    atkCoef.attackType().getCoefficientsMap().values(),
-                    atkCoef.beingType().getCoefficientsMap().values(),
-                    atkCoef.size().getCoefficientsMap().values())
-                    .flatMap(Collection::stream)
-                    .map(coef -> (coef - 1) * 100d)
-                    .reduce(Double::sum)
-                    .orElse(0d);
-            // def
-            double defCoefChange = Stream.of(
-                    defCoef.element().getCoefficientsMap().values(),
-                    defCoef.attackType().getCoefficientsMap().values(),
-                    defCoef.beingType().getCoefficientsMap().values(),
-                    defCoef.size().getCoefficientsMap().values())
-                    .flatMap(Collection::stream)
-                    .map(coef -> (coef - 1) * 100d)
-                    .reduce(Double::sum)
-                    .orElse(0d);
+            if (buff.getEntityData().getBuffCoefficients() != null) {
+                Coefficients.CoefficientsContainer atkCoef = buff.getEntityData().getBuffCoefficients().atk();
+                Coefficients.CoefficientsContainer defCoef = buff.getEntityData().getBuffCoefficients().def();
+                // atk
+                atkCoefChange = Stream.of(
+                        atkCoef.element().getCoefficientsMap().values(),
+                        atkCoef.attackType().getCoefficientsMap().values(),
+                        atkCoef.beingType().getCoefficientsMap().values(),
+                        atkCoef.size().getCoefficientsMap().values())
+                        .flatMap(Collection::stream)
+                        .map(coef -> (coef - 1) * 100d)
+                        .reduce(Double::sum)
+                        .orElse(0d);
+                // def
+                defCoefChange = Stream.of(
+                        defCoef.element().getCoefficientsMap().values(),
+                        defCoef.attackType().getCoefficientsMap().values(),
+                        defCoef.beingType().getCoefficientsMap().values(),
+                        defCoef.size().getCoefficientsMap().values())
+                        .flatMap(Collection::stream)
+                        .map(coef -> (coef - 1) * 100d)
+                        .reduce(Double::sum)
+                        .orElse(0d);
+            }
             // change value
             return statsChange * 5 + atkCoefChange - defCoefChange;
         }

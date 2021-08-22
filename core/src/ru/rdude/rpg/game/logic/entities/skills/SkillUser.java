@@ -5,6 +5,11 @@ import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.enums.Target;
 import ru.rdude.rpg.game.logic.game.Game;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class SkillUser {
 
     public void use(SkillData skillData, Being<?> caster, Target mainTarget) {
@@ -12,6 +17,8 @@ public class SkillUser {
         if (caster.stats().stmValue() < skillData.getStaminaReq()) {
             return;
         }
+
+        Game.getCurrentGame().getGameLogger().log(caster, skillData);
 
         if (mainTarget == Target.ALLY
                 || mainTarget == Target.ENEMY

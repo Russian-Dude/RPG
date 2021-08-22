@@ -251,8 +251,14 @@ final class SkillTooltipInfoFactory {
 
             // by name
             if (skillData.getEntityReferenceInfo() == EntityReferenceInfo.NAME) {
-                String summonString = skillData.getSummon().entrySet().stream()
-                        .map(entry -> MonsterData.getMonsterByGuid(entry.getKey()).getName() + " (" + Functions.trimDouble(entry.getValue()) + "%)")
+                String summonString = skillData.getSummon().stream()
+                        .collect(Collectors.collectingAndThen(Collectors.toMap(s -> MonsterData.getMonsterByGuid(s.getGuid()).getName(), SkillData.Summon::getChance), Functions::normalizePercentsMap))
+                        .entrySet().stream()
+                        .map(entry -> {
+                            String name = entry.getKey();
+                            String percent = " (" + Functions.trimDouble(entry.getValue()) + "%)";
+                            return name + percent;
+                        })
                         .collect(Collectors.joining(", "));
                 Label summon = new Label("Summon: ", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
                 Label summonLabel = new Label(summonString, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
@@ -265,13 +271,20 @@ final class SkillTooltipInfoFactory {
 
                 // all fields
                 if (skillData.getEntityReferenceInfo() == EntityReferenceInfo.ALL) {
-                    boolean isAllIgnored = skillData.getSummon().keySet().stream()
-                            .map(MonsterData::getMonsterByGuid)
+                    boolean isAllIgnored = skillData.getSummon().stream()
+                            .mapToLong(SkillData.Summon::getGuid)
+                            .mapToObj(MonsterData::getMonsterByGuid)
                             .allMatch(infoHolder::isIgnored);
                     // if all monsters ignored use names
                     if (isAllIgnored) {
-                        String summonString = skillData.getSummon().entrySet().stream()
-                                .map(entry -> MonsterData.getMonsterByGuid(entry.getKey()).getName() + " (" + Functions.trimDouble(entry.getValue()) + "%)")
+                        String summonString = skillData.getSummon().stream()
+                                .collect(Collectors.collectingAndThen(Collectors.toMap(s -> MonsterData.getMonsterByGuid(s.getGuid()).getName(), SkillData.Summon::getChance), Functions::normalizePercentsMap))
+                                .entrySet().stream()
+                                .map(entry -> {
+                                    String name = entry.getKey();
+                                    String percent = " (" + Functions.trimDouble(entry.getValue()) + "%)";
+                                    return name + percent;
+                                })
                                 .collect(Collectors.joining(", "));
                         Label summon = new Label("Summon: ", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
                         Label summonLabel = new Label(summonString, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
@@ -283,7 +296,9 @@ final class SkillTooltipInfoFactory {
                     // use full representation
                     else {
                         result.add(new Label("Summon:", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
-                        skillData.getSummon().forEach((guid, percent) -> {
+                        skillData.getSummon().stream()
+                                .collect(Collectors.collectingAndThen(Collectors.toMap(SkillData.Summon::getGuid, SkillData.Summon::getChance), Functions::normalizePercentsMap))
+                                .forEach((guid, percent) -> {
                             Table monsterTable = new Table();
                             monsterTable.add(new Label(Functions.trimDouble(percent) + "%", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
                             Game.getTooltipInfoFactory().get(MonsterData.getMonsterByGuid(guid), EntityReferenceInfo.ALL, infoHolder)
@@ -297,7 +312,9 @@ final class SkillTooltipInfoFactory {
 
                 // integrated, description
                 else {
-                    skillData.getSummon().forEach((guid, percent) -> {
+                    skillData.getSummon().stream()
+                            .collect(Collectors.collectingAndThen(Collectors.toMap(SkillData.Summon::getGuid, SkillData.Summon::getChance), Functions::normalizePercentsMap))
+                            .forEach((guid, percent) -> {
                         result.add(new Label(Functions.trimDouble(percent) + "%", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
                         result.addAll(Game.getTooltipInfoFactory().get(MonsterData.getMonsterByGuid(guid), skillData.getEntityReferenceInfo(), infoHolder));
                     });

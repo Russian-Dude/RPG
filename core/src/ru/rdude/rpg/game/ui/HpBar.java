@@ -84,8 +84,12 @@ public class HpBar extends Group implements StatObserver {
     }
 
     public void actDelayed(Buff buff) {
-        setMax(delayedBuffs.get(buff).getSecond());
-        setCurrent(delayedBuffs.get(buff).getFirst());
+        final Pair<Double, Double> delayed = delayedBuffs.get(buff);
+        if (delayed == null) {
+            return;
+        }
+        setMax(delayed.getSecond());
+        setCurrent(delayed.getFirst());
         delayedBuffs.remove(buff);
         noMoreDelayed();
     }

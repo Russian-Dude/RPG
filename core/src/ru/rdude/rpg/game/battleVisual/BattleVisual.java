@@ -2,11 +2,17 @@ package ru.rdude.rpg.game.battleVisual;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.actions.*;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import ru.rdude.rpg.game.logic.actions.IncrementAction;
+import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.Monster;
+import ru.rdude.rpg.game.logic.entities.beings.Party;
+import ru.rdude.rpg.game.logic.entities.beings.PartyObserver;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.game.Game;
@@ -16,13 +22,13 @@ import ru.rdude.rpg.game.logic.gameStates.BattleObserver;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.time.TimeManager;
 import ru.rdude.rpg.game.ui.BattleVictoryWindow;
+import ru.rdude.rpg.game.ui.UiData;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.visual.GameStateStage;
 import ru.rdude.rpg.game.visual.MonsterVisual;
 import ru.rdude.rpg.game.visual.VisualBeing;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,7 +46,6 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
         this.cell = cell;
         this.battle = battle;
         battle.subscribe(this);
-        final Table monstersTable = new Table();
         final float groundHeight = Gdx.graphics.getHeight() / 1.5f;
         final Image ground = Game.getImageFactory().getGroundImage(cell);
         final Image background = Game.getImageFactory().getBackgroundImage(cell);
@@ -57,14 +62,18 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
         createFarDecorations();
         battle.getEnemySide().streamOnly(Monster.class)
                 .map(MonsterVisual::new)
-                .forEach(vis -> {
-                    monstersTable.add(vis).space(Gdx.graphics.getWidth() / 10f).center();
-                    monsterVisuals.add(vis);
+                .forEach(monsterVisual -> {
+                    monsterVisuals.add(monsterVisual);
                 });
-        monstersTable.pack();
-        addActor(monstersTable);
         createMidDecorations();
-        monstersTable.setPosition(Gdx.graphics.getWidth() / 2f - (monstersTable.getWidth() / 2f), Gdx.graphics.getHeight() / 2.1f);
+
+        final Map<MonsterVisual, Float> monstersX = calculateMonstersX();
+        monsterVisuals.forEach(monsterVisual -> {
+            addActor(monsterVisual);
+            final float x = monstersX.get(monsterVisual);
+            final float y = Gdx.graphics.getHeight() * 0.6f;
+            monsterVisual.setPosition(x, y);
+        });
     }
 
     private void createFarDecorations() {
@@ -113,6 +122,41 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
         imageRight.setPosition(Gdx.graphics.getWidth() - rightWidth / 2f, posY);
     }
 
+    private float calculateSpaceBetweenEnemies() {
+        final float defaultSpace = Gdx.graphics.getWidth() / 10f;
+        final float availableWidth = Gdx.graphics.getWidth() * 0.9f;
+        final float gaps = monsterVisuals.size() - 1;
+        final float monstersTotalWidth = monsterVisuals.stream()
+                .map(VerticalGroup::getPrefWidth)
+                .reduce(Float::sum)
+                .orElse(1f);
+
+        final float calculatedSpace = (availableWidth - monstersTotalWidth) / gaps;
+        return Math.min(defaultSpace, calculatedSpace);
+    }
+
+    private Map<MonsterVisual, Float> calculateMonstersX() {
+        final Map<MonsterVisual, Float> result = new HashMap<>();
+        final float halfScreen = Gdx.graphics.getWidth() / 2f;
+        final float space = calculateSpaceBetweenEnemies();
+        final float monstersTotalWidth = monsterVisuals.stream()
+                .map(VerticalGroup::getPrefWidth)
+                .reduce(Float::sum)
+                .orElse(1f);
+        final float totalWidth = monstersTotalWidth + space * (monsterVisuals.size() - 1f);
+        final float start = halfScreen - totalWidth / 2;
+
+        float currentWidth = 0f;
+        for (int i = 0; i < monsterVisuals.size(); i++) {
+            final MonsterVisual monsterVisual = monsterVisuals.get(i);
+            final float monsterWidth = monsterVisual.getPrefWidth();
+            final float position = start + currentWidth + monsterWidth / 2f + space * i;
+            currentWidth += monsterWidth;
+            result.put(monsterVisual, position);
+        }
+        return result;
+    }
+
     @Override
     public List<VisualBeing<?>> getVisualBeings() {
         return Stream.of(Game.getGameVisual().getUi().getPlayerVisuals(),
@@ -129,5 +173,47 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
             victoryWindow.setExpRewards(battleAction.lastExpRewards);
             victoryWindow.setVisible(true);
         }
+    }
+
+    // smoothly add monster visual to battlefield
+    public Action addEnemyAndCreateAction(int position, Monster monster) {
+        monsterVisuals.stream()
+                .filter(monsterVisual -> !monsterVisual.getBeing().isAlive())
+                .collect(Collectors.toList())
+                .forEach(monsterVisual -> {
+                    monsterVisuals.remove(monsterVisual);
+                    monsterVisual.remove();
+                });
+
+        final MonsterVisual newMonsterVisual = new MonsterVisual(monster);
+        monsterVisuals.add(position, newMonsterVisual);
+
+        final Map<MonsterVisual, Float> monstersX = calculateMonstersX();
+        final SequenceAction resultAction = Actions.sequence();
+        final ParallelAction moveActions = Actions.parallel();
+        resultAction.addAction(moveActions);
+
+        monsterVisuals.forEach(monsterVisual -> {
+            if (monsterVisual != newMonsterVisual) {
+                final MoveToAction moveToAction = Actions.moveTo(monstersX.get(monsterVisual), monsterVisual.getY(), 1f);
+                moveToAction.setTarget(monsterVisual);
+                moveActions.addAction(moveToAction);
+            }
+            else {
+                newMonsterVisual.setVisible(false);
+                addActor(newMonsterVisual);
+                newMonsterVisual.setPosition(monstersX.get(newMonsterVisual), Gdx.graphics.getHeight() * 0.6f);
+                final AlphaAction fadeOut = Actions.fadeOut(0f);
+                fadeOut.setTarget(newMonsterVisual);
+                final RunnableAction show = Actions.run(() -> newMonsterVisual.setVisible(true));
+                final AlphaAction fadeIn = Actions.fadeIn(1f);
+                fadeIn.setTarget(newMonsterVisual);
+                resultAction.addAction(fadeOut);
+                resultAction.addAction(show);
+                resultAction.addAction(fadeIn);
+            }
+        });
+
+        return resultAction;
     }
 }

@@ -60,9 +60,8 @@ public class MonsterVisual extends VerticalGroup implements VisualBeing<Monster>
         damageLabel.setPosition(group.getWidth() / 2, group.getHeight() / 2);
         addActor(hpBar);
         addActor(group);
-        addActor(new Label(monster.getName(), UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
-        final float yOffset = Gdx.graphics.getHeight() / 8f;
-        padTop(Functions.random(0, yOffset));
+        final Label nameLabel = new Label(monster.getName(), UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+        addActor(nameLabel);
 
         // skill targeting
         monsterImage.addListener(new ClickListener() {
@@ -73,6 +72,8 @@ public class MonsterVisual extends VerticalGroup implements VisualBeing<Monster>
                 }
             }
         });
+        final float yOffset = Gdx.graphics.getHeight() / 8f;
+        padTop(Functions.random(0, yOffset));
     }
 
     @Override

@@ -75,7 +75,7 @@ public class ItemSlotVisual extends Group implements SlotObserver {
     }
 
     @Override
-    public void update(Slot<?> slot, Entity entity) {
+    public void update(Slot<?> slot, Entity<?> entity) {
         if (this.slot == slot) {
             if (entity instanceof Item) {
                 setItemVisual(ItemVisual.ofItem((Item) entity));

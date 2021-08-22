@@ -14,7 +14,7 @@ import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 public class Monster extends Being<MonsterData> {
 
     @JsonCreator
-    private Monster(@JsonProperty("entityData") long guid) {
+    protected Monster(@JsonProperty("entityData") long guid) {
         super(guid);
     }
 

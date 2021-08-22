@@ -16,6 +16,67 @@ import java.util.stream.Collectors;
 
 public final class MonsterFactory {
 
+    public Minion createMinion(long guid, Integer turnsDuration, Integer timeDuration, Being<?> master) {
+        return createMinion(MonsterData.getMonsterByGuid(guid), turnsDuration, timeDuration, master);
+    }
+
+    public Minion createMinion(MonsterData monsterData, Integer turnsDuration, Integer timeDuration, Being<?> master) {
+        final MonsterData realData = describerToReal(monsterData);
+        return createMinion(
+                realData,
+                Math.max((int) monsterData.getMinLvl(), (int) realData.getMinLvl()), Math.min((int) monsterData.getMaxLvl(), (int) realData.getMaxLvl()),
+                turnsDuration,
+                timeDuration,
+                master);
+    }
+
+    public Minion createMinion(MonsterData monsterData, int lvlMin, int lvlMax, Integer turnsDuration, Integer timeDuration, Being<?> master) {
+        final MonsterData realData = describerToReal(monsterData);
+        if (realData == monsterData) {
+            return createMinion(monsterData, Functions.random(lvlMin, lvlMax), turnsDuration, timeDuration, master);
+        }
+        else {
+            return createMinion(
+                    realData,
+                    Functions.random(Math.max((int) monsterData.getMinLvl(), (int) realData.getMinLvl()), Math.min((int) monsterData.getMaxLvl(), (int) realData.getMaxLvl())),
+                    timeDuration,
+                    turnsDuration,
+                    master);
+        }
+    }
+
+    public Minion createMinion(MonsterData monsterData, int lvl, Integer turnsDuration, Integer timeDuration, Being<?> master) {
+        final MonsterData realData = describerToReal(monsterData);
+        Minion minion = new Minion(monsterData, turnsDuration, timeDuration, master);
+        // if there is no need to calculate stats based on level
+        if (minion.stats.lvl().value() == lvl) {
+            return minion;
+        }
+        // calculate stats
+        double mainLvl = minion.stats.lvlValue();
+        minion.stats.lvl().set(lvl);
+        minion.stats.forEachWithNestedStats(stat -> {
+            if (!(stat instanceof Lvl)) {
+                double bonus = stat.getBuffValue(Bonus.class);
+                if (bonus != 0) {
+                    double bonusPerLvl = bonus / mainLvl;
+                    stat.setBuffValue(Bonus.class, bonusPerLvl * lvl);
+                    if (stat instanceof Hp.Max) {
+                        minion.stats.hp().set(stat.value());
+                    }
+                    else if (stat instanceof Stm.Max) {
+                        minion.stats.stm().set(stat.value());
+                    }
+                }
+            }
+        });
+        return minion;
+    }
+
+    public Monster createMonster(long guid) {
+        return createMonster(MonsterData.getMonsterByGuid(guid));
+    }
+
     public Monster createMonster(MonsterData monsterData) {
         final MonsterData realData = describerToReal(monsterData);
         return createMonster(realData, Math.max((int) monsterData.getMinLvl(), (int) realData.getMinLvl()), Math.min((int) monsterData.getMaxLvl(), (int) realData.getMaxLvl()));

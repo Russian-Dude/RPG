@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.logic.entities;
 
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
+import ru.rdude.rpg.game.logic.entities.beings.Minion;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.entities.skills.Buff;
 import ru.rdude.rpg.game.logic.entities.skills.Damage;
@@ -80,6 +81,9 @@ public final class EntityReceiver {
                 target.notifySubscribers(beingAction, target);
                 if (damage.interactor() instanceof Being) {
                     ((Being<?>) damage.interactor()).notifySubscribers(new BeingAction(BeingAction.Action.KILL, target, damage.bySkill(), damage.value()), (Being<?>) damage.interactor());
+                }
+                if (target instanceof Minion) {
+                    ((Minion) target).getMaster().removeMinion(((Minion) target));
                 }
             }
         }

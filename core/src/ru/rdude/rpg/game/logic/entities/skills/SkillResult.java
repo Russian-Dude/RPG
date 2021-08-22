@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.logic.entities.skills;
 
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
+import ru.rdude.rpg.game.logic.entities.beings.Minion;
 
 import java.util.Map;
 import java.util.Optional;
@@ -12,12 +13,12 @@ public class SkillResult {
     private final Being<?> caster;
     private final Being<?> target;
     private final Damage damage;
-    private final Long summon;
+    private final Minion summon;
     private final Buff buff;
     private final boolean isResisted;
 
 
-    public SkillResult(SkillData skillData, Being<?> caster, Being<?> target, Damage damage, Long summon, Buff buff, boolean isResisted) {
+    public SkillResult(SkillData skillData, Being<?> caster, Being<?> target, Damage damage, Minion summon, Buff buff, boolean isResisted) {
         this.skillData = skillData;
         this.caster = caster;
         this.target = target;
@@ -43,7 +44,7 @@ public class SkillResult {
         return Optional.ofNullable(damage);
     }
 
-    public Optional<Long> getSummon() {
+    public Optional<Minion> getSummon() {
         return Optional.ofNullable(summon);
     }
 
