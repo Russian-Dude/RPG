@@ -3,37 +3,33 @@ package ru.rdude.rpg.game.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Battle;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
+import ru.rdude.rpg.game.visual.VisualBeing;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @JsonIgnoreType
 public class UIStage extends Stage implements GameStateObserver {
 
     private final OrthographicCamera camera = new OrthographicCamera();
-    private final Set<PlayerVisual> playerVisuals = new HashSet<>();
+    private final List<VisualBeing<?>> visualBeings;
+    private final PlayersVisualBottom playersVisualBottom;
     private final CommandsInputVisual commandsInputVisual = new CommandsInputVisual();
     private final BattleVictoryWindow battleVictoryWindow = new BattleVictoryWindow();
+    private final LoggerVisual loggerVisual;
     private final Button endTurnButton;
 
-    public UIStage(PlayerVisual... playerVisuals) {
+    public UIStage() {
         super(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-
-        // save Player visuals
-        this.playerVisuals.addAll(Arrays.asList(playerVisuals));
 
         // camera
         float w = Gdx.graphics.getWidth();
@@ -49,9 +45,11 @@ public class UIStage extends Stage implements GameStateObserver {
 
         // ui elements
         // players visuals
-        addActor(new PlayersVisualBottom(playerVisuals));
+        playersVisualBottom = new PlayersVisualBottom();
+        visualBeings = playersVisualBottom.getVisualBeings();
+        addActor(playersVisualBottom);
         // logger
-        LoggerVisual loggerVisual = new LoggerVisual();
+        loggerVisual = new LoggerVisual();
         addActor(loggerVisual);
         // time and place
         TimeAndPlaceUi timeAndPlaceUi = new TimeAndPlaceUi();
@@ -77,7 +75,14 @@ public class UIStage extends Stage implements GameStateObserver {
     }
 
     public Set<PlayerVisual> getPlayerVisuals() {
-        return playerVisuals;
+        return visualBeings.stream()
+                .filter(visualBeing -> visualBeing instanceof PlayerVisual)
+                .map(visualBeing -> (PlayerVisual) visualBeing)
+                .collect(Collectors.toSet());
+    }
+
+    public List<VisualBeing<?>> getVisualBeings() {
+        return visualBeings;
     }
 
     public void swapConsoleVisibility() {
@@ -90,6 +95,14 @@ public class UIStage extends Stage implements GameStateObserver {
 
     public BattleVictoryWindow getBattleVictoryWindow() {
         return battleVictoryWindow;
+    }
+
+    public LoggerVisual getLoggerVisual() {
+        return loggerVisual;
+    }
+
+    public PlayersVisualBottom getPlayersVisualBottom() {
+        return playersVisualBottom;
     }
 
     @Override

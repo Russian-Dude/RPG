@@ -105,24 +105,27 @@ public class Battle extends GameStateBase implements TurnChangeObserver, BeingAc
     }
 
     private void aiTurn() {
-        playerSide.forEach(being -> {
-            if (being instanceof Monster && being.isReady()) {
-                final Long skillGuid = Functions.randomWithWeights(((MonsterData) being.getEntityData()).getSkills());
-                final SkillData skill = Game.getEntityFactory().skills().describerToReal(skillGuid);
-                Game.getSkillUser().use(skill, being, skill.getMainTarget());
-            }
-        });
-        enemySide.forEach(enemy -> {
-            if (enemy instanceof Monster && enemy.isReady()) {
-                final Long skillGuid = Functions.randomWithWeights(((MonsterData) enemy.getEntityData()).getSkills());
-                if (skillGuid != null) {
+        final RunnableAction aiTurnAction = Actions.run(() -> {
+            playerSide.forEach(being -> {
+                if (being instanceof Monster && being.isReady()) {
+                    final Long skillGuid = Functions.randomWithWeights(((MonsterData) being.getEntityData()).getSkills());
                     final SkillData skill = Game.getEntityFactory().skills().describerToReal(skillGuid);
-                    Game.getSkillUser().use(skill, enemy, skill.getMainTarget());
+                    Game.getSkillUser().use(skill, being, skill.getMainTarget());
                 }
-            }
+            });
+            enemySide.forEach(enemy -> {
+                if (enemy instanceof Monster && enemy.isReady()) {
+                    final Long skillGuid = Functions.randomWithWeights(((MonsterData) enemy.getEntityData()).getSkills());
+                    if (skillGuid != null) {
+                        final SkillData skill = Game.getEntityFactory().skills().describerToReal(skillGuid);
+                        Game.getSkillUser().use(skill, enemy, skill.getMainTarget());
+                    }
+                }
+            });
+            final RunnableAction startNextTurnAction = Actions.run(() -> Game.getCurrentGame().getTurnsManager().nextTurn());
+            Game.getCurrentGame().getSkillsSequencer().add(startNextTurnAction);
         });
-        final RunnableAction startNextTurnAction = Actions.run(() -> Game.getCurrentGame().getTurnsManager().nextTurn());
-        Game.getCurrentGame().getSkillsSequencer().add(startNextTurnAction);
+        Game.getCurrentGame().getSkillsSequencer().add(Actions.after(aiTurnAction));
     }
 
     private boolean checkLose() {

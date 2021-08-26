@@ -36,17 +36,17 @@ public class GameStateSwitcher {
         final Map map = new Map(GameMapFileLoader.load(selectedMap.mapFile));
         Game.getCurrentGame().setGameMap(map);
         map.placePlayerOnStartPosition();
-        List<PlayerVisual> playerVisuals = createdPlayers.stream()
-                .peek(player -> {
-                    String name = player.getName();
-                    player.setName(name.isBlank() ? "Default Player Name" : name); })
-                .map(PlayerVisual::new)
-                .collect(Collectors.toList());
-        Game.getCurrentGame().setCurrentPlayers(new Party(createdPlayers));
+        createdPlayers.forEach(player -> {
+            String name = player.getName();
+            player.setName(name.isBlank() ? "Default Player Name" : name); });
+        final Party party = new Party(createdPlayers);
+        Game.getCurrentGame().setCurrentPlayers(party);
         Game.getGameVisual().addStage(map.getStage());
-        Game.getGameVisual().setUi(new UIStage(playerVisuals.toArray(PlayerVisual[]::new)));
+        Game.getGameVisual().setUi(new UIStage());
         Game.getCurrentGame().getGameStateHolder().setGameState(map);
         Game.getEntityFactory().monsters().createMonstersOnMap(Game.getCurrentGame().getGameMap());
+        Game.getCurrentGame().getGameMap().getStage().playerChangedPosition(
+                Game.getCurrentGame().getGameMap().getPlayerPosition(), Game.getCurrentGame().getGameMap().getPlayerPosition());
         // TODO: 14.06.2021 remove this test
         for (ItemData itemData : ItemData.getItems().values()) {
             int c = itemData.isStackable() ? 30 : 1;
@@ -64,10 +64,7 @@ public class GameStateSwitcher {
             Game.setCurrentGame(game);
             Game.getCurrentGame().getGameMap().getStage(); // to load map stage even if is not map currently
             Game.getGameVisual().addStage((Stage) Game.getCurrentGame().getCurrentGameState().getStage());
-            Game.getGameVisual().setUi(new UIStage(game.getCurrentPlayers().getBeings().stream()
-                    .filter(being -> being instanceof Player)
-                    .map(being -> new PlayerVisual((Player) being))
-                    .toArray(PlayerVisual[]::new)));
+            Game.getGameVisual().setUi(new UIStage());
         };
         Runnable onEndLoading = () -> Game.getGameVisual().closeMenus();
         Game.getGameVisual().setMenuStage(LoadingStage.instance("Loading", loadingRunnable, onEndLoading));

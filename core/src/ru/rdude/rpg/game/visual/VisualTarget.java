@@ -6,7 +6,6 @@ import ru.rdude.rpg.game.ui.StmBar;
 
 public interface VisualTarget {
 
-    DamageLabel getDamageLabel();
     Vector2 getCenter();
     HpBar getHpBar();
     StmBar getStmBar();

@@ -17,6 +17,7 @@ import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Battle;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
+import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.mapVisual.VisualConstants;
 import ru.rdude.rpg.game.ui.colors.EyesColor;
 import ru.rdude.rpg.game.ui.colors.HairColor;
@@ -48,8 +49,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
     private final Button items;
     private final HorizontalGroup buttons;
     private final Label nameLabel;
-    private final PlayerBuffsIcons buffsIcons;
-    private final DamageLabel damageLabel;
+    private final BeingBuffsIcons buffsIcons;
 
     public PlayerVisual(Player player) {
         this(player, createAvatarFromData(player.getEntityData()));
@@ -71,8 +71,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
         spells.setVisible(getBeing().isReady());
         nameLabel = new Label(player.getName(), DEFAULT_SKIN, BIG_TEXT_STYLE);
         nameLabel.setAlignment(Align.center);
-        buffsIcons = new PlayerBuffsIcons(this);
-        damageLabel = new DamageLabel();
+        buffsIcons = new BeingBuffsIcons(this);
 
         // items
         backpackWindow = new BackpackWindow(player);
@@ -176,8 +175,6 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
         avatar.setPosition(0, 0);
         topGroup.addActor(avatar);
         topGroup.addActor(buttons);
-        topGroup.addActor(damageLabel);
-        damageLabel.setPosition(topGroup.getWidth() / 2, topGroup.getHeight() / 2);
         withoutNameGroup.addActor(topGroup);
         withoutNameGroup.addActor(hpBar);
         withoutNameGroup.addActor(stmBar);
@@ -188,6 +185,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
         table.pack();
         addActor(table);
         addActor(nameLabel);
+        setHeight(getPrefHeight());
         align(Align.center);
     }
 
@@ -232,11 +230,6 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
     }
 
     @Override
-    public DamageLabel getDamageLabel() {
-        return damageLabel;
-    }
-
-    @Override
     public Vector2 getCenter() {
         float x = avatar.getWidth() / 2f;
         float y = avatar.getHeight() / 2f;
@@ -261,6 +254,9 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
     @Override
     public void update(GameStateBase oldValue, GameStateBase newValue) {
         attack.setVisible(newValue instanceof Battle && getBeing().isReady());
+        if (newValue instanceof Map) {
+            spells.setVisible(true);
+        }
     }
 
     @Override

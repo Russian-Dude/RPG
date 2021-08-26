@@ -13,12 +13,13 @@ import ru.rdude.rpg.game.logic.entities.beings.BeingActionObserver;
 import ru.rdude.rpg.game.logic.entities.skills.Buff;
 import ru.rdude.rpg.game.logic.entities.skills.BuffObserver;
 import ru.rdude.rpg.game.mapVisual.VisualConstants;
+import ru.rdude.rpg.game.visual.VisualBeing;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @JsonIgnoreType
-public class PlayerBuffsIcons implements BeingActionObserver, BuffObserver {
+public class BeingBuffsIcons implements BeingActionObserver, BuffObserver {
 
     private final static int maxBuffsOnSide = 6;
     private final Side leftSide = new Side();
@@ -27,16 +28,16 @@ public class PlayerBuffsIcons implements BeingActionObserver, BuffObserver {
     private final TextButton moreButton = new TextButton("+", UiData.DEFAULT_SKIN, UiData.YES_SQUARE_BUTTON_STYLE);
     private final Map<Buff, BuffIcon> icons = new HashMap<>();
 
-    public PlayerBuffsIcons(PlayerVisual playerVisual) {
-        playerVisual.getPlayer().getBuffs().forEach(this::add);
-        playerVisual.getPlayer().subscribe(this);
+    public BeingBuffsIcons(VisualBeing<?> visualBeing) {
+        visualBeing.getBeing().getBuffs().forEach(this::add);
+        visualBeing.getBeing().subscribe(this);
 
         moreButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 moreButton.getStage().addActor(buffsWindow);
-                buffsWindow.setX(playerVisual.getX() + (playerVisual.getWidth() / 2f) - (buffsWindow.getWidth() / 2f));
-                buffsWindow.setY(playerVisual.getY() + playerVisual.getHeight() + 10f);
+                buffsWindow.setX(((Actor) visualBeing).getX() + (((Actor) visualBeing).getWidth() / 2f) - (buffsWindow.getWidth() / 2f));
+                buffsWindow.setY(((Actor) visualBeing).getY() + ((Actor) visualBeing).getHeight() + 10f);
                 buffsWindow.setVisible(!buffsWindow.isVisible());
             }
         });
@@ -100,7 +101,7 @@ public class PlayerBuffsIcons implements BeingActionObserver, BuffObserver {
     }
 
     @Override
-    public void update(BeingAction action, Being being) {
+    public void update(BeingAction action, Being<?> being) {
         if (action.action() == BeingAction.Action.BUFF_RECEIVE) {
             add((Buff) action.interactor());
         }

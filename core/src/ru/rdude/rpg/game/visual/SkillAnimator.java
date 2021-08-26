@@ -1,7 +1,11 @@
 package ru.rdude.rpg.game.visual;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.*;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import ru.rdude.rpg.game.battleVisual.BattleVisual;
 import ru.rdude.rpg.game.logic.entities.beings.Monster;
 import ru.rdude.rpg.game.logic.entities.skills.SkillResult;
@@ -107,7 +111,12 @@ public class SkillAnimator {
             // if monster summoned to enemy side
             if (currentGameState instanceof Battle && ((Battle) currentGameState).getEnemySide().getBeings().contains(skillResult.getTarget())) {
                 final int index = ((Battle) currentGameState).getEnemySide().getBeings().indexOf(skillResult.getTarget()) + 1;
-                sequenceAction.addAction(((BattleVisual) Game.getGameVisual().getCurrentGameStateStage()).addEnemyAndCreateAction(index, minion));
+                sequenceAction.addAction(((BattleVisual) Game.getGameVisual().getCurrentGameStateStage()).createAddEnemyAction(index, minion));
+            }
+            // if monster summoned to player side
+            else if (Game.getCurrentGame().getCurrentPlayers().getBeings().contains(skillResult.getTarget())) {
+                final int index = Game.getCurrentGame().getCurrentPlayers().getBeings().indexOf(skillResult.getTarget()) + 1;
+                sequenceAction.addAction(Game.getGameVisual().getUi().getPlayersVisualBottom().createAddBeingAction(index, minion));
             }
         });
         sequenceAction.addAction(createDelayedBarsAction(skillResult));
@@ -215,17 +224,25 @@ public class SkillAnimator {
     private RunnableAction createDamageLabelAction(SkillResult skillResult) {
         return Actions.run(() -> {
             skillResult.getDamage().ifPresent(damage -> {
+                final DamageLabel damageLabel = Pools.get(DamageLabel.class).obtain();
+                damageLabel.setText("");
                 final MoveByAction moveUp = Actions.moveBy(0, 120, 1f);
                 final MoveByAction moveMoreUp = Actions.moveBy(0, 20, 0.2f);
                 final AlphaAction fadeInAction = Actions.fadeIn(0.2f);
                 final AlphaAction fadeOutAction = Actions.fadeOut(0.2f);
                 final ScaleByAction scaleUpAction = Actions.scaleBy(2f, 2f, 1f);
                 final ScaleByAction scaleDownAction = Actions.scaleBy(-2f, -2f, 0.2f);
-                final MoveByAction moveBackAction = Actions.moveBy(0f, -140f);
                 final ParallelAction showAction = Actions.parallel(moveUp, fadeInAction, scaleUpAction);
                 final ParallelAction hideAction = Actions.parallel(fadeOutAction, moveMoreUp);
-                final SequenceAction resultAction = Actions.sequence(showAction, hideAction, scaleDownAction, moveBackAction);
+                final RunnableAction removeAction = Actions.run(() -> {
+                    damageLabel.remove();
+                    Pools.get(DamageLabel.class).free(damageLabel);
+                });
+                final SequenceAction resultAction = Actions.sequence(showAction, hideAction, scaleDownAction, removeAction);
                 VisualBeing.VISUAL_BEING_FINDER.find(skillResult.getTarget()).ifPresent(b -> {
+                    Game.getGameVisual().getEffectsStageFront().addActor(damageLabel);
+                    final Vector2 position = b.getCenter();
+                    damageLabel.setPosition(position.x, position.y);
                     final String damageText;
                     if (damage.isHit()) {
                         damageText = String.valueOf((int) damage.value());
@@ -245,9 +262,9 @@ public class SkillAnimator {
                     else {
                         damageText = "";
                     }
-                    b.getDamageLabel().setText(damageText);
-                    b.getDamageLabel().addAction(resultAction);
+                    damageLabel.setText(damageText);
                 });
+                damageLabel.addAction(resultAction);
             });
         });
     }

@@ -9,10 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.actions.IncrementAction;
-import ru.rdude.rpg.game.logic.entities.beings.Being;
-import ru.rdude.rpg.game.logic.entities.beings.Monster;
-import ru.rdude.rpg.game.logic.entities.beings.Party;
-import ru.rdude.rpg.game.logic.entities.beings.PartyObserver;
+import ru.rdude.rpg.game.logic.entities.beings.*;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.game.Game;
@@ -34,7 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @JsonIgnoreType
-public class BattleVisual extends Stage implements GameStateStage, BattleObserver {
+public class BattleVisual extends Stage implements GameStateStage, BattleObserver, PartyObserver {
 
     private Cell cell;
     private Battle battle;
@@ -46,6 +43,7 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
         this.cell = cell;
         this.battle = battle;
         battle.subscribe(this);
+        battle.getEnemySide().subscribe(this);
         final float groundHeight = Gdx.graphics.getHeight() / 1.5f;
         final Image ground = Game.getImageFactory().getGroundImage(cell);
         final Image background = Game.getImageFactory().getBackgroundImage(cell);
@@ -61,7 +59,7 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
         sky.setY(groundHeight);
         createFarDecorations();
         battle.getEnemySide().streamOnly(Monster.class)
-                .map(MonsterVisual::new)
+                .map(monster -> new MonsterVisual(monster, MonsterVisual.Style.ENEMY))
                 .forEach(monsterVisual -> {
                     monsterVisuals.add(monsterVisual);
                 });
@@ -172,11 +170,27 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
             victoryWindow.setItemsReward(battle.createItemsReward());
             victoryWindow.setExpRewards(battleAction.lastExpRewards);
             victoryWindow.setVisible(true);
+            battle.getEnemySide().unsubscribe(this);
+        }
+    }
+
+    @Override
+    public void partyUpdate(Party party, boolean added, Being<?> being, int position) {
+        if (party == battle.getEnemySide() && !added && being instanceof Minion) {
+            VisualBeing.VISUAL_BEING_FINDER.find(being).ifPresent(visualBeing -> {
+                final SequenceAction resultAction = Actions.sequence();
+                final AlphaAction fadeOut = Actions.fadeOut(1f);
+                fadeOut.setTarget(((Actor) visualBeing));
+                final RunnableAction remove = Actions.run(((Actor) visualBeing)::remove);
+                resultAction.addAction(fadeOut);
+                resultAction.addAction(remove);
+                Game.getCurrentGame().getSkillsSequencer().add(resultAction);
+            });
         }
     }
 
     // smoothly add monster visual to battlefield
-    public Action addEnemyAndCreateAction(int position, Monster monster) {
+    public Action createAddEnemyAction(int position, Monster monster) {
         monsterVisuals.stream()
                 .filter(monsterVisual -> !monsterVisual.getBeing().isAlive())
                 .collect(Collectors.toList())
@@ -185,7 +199,7 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
                     monsterVisual.remove();
                 });
 
-        final MonsterVisual newMonsterVisual = new MonsterVisual(monster);
+        final MonsterVisual newMonsterVisual = new MonsterVisual(monster, MonsterVisual.Style.ENEMY);
         monsterVisuals.add(position, newMonsterVisual);
 
         final Map<MonsterVisual, Float> monstersX = calculateMonstersX();
