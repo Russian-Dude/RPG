@@ -39,6 +39,8 @@ public class PlayersVisualBottom extends ScrollPane implements PartyObserver {
         mainGroup.setTouchable(Touchable.childrenOnly);
         setWidth(Gdx.graphics.getWidth());
         setHeight(getPrefHeight());
+        this.setTouchable(Touchable.childrenOnly);
+        mainGroup.setTouchable(Touchable.childrenOnly);
     }
 
     public List<VisualBeing<?>> getVisualBeings() {
