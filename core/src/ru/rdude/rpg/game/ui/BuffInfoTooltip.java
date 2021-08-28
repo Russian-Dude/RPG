@@ -297,6 +297,7 @@ public class BuffInfoTooltip extends Tooltip<Table> implements DurationObserver,
 
     private String getTimeLeftString(Duration duration) {
         String turns = duration.getTurnsLeft()
+                .map(d -> (d % 2 == 0 ? d : d - 1) / 2)
                 .map(d -> Functions.trimDouble(d) + " turns")
                 .orElse("");
         String minutes = duration.getMinutesLeft()

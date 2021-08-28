@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.entities.beings.BeingActionObserver;
+import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.time.Duration;
 import ru.rdude.rpg.game.logic.time.TimeManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
@@ -19,10 +20,13 @@ public class SkillDuration extends Duration implements BeingActionObserver {
     private Double damageReceived;
     private Double damageMade;
 
+    private Being<?> being;
+
     protected SkillDuration() { }
 
-    public SkillDuration(Double minutes, Double turns, Double hitsReceived, Double hitsMade, Double damageReceived, Double damageMade) {
+    public SkillDuration(Being<?> being, Double minutes, Double turns, Double hitsReceived, Double hitsMade, Double damageReceived, Double damageMade) {
         super(minutes, turns);
+        this.being = being;
         this.hitsReceived = hitsReceived;
         this.hitsMade = hitsMade;
         this.damageReceived = damageReceived;
@@ -37,7 +41,13 @@ public class SkillDuration extends Duration implements BeingActionObserver {
                         && (hitsMade == null || hitsMade <= 0)
                         && (damageReceived == null || damageReceived <= 0)
                         && (damageMade == null || damageMade <= 0);
-        notifySubscribers(endsTime && endsAction);
+        boolean ends = endsTime && endsAction;
+        if (ends) {
+            Game.getCurrentGame().getTurnsManager().unsubscribe(this);
+            Game.getCurrentGame().getTimeManager().unsubscribe(this);
+            this.being.unsubscribe(this);
+        }
+        notifySubscribers(ends);
     }
 
     public Optional<Double> getHitsReceivedLeft() {
@@ -76,20 +86,24 @@ public class SkillDuration extends Duration implements BeingActionObserver {
         checkDurationEnds();
     }
 
+
+
     @Override
     public void update(BeingAction action, Being<?> being) {
-        switch (action.action()) {
-            case DAMAGE_DEAL:
-                if (damageMade != null) damageMade -= action.value();
-                if (hitsMade != null) hitsMade -= 1;
-                break;
-            case DAMAGE_RECEIVE:
-            case CRITICAL_RECEIVE:
-                if (damageReceived != null) damageReceived -= action.value();
-                if (hitsReceived != null) hitsReceived -= 1;
-                break;
+        if (this.being == being) {
+            switch (action.action()) {
+                case DAMAGE_DEAL:
+                    if (damageMade != null) damageMade -= action.value();
+                    if (hitsMade != null) hitsMade -= 1;
+                    break;
+                case DAMAGE_RECEIVE:
+                case CRITICAL_RECEIVE:
+                    if (damageReceived != null) damageReceived -= action.value();
+                    if (hitsReceived != null) hitsReceived -= 1;
+                    break;
+            }
+            checkDurationEnds();
         }
-        checkDurationEnds();
     }
 
 }

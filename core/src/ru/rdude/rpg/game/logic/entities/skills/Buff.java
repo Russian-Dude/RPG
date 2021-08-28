@@ -36,8 +36,8 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
     private Damage damage;
 
     private SkillDuration duration;
-    private Double actsMinutes;
     private Double actsTurns;
+    private Double actsMinutes;
 
     @JsonCreator
     private Buff(@JsonProperty("entityData") long guid) {
@@ -53,7 +53,7 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
         this.actsMinutes = entityData.getActsEveryMinute() > 0 ?
                 entityData.getActsEveryMinute() : null;
         this.actsTurns = entityData.getActsEveryTurn() > 0 ?
-                entityData.getActsEveryTurn() : null;
+                entityData.getActsEveryTurn() * 2 : null;
         if (!skillData.isPermanent()) {
             Game.getCurrentGame().getTimeManager().subscribe(this);
             Game.getCurrentGame().getTurnsManager().subscribe(this);
@@ -83,7 +83,7 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
                 skillParser.parse(entityData.getDamageReceived(), caster, target) : null;
         Double damageMade = parsableString(entityData.getDamageMade()) ?
                 skillParser.parse(entityData.getDamageMade(), caster, target) : null;
-        return new SkillDuration(minutes, turns, hitsReceived, hitsMade, damageReceived, damageMade);
+        return new SkillDuration(target, minutes, turns == null ? null : turns * 2, hitsReceived, hitsMade, damageReceived, damageMade);
     }
 
     public void updateDuration() {
@@ -152,22 +152,18 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
 
     @Override
     public void turnUpdate() {
-        if (Game.getCurrentGame().getCurrentGameState().getEnumValue() == GameState.BATTLE
-            && ((Battle) Game.getCurrentGame().getCurrentGameState()).getCurrentSide().getBeings().contains(target)) {
-            duration.turnUpdate();
-            if (actsTurns != null) {
-                actsTurns--;
-                if (actsTurns <= 0) {
-                    actsTurns = entityData.getActsEveryTurn();
-                    onTimeOrTurnUpdate();
-                }
+        if (actsTurns != null) {
+            actsTurns--;
+            Double turnsDuration = duration.getTurnsLeft().orElse(-1d);
+            if (actsTurns <= 0 && turnsDuration % 2 == 0) {
+                actsTurns = entityData.getActsEveryTurn();
+                onTimeOrTurnUpdate();
             }
         }
     }
 
     @Override
     public void timeUpdate(int minutes) {
-        duration.timeUpdate(minutes);
         if (actsMinutes != null) {
             actsMinutes -= minutes;
             if (actsMinutes <= 0) {
