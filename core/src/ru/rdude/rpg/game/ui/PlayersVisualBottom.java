@@ -13,10 +13,7 @@ import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.visual.MonsterVisual;
 import ru.rdude.rpg.game.visual.VisualBeing;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @JsonIgnoreType
@@ -69,7 +66,7 @@ public class PlayersVisualBottom extends ScrollPane implements PartyObserver {
         visualBeings.add(position, visualBeing);
         final Map<VisualBeing<?>, Float> beingsX = calculateBeingsX();
         mainGroup.addActor((Actor) visualBeing);
-        ((Actor) visualBeing).setX(beingsX.get(visualBeing));
+        visualBeings.forEach(vis -> ((Actor) vis).setX(beingsX.get(vis)));
     }
 
     // smoothly add being visual
@@ -92,18 +89,18 @@ public class PlayersVisualBottom extends ScrollPane implements PartyObserver {
 
         visualBeings.forEach(visualBeing -> {
             if (visualBeing != newVisualBeing) {
-                final MoveToAction moveToAction = Actions.moveTo(beingsX.get(visualBeing), ((Actor) visualBeing).getY(), 1f);
+                final MoveToAction moveToAction = Actions.moveTo(beingsX.get(visualBeing), ((Actor) visualBeing).getY(), 0.5f);
                 moveToAction.setTarget((Actor) visualBeing);
                 moveActions.addAction(moveToAction);
             }
             else {
                 ((Actor) newVisualBeing).setVisible(false);
                 mainGroup.addActor((Actor) newVisualBeing);
-                ((Actor) newVisualBeing).setPosition(beingsX.get(newVisualBeing), Gdx.graphics.getHeight() * 0.6f);
+                ((Actor) newVisualBeing).setX(beingsX.get(newVisualBeing));
                 final AlphaAction fadeOut = Actions.fadeOut(0f);
                 fadeOut.setTarget((Actor) newVisualBeing);
                 final RunnableAction show = Actions.run(() -> ((Actor) newVisualBeing).setVisible(true));
-                final AlphaAction fadeIn = Actions.fadeIn(1f);
+                final AlphaAction fadeIn = Actions.fadeIn(0.5f);
                 fadeIn.setTarget((Actor) newVisualBeing);
                 resultAction.addAction(fadeOut);
                 resultAction.addAction(show);
@@ -115,7 +112,7 @@ public class PlayersVisualBottom extends ScrollPane implements PartyObserver {
     }
 
     private float calculateSpaceBetweenBeings() {
-        final float defaultSpace = Gdx.graphics.getWidth() / 4f;
+        final float defaultSpace = Gdx.graphics.getWidth() / 32f;
         final float availableWidth = Gdx.graphics.getWidth() * 0.9f;
         final float gaps = visualBeings.size() - 1;
         final float beingsTotalWidth = visualBeings.stream()
@@ -151,12 +148,12 @@ public class PlayersVisualBottom extends ScrollPane implements PartyObserver {
 
     @Override
     public void partyUpdate(Party party, boolean added, Being<?> being, int position) {
-        if (added) {
+/*        if (added) {
             addBeing(position, being);
         }
         else {
             VisualBeing.VISUAL_BEING_FINDER.find(being).ifPresent(visualBeing -> ((Actor) visualBeing).remove());
-        }
+        }*/
     }
 }
 
