@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import ru.rdude.rpg.game.logic.data.EntityData;
+import ru.rdude.rpg.game.logic.game.Game;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public abstract class Entity<T extends EntityData> {
@@ -30,7 +31,7 @@ public abstract class Entity<T extends EntityData> {
     public abstract String getName();
 
     public boolean sameAs(Entity<?> entity) {
-        return entity.entityData.equals(this.entityData);
+        return Game.getSameEntityChecker().check(this, entity);
     }
 
     protected abstract T getDataByGuid(long guid);

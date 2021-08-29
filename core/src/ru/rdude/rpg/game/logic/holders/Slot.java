@@ -65,7 +65,11 @@ public abstract class Slot<T extends Entity<?>> {
     }
 
     public boolean hasEntity(T item) {
-        return this.entity != null && this.entity.sameAs(item);
+        return Game.getSameEntityChecker().check(this.entity, item);
+    }
+
+    public boolean hasEntity(long guid) {
+        return Game.getSameEntityChecker().check(this.entity, guid);
     }
 
     public boolean isEmpty() {

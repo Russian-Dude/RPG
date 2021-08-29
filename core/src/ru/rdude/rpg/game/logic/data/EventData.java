@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 @JsonPolymorphicSubType("eventData")
 public class EventData extends EntityData {
 
-    public static Map<Long, EventData> events = new HashMap<>();
+    private static Map<Long, EventData> events = new HashMap<>();
 
     public static final EventAction END_EVENT = new EventAction();
 
@@ -35,6 +35,10 @@ public class EventData extends EntityData {
 
     public static void storeEvents(Collection<EventData> collection) {
         collection.forEach(eventData -> events.put(eventData.getGuid(), eventData));
+    }
+
+    public static EventData getEventByGuid(long guid) {
+        return events.get(guid);
     }
 
     public Set<EventAction> getActions() {
@@ -115,6 +119,7 @@ public class EventData extends EntityData {
 
     public static class EventAction {
 
+        private String text;
         private EventActionTarget target = EventActionTarget.NO;
         private Map<Long, Float> skillsCouldCast = new HashMap<>();
         private Map<Long, Float> skillsMustCast = new HashMap<>();
@@ -123,6 +128,7 @@ public class EventData extends EntityData {
         private Requirements requirements = new Requirements();
         private Map<Long, Float> summon; // by guid
         private Map<Long, Integer> receiveItems; // by guid
+        private Set<Long> battleAgainst; // by guid
 
         public EventActionTarget getTarget() {
             return target;
@@ -186,6 +192,14 @@ public class EventData extends EntityData {
 
         public void setReceiveItems(Map<Long, Integer> receiveItems) {
             this.receiveItems = receiveItems;
+        }
+
+        public Set<Long> getBattleAgainst() {
+            return battleAgainst;
+        }
+
+        public void setBattleAgainst(Set<Long> battleAgainst) {
+            this.battleAgainst = battleAgainst;
         }
 
         public static class Requirements {

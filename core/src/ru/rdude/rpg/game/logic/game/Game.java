@@ -10,6 +10,7 @@ import ru.rdude.rpg.game.logic.entities.EntityFactory;
 import ru.rdude.rpg.game.logic.entities.beings.ExpSpreader;
 import ru.rdude.rpg.game.logic.entities.beings.MonsterSummoner;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
+import ru.rdude.rpg.game.logic.entities.checkers.SameEntityChecker;
 import ru.rdude.rpg.game.logic.entities.items.ItemUser;
 import ru.rdude.rpg.game.logic.entities.skills.*;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
@@ -66,6 +67,7 @@ public class Game {
     private static final CommandsInput commandsInput = new CommandsInput();
     private static final EntityFactory entityFactory = new EntityFactory();
     private static final MonsterSummoner monsterSummoner = new MonsterSummoner();
+    private static final SameEntityChecker sameEntityChecker = new SameEntityChecker();
 
     // io
     private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
@@ -205,6 +207,10 @@ public class Game {
 
     public static MonsterSummoner getMonsterSummoner() {
         return monsterSummoner;
+    }
+
+    public static SameEntityChecker getSameEntityChecker() {
+        return sameEntityChecker;
     }
 
     public ItemDragAndDroper getItemsDragAndDrop() {

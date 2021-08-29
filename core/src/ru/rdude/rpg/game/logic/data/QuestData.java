@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 @JsonPolymorphicSubType("questData")
 public class QuestData extends EntityData {
 
-    public static Map<Long, QuestData> quests = new HashMap<>();
+    private static Map<Long, QuestData> quests = new HashMap<>();
 
     // requirements
     private Map<Long, Integer> killMonsters = new HashMap<>();
@@ -40,6 +40,10 @@ public class QuestData extends EntityData {
 
     public static void storeQuests(Collection<QuestData> collection) {
         collection.forEach(questData -> quests.put(questData.getGuid(), questData));
+    }
+
+    public static QuestData getQuestByGuid(long guid) {
+        return quests.get(guid);
     }
 
     public Map<Long, Integer> getKillMonsters() {

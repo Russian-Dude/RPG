@@ -66,4 +66,53 @@ public class ItemSlotsHolder extends SlotsHolder<Item> {
         return false;
     }
 
+    public boolean hasEntity(long guid, int amount) {
+        int currentAmount = 0;
+        for (Slot<Item> slot : slots) {
+            if (slot.hasEntity(guid)) {
+                currentAmount += slot.getEntity().getAmount();
+                if (currentAmount >= amount) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean removeEntity(long guid, int amount) {
+        int left = amount;
+        for (Slot<Item> slot : slots) {
+            if (slot.hasEntity(guid)) {
+                int currentItemAmount = slot.getEntity().getAmount();
+                slot.getEntity().decreaseAmount(amount);
+                if (slot.getEntity().getAmount() <= 0) {
+                    slot.removeEntity();
+                }
+                amount -= currentItemAmount;
+                if (amount <= 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean removeEntity(Item item, int amount) {
+        int left = amount;
+        for (Slot<Item> slot : slots) {
+            if (slot.hasEntity(item)) {
+                int currentItemAmount = slot.getEntity().getAmount();
+                slot.getEntity().decreaseAmount(amount);
+                if (slot.getEntity().getAmount() <= 0) {
+                    slot.removeEntity();
+                }
+                amount -= currentItemAmount;
+                if (amount <= 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }

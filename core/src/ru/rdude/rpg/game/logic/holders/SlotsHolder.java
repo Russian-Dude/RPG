@@ -35,6 +35,35 @@ public abstract class SlotsHolder<T extends Entity<?>> {
         return false;
     }
 
+    public boolean hasEntity(long guid) {
+        for (Slot<T> slot : slots) {
+            if (slot.hasEntity(guid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean removeEntity(T entity) {
+        for (Slot<T> slot : slots) {
+            if (slot.hasEntity(entity)) {
+                slot.removeEntity();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean removeEntity(long guid) {
+        for (Slot<T> slot : slots) {
+            if (slot.hasEntity(guid)) {
+                slot.removeEntity();
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean hasEmptySlot() {
         return slots.stream().anyMatch(Slot::isEmpty);
     }
