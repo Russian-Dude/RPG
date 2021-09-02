@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.skills.Buff;
+import ru.rdude.rpg.game.logic.entities.skills.Cast;
 import ru.rdude.rpg.game.logic.entities.skills.SkillResult;
 import ru.rdude.rpg.game.logic.entities.skills.SkillTargets;
 import ru.rdude.rpg.game.logic.game.Game;
@@ -18,12 +19,16 @@ public class SkillsSequencer extends Actor {
 
     private SequenceAction currentSequence;
 
+    public void add(Cast cast) {
+        add(Game.getSkillResultsCreator().createFromCast(cast));
+    }
+
     public void add(Buff buff) {
         add(Game.getSkillResultsCreator().createFromBuff(buff));
     }
 
-    public void add(SkillData skillData, Being<?> caster, SkillTargets targets) {
-        add(Game.getSkillResultsCreator().createFromSkill(skillData, caster, targets));
+    public void add(SkillData skillData, Being<?> caster, SkillTargets targets, boolean mainSkill) {
+        add(Game.getSkillResultsCreator().createFromSkill(skillData, caster, targets, mainSkill));
     }
 
     private void add(List<SkillResult> skillResults) {

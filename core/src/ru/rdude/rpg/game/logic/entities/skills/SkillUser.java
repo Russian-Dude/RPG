@@ -3,12 +3,10 @@ package ru.rdude.rpg.game.logic.entities.skills;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
-import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.enums.Target;
 import ru.rdude.rpg.game.logic.game.Game;
-import ru.rdude.rpg.game.logic.holders.Slot;
 
-import java.util.*;
+import java.util.Map;
 
 public class SkillUser {
 
@@ -39,8 +37,6 @@ public class SkillUser {
             }
         }
 
-        Game.getCurrentGame().getGameLogger().log(caster, skillData);
-
         if (mainTarget == Target.ALLY
                 || mainTarget == Target.ENEMY
                 || mainTarget == Target.ANY
@@ -50,7 +46,7 @@ public class SkillUser {
         }
 
         SkillTargets skillTargets = Game.getSkillTargeter().get(skillData, caster, mainTarget);
-        Game.getCurrentGame().getSkillsSequencer().add(skillData, caster, skillTargets);
+        Game.getCurrentGame().getSkillsSequencer().add(skillData, caster, skillTargets, true);
     }
 
 }

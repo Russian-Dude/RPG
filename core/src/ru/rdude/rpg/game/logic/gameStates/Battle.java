@@ -81,13 +81,14 @@ public class Battle extends GameStateBase implements TurnChangeObserver, BeingAc
         // switch side:
         playersTurn = !playersTurn;
         if (!playersTurn) {
-            playerSide.forEach(being -> being.setReady(false));
+            playerSide.stream().forEach(being -> being.setReady(false));
             enemySide.forEach(being -> being.setReady(true));
             aiTurn();
         }
         else {
             enemySide.forEach(being -> being.setReady(false));
             playerSide.forEach(being -> being.setReady(true));
+            updateCasts(playerSide);
         }
     }
 
@@ -106,6 +107,7 @@ public class Battle extends GameStateBase implements TurnChangeObserver, BeingAc
 
     private void aiTurn() {
         final RunnableAction aiTurnAction = Actions.run(() -> {
+            // player's ai monsters
             playerSide.forEach(being -> {
                 if (being instanceof Monster && being.isReady()) {
                     final Long skillGuid = Functions.randomWithWeights(((MonsterData) being.getEntityData()).getSkills());
@@ -113,8 +115,14 @@ public class Battle extends GameStateBase implements TurnChangeObserver, BeingAc
                     Game.getSkillUser().use(skill, being, skill.getMainTarget());
                 }
             });
+            // enemies cast
+            List<Being<?>> wereCasting = enemySide.getBeings().stream()
+                    .filter(Being::isCasting)
+                    .collect(Collectors.toList());
+            updateCasts(enemySide);
+            // enemies main turn
             enemySide.forEach(enemy -> {
-                if (enemy instanceof Monster && enemy.isReady()) {
+                if (enemy instanceof Monster && enemy.isReady() && !enemy.isCasting() && !wereCasting.contains(enemy)) {
                     final Long skillGuid = Functions.randomWithWeights(((MonsterData) enemy.getEntityData()).getSkills());
                     if (skillGuid != null) {
                         final SkillData skill = Game.getEntityFactory().skills().describerToReal(skillGuid);
@@ -126,6 +134,15 @@ public class Battle extends GameStateBase implements TurnChangeObserver, BeingAc
             Game.getCurrentGame().getSkillsSequencer().add(startNextTurnAction);
         });
         Game.getCurrentGame().getSkillsSequencer().add(Actions.after(aiTurnAction));
+    }
+
+    private void updateCasts(Party party) {
+        party.stream()
+                .filter(Being::isCasting)
+                .collect(Collectors.toList())
+                .stream()
+                .map(Being::getCast)
+                .forEach(Game.getCurrentGame().getSkillsSequencer()::add);
     }
 
     private boolean checkLose() {

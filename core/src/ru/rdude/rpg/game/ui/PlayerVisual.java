@@ -44,6 +44,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
     private final PlayerAvatar avatar;
     private final HpBar hpBar;
     private final StmBar stmBar;
+    private final CastBar castBar;
     private final Button attack;
     private final Button spells;
     private final Button items;
@@ -63,6 +64,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
         this.avatar = avatar;
         hpBar = new HpBar(player);
         stmBar = new StmBar(player);
+        castBar = new CastBar(player);
         buttons = new HorizontalGroup();
         attack = new Button(DEFAULT_SKIN, "attack");
         attack.setVisible(Game.getCurrentGame().getCurrentGameState() instanceof Battle && getBeing().isReady());
@@ -175,6 +177,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
         avatar.setPosition(0, 0);
         topGroup.addActor(avatar);
         topGroup.addActor(buttons);
+        withoutNameGroup.addActor(castBar);
         withoutNameGroup.addActor(topGroup);
         withoutNameGroup.addActor(hpBar);
         withoutNameGroup.addActor(stmBar);
@@ -244,6 +247,11 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
     @Override
     public StmBar getStmBar() {
         return stmBar;
+    }
+
+    @Override
+    public CastBar getCastBar() {
+        return castBar;
     }
 
     @Override

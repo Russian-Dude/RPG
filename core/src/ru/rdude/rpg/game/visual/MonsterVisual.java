@@ -13,10 +13,7 @@ import com.badlogic.gdx.utils.Align;
 import ru.rdude.rpg.game.logic.entities.beings.Monster;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.mapVisual.VisualConstants;
-import ru.rdude.rpg.game.ui.BeingBuffsIcons;
-import ru.rdude.rpg.game.ui.HpBar;
-import ru.rdude.rpg.game.ui.StmBar;
-import ru.rdude.rpg.game.ui.UiData;
+import ru.rdude.rpg.game.ui.*;
 import ru.rdude.rpg.game.utils.ui.ResizableImage;
 
 import static ru.rdude.rpg.game.ui.UiData.BIG_TEXT_STYLE;
@@ -30,6 +27,7 @@ public class MonsterVisual extends VerticalGroup implements VisualBeing<Monster>
     private final Image monsterImage;
     private final HpBar hpBar;
     private final StmBar stmBar;
+    private final CastBar castBar;
     private final BeingBuffsIcons buffsIcons;
 
     public MonsterVisual(Monster monster, Style style) {
@@ -37,6 +35,7 @@ public class MonsterVisual extends VerticalGroup implements VisualBeing<Monster>
         this.monster = monster;
         hpBar = new HpBar(monster);
         stmBar = new StmBar(monster);
+        castBar = new CastBar(monster);
         Label nameLabel = new Label(monster.getName(), DEFAULT_SKIN, BIG_TEXT_STYLE);
         nameLabel.setAlignment(Align.center);
         buffsIcons = new BeingBuffsIcons(this);
@@ -94,6 +93,7 @@ public class MonsterVisual extends VerticalGroup implements VisualBeing<Monster>
                 .fillY();
         monsterImage.setPosition(0, 0);
         if (style == Style.ENEMY) {
+            withoutNameGroup.addActor(castBar);
             withoutNameGroup.addActor(hpBar);
             withoutNameGroup.addActor(stmBar);
             withoutNameGroup.addActor(monsterImage);
@@ -136,6 +136,11 @@ public class MonsterVisual extends VerticalGroup implements VisualBeing<Monster>
     @Override
     public StmBar getStmBar() {
         return stmBar;
+    }
+
+    @Override
+    public CastBar getCastBar() {
+        return castBar;
     }
 }
 

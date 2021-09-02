@@ -2,9 +2,7 @@ package ru.rdude.rpg.game.visual;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.*;
-import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import ru.rdude.rpg.game.battleVisual.BattleVisual;
 import ru.rdude.rpg.game.logic.entities.beings.Monster;
@@ -89,6 +87,18 @@ public class SkillAnimator {
         SkillAnimation.Entry current = root;
         SequenceAction sequenceAction = Actions.sequence();
         ParallelAction parallelAction = Actions.parallel();
+        // stamina bar
+        sequenceAction.addAction(createDelayedStmBarsAction(skillResult));
+        // concentration bar
+        skillResult.getCast().ifPresent(cast -> {
+            VisualBeing.VISUAL_BEING_FINDER.find(skillResult.getCaster()).ifPresent(visualBeing -> {
+                sequenceAction.addAction(visualBeing.getCastBar().createUpdateAction(cast));
+            });
+        });
+        if (skillResult.getCast().isPresent()) {
+            return sequenceAction;
+        }
+        // animation
         while (current != null) {
             if (current == root || current.getEntryOrder() == SkillAnimation.EntryOrder.ORDERED) {
                 if (!parallelAction.getActions().isEmpty()) {
@@ -119,7 +129,7 @@ public class SkillAnimator {
                 sequenceAction.addAction(Game.getGameVisual().getUi().getPlayersVisualBottom().createAddBeingAction(index, minion));
             }
         });
-        sequenceAction.addAction(createDelayedBarsAction(skillResult));
+        sequenceAction.addAction(createDelayedHpBarsAction(skillResult));
         sequenceAction.addAction(createDamageLabelAction(skillResult));
         if (skillResult.getTarget() instanceof Monster && !skillResult.getTarget().isAlive() ) {
             VisualBeing.VISUAL_BEING_FINDER.find(skillResult.getTarget()).ifPresent(vis -> sequenceAction.addAction(createDisappearMonsterAction((MonsterVisual) vis)));
@@ -213,11 +223,19 @@ public class SkillAnimator {
         return Actions.sequence(positionAction, particleAction);
     }
 
-    private RunnableAction createDelayedBarsAction(SkillResult skillResult) {
+    private RunnableAction createDelayedHpBarsAction(SkillResult skillResult) {
         final Optional<? extends VisualBeing<?>> targetVisual = VisualBeing.VISUAL_BEING_FINDER.find(skillResult.getTarget());
         return Actions.run(() -> {
             skillResult.getBuff().ifPresent(buff -> targetVisual.ifPresent(vt -> vt.getHpBar().actDelayed(buff)));
             skillResult.getDamage().ifPresent(damage -> targetVisual.ifPresent(vt -> vt.getHpBar().actDelayed(damage)));
+        });
+    }
+
+    private RunnableAction createDelayedStmBarsAction(SkillResult skillResult) {
+        final Optional<? extends VisualBeing<?>> targetVisual = VisualBeing.VISUAL_BEING_FINDER.find(skillResult.getTarget());
+        return Actions.run(() -> {
+            skillResult.getBuff().ifPresent(buff -> targetVisual.ifPresent(vt -> vt.getStmBar().actDelayed(buff)));
+            targetVisual.ifPresent(vt -> vt.getStmBar().actDelayed(skillResult));
         });
     }
 

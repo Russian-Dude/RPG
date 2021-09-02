@@ -7,6 +7,20 @@ import ru.rdude.rpg.game.logic.game.Game;
 public class SkillApplier {
 
     public void apply(SkillResult result) {
+
+        // stamina
+        int staminaUsed = result.getStaminaUsed();
+        if (staminaUsed > 0) {
+            result.getCaster().stats().stm().decrease(staminaUsed);
+        }
+
+        // cast
+        if (result.getCast().isPresent()) {
+            Cast cast = result.getCast().get();
+            result.getCaster().setCast(cast.isComplete() ? null : cast);
+            return;
+        }
+
         // damage
         result.getDamage().ifPresent(damage -> EntityReceiver.damage(result.getTarget(), damage));
 

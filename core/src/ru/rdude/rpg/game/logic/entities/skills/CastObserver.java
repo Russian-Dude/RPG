@@ -5,4 +5,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public interface CastObserver {
+
+    void castUpdate(Cast cast);
+
 }

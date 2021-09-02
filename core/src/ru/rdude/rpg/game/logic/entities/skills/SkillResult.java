@@ -16,9 +16,26 @@ public class SkillResult {
     private final Minion summon;
     private final Buff buff;
     private final boolean isResisted;
+    private final int staminaUsed;
+    private final Cast cast;
 
+    public SkillResult(Cast cast) {
+        this(cast, true);
+    }
 
-    public SkillResult(SkillData skillData, Being<?> caster, Being<?> target, Damage damage, Minion summon, Buff buff, boolean isResisted) {
+    public SkillResult(Cast cast, boolean justStarted) {
+        this(cast.getSkillData(), cast.getCaster(), cast.getTarget(), null, null, null, false, justStarted ? cast.getStaminaUsed() : 0, cast);
+    }
+    public SkillResult(SkillData skillData,
+                       Being<?> caster,
+                       Being<?> target,
+                       Damage damage,
+                       Minion summon,
+                       Buff buff,
+                       boolean isResisted,
+                       int staminaUsed,
+                       Cast cast) {
+
         this.skillData = skillData;
         this.caster = caster;
         this.target = target;
@@ -26,6 +43,8 @@ public class SkillResult {
         this.summon = summon;
         this.buff = buff;
         this.isResisted = isResisted;
+        this.staminaUsed = staminaUsed;
+        this.cast = cast;
     }
 
     public SkillData getSkillData() {
@@ -54,6 +73,14 @@ public class SkillResult {
 
     public boolean isResisted() {
         return isResisted;
+    }
+
+    public Optional<Cast> getCast() {
+        return Optional.ofNullable(cast);
+    }
+
+    public int getStaminaUsed() {
+        return staminaUsed;
     }
 
     public Optional<Map<Long, Integer>> getReceivedItems() {

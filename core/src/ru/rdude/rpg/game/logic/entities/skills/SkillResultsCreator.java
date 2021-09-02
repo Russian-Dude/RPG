@@ -1,7 +1,6 @@
 package ru.rdude.rpg.game.logic.entities.skills;
 
 import ru.rdude.rpg.game.logic.coefficients.Coefficients;
-import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.Minion;
@@ -39,26 +38,50 @@ public class SkillResultsCreator {
         // resisted
         final boolean resisted = isResisted(skillData, buff.getTarget());
 
-        results.add(new SkillResult(skillData, buff.getCaster(), buff.getTarget(), damage, summon, null, resisted));
+        results.add(new SkillResult(skillData, buff.getCaster(), buff.getTarget(), damage, summon, null, resisted, 0, null));
 
         // skills chaining
         if (!resisted) {
             for (Long castSkill : getCastSkills(skillData)) {
                 final SkillData skill = Game.getEntityFactory().skills().describerToReal(castSkill);
                 final SkillTargets targets = Game.getSkillTargeter().get(skill, buff.getTarget(), Target.SELF);
-                results.addAll(createFromSkill(skill, buff.getTarget(), targets));
+                results.addAll(createFromSkill(skill, buff.getTarget(), targets, false));
             }
         }
 
         return results;
     }
 
+    public List<SkillResult> createFromCast(Cast cast) {
+        List<SkillResult> results = new ArrayList<>();
+        cast.update();
+        results.add(new SkillResult(cast, false));
+        if (cast.isComplete()) {
+            SkillTargets skillTargets = Game.getSkillTargeter().get(cast.getCaster(), cast.getTarget(), cast.getSkillData().getTargets());
+            results.addAll(createFromSkill(cast.getSkillData(), cast.getCaster(), skillTargets, false));
+        }
+        return results;
+    }
 
-    public List<SkillResult> createFromSkill(SkillData data, Being<?> caster, SkillTargets targets) {
+    public List<SkillResult> createFromSkill(SkillData data, Being<?> caster, SkillTargets targets, boolean mainSkill) {
 
         SkillData skillData = Game.getEntityFactory().skills().describerToReal(data);
 
         List<SkillResult> results = new ArrayList<>();
+
+        // concentration check and creation of cast if needed
+        if (mainSkill) {
+            int casterConcentration = (int) caster.stats().concentrationValue();
+            int concentrationReq = skillData.getConcentrationReq();
+            if (concentrationReq > casterConcentration) {
+                Cast cast = new Cast(skillData, caster, targets.getMainTarget(), skillData.getStaminaReq());
+                SkillResult skillResult = new SkillResult(cast);
+                results.add(skillResult);
+                return results;
+            }
+        }
+
+        // damage
         Damage mainTargetDamage = getDamage(skillData, caster, targets.getMainTarget());
 
         // create buff and/or receive items and summon only if damage does not exists or if it hits
@@ -66,7 +89,7 @@ public class SkillResultsCreator {
 
         // return damage that does not hit
         if (!canContinue) {
-            results.add(new SkillResult(skillData, caster, targets.getMainTarget(), mainTargetDamage, null, null, false));
+            results.add(new SkillResult(skillData, caster, targets.getMainTarget(), mainTargetDamage, null, null, false, mainSkill ? skillData.getStaminaReq() : 0, null));
             return results;
         }
 
@@ -75,7 +98,7 @@ public class SkillResultsCreator {
         Buff mainTargetBuff = isBuff(skillData) && !isMainTargetResisted ?
                 new Buff(skillData, caster, targets.getMainTarget(), mainTargetDamage) : null;
         SkillResult mainTargetSkillResult = new SkillResult(
-                skillData, caster, targets.getMainTarget(), mainTargetDamage, getSummon(skillData, targets.getMainTarget()), mainTargetBuff, isMainTargetResisted);
+                skillData, caster, targets.getMainTarget(), mainTargetDamage, getSummon(skillData, targets.getMainTarget()), mainTargetBuff, isMainTargetResisted, mainSkill ? skillData.getStaminaReq() : 0, null);
         results.add(mainTargetSkillResult);
 
         // ignore other targets and skill chaining if skill did not hit and resisted
@@ -93,11 +116,11 @@ public class SkillResultsCreator {
                 boolean isResisted = isResisted(skillData, target);
                 Buff buff = isBuff(skillData) && !isResisted ?
                         new Buff(skillData, caster, target, damage) : null;
-                results.add(new SkillResult(skillData, caster, target, damage, getSummon(skillData, target), buff, isResisted));
+                results.add(new SkillResult(skillData, caster, target, damage, getSummon(skillData, target), buff, isResisted, 0, null));
                 applySkillChaining.add(target);
             }
             else {
-                results.add(new SkillResult(skillData, caster, target, damage, null, null, false));
+                results.add(new SkillResult(skillData, caster, target, damage, null, null, false, 0, null));
             }
         });
 
@@ -106,7 +129,7 @@ public class SkillResultsCreator {
             for (Long guid : getCastSkills(skillData)) {
                 SkillData castSkill = Game.getEntityFactory().skills().describerToReal(guid);
                 SkillTargets skillTargets = Game.getSkillTargeter().get(caster, being, skillData.getTargets());
-                results.addAll(createFromSkill(castSkill, caster, skillTargets));
+                results.addAll(createFromSkill(castSkill, caster, skillTargets, false));
             }
         }
 
@@ -267,6 +290,4 @@ public class SkillResultsCreator {
                 .map(entry -> Game.getEntityFactory().items().get(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
-
-
 }

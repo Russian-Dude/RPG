@@ -197,10 +197,10 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
                     final SkillData skill = SkillData.getSkillByGuid(guid);
                     if (entityData.isOnBeingActionCastToEnemy()) {
                         Game.getCurrentGame().getSkillsSequencer()
-                                .add(skill, target, Game.getSkillTargeter().get(target, (Being<?>) action.interactor(), skill.getTargets()));
+                                .add(skill, target, Game.getSkillTargeter().get(target, (Being<?>) action.interactor(), skill.getTargets()), false);
                     } else {
                         Game.getCurrentGame().getSkillsSequencer()
-                                .add(skill, caster, Game.getSkillTargeter().get(caster, target, skill.getTargets()));
+                                .add(skill, caster, Game.getSkillTargeter().get(caster, target, skill.getTargets()), false);
                     }
                 }
             });

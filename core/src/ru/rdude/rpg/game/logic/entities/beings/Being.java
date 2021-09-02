@@ -8,10 +8,7 @@ import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.entities.items.holders.AvailableSkills;
 import ru.rdude.rpg.game.logic.entities.items.holders.EquipmentSlotsHolder;
 import ru.rdude.rpg.game.logic.entities.items.holders.ItemSlotsHolder;
-import ru.rdude.rpg.game.logic.entities.skills.Buff;
-import ru.rdude.rpg.game.logic.entities.skills.BuffObserver;
-import ru.rdude.rpg.game.logic.entities.skills.Cast;
-import ru.rdude.rpg.game.logic.entities.skills.Damage;
+import ru.rdude.rpg.game.logic.entities.skills.*;
 import ru.rdude.rpg.game.logic.entities.states.StateHolder;
 import ru.rdude.rpg.game.logic.enums.*;
 import ru.rdude.rpg.game.logic.game.Game;
@@ -41,7 +38,7 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
     protected EquipmentSlotsHolder equipment;
     protected Set<Buff> buffs;
     protected AvailableSkills availableSkills;
-    protected Cast cast;
+    protected CastManager cast;
 
     protected boolean ready;
     protected boolean alive;
@@ -69,6 +66,7 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
         availableSkills = new AvailableSkills();
         effect = SkillEffect.NO;
         minions = new ArrayList<>();
+        cast = new CastManager();
     }
 
 
@@ -91,15 +89,19 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
     }
 
     public Cast getCast() {
+        return cast.getCast();
+    }
+
+    public CastManager getCastManager() {
         return cast;
     }
 
     public void setCast(Cast cast) {
-        this.cast = cast;
+        this.cast.setCast(cast);
     }
 
     public boolean isCasting() {
-        return cast != null;
+        return cast.getCast() != null;
     }
 
     public Stats stats() {
@@ -139,7 +141,7 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
     }
 
     public boolean isReady() {
-        return ready && alive && effect != SkillEffect.EXILE && effect != SkillEffect.STUN;
+        return ready && alive && !isCasting() && effect != SkillEffect.EXILE && effect != SkillEffect.STUN;
     }
 
     public void setReady(boolean ready) {
