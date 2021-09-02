@@ -63,7 +63,15 @@ public class CastBar extends VerticalGroup {
 
     public Action createUpdateAction(Cast cast) {
         SequenceAction resultAction = Actions.sequence();
+        // if cast set to null
         if (cast == null) {
+            AlphaAction fadeOut = Actions.fadeOut(0.1f);
+            fadeOut.setTarget(this);
+            RunnableAction removeCast = Actions.run(() -> this.cast = null);
+            RunnableAction resetValue = Actions.run(() -> progressBar.setValue(0f));
+            resultAction.addAction(removeCast);
+            resultAction.addAction(fadeOut);
+            resultAction.addAction(resetValue);
             return resultAction;
         }
         // if cast is the same

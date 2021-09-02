@@ -12,6 +12,7 @@ import ru.rdude.rpg.game.ui.LoadingStage;
 import ru.rdude.rpg.game.ui.MapInfo;
 import ru.rdude.rpg.game.ui.PlayerVisual;
 import ru.rdude.rpg.game.ui.UIStage;
+import ru.rdude.rpg.game.visual.VisualBeing;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -83,12 +84,25 @@ public class GameStateSwitcher {
         Game.getCurrentGame().getGameStateHolder().setGameState(battle);
         Game.getGameVisual().clearNonUiStages();
         Game.getGameVisual().addStage((Stage) battle.getStage());
+        removePlayersCasts();
     }
 
     public void switchToMap() {
         Game.getCurrentGame().getGameStateHolder().setGameState(Game.getCurrentGame().getGameMap());
         Game.getGameVisual().clearNonUiStages();
         Game.getGameVisual().addStage(Game.getCurrentGame().getGameMap().getStage());
+        removePlayersCasts();
+    }
+
+    private void removePlayersCasts() {
+        Game.getCurrentGame().getCurrentPlayers().forEach(player -> {
+            if (player.isCasting()) {
+                player.setCast(null);
+                VisualBeing.VISUAL_BEING_FINDER.find(player).ifPresent(visualBeing -> {
+                    Game.getCurrentGame().getSkillsSequencer().add(visualBeing.getCastBar().createUpdateAction(null));
+                });
+            }
+        });
     }
 
 }
