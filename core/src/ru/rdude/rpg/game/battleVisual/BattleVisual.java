@@ -69,7 +69,7 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
         monsterVisuals.forEach(monsterVisual -> {
             addActor(monsterVisual);
             final float x = monstersX.get(monsterVisual);
-            final float y = Gdx.graphics.getHeight() * 0.6f;
+            final float y = generateMonsterY();
             monsterVisual.setPosition(x, y);
         });
     }
@@ -155,6 +155,10 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
         return result;
     }
 
+    private float generateMonsterY() {
+        return Gdx.graphics.getHeight() * (0.45f + Functions.random(0f, 0.05f));
+    }
+
     @Override
     public List<VisualBeing<?>> getVisualBeings() {
         return Stream.of(Game.getGameVisual().getUi().getVisualBeings(),
@@ -216,7 +220,7 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
             else {
                 newMonsterVisual.setVisible(false);
                 addActor(newMonsterVisual);
-                newMonsterVisual.setPosition(monstersX.get(newMonsterVisual), Gdx.graphics.getHeight() * 0.6f);
+                newMonsterVisual.setPosition(monstersX.get(newMonsterVisual), generateMonsterY());
                 final AlphaAction fadeOut = Actions.fadeOut(0f);
                 fadeOut.setTarget(newMonsterVisual);
                 final RunnableAction show = Actions.run(() -> newMonsterVisual.setVisible(true));
