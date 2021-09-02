@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.mapVisual;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.map.Cell;
@@ -29,6 +30,7 @@ public class PlayersOnMap extends Group {
         findCellEndPointX(position);
         findCellEndPointY(position);
         moveBy(destinationEndPointX, destinationEndPointY);
+        setTouchable(Touchable.disabled);
     }
 
     public Sprite getPlayersSprite() {
