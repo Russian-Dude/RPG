@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.data.io.GameMapFileLoader;
 import ru.rdude.rpg.game.logic.data.io.saves.CellsVisibilitySaveData;
 import ru.rdude.rpg.game.logic.data.io.saves.MonstersOnCellsSaveData;
+import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.enums.GameState;
 import ru.rdude.rpg.game.logic.game.Game;
@@ -98,6 +99,12 @@ public class Map extends GameStateBase {
             mapStage = new MapStage(this);
         }
         return mapStage;
+    }
+
+    @Override
+    public Party getAllySide(Being<?> of) {
+        Party party = Game.getCurrentGame().getCurrentPlayers();
+        return party.getBeings().contains(of) ? party : null;
     }
 
     public Cell getPlayerPosition() {

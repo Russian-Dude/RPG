@@ -14,18 +14,5 @@ public class VisualBeingFinder {
                 .stream()
                 .filter(visualBeing -> visualBeing.getBeing() == being)
                 .findAny();
-/*        final GameStateBase currentGameState = Game.getCurrentGame().getCurrentGameState();
-        switch (currentGameState.getEnumValue()) {
-            case MAP:
-            case CAMP:
-                return Game.getGameVisual().getUi().getPlayerVisuals().stream()
-                        .filter(playerVisual -> playerVisual.getBeing().equals(being))
-                        .findFirst();
-            case BATTLE:
-                return Stream.of(Game.getGameVisual().getUi().getPlayerVisuals()
-                        , Game.getCurrentGame().)
-            default:
-                return Optional.empty();
-        }*/
     }
 }

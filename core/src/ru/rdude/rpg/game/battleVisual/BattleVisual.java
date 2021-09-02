@@ -157,7 +157,7 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
 
     @Override
     public List<VisualBeing<?>> getVisualBeings() {
-        return Stream.of(Game.getGameVisual().getUi().getPlayerVisuals(),
+        return Stream.of(Game.getGameVisual().getUi().getVisualBeings(),
                 monsterVisuals)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());

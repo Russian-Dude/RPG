@@ -148,14 +148,41 @@ public class PlayersVisualBottom extends ScrollPane implements PartyObserver {
         return result;
     }
 
+    public Action createRemoveBeingAction(Being<?> being) {
+        SequenceAction resultAction = Actions.sequence();
+        if (being == null) {
+            return resultAction;
+        }
+        Optional<? extends VisualBeing<?>> visualBeingOptional = VisualBeing.VISUAL_BEING_FINDER.find(being);
+        if (visualBeingOptional.isEmpty()) {
+            return resultAction;
+        }
+        VisualBeing<?> visualBeing = visualBeingOptional.get();
+        visualBeings.remove(visualBeing);
+        Map<VisualBeing<?>, Float> beingsX = calculateBeingsX();
+
+        AlphaAction fadeOut = Actions.fadeOut(0.5f);
+        fadeOut.setTarget(((Actor) visualBeing));
+        RunnableAction remove = Actions.run(visualBeing::remove);
+        ParallelAction move = Actions.parallel();
+        visualBeings.forEach(visualAlly -> {
+            MoveToAction moveToAction = Actions.moveTo(beingsX.get(visualAlly), ((Actor) visualAlly).getY(), 0.5f);
+            moveToAction.setTarget(((Actor) visualAlly));
+            move.addAction(moveToAction);
+        });
+        resultAction.addAction(fadeOut);
+        resultAction.addAction(remove);
+        resultAction.addAction(move);
+
+        return resultAction;
+    }
+
     @Override
     public void partyUpdate(Party party, boolean added, Being<?> being, int position) {
-/*        if (added) {
-            addBeing(position, being);
+        if (!added) {
+            Action removeBeingAction = createRemoveBeingAction(being);
+            Game.getCurrentGame().getSkillsSequencer().add(removeBeingAction);
         }
-        else {
-            VisualBeing.VISUAL_BEING_FINDER.find(being).ifPresent(visualBeing -> ((Actor) visualBeing).remove());
-        }*/
     }
 }
 
