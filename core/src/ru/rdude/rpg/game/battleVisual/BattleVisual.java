@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
@@ -112,12 +113,14 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
         final float leftWidth = Functions.random(size * 0.7f, size * 1.3f);
         imageLeft.setSize(leftWidth, Functions.random(size * 0.7f, size * 1.3f));
         imageLeft.setPosition(- leftWidth / 2f, posY);
+        imageLeft.setTouchable(Touchable.disabled);
         // right
         Image imageRight = new Image(Functions.random(trees));
         addActor(imageRight);
         final float rightWidth = Functions.random(size * 0.7f, size * 1.3f);
         imageRight.setSize(rightWidth, Functions.random(size * 0.7f, size * 1.3f));
         imageRight.setPosition(Gdx.graphics.getWidth() - rightWidth / 2f, posY);
+        imageRight.setTouchable(Touchable.disabled);
     }
 
     private float calculateSpaceBetweenEnemies() {
