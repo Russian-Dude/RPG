@@ -73,7 +73,10 @@ public class Minion extends Monster implements TurnChangeObserver, TimeChangeObs
                 turnsDuration -= 1;
                 if (turnsDuration <= 0) {
                     alive = false;
-                    ((Battle) Game.getCurrentGame().getCurrentGameState()).getAllySide(this).remove(this);
+                    Party allySide = ((Battle) Game.getCurrentGame().getCurrentGameState()).getAllySide(this);
+                    if (allySide != null) {
+                        allySide.remove(this);
+                    }
                     Game.getCurrentGame().getTimeManager().unsubscribe(this);
                     Game.getCurrentGame().getTurnsManager().unsubscribe(this);
                     master.removeMinion(this);

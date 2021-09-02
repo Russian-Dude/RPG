@@ -29,10 +29,14 @@ public class CastBar extends VerticalGroup {
     public CastBar(Being<?> being) {
 
         // initial values
-        if (being.getCast() != null) {
-            cast = being.getCast();
-            progressBar.setRange(0, (float) cast.getRequired());
-            progressBar.setValue((float) cast.getCurrent());
+        Cast cast = being.getCast();
+        if (cast != null) {
+            this.cast = cast;
+            progressBar.setRange(0, (float) this.cast.getRequired());
+            progressBar.setValue((float) this.cast.getCurrent());
+            name.setText(cast.getSkillData().getName());
+            current.setText((int) cast.getCurrent());
+            max.setText((int) cast.getRequired());
         }
 
         // config actors
@@ -51,7 +55,7 @@ public class CastBar extends VerticalGroup {
         addActor(barGroup);
         align(Align.center);
         setSize(getPrefWidth(), getPrefHeight());
-        if (cast == null) {
+        if (this.cast == null) {
             addAction(Actions.fadeOut(0f));
         }
     }
@@ -64,7 +68,10 @@ public class CastBar extends VerticalGroup {
         }
         // if cast is the same
         if (this.cast == cast) {
-            RunnableAction changeValues = Actions.run(() -> progressBar.setValue((float) Math.min(progressBar.getMaxValue(), cast.getCurrent())));
+            RunnableAction changeValues = Actions.run(() -> {
+                progressBar.setValue((float) Math.min(progressBar.getMaxValue(), cast.getCurrent()));
+                current.setText((int) cast.getCurrent());
+            });
             WaitAction waitAction = Actions.action(WaitAction.class);
             waitAction.setDuration(0.3f);
             resultAction.addAction(changeValues);
@@ -97,6 +104,8 @@ public class CastBar extends VerticalGroup {
             RunnableAction setValues = Actions.run(() -> {
                 name.setText(cast.getSkillData().getName());
                 progressBar.setRange(0f, (float) cast.getRequired());
+                current.setText((int) cast.getCurrent());
+                max.setText((int) cast.getRequired());
             });
             AlphaAction fadeIn = Actions.fadeIn(0.1f);
             RunnableAction setCurrent = Actions.run(() -> progressBar.setValue((float) cast.getCurrent()));
