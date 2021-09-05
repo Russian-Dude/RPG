@@ -81,7 +81,7 @@ public class BattleVisual extends Stage implements GameStateStage, BattleObserve
         }
         float size = Gdx.graphics.getWidth() / 12f;
         float posY = Gdx.graphics.getHeight() / 1.5f - size / 5;
-        float offsetY = Gdx.graphics.getHeight() / 30f;
+        float offsetY = Gdx.graphics.getHeight() / 50f;
         final List<Texture> trees = Game.getImageFactory().getTreesForBiom(cell.getBiom());
         for (float posX = -size / 2; posX < Gdx.graphics.getWidth() + size/2 + 1; posX+= Functions.random(size / 2f, size)) {
             Image image = new Image(Functions.random(trees));
