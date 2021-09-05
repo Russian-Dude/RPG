@@ -221,6 +221,22 @@ com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
 		background: Progress_Bar_Horizontal_9p
 		knobBefore: Progress_Bar_Before_Knob_Exp
 	}
+	concentration: {
+		background: Progress_Bar_Small_9p
+		knobBefore: Progress_Bar_BeforeKnob_Concentration
+	}
+	mini: {
+		background: Progress_Bar_Mini_9p
+		knobBefore: Progress_Bar_BeforeKnob_Mini
+	}
+	hp_small: {
+		background: Progress_Bar_Small_9p
+		knobBefore: Progress_Bar_Before_Knob_Hp_Small
+	}
+	stm_small: {
+		background: Progress_Bar_Small_9p
+		knobBefore: Progress_Bar_Before_Knob_Stm_Small
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 	default: {

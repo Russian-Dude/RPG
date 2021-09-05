@@ -7,8 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.Align;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
+import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.entities.skills.Buff;
 import ru.rdude.rpg.game.logic.entities.skills.Damage;
+import ru.rdude.rpg.game.logic.enums.BeingType;
 import ru.rdude.rpg.game.logic.stats.Stat;
 import ru.rdude.rpg.game.logic.stats.StatObserver;
 import ru.rdude.rpg.game.logic.stats.secondary.Hp;
@@ -40,8 +42,9 @@ public class HpBar extends Group implements StatObserver {
         hp.subscribe(this);
         hp.max().subscribe(this);
 
+        String type = being instanceof Player || being.beingTypes().getCurrent().contains(BeingType.BOSS) ? "hp" : "hp_small";
         progressBar = new ProgressBar(0, (float) hp.max().value(),
-                1, false, UiData.DEFAULT_SKIN, "hp");
+                1, false, UiData.DEFAULT_SKIN, type);
         progressBar.setValue((float) hp.value());
         progressBar.setAnimateDuration(0.3f);
 

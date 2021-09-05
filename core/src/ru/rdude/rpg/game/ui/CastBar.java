@@ -19,7 +19,7 @@ public class CastBar extends VerticalGroup {
 
     private Cast cast;
 
-    private final ProgressBar progressBar = new ProgressBar(0f, 0f, 1f, false, UiData.DEFAULT_SKIN, "hp");
+    private final ProgressBar progressBar = new ProgressBar(0f, 0f, 1f, false, UiData.DEFAULT_SKIN, "concentration");
     private final Label name = new Label("  Name of the spell  ", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
     private final Label current = new Label("", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
     private final Label max = new Label("", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
