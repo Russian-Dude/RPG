@@ -32,9 +32,11 @@ public class ClassSelectorElement extends Table implements Comparable<ClassSelec
         this.progressOrButton = new Group();
         score = new Label(player.getCurrentClass() == playerClass ? "current" : (playerClass.isOpen() ? "open" : playerClass.getClassData().getRequiredPoints() - playerClass.getNeedToOpen() + " / " + playerClass.getClassData().getRequiredPoints()), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
         progressBar = new ProgressBar(0f, playerClass.getClassData().getRequiredPoints(), 1f, false, UiData.DEFAULT_SKIN, "mini");
+        progressBar.setValue(playerClass.getClassData().getRequiredPoints() - playerClass.getNeedToOpen());
         selectButton = new TextButton("select", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
         selectButton.setDisabled(Game.getCurrentGame().getCurrentGameState().getEnumValue() != GameState.CAMP);
         selectButton.setVisible(player.getCurrentClass() != playerClass);
+        progressBar.setVisible(player.getCurrentClass() != playerClass);
         selectButton.setHeight(25f);
         progressBar.setWidth(selectButton.getWidth());
 
@@ -98,6 +100,8 @@ public class ClassSelectorElement extends Table implements Comparable<ClassSelec
             progressBar.remove();
             progressOrButton.addActor(selectButton);
         }
+        selectButton.setVisible(player.getCurrentClass() != playerClass);
+        progressBar.setVisible(player.getCurrentClass() != playerClass);
     }
 
     @Override

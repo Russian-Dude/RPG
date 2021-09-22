@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ru.rdude.rpg.game.logic.data.AbilityData;
 import ru.rdude.rpg.game.logic.data.PlayerClassData;
 import ru.rdude.rpg.game.logic.data.PlayerData;
 import ru.rdude.rpg.game.logic.data.SkillData;
@@ -21,6 +22,7 @@ import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -160,18 +162,19 @@ public class Player extends Being<PlayerData> implements AbilityObserver {
             return;
         }
         // remove buffs from previous level
+        Optional<AbilityData.AbilityLevel> oldAbilityLvl = ability.getAbilityData().getLvl(oldLvl);
         getBuffs().stream()
                 .filter(buff -> buff.getType() == Buff.Type.ABILITY)
-                .filter(buff -> ability.getAbilityData().getLvl(oldLvl).get().getBuffs().contains(buff.getEntityData().getGuid()))
+                .filter(buff -> oldAbilityLvl.isPresent() && oldAbilityLvl.get().getBuffs().contains(buff.getEntityData().getGuid()))
                 .collect(Collectors.toSet())
                 .forEach(Buff::remove);
         // add buffs for new lvl
         ability.getAbilityData().getLvl(newLvl).get().getBuffs().stream()
                 .map(SkillData::getSkillByGuid)
                 .map(skillData -> new Buff(skillData, this, this, null, Buff.Type.ABILITY))
-                .forEach(buff ->  EntityReceiver.buff(this, buff));
+                .forEach(this::receive);
         // remove usable skills from previous lvl
-        getAvailableSkills().removeAllByGuid(ability.getAbilityData().getLvl(oldLvl).get().getSkills());
+        oldAbilityLvl.ifPresent(old -> getAvailableSkills().removeAllByGuid(old.getSkills()));
         // add usable skills from new lvl
         getAvailableSkills().addAllByGuid(ability.getAbilityData().getLvl(newLvl).get().getSkills());
     }

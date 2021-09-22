@@ -57,6 +57,9 @@ public class BeingBuffsIcons implements BeingActionObserver, BuffObserver {
     }
 
     private void add(Buff buff) {
+        if (buff.getType() == Buff.Type.ABILITY) {
+            return;
+        }
         BuffIcon icon = new BuffIcon(buff);
         icons.put(buff, icon);
         buff.subscribe(this);
@@ -78,6 +81,9 @@ public class BeingBuffsIcons implements BeingActionObserver, BuffObserver {
     }
 
     private void remove(Buff buff) {
+        if (buff.getType() == Buff.Type.ABILITY) {
+            return;
+        }
         leftSide.remove(icons.get(buff));
         rightSide.remove(icons.get(buff));
         icons.remove(buff);

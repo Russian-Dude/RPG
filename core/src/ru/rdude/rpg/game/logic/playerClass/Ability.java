@@ -48,7 +48,7 @@ public class Ability implements AbilityCell<Ability> {
     }
 
     public void setLvl(int lvl) {
-        final int oldLvl = lvl;
+        final int oldLvl = this.lvl;
         this.lvl = lvl;
         subscribers.notifySubscribers(sub -> sub.updateAbility(this, open, oldLvl, lvl));
     }
