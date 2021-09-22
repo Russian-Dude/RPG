@@ -23,7 +23,6 @@ import ru.rdude.rpg.game.ui.colors.EyesColor;
 import ru.rdude.rpg.game.ui.colors.HairColor;
 import ru.rdude.rpg.game.ui.colors.SkinColor;
 import ru.rdude.rpg.game.utils.Functions;
-import ru.rdude.rpg.game.visual.DamageLabel;
 import ru.rdude.rpg.game.visual.VisualBeing;
 
 import static ru.rdude.rpg.game.ui.UiData.BIG_TEXT_STYLE;
@@ -37,7 +36,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
     private final BackpackWindow backpackWindow;
     private final EquipmentWindow equipmentWindow;
 
-    private final StatsWindow statsWindow;
+    private final PlayerInfoWindow infoWindow;
 
     private final SkillSelector skillSelector;
 
@@ -101,7 +100,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
         equipmentWindow.setVisible(false);
 
         // stats and targeting
-        statsWindow = new StatsWindow(player);
+        infoWindow = new PlayerInfoWindow(player);
         avatar.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -109,14 +108,14 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
                     Game.getGameVisual().getSkillTargeter().target(player);
                 }
                 else {
-                    statsWindow.setVisible(!statsWindow.isVisible());
-                    if (!getStage().getActors().contains(statsWindow, true)) {
-                        getStage().addActor(statsWindow);
-                        statsWindow.setX(PlayerVisual.this.getX());
-                        statsWindow.setY(Gdx.graphics.getHeight() / 2f);
-                        statsWindow.setVisible(true);
+                    infoWindow.setVisible(!infoWindow.isVisible());
+                    if (!getStage().getActors().contains(infoWindow, true)) {
+                        getStage().addActor(infoWindow);
+                        infoWindow.setX(PlayerVisual.this.getX());
+                        infoWindow.setY(Gdx.graphics.getHeight() / 2f);
+                        infoWindow.setVisible(true);
                     }
-                    statsWindow.toFront();
+                    infoWindow.toFront();
                 }
             }
         });
@@ -229,7 +228,7 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
                         || Functions.isMouseOver(backpackWindow)
                         || Functions.isMouseOver(equipmentWindow)
                         || Functions.isMouseOver(avatar)
-                        || Functions.isMouseOver(statsWindow);
+                        || Functions.isMouseOver(infoWindow);
     }
 
     @Override

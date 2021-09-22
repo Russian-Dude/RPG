@@ -1,13 +1,17 @@
 package ru.rdude.rpg.game.ui;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import ru.rdude.rpg.game.logic.data.PlayerClassData;
 import ru.rdude.rpg.game.logic.data.resources.PlayerResources;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.game.Game;
+import ru.rdude.rpg.game.logic.playerClass.PlayerClass;
 import ru.rdude.rpg.game.ui.colors.EyesColor;
 import ru.rdude.rpg.game.ui.colors.HairColor;
 import ru.rdude.rpg.game.ui.colors.SkinColor;
@@ -17,27 +21,29 @@ import java.util.Arrays;
 
 public class PlayerCreationVisual extends Table {
 
-    private float defaultAvatarWidth;
-    private float defaultAvatarHeight;
+    private final float defaultAvatarWidth;
+    private final float defaultAvatarHeight;
 
-    private VerticalGroup leftVerticalGroup;
-    private TextField name;
-    private PlayerAvatar avatar;
-    private TextButton randomizeButton;
+    private final VerticalGroup leftVerticalGroup;
+    private final TextField name;
+    private final PlayerAvatar avatar;
+    private final TextButton randomizeButton;
 
-    private Player player = new Player();
+    private final Player player = new Player();
 
-    private SelectorWithArrows<TextureAtlas.AtlasRegion> faceSelector = new SelectorWithArrows<>(Game.getCurrentGame().getAvatarCreator().faces());
-    private SelectorWithArrows<TextureAtlas.AtlasRegion> mouthSelector = new SelectorWithArrows<>(Game.getCurrentGame().getAvatarCreator().mouths());
-    private SelectorWithArrows<TextureAtlas.AtlasRegion> noseSelector = new SelectorWithArrows<>(Game.getCurrentGame().getAvatarCreator().noses());
-    private SelectorWithArrows<TextureAtlas.AtlasRegion> eyesSelector = new SelectorWithArrows<>(Game.getCurrentGame().getAvatarCreator().eyes());
-    private SelectorWithArrows<TextureAtlas.AtlasRegion> eyeBrowsSelector = new SelectorWithArrows<>(Game.getCurrentGame().getAvatarCreator().eyeBrows());
-    private SelectorWithArrows<TextureAtlas.AtlasRegion> beardSelector = new SelectorWithArrows<>(Game.getCurrentGame().getAvatarCreator().beards());
-    private SelectorWithArrows<TextureAtlas.AtlasRegion> hairSelector = new SelectorWithArrows<>(Game.getCurrentGame().getAvatarCreator().hairs());
+    private final SelectorWithArrows<TextureAtlas.AtlasRegion> faceSelector = new SelectorWithArrows<>(Game.getAvatarCreator().faces());
+    private final SelectorWithArrows<TextureAtlas.AtlasRegion> mouthSelector = new SelectorWithArrows<>(Game.getAvatarCreator().mouths());
+    private final SelectorWithArrows<TextureAtlas.AtlasRegion> noseSelector = new SelectorWithArrows<>(Game.getAvatarCreator().noses());
+    private final SelectorWithArrows<TextureAtlas.AtlasRegion> eyesSelector = new SelectorWithArrows<>(Game.getAvatarCreator().eyes());
+    private final SelectorWithArrows<TextureAtlas.AtlasRegion> eyeBrowsSelector = new SelectorWithArrows<>(Game.getAvatarCreator().eyeBrows());
+    private final SelectorWithArrows<TextureAtlas.AtlasRegion> beardSelector = new SelectorWithArrows<>(Game.getAvatarCreator().beards());
+    private final SelectorWithArrows<TextureAtlas.AtlasRegion> hairSelector = new SelectorWithArrows<>(Game.getAvatarCreator().hairs());
 
-    private SelectorWithArrows<SkinColor> faceColorSelector = new SelectorWithArrows<>(Arrays.asList(SkinColor.values()));
-    private SelectorWithArrows<HairColor> hairColorSelector = new SelectorWithArrows<>(Arrays.asList(HairColor.values()));
-    private SelectorWithArrows<EyesColor> eyesColorSelector = new SelectorWithArrows<>(Arrays.asList(EyesColor.values()));
+    private final SelectorWithArrows<SkinColor> faceColorSelector = new SelectorWithArrows<>(Arrays.asList(SkinColor.values()));
+    private final SelectorWithArrows<HairColor> hairColorSelector = new SelectorWithArrows<>(Arrays.asList(HairColor.values()));
+    private final SelectorWithArrows<EyesColor> eyesColorSelector = new SelectorWithArrows<>(Arrays.asList(EyesColor.values()));
+
+    private final SelectBox<PlayerClassWrapperListElement> classSelectBox = new SelectBox<>(UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
 
     public PlayerCreationVisual() {
         // add points to player
@@ -176,14 +182,38 @@ public class PlayerCreationVisual extends Table {
         centralVerticalTable.add(new StatVisual(player, player.stats().str(), true, false, true)).align(Align.right);
         centralVerticalTable.row().padTop(5);
         centralVerticalTable.add(new StatVisual(player, player.stats().vit(), true, false, true)).align(Align.right);
-
+        centralVerticalTable.row().padTop(20);
+        // class selector
+        classSelectBox.setItems(player.getAllClasses().stream()
+                .map(PlayerClassWrapperListElement::new)
+                .toArray(PlayerClassWrapperListElement[]::new));
+        player.setCurrentClass(classSelectBox.getSelected().playerClass);
+        centralVerticalTable.add(new Label("Start class", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
+        centralVerticalTable.row().padTop(5);
+        centralVerticalTable.add(classSelectBox).fillX();
+        centralVerticalTable.row().padTop(5);
+        // class description
+        Label classDescriptionLabel = new Label("Some class description long enough to start wrapping", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+        classDescriptionLabel.setWrap(true);
+        classDescriptionLabel.setAlignment(Align.top);
+        ScrollPane classDescriptionScrollPane = new ScrollPane(classDescriptionLabel, UiData.DEFAULT_SKIN);
+        classDescriptionScrollPane.setVariableSizeKnobs(false);
+        classDescriptionScrollPane.setScrollbarsVisible(true);
+        classSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                classDescriptionLabel.setText(classSelectBox.getSelected().playerClass.getClassData().getDescription());
+                player.setCurrentClass(classSelectBox.getSelected().playerClass);
+            }
+        });
+        centralVerticalTable.add(classDescriptionScrollPane).fillX().height(300f).align(Align.top);
 
         randomizeFace();
         defaultAvatarWidth = avatar.getWidth();
         defaultAvatarHeight = avatar.getHeight();
         avatar.setSize(avatar.getWidth() * 2, avatar.getHeight() * 2);
 
-        add(leftVerticalGroup).padRight(30);
+        add(leftVerticalGroup).padRight(50);
         add(centralVerticalTable).align(Align.top).padTop(avatar.getHeight() * 0.1f);
         pack();
     }
@@ -215,5 +245,21 @@ public class PlayerCreationVisual extends Table {
 
     public TextField getNameTextField() {
         return name;
+    }
+
+
+
+    private class PlayerClassWrapperListElement {
+
+        private final PlayerClass playerClass;
+
+        public PlayerClassWrapperListElement(PlayerClass playerClass) {
+            this.playerClass = playerClass;
+        }
+
+        @Override
+        public String toString() {
+            return playerClass.getClassData().getName();
+        }
     }
 }

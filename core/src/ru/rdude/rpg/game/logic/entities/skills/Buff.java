@@ -27,9 +27,12 @@ import java.util.Optional;
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeChangeObserver, BeingActionObserver, DurationObserver, StateChanger {
 
+    public enum Type { REGULAR, ABILITY }
+
     private final SubscribersManager<BuffObserver> subscribers = new SubscribersManager<>();
 
     private SkillData skillData;
+    private Type type;
     private Being<?> caster;
     private Being<?> target;
     private Stats stats;
@@ -45,8 +48,13 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
     }
 
     public Buff(SkillData skillData, Being<?> caster, Being<?> target, Damage damage) {
+        this(skillData, caster, target, damage, Type.REGULAR);
+    }
+
+    public Buff(SkillData skillData, Being<?> caster, Being<?> target, Damage damage, Type type) {
         super(skillData);
         this.skillData = skillData;
+        this.type = type;
         this.caster = caster;
         this.target = target;
         this.damage = damage;
@@ -54,7 +62,7 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
                 entityData.getActsEveryMinute() : null;
         this.actsTurns = entityData.getActsEveryTurn() > 0 ?
                 entityData.getActsEveryTurn() * 2 : null;
-        if (!skillData.isPermanent()) {
+        if (!skillData.isPermanent() && type == Type.REGULAR) {
             Game.getCurrentGame().getTimeManager().subscribe(this);
             Game.getCurrentGame().getTurnsManager().subscribe(this);
             duration = createDuration();
@@ -144,6 +152,10 @@ public class Buff extends Entity<SkillData> implements TurnChangeObserver, TimeC
 
     public SkillDuration getDuration() {
         return duration;
+    }
+
+    public Type getType() {
+        return type;
     }
 
     private void onTimeOrTurnUpdate() {

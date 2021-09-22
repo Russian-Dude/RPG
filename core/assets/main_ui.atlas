@@ -4,226 +4,303 @@ size: 1024, 1024
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
+Ability_Path_NE
+  rotate: false
+  xy: 85, 59
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Ability_Path_NSE
+  rotate: false
+  xy: 85, 17
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Ability_Path_NSW
+  rotate: false
+  xy: 289, 564
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Ability_Path_NSWE
+  rotate: false
+  xy: 451, 616
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Ability_Path_NW
+  rotate: false
+  xy: 875, 851
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Ability_Path_NWE
+  rotate: false
+  xy: 917, 851
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Ability_Path_SE
+  rotate: false
+  xy: 959, 851
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Ability_Path_SN
+  rotate: false
+  xy: 331, 574
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Ability_Path_SW
+  rotate: false
+  xy: 373, 574
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Ability_Path_SWE
+  rotate: false
+  xy: 415, 574
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Ability_Path_WE
+  rotate: false
+  xy: 457, 574
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
 BLKCHCRY
   rotate: false
-  xy: 1, 943
+  xy: 1, 945
   size: 506, 78
   orig: 506, 78
   offset: 0, 0
   index: -1
 ButtonAttack_Up
   rotate: false
-  xy: 43, 15
+  xy: 43, 17
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Button_Attack_Over
   rotate: false
-  xy: 833, 839
+  xy: 833, 841
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Button_Attack_Up
   rotate: false
-  xy: 1, 141
+  xy: 1, 143
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Button_Horizontal_Disabled
   rotate: false
-  xy: 1, 760
+  xy: 1, 762
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Button_Horizontal_No_Over
   rotate: false
-  xy: 509, 829
+  xy: 509, 831
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Button_Horizontal_No_Pressed
   rotate: false
-  xy: 711, 881
+  xy: 711, 883
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Button_Horizontal_No_Up
   rotate: false
-  xy: 1, 708
+  xy: 1, 710
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Button_Horizontal_Over
   rotate: false
-  xy: 163, 760
+  xy: 163, 762
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Button_Horizontal_Pressed
   rotate: false
-  xy: 671, 829
+  xy: 671, 831
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Button_Horizontal_Up
   rotate: false
-  xy: 1, 656
+  xy: 1, 658
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Button_Horizontal_Yes_Over
   rotate: false
-  xy: 163, 708
+  xy: 163, 710
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Button_Horizontal_Yes_Pressed
   rotate: false
-  xy: 325, 760
+  xy: 325, 762
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Button_Horizontal_Yes_Up
   rotate: false
-  xy: 1, 604
+  xy: 1, 606
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Button_Items_Over
   rotate: false
-  xy: 85, 267
+  xy: 85, 269
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Button_Items_Up
   rotate: false
-  xy: 85, 225
+  xy: 85, 227
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Button_Spells_Over
   rotate: false
-  xy: 85, 183
+  xy: 85, 185
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Button_Spells_Up
   rotate: false
-  xy: 85, 141
+  xy: 85, 143
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Cursor_Bulb
   rotate: false
-  xy: 487, 790
+  xy: 487, 792
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 Cursor_Bulb_On
   rotate: false
-  xy: 451, 634
+  xy: 123, 464
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 Dude
   rotate: false
-  xy: 1, 309
+  xy: 1, 311
   size: 120, 200
   orig: 120, 200
   offset: 0, 0
   index: -1
 Progress_Bar
   rotate: false
-  xy: 509, 881
+  xy: 509, 883
   size: 200, 50
   orig: 200, 50
   offset: 0, 0
   index: -1
 Progress_Bar_Background
   rotate: false
-  xy: 1, 511
+  xy: 1, 513
   size: 144, 39
   orig: 144, 39
   offset: 0, 0
   index: -1
 Progress_Bar_BeforeKnob_Concentration
   rotate: false
-  xy: 1022, 1001
+  xy: 1022, 1003
   size: 1, 20
   orig: 1, 20
   offset: 0, 0
   index: -1
 Progress_Bar_BeforeKnob_Mini
   rotate: false
-  xy: 1022, 991
+  xy: 1022, 993
   size: 1, 8
   orig: 1, 8
   offset: 0, 0
   index: -1
 Progress_Bar_Before_Knob_Exp
   rotate: false
-  xy: 1017, 982
+  xy: 1017, 984
   size: 3, 39
   orig: 3, 39
   offset: 0, 0
   index: -1
 Progress_Bar_Before_Knob_Hp
   rotate: false
-  xy: 85, 99
+  xy: 123, 422
   size: 3, 40
   orig: 3, 40
   offset: 0, 0
   index: -1
 Progress_Bar_Before_Knob_Hp_Small
   rotate: false
-  xy: 1022, 969
+  xy: 1022, 971
   size: 1, 20
   orig: 1, 20
   offset: 0, 0
   index: -1
 Progress_Bar_Before_Knob_Stm
   rotate: false
-  xy: 487, 748
+  xy: 487, 698
   size: 3, 40
   orig: 3, 40
   offset: 0, 0
   index: -1
 Progress_Bar_Before_Knob_Stm_Small
   rotate: false
-  xy: 316, 582
+  xy: 509, 797
   size: 1, 20
   orig: 1, 20
   offset: 0, 0
   index: -1
 Progress_Bar_Horizontal
   rotate: false
-  xy: 163, 656
+  xy: 163, 658
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Progress_Bar_Horizontal_9p
   rotate: false
-  xy: 163, 656
+  xy: 163, 658
   size: 160, 50
   split: 10, 9, 7, 7
   orig: 160, 50
@@ -231,14 +308,14 @@ Progress_Bar_Horizontal_9p
   index: -1
 Progress_Bar_Horizontal_V2
   rotate: false
-  xy: 325, 708
+  xy: 325, 710
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Progress_Bar_Horizontal_V2_9p
   rotate: false
-  xy: 325, 708
+  xy: 325, 710
   size: 160, 50
   split: 10, 9, 7, 7
   orig: 160, 50
@@ -246,21 +323,21 @@ Progress_Bar_Horizontal_V2_9p
   index: -1
 Progress_Bar_Knob_Red
   rotate: false
-  xy: 123, 459
+  xy: 487, 740
   size: 8, 50
   orig: 8, 50
   offset: 0, 0
   index: -1
 Progress_Bar_Mini
   rotate: false
-  xy: 1, 3
+  xy: 147, 542
   size: 10, 10
   orig: 10, 10
   offset: 0, 0
   index: -1
 Progress_Bar_Mini_9p
   rotate: false
-  xy: 1, 3
+  xy: 147, 542
   size: 10, 10
   split: 2, 2, 2, 2
   pad: 2, 2, 2, 3
@@ -269,14 +346,14 @@ Progress_Bar_Mini_9p
   index: -1
 Progress_Bar_Small
   rotate: false
-  xy: 289, 577
+  xy: 123, 486
   size: 25, 25
   orig: 25, 25
   offset: 0, 0
   index: -1
 Progress_Bar_Small_9p
   rotate: false
-  xy: 289, 577
+  xy: 123, 486
   size: 25, 25
   split: 10, 10, 4, 4
   orig: 25, 25
@@ -284,14 +361,14 @@ Progress_Bar_Small_9p
   index: -1
 Slider_Background
   rotate: false
-  xy: 509, 817
+  xy: 509, 819
   size: 20, 10
   orig: 20, 10
   offset: 0, 0
   index: -1
 Slider_Background_9p
   rotate: false
-  xy: 509, 817
+  xy: 509, 819
   size: 20, 10
   split: 6, 6, 5, 4
   orig: 20, 10
@@ -299,7 +376,7 @@ Slider_Background_9p
   index: -1
 Slider_Background_Vertical_9p
   rotate: false
-  xy: 999, 911
+  xy: 999, 913
   size: 10, 20
   split: 4, 4, 6, 5
   orig: 10, 20
@@ -307,182 +384,196 @@ Slider_Background_Vertical_9p
   index: -1
 Slider_Knob
   rotate: false
-  xy: 147, 540
+  xy: 1, 5
   size: 10, 10
   orig: 10, 10
   offset: 0, 0
   index: -1
 Slot_Amulet
   rotate: false
-  xy: 873, 891
+  xy: 873, 893
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Slot_Body
   rotate: false
-  xy: 163, 562
+  xy: 163, 564
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Slot_Boots
   rotate: false
-  xy: 325, 614
+  xy: 325, 616
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Slot_Border_Bronze
   rotate: false
-  xy: 1, 267
+  xy: 1, 269
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Slot_Border_Gold
   rotate: false
-  xy: 915, 891
+  xy: 915, 893
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Slot_Border_Quest
   rotate: false
-  xy: 205, 562
+  xy: 205, 564
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Slot_Border_Silver
   rotate: false
-  xy: 367, 614
+  xy: 367, 616
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Slot_Empty
   rotate: false
-  xy: 1, 225
+  xy: 1, 227
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Slot_Gloves
   rotate: false
-  xy: 43, 267
+  xy: 43, 269
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Slot_Head
   rotate: false
-  xy: 957, 891
+  xy: 957, 893
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+Slot_Hightlighted
+  rotate: false
+  xy: 85, 101
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Slot_Legs
   rotate: false
-  xy: 247, 562
+  xy: 247, 564
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Slot_Ring
   rotate: false
-  xy: 409, 614
+  xy: 409, 616
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Slot_Shield
   rotate: false
-  xy: 1, 183
+  xy: 1, 185
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Slot_Weapon
   rotate: false
-  xy: 43, 225
+  xy: 43, 227
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Square_Button_Hover_Green
   rotate: false
-  xy: 43, 183
+  xy: 43, 185
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Square_Button_Hover_Neutral
   rotate: false
-  xy: 1, 99
+  xy: 1, 101
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Square_Button_Hover_Red
   rotate: false
-  xy: 43, 141
+  xy: 43, 143
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Square_Button_Pressed_Green
   rotate: false
-  xy: 1, 57
+  xy: 1, 59
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Square_Button_Pressed_Neutral
   rotate: false
-  xy: 43, 99
+  xy: 43, 101
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Square_Button_Pressed_Red
   rotate: false
-  xy: 1, 15
+  xy: 1, 17
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Square_Button_Up
   rotate: false
-  xy: 43, 57
+  xy: 43, 59
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: -1
 Text_Knob
   rotate: false
-  xy: 123, 417
+  xy: 497, 750
   size: 2, 40
   orig: 2, 40
   offset: 0, 0
   index: -1
 Text_Selection
   rotate: false
-  xy: 127, 417
+  xy: 1017, 942
   size: 2, 40
   orig: 2, 40
   offset: 0, 0
   index: -1
+Transparent
+  rotate: false
+  xy: 1, 1
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
 Window
   rotate: false
-  xy: 325, 656
+  xy: 325, 658
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Window_9p
   rotate: false
-  xy: 325, 656
+  xy: 325, 658
   size: 160, 50
   split: 13, 13, 15, 15
   orig: 160, 50
@@ -490,14 +581,14 @@ Window_9p
   index: -1
 Window_No_Edges
   rotate: false
-  xy: 163, 604
+  xy: 163, 606
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Window_No_Edges_9p
   rotate: false
-  xy: 163, 604
+  xy: 163, 606
   size: 160, 50
   split: 12, 12, 7, 7
   orig: 160, 50
@@ -505,14 +596,14 @@ Window_No_Edges_9p
   index: -1
 Window_Transparent
   rotate: false
-  xy: 1, 552
+  xy: 1, 554
   size: 160, 50
   orig: 160, 50
   offset: 0, 0
   index: -1
 Window_Transparent_9p
   rotate: false
-  xy: 1, 552
+  xy: 1, 554
   size: 160, 50
   split: 15, 15, 15, 15
   orig: 160, 50
@@ -520,21 +611,21 @@ Window_Transparent_9p
   index: -1
 modern
   rotate: false
-  xy: 1, 875
+  xy: 1, 877
   size: 506, 66
   orig: 506, 66
   offset: 0, 0
   index: -1
 mud
   rotate: false
-  xy: 509, 933
+  xy: 509, 935
   size: 506, 88
   orig: 506, 88
   offset: 0, 0
   index: -1
 simple
   rotate: false
-  xy: 1, 812
+  xy: 1, 814
   size: 506, 61
   orig: 506, 61
   offset: 0, 0

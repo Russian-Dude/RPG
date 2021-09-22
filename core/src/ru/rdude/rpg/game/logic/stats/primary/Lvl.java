@@ -1,6 +1,8 @@
 package ru.rdude.rpg.game.logic.stats.primary;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import ru.rdude.rpg.game.logic.stats.Calculatable;
 import ru.rdude.rpg.game.logic.stats.RoundStat;
 import ru.rdude.rpg.game.logic.stats.Stat;
@@ -52,9 +54,9 @@ public class Lvl extends Stat implements Calculatable, RoundStat {
     }
 
     private void lvlUp() {
-        statPoints.increase(2);
-        if (value() % 3 == 0) statPoints.increase(1);
-        if (value() % 10 == 0) statPoints.increase(1);
+        statPoints.increase(type == BASE ? 2 : 1);
+        if (value() % 3 == 0 && type == BASE) statPoints.increase(1);
+        if (value() % 10 == 0 && type == BASE) statPoints.increase(1);
     }
 
     @Override
@@ -80,6 +82,7 @@ public class Lvl extends Stat implements Calculatable, RoundStat {
     }
 
 
+    @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
     public static abstract class Exp extends Stat implements Calculatable, RoundStat {
 
         protected Lvl lvl;
@@ -88,13 +91,14 @@ public class Lvl extends Stat implements Calculatable, RoundStat {
 
         public Exp(Lvl lvl) {
             this.lvl = lvl;
+            this.max = new ExpMax();
         }
 
         protected abstract double calculate(double lvl);
-        protected double max;
+        protected ExpMax max;
 
-        public double getMax() { return max; }
-        public void setMax(double max) { this.max = max; }
+        public ExpMax getMax() { return max; }
+        public void setMax(double max) { this.max.set(max); }
 
         @Override
         public double calculate() {
@@ -109,7 +113,7 @@ public class Lvl extends Stat implements Calculatable, RoundStat {
         @Override
         public double increase(double value) {
             this.set(value() + value);
-            for (boolean isLvlUp = this.value() >= this.max; isLvlUp; isLvlUp = this.value() >= this.max) {
+            for (boolean isLvlUp = this.value() >= this.max.value(); isLvlUp; isLvlUp = this.value() >= this.max.value()) {
                 lvl.increase(1);
                 calculate();
             }
@@ -129,10 +133,10 @@ public class Lvl extends Stat implements Calculatable, RoundStat {
         @Override
         protected double calculate(double lvl) {
             if (super.lvl.calculatable) {
-                if (value() < max) return max;
-                max = 170 + lvl*180 + Math.floor(lvl/2)*180 + Math.floor(lvl/3)*240;
+                if (value() < max.value()) return max.value();
+                max.set(170 + lvl*180 + Math.floor(lvl/2)*180 + Math.floor(lvl/3)*240);
             }
-            return max;
+            return max.value();
         }
 
         @Override
@@ -143,6 +147,7 @@ public class Lvl extends Stat implements Calculatable, RoundStat {
         public String getName() {
             return "Class experience";
         }
+
     }
 
     @JsonPolymorphicSubType("expBase")
@@ -157,10 +162,10 @@ public class Lvl extends Stat implements Calculatable, RoundStat {
         @Override
         protected double calculate(double lvl) {
             if (super.lvl.calculatable) {
-                if (value() < max) return max;
-                max = 100 + lvl * 150 + Math.floor(lvl/2)*160 + Math.floor(lvl/3)*185;
+                if (value() < max.value()) return max.value();
+                max.set(100 + lvl * 150 + Math.floor(lvl/2)*160 + Math.floor(lvl/3)*185);
             }
-            return max;
+            return max.value();
         }
 
         @Override
@@ -172,5 +177,14 @@ public class Lvl extends Stat implements Calculatable, RoundStat {
             return "Experience";
         }
     }
+
+    public static class ExpMax extends Stat implements RoundStat {
+
+        @Override
+        public String getName() {
+            return "Exp for next lvl";
+        }
+    }
+
 
 }

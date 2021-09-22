@@ -13,7 +13,10 @@ public class UiData {
     public final static String NO_BUTTON_STYLE = BIG_TEXT_STYLE.equals("default") ? "no" : BIG_TEXT_STYLE + "_no";
     public final static String YES_SQUARE_BUTTON_STYLE = BIG_TEXT_STYLE.equals("default") ? "square_yes" : "square_" + BIG_TEXT_STYLE + "_yes";
     public final static String NO_SQUARE_BUTTON_STYLE = BIG_TEXT_STYLE.equals("default") ? "square_no" : "square_" + BIG_TEXT_STYLE + "_no";
+    public final static String TRANSPARENT_BUTTON_STYLE = "transparent";
     public final static String RED_GREEN_CHECKBOX = "Red_Green_mud";
+    public final static Drawable SEMI_TRANSPARENT_BACKGROUND = DEFAULT_SKIN.getDrawable("Window_Transparent_9p");
+    public final static Drawable DEFAULT_BACKGROUND = DEFAULT_SKIN.getDrawable("Window_9p");
     public static float UNIT_SIZE = Gdx.graphics.getWidth() / 100f;
 
     public static class ItemBorder {

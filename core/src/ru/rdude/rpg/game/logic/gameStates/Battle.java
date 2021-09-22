@@ -162,7 +162,10 @@ public class Battle extends GameStateBase implements TurnChangeObserver, BeingAc
         Game.getCurrentGame().getGameMap().getStage().removeMonsterFrom(cellX, cellY);
         unsubscribeFromAll();
         final Map<Being<?>, Double> expRewards = Game.getCurrentGame().getExpSpreader().spreadExp(enemySide);
-        expRewards.forEach((player, exp) -> player.stats().lvl().exp().increase(exp));
+        expRewards.forEach((player, exp) -> {
+            player.stats().lvl().exp().increase(exp);
+            ((Player) player).getCurrentClass().getLvl().exp().increase(exp);
+        });
         BattleAction.WIN.lastExpRewards = expRewards;
         subscribers.notifySubscribers(subscriber -> subscriber.update(BattleAction.WIN));
     }

@@ -62,7 +62,7 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
 
     public Optional<Slot<Item>> slotFor(ItemType itemType) {
         switch (itemType.getMainType()) {
-            case ARMOR:
+            case EQUIPMENT:
                 switch (itemType) {
                     case ARMOR:
                         return Optional.of(armor);
@@ -240,7 +240,7 @@ public class EquipmentSlotsHolder extends SlotsHolder<Item> {
         return slots.stream()
                 .filter(slot -> !slot.isEmpty())
                 .map(Slot::getEntity)
-                .filter(entity -> entity.getEntityData().getItemType().getMainType() == ItemMainType.ARMOR)
+                .filter(entity -> entity.getEntityData().getItemType().getMainType() == ItemMainType.EQUIPMENT)
                 .flatMap(entity -> entity.elements().getCurrent().stream())
                 .collect(Collectors.toSet());
     }

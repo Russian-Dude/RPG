@@ -14,11 +14,8 @@ import java.util.Set;
 @JsonPolymorphicSubType("playerData")
 public class PlayerData extends BeingData {
 
-    private PlayerStatistics statistics;
-
     public PlayerData() {
         super(Functions.generateGuid());
-        statistics = new PlayerStatistics();
         Set<BeingType> beingTypes = new HashSet<>();
         beingTypes.add(BeingType.HUMAN);
         super.setBeingTypes(beingTypes);

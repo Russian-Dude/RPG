@@ -29,6 +29,12 @@ com.badlogic.gdx.graphics.Color: {
 		b: 0.09066665
 		a: 1
 	}
+	Transparent: {
+		r: 0
+		g: 0
+		b: 0
+		a: 0
+	}
 	white: {
 		r: 1
 		g: 1
@@ -129,6 +135,11 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 		down: Square_Button_Pressed_Red
 		over: Square_Button_Hover_Red
 	}
+	transparent: {
+		up: Transparent
+		down: Transparent
+		over: Transparent
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 	Red_Green_mud: {
@@ -220,6 +231,22 @@ com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
 	exp: {
 		background: Progress_Bar_Horizontal_9p
 		knobBefore: Progress_Bar_Before_Knob_Exp
+	}
+	concentration: {
+		background: Progress_Bar_Small_9p
+		knobBefore: Progress_Bar_BeforeKnob_Concentration
+	}
+	mini: {
+		background: Progress_Bar_Mini_9p
+		knobBefore: Progress_Bar_BeforeKnob_Mini
+	}
+	hp_small: {
+		background: Progress_Bar_Small_9p
+		knobBefore: Progress_Bar_Before_Knob_Hp_Small
+	}
+	stm_small: {
+		background: Progress_Bar_Small_9p
+		knobBefore: Progress_Bar_Before_Knob_Stm_Small
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {

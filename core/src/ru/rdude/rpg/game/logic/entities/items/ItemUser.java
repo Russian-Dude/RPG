@@ -3,7 +3,6 @@ package ru.rdude.rpg.game.logic.entities.items;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
-import ru.rdude.rpg.game.logic.entities.skills.SkillUser;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.holders.Slot;
 
@@ -14,7 +13,7 @@ public final class ItemUser {
             return;
         }
         switch (item.getEntityData().getItemType().getMainType()) {
-            case ARMOR:
+            case EQUIPMENT:
             case WEAPON:
                 boolean inBackpack = being.backpack().hasEntity(item);
                 boolean inEquipment = being.equipment().hasEntity(item);

@@ -30,7 +30,7 @@ public class CityInside implements TimeChangeObserver {
         // start armor
         List<ItemData> armor = ItemData.getItemsWith()
                 .rarity(ItemRarity.BRONZE)
-                .type(ItemMainType.ARMOR)
+                .type(ItemMainType.EQUIPMENT)
                 .getRandomItems(5);
         // start weapons
         List<ItemData> weapons = ItemData.getItemsWith()

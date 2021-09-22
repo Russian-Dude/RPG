@@ -42,9 +42,9 @@ public class GameStateSwitcher {
             player.setName(name.isBlank() ? "Default Player Name" : name); });
         final Party party = new Party(createdPlayers);
         Game.getCurrentGame().setCurrentPlayers(party);
+        Game.getCurrentGame().getGameStateHolder().setGameState(map);
         Game.getGameVisual().addStage(map.getStage());
         Game.getGameVisual().setUi(new UIStage());
-        Game.getCurrentGame().getGameStateHolder().setGameState(map);
         Game.getEntityFactory().monsters().createMonstersOnMap(Game.getCurrentGame().getGameMap());
         Game.getCurrentGame().getGameMap().getStage().playerChangedPosition(
                 Game.getCurrentGame().getGameMap().getPlayerPosition(), Game.getCurrentGame().getGameMap().getPlayerPosition());

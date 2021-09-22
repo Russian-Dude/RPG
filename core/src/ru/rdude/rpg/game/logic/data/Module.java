@@ -20,6 +20,7 @@ public class Module extends EntityData implements Serializable {
     private Set<EventData> eventData;
     private Set<QuestData> questData;
     private Set<PlayerClassData> playerClassData;
+    private Set<AbilityData> abilityData;
 
     // default constructor for Jackson json deserialization
     private Module() {
@@ -33,6 +34,8 @@ public class Module extends EntityData implements Serializable {
         monsterData = new HashSet<>();
         eventData = new HashSet<>();
         questData = new HashSet<>();
+        playerClassData = new HashSet<>();
+        abilityData = new HashSet<>();
     }
 
     public Set<SkillData> getSkillData() {
@@ -83,6 +86,14 @@ public class Module extends EntityData implements Serializable {
         this.playerClassData = playerClassData;
     }
 
+    public Set<AbilityData> getAbilityData() {
+        return abilityData;
+    }
+
+    public void setAbilityData(Set<AbilityData> abilityData) {
+        this.abilityData = abilityData;
+    }
+
     @Override
     public ModuleResources getResources() {
         return (ModuleResources) super.getResources();
@@ -94,7 +105,7 @@ public class Module extends EntityData implements Serializable {
 
     @JsonIgnore
     public Set<EntityData> getAllEntities() {
-        return Stream.of(skillData, itemData, monsterData, eventData, questData)
+        return Stream.of(skillData, itemData, monsterData, eventData, questData, playerClassData, abilityData)
                 .flatMap(Set::stream)
                 .collect(Collectors.toSet());
     }
@@ -118,6 +129,12 @@ public class Module extends EntityData implements Serializable {
         else if (entityData instanceof QuestData) {
             questData.add((QuestData) entityData);
         }
+        else if (entityData instanceof PlayerClassData) {
+            playerClassData.add((PlayerClassData) entityData);
+        }
+        else if (entityData instanceof AbilityData) {
+            abilityData.add((AbilityData) entityData);
+        }
         else throw new IllegalArgumentException("Adding entity of a class " + entityData.getClass() + " is not implemented");
     }
 
@@ -140,19 +157,25 @@ public class Module extends EntityData implements Serializable {
         else if (entityData instanceof QuestData) {
             questData.remove(entityData);
         }
+        else if (entityData instanceof PlayerClassData) {
+            playerClassData.remove(entityData);
+        }
+        else if (entityData instanceof AbilityData) {
+            abilityData.remove(entityData);
+        }
         else throw new IllegalArgumentException("Removing entity of a class " + entityData.getClass() + " is not implemented");
     }
 
     @Override
     public boolean hasEntityDependency(long guid) {
-        return Stream.of(skillData, itemData, monsterData, eventData, questData)
+        return Stream.of(skillData, itemData, monsterData, eventData, questData, playerClassData, abilityData)
                 .flatMap(Collection::stream)
                 .anyMatch(entityData -> entityData.hasEntityDependency(guid));
     }
 
     @Override
     public void replaceEntityDependency(long oldValue, long newValue) {
-        Stream.of(skillData, itemData, monsterData, eventData, questData)
+        Stream.of(skillData, itemData, monsterData, eventData, questData, playerClassData, abilityData)
                 .flatMap(Collection::stream)
                 .forEach(entityData -> entityData.replaceEntityDependency(oldValue, newValue));
     }

@@ -7,6 +7,8 @@ import ru.rdude.rpg.game.logic.data.MonsterData;
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.enums.EntityReferenceInfo;
 import ru.rdude.rpg.game.logic.gameStates.Map;
+import ru.rdude.rpg.game.logic.playerClass.Ability;
+import ru.rdude.rpg.game.logic.playerClass.PlayerClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,7 @@ public final class TooltipInfoFactory {
     private final BuffTooltipInfoFactory buffFactory = new BuffTooltipInfoFactory();
     private final SkillTooltipInfoFactory skillFactory = new SkillTooltipInfoFactory();
     private final MonsterTooltipInfoFactory monsterFactory = new MonsterTooltipInfoFactory();
+    private final AbilityTooltipInfoFactory abilityFactory = new AbilityTooltipInfoFactory();
 
     public List<Actor> get(EntityData entityData,
                            EntityReferenceInfo referenceInfo,
@@ -42,6 +45,10 @@ public final class TooltipInfoFactory {
         else {
             return new ArrayList<>();
         }
+    }
+
+    public List<Actor> get(Ability ability, PlayerClass playerClass, EntityReferenceInfo referenceInfo, TooltipInfoHolder<?> infoHolder) {
+        return abilityFactory.get(ability, playerClass, referenceInfo, infoHolder);
     }
 
     public List<Actor> get(Map.MonstersOnCell monsters) {

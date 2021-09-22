@@ -23,7 +23,11 @@ public class AvailableSkills {
         this.entries = entries;
     }
 
-    public void addAll(Collection<Long> skills) {
+    public void addAllByGuid(Collection<Long> skills) {
+        skills.forEach(this::add);
+    }
+
+    public void addAll(Collection<SkillData> skills) {
         skills.forEach(this::add);
     }
 
@@ -32,6 +36,10 @@ public class AvailableSkills {
         if (entries.get(skill) == 1) {
             subscribersManager.notifySubscribers(sub -> sub.update(AvailableSkillsObserver.Action.ADDED, SkillData.getSkillByGuid(skill)));
         }
+    }
+
+    public void add(SkillData skillData) {
+        add(skillData.getGuid());
     }
 
     public void remove(Long skill) {
@@ -46,7 +54,15 @@ public class AvailableSkills {
         }
     }
 
-    public void removeAll(Collection<Long> skills) {
+    public void remove(SkillData skillData) {
+        remove(skillData.getGuid());
+    }
+
+    public void removeAllByGuid(Collection<Long> skills) {
+        skills.forEach(this::remove);
+    }
+
+    public void removeAll(Collection<SkillData> skills) {
         skills.forEach(this::remove);
     }
 

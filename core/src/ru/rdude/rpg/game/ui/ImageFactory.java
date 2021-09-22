@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
 import ru.rdude.rpg.game.logic.map.Cell;
+import ru.rdude.rpg.game.logic.playerClass.AbilityPath;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 public final class ImageFactory {
+
+    private static TextureAtlas uiTextureAtlas;
 
     private final Map<Long, TextureAtlas.AtlasRegion> regions = new HashMap<>();
     private final Map<Long, TextureAtlas> regionsToAtlas = new HashMap<>();
@@ -35,6 +38,13 @@ public final class ImageFactory {
 
     public TextureAtlas getAtlas(long resourceGuid) {
         return regionsToAtlas.get(resourceGuid);
+    }
+
+    public TextureAtlas.AtlasRegion getAbilityPathAtlasRegion(AbilityPath abilityPath) {
+        if (uiTextureAtlas == null) {
+            uiTextureAtlas = new TextureAtlas("main_ui.atlas");
+        }
+        return uiTextureAtlas.findRegion("Ability_Path_" + abilityPath.name());
     }
 
     public Image getGroundImage(Cell cell) {

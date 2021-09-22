@@ -8,7 +8,6 @@ import ru.rdude.rpg.game.logic.entities.skills.Buff;
 import ru.rdude.rpg.game.logic.entities.skills.Damage;
 import ru.rdude.rpg.game.logic.enums.ItemMainType;
 import ru.rdude.rpg.game.logic.game.Game;
-import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.visual.VisualBeing;
 
 import java.util.Set;
@@ -97,7 +96,7 @@ public final class EntityReceiver {
     }
 
     public static boolean buff(Being<?> target, Buff buff) {
-        if (target.getBuffs().stream()
+        if (buff.getType() == Buff.Type.REGULAR && target.getBuffs().stream()
                 .anyMatch(b -> b.getEntityData().equals(buff.getEntityData()))) {
             switch (buff.getEntityData().getOverlay()) {
                 case NEGATE:
@@ -121,7 +120,7 @@ public final class EntityReceiver {
         }
 
         // permanent
-        if (buff.isPermanent()) {
+        if (buff.isPermanent() && buff.getType() == Buff.Type.REGULAR) {
             // being types
             if (buff.getEntityData().getTransformation().getBeingTypes() != null && !buff.getEntityData().getTransformation().getBeingTypes().isEmpty()) {
                 target.beingTypes().add(buff, buff.getEntityData().getTransformation().getBeingTypes());
@@ -180,7 +179,7 @@ public final class EntityReceiver {
     public static boolean item(Being<?> target, Item item) {
         if (target.backpack().receiveEntity(item))
             return true;
-        if (item.getEntityData().getItemType().getMainType() == ItemMainType.ARMOR
+        if (item.getEntityData().getItemType().getMainType() == ItemMainType.EQUIPMENT
                 || item.getEntityData().getItemType().getMainType() == ItemMainType.WEAPON)
             return target.equipment().receiveEntity(item);
         return false;

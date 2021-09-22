@@ -49,7 +49,8 @@ public class ModuleFileLoader {
                         MonsterData.storeMonsters(module.getMonsterData());
                         EventData.storeEvents(module.getEventData());
                         QuestData.storeQuests(module.getQuestData());
-                        //PlayerClassData.storeClasses(module.getPlayerClassData());
+                        PlayerClassData.storeClasses(module.getPlayerClassData());
+                        AbilityData.storeAbilities(module.getAbilityData());
                     }
 
                     // images

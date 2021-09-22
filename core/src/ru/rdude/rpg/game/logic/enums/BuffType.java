@@ -4,5 +4,5 @@ import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 @JsonPolymorphicSubType("buffType")
 public enum BuffType implements UsedByStatistics{
-    PHYSIC, MAGIC
+    PHYSICAL, MAGICAL
 }

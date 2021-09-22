@@ -9,14 +9,14 @@ import java.util.stream.Collectors;
 @JsonPolymorphicSubType("itemType")
 public enum ItemType implements UsedByStatistics, ItemMainOrConcreteType {
     // equip:
-    ARMOR(ItemMainType.ARMOR),
-    BOOTS(ItemMainType.ARMOR),
-    GLOVES(ItemMainType.ARMOR),
-    HELMET(ItemMainType.ARMOR),
-    JEWELRY(ItemMainType.ARMOR),
-    NECKLACE(ItemMainType.ARMOR),
-    PANTS(ItemMainType.ARMOR),
-    SHIELD(ItemMainType.ARMOR),
+    ARMOR(ItemMainType.EQUIPMENT),
+    BOOTS(ItemMainType.EQUIPMENT),
+    GLOVES(ItemMainType.EQUIPMENT),
+    HELMET(ItemMainType.EQUIPMENT),
+    JEWELRY(ItemMainType.EQUIPMENT),
+    NECKLACE(ItemMainType.EQUIPMENT),
+    PANTS(ItemMainType.EQUIPMENT),
+    SHIELD(ItemMainType.EQUIPMENT),
     // weapon types:
     DAGGER(ItemMainType.WEAPON),
     SWORD(ItemMainType.WEAPON),

@@ -115,13 +115,15 @@ final class SkillTooltipInfoFactory {
 
         // targets
         if ((skillData.getDamage() == null || skillData.getDamage().isEmpty() || skillData.getDamage().equals("0"))
-                && (referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED)) {
+                && (referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED)
+                && infoHolder.optionMeetsCondition(AbilityTooltipInfoFactory.PassiveSkills.class, o -> o.isNotPassive(skillData))) {
             result.add(new Label("Targets: " + targets, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE));
         }
 
         // requirements
         if ((referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED)
-                && (skillData.getStaminaReq() > 0 || skillData.getConcentrationReq() > 0)) {
+                && (skillData.getStaminaReq() > 0 || skillData.getConcentrationReq() > 0)
+                && infoHolder.optionMeetsCondition(AbilityTooltipInfoFactory.PassiveSkills.class, o -> o.isNotPassive(skillData))) {
             String stamina = skillData.getStaminaReq() > 0 ? skillData.getStaminaReq() + " stamina" : "";
             String concentration = skillData.getConcentrationReq() > 0 ? skillData.getConcentrationReq() + " concentration" : "";
             String requirements = Stream.of(stamina, concentration)
@@ -133,7 +135,8 @@ final class SkillTooltipInfoFactory {
         // stats requirements
         if ((referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED)
                 && skillData.getRequirements().getStats() != null && skillData.getRequirements().getStats()
-                .stream().anyMatch(stat -> stat.value() > 0)) {
+                .stream().anyMatch(stat -> stat.value() > 0)
+                && infoHolder.optionMeetsCondition(AbilityTooltipInfoFactory.PassiveSkills.class, o -> o.isNotPassive(skillData))) {
             Table statsTable = new Table();
             skillData.getRequirements().getStats().streamWithNestedStats()
                     .filter(stat -> stat.value() > 0.0)
@@ -158,7 +161,8 @@ final class SkillTooltipInfoFactory {
 
         // items requirements
         if ((referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED)
-                && !skillData.getRequirements().getItems().isEmpty()) {
+                && !skillData.getRequirements().getItems().isEmpty()
+                && infoHolder.optionMeetsCondition(AbilityTooltipInfoFactory.PassiveSkills.class, o -> o.isNotPassive(skillData))) {
             String requiredOrConsumed = skillData.getRequirements().isTakeItems() ? "Consume items: " : "Items requirements ";
             String items = skillData.getRequirements().getItems().entrySet().stream()
                     .map(entry -> ItemData.getItemDataByGuid(entry.getKey()).getName() + " (" + entry.getValue() + ")")
@@ -168,7 +172,8 @@ final class SkillTooltipInfoFactory {
 
         // permanent
         if ((referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED)
-                && skillData.hasDuration() && skillData.isPermanent()) {
+                && skillData.hasDuration() && skillData.isPermanent()
+                && infoHolder.optionMeetsCondition(AbilityTooltipInfoFactory.PassiveSkills.class, o -> o.isNotPassive(skillData))) {
             result.add(new Label("PERMANENT", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE));
         }
 
@@ -646,7 +651,8 @@ final class SkillTooltipInfoFactory {
         }
 
         // duration
-        if (skillData.hasDuration() && (referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED)) {
+        if (skillData.hasDuration() && (referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED)
+            && infoHolder.optionMeetsCondition(AbilityTooltipInfoFactory.PassiveSkills.class, o -> o.isNotPassive(skillData))) {
             String minutes;
             if (skillData.getDurationInMinutes() != null && !skillData.getDurationInMinutes().isBlank() && !skillData.getDurationInMinutes().matches("0+")) {
                 minutes = Functions.convertFormulaToPrettyString(skillData.getDurationInMinutes()) + " minutes";
@@ -674,12 +680,14 @@ final class SkillTooltipInfoFactory {
         }
 
         // forced cancel
-        if (skillData.canBeForceCanceled() && (referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED)) {
+        if (skillData.canBeForceCanceled() && (referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED)
+            && infoHolder.optionMeetsCondition(AbilityTooltipInfoFactory.PassiveSkills.class, o -> o.isNotPassive(skillData))) {
             result.add(new Label(getForceCancelString(skillData), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE));
         }
 
         // can be blocked, resisted, dodged
-        if (referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED) {
+        if (referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED
+            && infoHolder.optionMeetsCondition(AbilityTooltipInfoFactory.PassiveSkills.class, o -> o.isNotPassive(skillData))) {
             String blocked = skillData.isCanBeBlocked() ? "" : "blocked";
             String resisted = skillData.isCanBeResisted() ? "" : "resisted";
             String dodged = skillData.isCanBeDodged() ? "" : "dodged";

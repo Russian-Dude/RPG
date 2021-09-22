@@ -126,7 +126,7 @@ public class StatVisual extends Table implements StatObserver {
                 minusButton.setVisible(stat.value() > 0);
             }
             if (stat instanceof Lvl.Exp) {
-                value.setText((int) (stat.value()) + " / " + (int) (((Lvl.Exp) stat)).getMax());
+                value.setText((int) (stat.value()) + " / " + (int) (((Lvl.Exp) stat)).getMax().value());
             }
             else {
                 // somehow ternal operator does not work here

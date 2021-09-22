@@ -195,9 +195,9 @@ public class SkillResultsCreator {
         }
         double randomValue = Functions.random(100d);
         double resistanceValue = 0;
-        if (skillData.getBuffType() == BuffType.MAGIC)
+        if (skillData.getBuffType() == BuffType.MAGICAL)
             resistanceValue = target.stats().magicResistanceValue();
-        else if (skillData.getBuffType() == BuffType.PHYSIC)
+        else if (skillData.getBuffType() == BuffType.PHYSICAL)
             resistanceValue = target.stats().physicResistanceValue();
         return resistanceValue >= randomValue;
     }

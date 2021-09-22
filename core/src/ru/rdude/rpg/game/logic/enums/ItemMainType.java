@@ -6,6 +6,6 @@ import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 public enum ItemMainType implements UsedByStatistics, ItemMainOrConcreteType {
     SIMPLE,
     USABLE,
-    ARMOR,
+    EQUIPMENT,
     WEAPON
 }

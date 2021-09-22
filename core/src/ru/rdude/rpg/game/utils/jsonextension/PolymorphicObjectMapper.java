@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class PolymorphicObjectMapper extends ObjectMapper {
 
-    private final Map<String, Reflections> reflections;
+    protected final Map<String, Reflections> reflections;
 
     public PolymorphicObjectMapper(String... packages) {
         // reflections
