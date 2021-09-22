@@ -10,6 +10,7 @@ import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.*;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.enums.GameState;
+import ru.rdude.rpg.game.logic.enums.SkillEffect;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.time.TurnChangeObserver;
@@ -87,7 +88,13 @@ public class Battle extends GameStateBase implements TurnChangeObserver, BeingAc
         }
         else {
             enemySide.forEach(being -> being.setReady(false));
-            playerSide.forEach(being -> being.setReady(true));
+            playerSide.forEach(being -> {
+                being.setReady(true);
+                if (being.isReady()) {
+                    being.stats().hp().increase(being.stats().hp().recovery());
+                    being.stats().stm().increase(being.stats().stm().recovery());
+                }
+            });
             updateCasts(playerSide);
         }
     }
@@ -123,6 +130,8 @@ public class Battle extends GameStateBase implements TurnChangeObserver, BeingAc
             // enemies main turn
             enemySide.forEach(enemy -> {
                 if (enemy instanceof Monster && enemy.isReady() && !enemy.isCasting() && !wereCasting.contains(enemy)) {
+                    enemy.stats().stm().increase(enemy.stats().stm().recovery());
+                    enemy.stats().hp().increase(enemy.stats().hp().recovery());
                     final Long skillGuid = Functions.randomWithWeights(((MonsterData) enemy.getEntityData()).getSkills());
                     if (skillGuid != null) {
                         final SkillData skill = Game.getEntityFactory().skills().describerToReal(skillGuid);

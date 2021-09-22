@@ -6,6 +6,7 @@ import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.Monster;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
+import ru.rdude.rpg.game.logic.enums.SkillEffect;
 import ru.rdude.rpg.game.logic.enums.Target;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Battle;
@@ -43,7 +44,8 @@ public class SkillVisualTargeter {
         final boolean isAllies = isAllies(currentCaster, target);
         if (currentTarget == Target.ALLY && !isAllies
                 || currentTarget == Target.ANY_OTHER && currentCaster.equals(target)
-                || currentTarget == Target.ENEMY && isAllies) {
+                || currentTarget == Target.ENEMY && isAllies
+                || target.getEffect() == SkillEffect.EXILE) {
             clear();
         }
         else {

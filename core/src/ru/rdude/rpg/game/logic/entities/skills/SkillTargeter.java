@@ -4,6 +4,7 @@ import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
+import ru.rdude.rpg.game.logic.enums.SkillEffect;
 import ru.rdude.rpg.game.logic.enums.Target;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Battle;
@@ -249,7 +250,9 @@ public class SkillTargeter {
             allies = Game.getCurrentGame().getCurrentPlayers();
         }
 
-        allBeings = Stream.concat(allies.stream(), enemies.stream()).collect(Collectors.toList());
+        allBeings = Stream.concat(allies.stream(), enemies.stream())
+                .filter(being -> being.getEffect() != SkillEffect.EXILE)
+                .collect(Collectors.toList());
 
         switch (mainTarget) {
             case ALLY:
@@ -274,14 +277,14 @@ public class SkillTargeter {
 
             case RIGHT_ALLY:
                 Being<?> rightAlly = allies.getBeingRightFrom(caster);
-                if (rightAlly != null) {
+                if (rightAlly != null && rightAlly.getEffect() != SkillEffect.EXILE) {
                     return get(caster, rightAlly, skillData.getTargets());
                 }
                 break;
 
             case LEFT_ALLY:
                 Being<?> leftAlly = allies.getBeingLeftFrom(caster);
-                if (leftAlly != null) {
+                if (leftAlly != null && leftAlly.getEffect() != SkillEffect.EXILE) {
                     return get(caster, leftAlly, skillData.getTargets());
                 }
                 break;
@@ -290,12 +293,16 @@ public class SkillTargeter {
                 return get(caster, caster, skillData.getTargets());
 
             case RANDOM_ALLY:
-                Being<?> ally = Functions.random(allies.getBeings());
+                Being<?> ally = Functions.random(allies.getBeings().stream()
+                        .filter(being -> being.getEffect() != SkillEffect.EXILE)
+                        .collect(Collectors.toSet()));
                 return get(caster, ally, skillData.getTargets());
 
             case RANDOM_ENEMY:
                 if (enemies != emptyParty) {
-                    Being<?> enemy = Functions.random(enemies.getBeings());
+                    Being<?> enemy = Functions.random(enemies.getBeings().stream()
+                            .filter(being -> being.getEffect() != SkillEffect.EXILE)
+                            .collect(Collectors.toSet()));
                     return get(caster, enemy, skillData.getTargets());
                 }
                 break;

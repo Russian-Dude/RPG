@@ -133,7 +133,10 @@ public class Lvl extends Stat implements Calculatable, RoundStat {
         @Override
         protected double calculate(double lvl) {
             if (super.lvl.calculatable) {
-                if (value() < max.value()) return max.value();
+                if (value() < max.value()) {
+                    return max.value();
+                }
+                set(value - max.value());
                 max.set(170 + lvl*180 + Math.floor(lvl/2)*180 + Math.floor(lvl/3)*240);
             }
             return max.value();
@@ -162,7 +165,10 @@ public class Lvl extends Stat implements Calculatable, RoundStat {
         @Override
         protected double calculate(double lvl) {
             if (super.lvl.calculatable) {
-                if (value() < max.value()) return max.value();
+                if (value() < max.value()) {
+                    return max.value();
+                }
+                set(value - max.value());
                 max.set(100 + lvl * 150 + Math.floor(lvl/2)*160 + Math.floor(lvl/3)*185);
             }
             return max.value();

@@ -7,6 +7,7 @@ import ru.rdude.rpg.game.logic.enums.GameState;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Battle;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
+import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.time.TimeChangeObserver;
 import ru.rdude.rpg.game.logic.time.TurnChangeObserver;
@@ -15,7 +16,7 @@ import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 import java.util.Optional;
 
 @JsonPolymorphicSubType("minion")
-public class Minion extends Monster implements TurnChangeObserver, TimeChangeObserver {
+public class Minion extends Monster implements TurnChangeObserver, TimeChangeObserver, GameStateObserver {
 
     private Integer turnsDuration;
     private Integer timeDuration;
@@ -38,6 +39,7 @@ public class Minion extends Monster implements TurnChangeObserver, TimeChangeObs
         if (turnsDuration != null) {
             Game.getCurrentGame().getTurnsManager().subscribe(this);
         }
+        Game.getCurrentGame().getGameStateHolder().subscribe(this);
     }
 
     public Optional<Integer> getTurnsDuration() {
@@ -85,4 +87,12 @@ public class Minion extends Monster implements TurnChangeObserver, TimeChangeObs
         }
     }
 
+    @Override
+    public void update(GameStateBase oldValue, GameStateBase newValue) {
+        if (newValue != null && newValue.getEnumValue() == GameState.MAP) {
+            stats.hp().set(stats().hp().maxValue());
+            stats.stm().set(stats.stm().maxValue());
+        }
+        cast.setCast(null);
+    }
 }

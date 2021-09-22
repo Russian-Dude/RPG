@@ -12,6 +12,9 @@ import ru.rdude.rpg.game.logic.entities.EntityReceiver;
 import ru.rdude.rpg.game.logic.entities.skills.Buff;
 import ru.rdude.rpg.game.logic.entities.states.StateHolder;
 import ru.rdude.rpg.game.logic.enums.*;
+import ru.rdude.rpg.game.logic.game.Game;
+import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
+import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
 import ru.rdude.rpg.game.logic.playerClass.Ability;
 import ru.rdude.rpg.game.logic.playerClass.AbilityObserver;
 import ru.rdude.rpg.game.logic.playerClass.CurrentPlayerClassObserver;
@@ -29,7 +32,7 @@ import java.util.stream.Collectors;
 @JsonIgnoreProperties("entityData")
 @JsonPolymorphicSubType("player")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class Player extends Being<PlayerData> implements AbilityObserver {
+public class Player extends Being<PlayerData> implements AbilityObserver, GameStateObserver {
 
     private SubscribersManager<PlayerReadyObserver> isReadyObservers;
     private SubscribersManager<CurrentPlayerClassObserver> currentClassObservers;
@@ -60,6 +63,7 @@ public class Player extends Being<PlayerData> implements AbilityObserver {
         allClasses.stream()
                 .flatMap(playerClass -> playerClass.getAbilities().stream())
                 .forEach(ability -> ability.subscribe(this));
+        Game.getCurrentGame().getGameStateHolder().subscribe(this);
     }
 
     @JsonCreator
@@ -177,5 +181,14 @@ public class Player extends Being<PlayerData> implements AbilityObserver {
         oldAbilityLvl.ifPresent(old -> getAvailableSkills().removeAllByGuid(old.getSkills()));
         // add usable skills from new lvl
         getAvailableSkills().addAllByGuid(ability.getAbilityData().getLvl(newLvl).get().getSkills());
+    }
+
+    @Override
+    public void update(GameStateBase oldValue, GameStateBase newValue) {
+        if (newValue != null && newValue.getEnumValue() == GameState.MAP) {
+            stats.stm().set(stats.stm().maxValue());
+            stats.hp().set(stats.hp().maxValue());
+        }
+        cast.setCast(null);
     }
 }

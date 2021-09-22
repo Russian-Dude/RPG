@@ -136,6 +136,10 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
         return availableSkills;
     }
 
+    public SkillEffect getEffect() {
+        return effect;
+    }
+
     public boolean isAlive() {
         return alive;
     }
