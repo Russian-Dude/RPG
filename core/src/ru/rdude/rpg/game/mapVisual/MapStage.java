@@ -223,6 +223,13 @@ public class MapStage extends Stage implements GameStateStage {
         }
     }
 
+    public void stopPlayers() {
+        if (movingPath != null) {
+            mapVisual.removePath(movingPath);
+            movingPath.clear();
+        }
+    }
+
     @Override
     public void act() {
         super.act();

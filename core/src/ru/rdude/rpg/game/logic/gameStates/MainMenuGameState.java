@@ -20,4 +20,9 @@ public class MainMenuGameState extends GameStateBase {
     public Party getAllySide(Being<?> of) {
         return null;
     }
+
+    @Override
+    public void lose() {
+
+    }
 }

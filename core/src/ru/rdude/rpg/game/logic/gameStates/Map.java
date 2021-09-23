@@ -107,6 +107,11 @@ public class Map extends GameStateBase {
         return party.getBeings().contains(of) ? party : null;
     }
 
+    @Override
+    public void lose() {
+        mapStage.stopPlayers();
+    }
+
     public Cell getPlayerPosition() {
         return playerPosition;
     }

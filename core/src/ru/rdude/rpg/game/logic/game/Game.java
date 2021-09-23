@@ -48,6 +48,7 @@ public class Game {
     private Party currentPlayers;
     private ExpSpreader expSpreader;
     private GoldHolder gold;
+    private DefeatManager defeatManager;
 
     private static final CustomObjectMapper customObjectMapper = new CustomObjectMapper("ru.rdude.rpg.game");
     private static AvatarCreator avatarCreator;
@@ -251,6 +252,7 @@ public class Game {
     public void setCurrentPlayers(Party currentPlayers) {
         this.currentPlayers = currentPlayers;
         this.expSpreader = new ExpSpreader(currentPlayers);
+        this.defeatManager = new DefeatManager(currentPlayers);
     }
 
     public ExpSpreader getExpSpreader() {

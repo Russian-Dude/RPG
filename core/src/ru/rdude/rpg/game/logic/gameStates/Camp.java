@@ -24,4 +24,9 @@ public class Camp extends GameStateBase {
         Party party = Game.getCurrentGame().getCurrentPlayers();
         return party.getBeings().contains(of) ? party : null;
     }
+
+    @Override
+    public void lose() {
+
+    }
 }

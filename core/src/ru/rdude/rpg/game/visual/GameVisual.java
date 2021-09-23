@@ -120,6 +120,13 @@ public class GameVisual {
     }
 
     public void backMenuStage() {
+        backMenuStage(false);
+    }
+
+    public void backMenuStage(boolean forceClose) {
+        if (!forceClose && currentMainMenuStage != null && currentMainMenuStage instanceof NonClosableMenuStage) {
+            return;
+        }
         if (previousMainMenuStages.isEmpty()) {
             if (!(Game.getCurrentGame().getCurrentGameState() instanceof MainMenuGameState)) {
                 multiplexer.removeProcessor(currentMainMenuStage);
@@ -136,7 +143,7 @@ public class GameVisual {
 
     public void closeMenus() {
         while (currentMainMenuStage != null) {
-            backMenuStage();
+            backMenuStage(true);
         }
     }
 

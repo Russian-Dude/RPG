@@ -16,4 +16,6 @@ public abstract class GameStateBase {
 
     public abstract Party getAllySide(Being<?> of);
 
+    public abstract void lose();
+
 }
