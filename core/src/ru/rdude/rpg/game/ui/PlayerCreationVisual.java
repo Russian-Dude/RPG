@@ -206,6 +206,7 @@ public class PlayerCreationVisual extends Table {
                 player.setCurrentClass(classSelectBox.getSelected().playerClass);
             }
         });
+        classDescriptionLabel.setText(classSelectBox.getSelected().playerClass.getClassData().getDescription());
         centralVerticalTable.add(classDescriptionScrollPane).fillX().height(300f).align(Align.top);
 
         randomizeFace();

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.data.resources.PlayerClassResources;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
+import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.logic.enums.UsedByStatistics;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
@@ -18,6 +19,10 @@ public class PlayerClassData extends EntityData {
     private Set<PlayerClassOpenRequirement> openRequirements = new HashSet<>();
     private long requiredPoints = 0;
     private Set<AbilityEntry> abilities = new HashSet<>();
+    private Set<Long> startItems = new HashSet<>();
+    private long defaultMeleeAttack = 0;
+    private long defaultRangeAttack = 0;
+    private long defaultMagicAttack = 0;
 
     PlayerClassData() {
     }
@@ -59,6 +64,52 @@ public class PlayerClassData extends EntityData {
 
     public void setRequiredPoints(long requiredPoints) {
         this.requiredPoints = requiredPoints;
+    }
+
+    public Set<Long> getStartItems() {
+        return startItems;
+    }
+
+    public void setStartItems(Set<Long> startItems) {
+        this.startItems = startItems;
+    }
+
+    public long getDefaultMeleeAttack() {
+        return defaultMeleeAttack;
+    }
+
+    public void setDefaultMeleeAttack(long defaultMeleeAttack) {
+        this.defaultMeleeAttack = defaultMeleeAttack;
+    }
+
+    public long getDefaultRangeAttack() {
+        return defaultRangeAttack;
+    }
+
+    public void setDefaultRangeAttack(long defaultRangeAttack) {
+        this.defaultRangeAttack = defaultRangeAttack;
+    }
+
+    public long getDefaultMagicAttack() {
+        return defaultMagicAttack;
+    }
+
+    public void setDefaultMagicAttack(long defaultMagicAttack) {
+        this.defaultMagicAttack = defaultMagicAttack;
+    }
+
+    public long getDefaultAttack(AttackType attackType) {
+        switch (attackType) {
+            case MELEE:
+                return getDefaultMeleeAttack();
+            case RANGE:
+                return getDefaultRangeAttack();
+            case MAGIC:
+                return getDefaultMagicAttack();
+            case WEAPON_TYPE:
+            default:
+                throw new IllegalArgumentException("getDefaultAttack method required concrete attack type");
+        }
     }
 
     @Override

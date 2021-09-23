@@ -48,14 +48,6 @@ public class GameStateSwitcher {
         Game.getEntityFactory().monsters().createMonstersOnMap(Game.getCurrentGame().getGameMap());
         Game.getCurrentGame().getGameMap().getStage().playerChangedPosition(
                 Game.getCurrentGame().getGameMap().getPlayerPosition(), Game.getCurrentGame().getGameMap().getPlayerPosition());
-        // TODO: 14.06.2021 remove this test
-        for (ItemData itemData : ItemData.getItems().values()) {
-            int c = itemData.isStackable() ? 30 : 1;
-            for (int i = 0; i < c; i++) {
-                Game.getCurrentGame().getCurrentPlayers().getBeings().get(0)
-                        .receive(Game.getEntityFactory().items().get(itemData));
-            }
-        }
     }
 
     public void loadGame(FileHandle saveFile) {

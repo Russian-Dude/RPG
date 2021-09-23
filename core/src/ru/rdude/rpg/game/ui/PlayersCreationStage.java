@@ -77,6 +77,8 @@ public class PlayersCreationStage extends Stage {
                         .map(PlayerCreationElement::getPlayer)
                         .collect(Collectors.toList());
                 Game.getGameStateSwitcher().setCreatedPlayers(players);
+                players.forEach(player -> player.getCurrentClass().getClassData().getStartItems()
+                        .forEach(item -> player.receive(new Item(ItemData.getItemDataByGuid(item)))));
                 Game.getGameStateSwitcher().startNewGame();
             }
         });

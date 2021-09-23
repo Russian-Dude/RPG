@@ -63,7 +63,10 @@ public class Player extends Being<PlayerData> implements AbilityObserver, GameSt
         allClasses.stream()
                 .flatMap(playerClass -> playerClass.getAbilities().stream())
                 .forEach(ability -> ability.subscribe(this));
-        Game.getCurrentGame().getGameStateHolder().subscribe(this);
+        Game currentGame = Game.getCurrentGame();
+        if (currentGame != null) {
+            currentGame.getGameStateHolder().subscribe(this);
+        }
     }
 
     @JsonCreator

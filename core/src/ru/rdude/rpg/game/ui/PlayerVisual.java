@@ -11,8 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.data.PlayerData;
+import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.data.resources.PlayerResources;
 import ru.rdude.rpg.game.logic.entities.beings.*;
+import ru.rdude.rpg.game.logic.enums.Target;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Battle;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
@@ -98,6 +100,25 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
         });
         backpackWindow.setVisible(false);
         equipmentWindow.setVisible(false);
+
+        // attack
+        attack.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                final SkillData skillData = SkillData.getSkillByGuid(player.getCurrentClass()
+                        .getClassData()
+                        .getDefaultAttack(player.getAttackType()));
+                final Target mainTarget = skillData.getMainTarget();
+                if (mainTarget != Target.ALLY
+                        && mainTarget != Target.ENEMY
+                        && mainTarget != Target.ANY
+                        && mainTarget != Target.ANY_OTHER) {
+                    player.setReady(false);
+                }
+                Game.getSkillUser().use(skillData, player, skillData.getMainTarget());
+            }
+        });
 
         // stats and targeting
         infoWindow = new PlayerInfoWindow(player);
