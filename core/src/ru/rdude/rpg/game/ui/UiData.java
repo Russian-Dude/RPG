@@ -17,6 +17,7 @@ public class UiData {
     public final static String RED_GREEN_CHECKBOX = "Red_Green_mud";
     public final static Drawable SEMI_TRANSPARENT_BACKGROUND = DEFAULT_SKIN.getDrawable("Window_Transparent_9p");
     public final static Drawable DEFAULT_BACKGROUND = DEFAULT_SKIN.getDrawable("Window_9p");
+    public final static Drawable UNKNOWN_IMAGE_64X64 = DEFAULT_SKIN.getDrawable("Unknown_Image_64x64");
     public static float UNIT_SIZE = Gdx.graphics.getWidth() / 100f;
 
     public static class ItemBorder {

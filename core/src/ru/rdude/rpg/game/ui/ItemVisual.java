@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import ru.rdude.rpg.game.logic.data.resources.Resource;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.entities.items.ItemCountObserver;
 import ru.rdude.rpg.game.logic.game.Game;
@@ -34,7 +35,13 @@ public class ItemVisual extends Group implements ItemCountObserver {
         item.subscribe(this);
 
         // item image
-        itemImage = new Image(Game.getImageFactory().getRegion(item.getEntityData().getResources().getMainImage().getGuid()));
+        Resource mainImageResource = item.getEntityData().getResources().getMainImage();
+        if (mainImageResource != null) {
+            itemImage = new Image(Game.getImageFactory().getRegion(mainImageResource.getGuid()));
+        }
+        else {
+            itemImage = new Image(UiData.UNKNOWN_IMAGE_64X64);
+        }
 
         // rarity border
         switch (item.getEntityData().getRarity()) {
