@@ -49,7 +49,6 @@ public class Player extends Being<PlayerData> implements AbilityObserver, GameSt
         super(playerData);
         isReadyObservers = new SubscribersManager<>();
         currentClassObservers = new SubscribersManager<>();
-        stats = new Stats(true);
         beingTypes = new StateHolder<>(BeingType.HUMAN);
         elements = new StateHolder<>(Element.NEUTRAL);
         size = new StateHolder<>(Size.MEDIUM);
@@ -188,7 +187,7 @@ public class Player extends Being<PlayerData> implements AbilityObserver, GameSt
 
     @Override
     public void update(GameStateBase oldValue, GameStateBase newValue) {
-        if (newValue != null && newValue.getEnumValue() == GameState.MAP) {
+        if (newValue != null && newValue.getEnumValue() == GameState.MAP && alive) {
             stats.stm().set(stats.stm().maxValue());
             stats.hp().set(stats.hp().maxValue());
         }
