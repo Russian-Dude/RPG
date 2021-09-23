@@ -17,6 +17,7 @@ import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
 import ru.rdude.rpg.game.logic.gameStates.GameStateSwitcher;
 import ru.rdude.rpg.game.logic.gameStates.Map;
+import ru.rdude.rpg.game.logic.gold.GoldHolder;
 import ru.rdude.rpg.game.logic.time.TimeManager;
 import ru.rdude.rpg.game.logic.time.TurnsManager;
 import ru.rdude.rpg.game.ui.*;
@@ -46,6 +47,7 @@ public class Game {
     private Map gameMap;
     private Party currentPlayers;
     private ExpSpreader expSpreader;
+    private GoldHolder gold;
 
     private static final CustomObjectMapper customObjectMapper = new CustomObjectMapper("ru.rdude.rpg.game");
     private static AvatarCreator avatarCreator;
@@ -90,6 +92,7 @@ public class Game {
         this.turnsManager = new TurnsManager();
         this.timeManager = new TimeManager(turnsManager);
         this.skillsSequencer = new SkillsSequencer();
+        this.gold = new GoldHolder();
     }
 
     public static void initNewGame() {
@@ -260,5 +263,9 @@ public class Game {
 
     public SkillsSequencer getSkillsSequencer() {
         return skillsSequencer;
+    }
+
+    public GoldHolder getGold() {
+        return gold;
     }
 }

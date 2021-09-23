@@ -51,7 +51,7 @@ public class TimeAndPlaceUi extends HorizontalGroup implements TimeObserver, Pla
         space(5);
         addActor(timeTable);
         addActor(placeTable);
-        setSize(timeTable.getWidth(), timeTable.getHeight());
+        setSize(timeTable.getWidth() + placeTable.getWidth(), timeTable.getHeight());
         update(Game.getCurrentGame().getTimeManager());
     }
 

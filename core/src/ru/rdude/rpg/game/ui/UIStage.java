@@ -55,6 +55,10 @@ public class UIStage extends Stage implements GameStateObserver {
         TimeAndPlaceUi timeAndPlaceUi = new TimeAndPlaceUi();
         addActor(timeAndPlaceUi);
         timeAndPlaceUi.setPosition(5f, Gdx.graphics.getHeight() - timeAndPlaceUi.getHeight() - 5f);
+        // gold
+        GoldUi goldUi = new GoldUi();
+        addActor(goldUi);
+        goldUi.setPosition(timeAndPlaceUi.getWidth() + 15f, Gdx.graphics.getHeight() - goldUi.getHeight() - 5f);
         // end turn button
         endTurnButton = new EndTurnButton();
         addActor(endTurnButton);
