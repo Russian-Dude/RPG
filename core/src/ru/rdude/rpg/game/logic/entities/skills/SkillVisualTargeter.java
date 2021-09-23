@@ -13,6 +13,7 @@ import ru.rdude.rpg.game.logic.gameStates.Battle;
 import ru.rdude.rpg.game.logic.gameStates.Camp;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.Map;
+import ru.rdude.rpg.game.ui.UiData;
 
 import java.util.LinkedList;
 
@@ -32,6 +33,7 @@ public class SkillVisualTargeter {
         if (caster instanceof Monster) {
             findTargetForMonster(caster, target, skillData);
         } else if (caster instanceof Player) {
+            Gdx.graphics.setCursor(UiData.Cursor.DEFAULT.SELECT);
             this.targeting = true;
             this.firstClick = true;
             this.currentCaster = caster;
@@ -41,6 +43,7 @@ public class SkillVisualTargeter {
     }
 
     public void target(Being<?> target) {
+        Gdx.graphics.setCursor(UiData.Cursor.DEFAULT.SIMPLE);
         final boolean isAllies = isAllies(currentCaster, target);
         if (currentTarget == Target.ALLY && !isAllies
                 || currentTarget == Target.ANY_OTHER && currentCaster.equals(target)
@@ -56,6 +59,9 @@ public class SkillVisualTargeter {
     }
 
     public void act() {
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
+            clear();
+        }
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             if (firstClick) {
                 firstClick = false;

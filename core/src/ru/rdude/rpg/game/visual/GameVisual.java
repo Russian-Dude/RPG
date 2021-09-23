@@ -10,10 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import ru.rdude.rpg.game.logic.entities.skills.SkillVisualTargeter;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.MainMenuGameState;
-import ru.rdude.rpg.game.ui.EffectsStage;
-import ru.rdude.rpg.game.ui.InGameMenuStage;
-import ru.rdude.rpg.game.ui.MainMenuStage;
-import ru.rdude.rpg.game.ui.UIStage;
+import ru.rdude.rpg.game.ui.*;
 
 import java.util.*;
 
@@ -208,6 +205,9 @@ public class GameVisual {
                     backMenuStage();
                 }
             }
+        }
+        if ((Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) || Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) && Game.getGameVisual().getSkillTargeter().isTargeting()) {
+            Gdx.graphics.setCursor(UiData.Cursor.DEFAULT.SIMPLE);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.GRAVE) && ui != null) {
             ui.swapConsoleVisibility();
