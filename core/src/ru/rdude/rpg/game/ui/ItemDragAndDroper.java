@@ -1,11 +1,14 @@
 package ru.rdude.rpg.game.ui;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import ru.rdude.rpg.game.logic.data.resources.Resource;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.holders.Slot;
@@ -36,16 +39,17 @@ public class ItemDragAndDroper {
             @Override
             public DragAndDrop.Payload dragStart(InputEvent inputEvent, float v, float v1, int i) {
                 DragAndDrop.Payload payload = new DragAndDrop.Payload();
+                Resource mainImage = itemVisual
+                        .getItem()
+                        .getEntityData()
+                        .getResources()
+                        .getMainImage();
+                TextureRegion region = mainImage != null ?
+                        Game.getImageFactory().getRegion(mainImage.getGuid())
+                        : UiData.UNKNOWN_IMAGE_64X64_REGION;
                 ((SpriteDrawable) currentDragImage.getDrawable())
                         .getSprite()
-                        .setRegion(Game
-                                .getImageFactory()
-                                .getRegion(itemVisual
-                                        .getItem()
-                                        .getEntityData()
-                                        .getResources()
-                                        .getMainImage()
-                                        .getGuid()));
+                        .setRegion(region);
                 currentDragImage.setWidth(itemVisual.getWidth());
                 currentDragImage.setHeight(itemVisual.getHeight());
                 dragAndDrop.setDragActorPosition(currentDragImage.getWidth() / 2, -currentDragImage.getHeight() / 2);

@@ -3,6 +3,8 @@ package ru.rdude.rpg.game.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import ru.rdude.rpg.game.logic.game.Game;
@@ -21,6 +23,7 @@ public class UiData {
     public final static Drawable SEMI_TRANSPARENT_BACKGROUND = DEFAULT_SKIN.getDrawable("Window_Transparent_9p");
     public final static Drawable DEFAULT_BACKGROUND = DEFAULT_SKIN.getDrawable("Window_9p");
     public final static Drawable UNKNOWN_IMAGE_64X64 = DEFAULT_SKIN.getDrawable("Unknown_Image_64x64");
+    public final static TextureRegion UNKNOWN_IMAGE_64X64_REGION = DEFAULT_SKIN.getRegion("Unknown_Image_64x64");
     public static float UNIT_SIZE = Gdx.graphics.getWidth() / 100f;
 
 
