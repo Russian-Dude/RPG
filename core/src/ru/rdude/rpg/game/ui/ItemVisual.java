@@ -92,10 +92,10 @@ public class ItemVisual extends Group implements ItemCountObserver {
     }
 
     @Override
-    public void update(int amount, Item item) {
+    public void update(Item item, int oldAmount, int newAmount) {
         if (Objects.equals(this.item, item)) {
-            if (amount > 0) {
-                this.amount.setText(amount > 1 ? String.valueOf(amount) : "");
+            if (newAmount > 0) {
+                this.amount.setText(newAmount > 1 ? String.valueOf(newAmount) : "");
             } else {
                 Slot.withEntity(item).setEntity(null);
             }

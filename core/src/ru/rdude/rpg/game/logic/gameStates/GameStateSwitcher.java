@@ -6,6 +6,7 @@ import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.data.io.GameMapFileLoader;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
+import ru.rdude.rpg.game.logic.game.CurrentGameObserver;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.ui.LoadingStage;
@@ -48,6 +49,7 @@ public class GameStateSwitcher {
         Game.getEntityFactory().monsters().createMonstersOnMap(Game.getCurrentGame().getGameMap());
         Game.getCurrentGame().getGameMap().getStage().playerChangedPosition(
                 Game.getCurrentGame().getGameMap().getPlayerPosition(), Game.getCurrentGame().getGameMap().getPlayerPosition());
+        Game.getCurrentGame().notifySubscribers(CurrentGameObserver.Action.STARTED);
     }
 
     public void loadGame(FileHandle saveFile) {
@@ -58,6 +60,7 @@ public class GameStateSwitcher {
             Game.getCurrentGame().getGameMap().getStage(); // to load map stage even if is not map currently
             Game.getGameVisual().addStage((Stage) Game.getCurrentGame().getCurrentGameState().getStage());
             Game.getGameVisual().setUi(new UIStage());
+            game.notifySubscribers(CurrentGameObserver.Action.STARTED);
         };
         Runnable onEndLoading = () -> Game.getGameVisual().closeMenus();
         Game.getGameVisual().setMenuStage(LoadingStage.instance("Loading", loadingRunnable, onEndLoading));

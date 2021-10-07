@@ -16,20 +16,24 @@ public class ItemFactory {
         return get(itemData, 1);
     }
 
+    public ItemData describerToReal(ItemData itemData) {
+        if (!itemData.isDescriber()) {
+            return itemData;
+        }
+        return ItemData.getItemsWith()
+                .rarity(itemData.getRarity())
+                .type(itemData.getItemMainType())
+                .type(itemData.getItemType())
+                .elements(itemData.getElements())
+                .getRandom();
+    }
+
+    public ItemData describerToReal(long guid) {
+        return describerToReal(ItemData.getItemDataByGuid(guid));
+    }
+
     public Item get(ItemData itemData, int amount) {
-        ItemData realData;
-        if (itemData.isDescriber()) {
-            realData = ItemData.getItemsWith()
-                    .rarity(itemData.getRarity())
-                    .type(itemData.getItemMainType())
-                    .type(itemData.getItemType())
-                    .elements(itemData.getElements())
-                    .getRandom();
-        }
-        else {
-            realData = itemData;
-        }
-        return new Item(realData, amount);
+        return new Item(describerToReal(itemData), amount);
     }
 
 }

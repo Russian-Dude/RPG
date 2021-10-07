@@ -11,7 +11,10 @@ import ru.rdude.rpg.game.logic.entities.beings.ExpSpreader;
 import ru.rdude.rpg.game.logic.entities.beings.MonsterSummoner;
 import ru.rdude.rpg.game.logic.entities.beings.Party;
 import ru.rdude.rpg.game.logic.entities.checkers.SameEntityChecker;
+import ru.rdude.rpg.game.logic.entities.events.EventStarter;
 import ru.rdude.rpg.game.logic.entities.items.ItemUser;
+import ru.rdude.rpg.game.logic.entities.quests.QuestsHolder;
+import ru.rdude.rpg.game.logic.entities.quests.rewards.QuestRewarder;
 import ru.rdude.rpg.game.logic.entities.skills.*;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
@@ -49,6 +52,7 @@ public class Game {
     private ExpSpreader expSpreader;
     private GoldHolder gold;
     private DefeatManager defeatManager;
+    private QuestsHolder questHolder;
 
     private static final CustomObjectMapper customObjectMapper = new CustomObjectMapper("ru.rdude.rpg.game");
     private static AvatarCreator avatarCreator;
@@ -71,6 +75,8 @@ public class Game {
     private static final EntityFactory entityFactory = new EntityFactory();
     private static final MonsterSummoner monsterSummoner = new MonsterSummoner();
     private static final SameEntityChecker sameEntityChecker = new SameEntityChecker();
+    private static final QuestRewarder questRewarder = new QuestRewarder();
+    private static final EventStarter eventStarter = new EventStarter();
 
     // io
     private static GameJsonSerializer gameJsonSerializer = new GameJsonSerializer();
@@ -94,6 +100,7 @@ public class Game {
         this.timeManager = new TimeManager(turnsManager);
         this.skillsSequencer = new SkillsSequencer();
         this.gold = new GoldHolder();
+        this.questHolder = new QuestsHolder();
     }
 
     public static void initNewGame() {
@@ -217,6 +224,14 @@ public class Game {
         return sameEntityChecker;
     }
 
+    public static QuestRewarder getQuestRewarder() {
+        return questRewarder;
+    }
+
+    public static EventStarter getEventStarter() {
+        return eventStarter;
+    }
+
     public ItemDragAndDroper getItemsDragAndDrop() {
         return itemsDragAndDrop;
     }
@@ -269,5 +284,17 @@ public class Game {
 
     public GoldHolder getGold() {
         return gold;
+    }
+
+    public DefeatManager getDefeatManager() {
+        return defeatManager;
+    }
+
+    public QuestsHolder getQuestHolder() {
+        return questHolder;
+    }
+
+    public void notifySubscribers(CurrentGameObserver.Action action) {
+        currentGameObservers.notifySubscribers(subscriber -> subscriber.update(this, action));
     }
 }

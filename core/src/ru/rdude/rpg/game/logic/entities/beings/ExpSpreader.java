@@ -173,7 +173,8 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver, Part
         }
 
         double totalEffort() {
-            return value + hitsDeal * 5 + hitsReceived * 3 + buffsDeal * 6;
+            double totalEffort = value + hitsDeal * 5 + hitsReceived * 3 + buffsDeal * 6;
+            return totalEffort > 0 ? totalEffort : 0.1d;
         }
 
         void madeAction(BeingAction action) {

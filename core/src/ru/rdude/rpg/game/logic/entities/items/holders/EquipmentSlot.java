@@ -45,7 +45,7 @@ public class EquipmentSlot extends Slot<Item> {
     }
 
     @Override
-    public void setEntity(Item item) {
+    public void setEntity(Item newEntity) {
         if (entity != null) {
             // stats
             being.stats().decreaseBuffValues(Item.class, entity.getEntityData().getStats());
@@ -73,30 +73,30 @@ public class EquipmentSlot extends Slot<Item> {
                 }
             }
         }
-        super.setEntity(item);
-        if (item != null) {
+        super.setEntity(newEntity);
+        if (newEntity != null) {
             // stats
             being.stats().increaseBuffValues(Item.class, entity.getEntityData().getStats());
             // coefficients
-            if (item.coefficients() != null) {
-                being.coefficients().addSumOf(item.coefficients());
+            if (newEntity.coefficients() != null) {
+                being.coefficients().addSumOf(newEntity.coefficients());
             }
             // available skills
             being.getAvailableSkills().addAllByGuid(entity.getEntityData().getSkillsEquip());
             // weapon
-            if (item.getEntityData().isWeapon()) {
-                switch (item.getEntityData().getWeaponData().getAttackType()) {
+            if (newEntity.getEntityData().isWeapon()) {
+                switch (newEntity.getEntityData().getWeaponData().getAttackType()) {
                     case MAGIC:
-                        being.stats().get(StatName.MAGIC_MIN).increaseBuffValue(Item.class, item.getEntityData().getWeaponData().getMinDmg());
-                        being.stats().get(StatName.MAGIC_MAX).increaseBuffValue(Item.class, item.getEntityData().getWeaponData().getMaxDmg());
+                        being.stats().get(StatName.MAGIC_MIN).increaseBuffValue(Item.class, newEntity.getEntityData().getWeaponData().getMinDmg());
+                        being.stats().get(StatName.MAGIC_MAX).increaseBuffValue(Item.class, newEntity.getEntityData().getWeaponData().getMaxDmg());
                         break;
                     case MELEE:
-                        being.stats().get(StatName.MELEE_MIN).increaseBuffValue(Item.class, item.getEntityData().getWeaponData().getMinDmg());
-                        being.stats().get(StatName.MELEE_MAX).increaseBuffValue(Item.class, item.getEntityData().getWeaponData().getMaxDmg());
+                        being.stats().get(StatName.MELEE_MIN).increaseBuffValue(Item.class, newEntity.getEntityData().getWeaponData().getMinDmg());
+                        being.stats().get(StatName.MELEE_MAX).increaseBuffValue(Item.class, newEntity.getEntityData().getWeaponData().getMaxDmg());
                         break;
                     case RANGE:
-                        being.stats().get(StatName.RANGE_MIN).increaseBuffValue(Item.class, item.getEntityData().getWeaponData().getMinDmg());
-                        being.stats().get(StatName.RANGE_MAX).increaseBuffValue(Item.class, item.getEntityData().getWeaponData().getMaxDmg());
+                        being.stats().get(StatName.RANGE_MIN).increaseBuffValue(Item.class, newEntity.getEntityData().getWeaponData().getMinDmg());
+                        being.stats().get(StatName.RANGE_MAX).increaseBuffValue(Item.class, newEntity.getEntityData().getWeaponData().getMaxDmg());
                         break;
                 }
             }

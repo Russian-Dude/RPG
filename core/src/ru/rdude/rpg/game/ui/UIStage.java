@@ -3,8 +3,11 @@ package ru.rdude.rpg.game.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.game.Game;
@@ -25,6 +28,7 @@ public class UIStage extends Stage implements GameStateObserver {
     private final PlayersVisualBottom playersVisualBottom;
     private final CommandsInputVisual commandsInputVisual = new CommandsInputVisual();
     private final BattleVictoryWindow battleVictoryWindow = new BattleVictoryWindow();
+    private final QuestsJournal questsJournal = new QuestsJournal();
     private final LoggerVisual loggerVisual;
     private final Button endTurnButton;
 
@@ -43,30 +47,52 @@ public class UIStage extends Stage implements GameStateObserver {
         addActor(itemRemoverArea);
         Game.getCurrentGame().getItemsDragAndDrop().addRemoverArea(itemRemoverArea);
 
-        // ui elements
         // players visuals
         playersVisualBottom = new PlayersVisualBottom();
         visualBeings = playersVisualBottom.getVisualBeings();
         addActor(playersVisualBottom);
+
         // logger
         loggerVisual = new LoggerVisual();
         addActor(loggerVisual);
+
         // time and place
         TimeAndPlaceUi timeAndPlaceUi = new TimeAndPlaceUi();
         addActor(timeAndPlaceUi);
         timeAndPlaceUi.setPosition(5f, Gdx.graphics.getHeight() - timeAndPlaceUi.getHeight() - 5f);
+
         // gold
         GoldUi goldUi = new GoldUi();
         addActor(goldUi);
         goldUi.setPosition(timeAndPlaceUi.getWidth() + 15f, Gdx.graphics.getHeight() - goldUi.getHeight() - 5f);
+
+        // quests button
+        Button showQuestsButton = new TextButton("Quests", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
+        showQuestsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                questsJournal.setVisible(!questsJournal.isVisible());
+            }
+        });
+        addActor(showQuestsButton);
+        showQuestsButton.setPosition(timeAndPlaceUi.getWidth() + goldUi.getWidth() + 20f, Gdx.graphics.getHeight() - showQuestsButton.getHeight() - 5f);
+
+        // quests journal
+        addActor(questsJournal);
+        questsJournal.setPosition(Gdx.graphics.getWidth() / 2f - questsJournal.getWidth() / 2f, Gdx.graphics.getHeight() / 2f - questsJournal.getHeight() / 2f);
+        questsJournal.setVisible(false);
+
         // end turn button
         endTurnButton = new EndTurnButton();
         addActor(endTurnButton);
         endTurnButton.setPosition(Gdx.graphics.getWidth() - endTurnButton.getWidth() - 25f, Gdx.graphics.getHeight() - endTurnButton.getHeight() - 25f);
+
         // commands input (console)
         addActor(commandsInputVisual);
         commandsInputVisual.setPosition(Gdx.graphics.getWidth() / 2f - commandsInputVisual.getWidth() / 2f, Gdx.graphics.getHeight() / 2f - commandsInputVisual.getHeight() / 2f);
         commandsInputVisual.setVisible(false);
+
         // battle victory window
         addActor(battleVictoryWindow);
         battleVictoryWindow.setPosition(Gdx.graphics.getWidth() / 2f - battleVictoryWindow.getWidth() / 2f, Gdx.graphics.getHeight() / 2f - battleVictoryWindow.getHeight() / 2f);

@@ -30,6 +30,7 @@ public class BeingAction {
         KILL("killing"),
         ITEM_USED("using an item"),
         SUMMON("summon"),
+        USE_SKILL("use skill"),
         NO_ACTION("no action");
 
         public final String prettyStringAfter;

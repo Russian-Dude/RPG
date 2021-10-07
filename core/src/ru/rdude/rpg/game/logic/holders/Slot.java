@@ -35,7 +35,7 @@ public abstract class Slot<T extends Entity<?>> {
 
     public static <E extends Entity<?>> Slot<E> withEntity(E entity) {
         Slot<E> slot = (Slot<E>) Game.getStaticReferencesHolders().entitiesInSlots().get(entity);
-        if (slot.entity == null) {
+        if (slot == null || slot.entity == null) {
             Game.getStaticReferencesHolders().entitiesInSlots().remove(entity);
             slot = null;
         }
@@ -46,12 +46,13 @@ public abstract class Slot<T extends Entity<?>> {
         return entity;
     }
 
-    public void setEntity(T item) {
-        this.entity = item;
-        if (item != null) {
-            Game.getStaticReferencesHolders().entitiesInSlots().put(item, this);
+    public void setEntity(T newEntity) {
+        T oldEntity = this.entity;
+        this.entity = newEntity;
+        if (newEntity != null) {
+            Game.getStaticReferencesHolders().entitiesInSlots().put(newEntity, this);
         }
-        notifySubscribers(item);
+        subscribers.notifySubscribers(subscriber -> subscriber.update(this, oldEntity, newEntity));
     }
 
     public void removeEntity() {
@@ -106,7 +107,7 @@ public abstract class Slot<T extends Entity<?>> {
         this.subscribers.unsubscribe(subscriber);
     }
 
-    private void notifySubscribers(T entity) {
-        subscribers.notifySubscribers(subscriber -> subscriber.update(this, entity));
+    public SubscribersManager<SlotObserver> getSubscribers() {
+        return subscribers;
     }
 }

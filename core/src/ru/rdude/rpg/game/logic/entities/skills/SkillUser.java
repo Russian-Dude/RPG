@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.logic.entities.skills;
 
 import ru.rdude.rpg.game.logic.data.SkillData;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
+import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.enums.Target;
 import ru.rdude.rpg.game.logic.game.Game;
@@ -46,6 +47,7 @@ public class SkillUser {
         }
 
         SkillTargets skillTargets = Game.getSkillTargeter().get(skillData, caster, mainTarget);
+        caster.notifySubscribers(new BeingAction(BeingAction.Action.USE_SKILL, caster, skillData, 1), caster);
         Game.getCurrentGame().getSkillsSequencer().add(skillData, caster, skillTargets, true);
     }
 

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public interface CurrentGameObserver {
 
-    enum Action { CREATED, BECOME_CURRENT }
+    enum Action { CREATED, BECOME_CURRENT, STARTED, ENDED }
 
     void update(Game game, Action action);
 

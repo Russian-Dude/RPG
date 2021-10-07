@@ -73,17 +73,17 @@ public class Item extends Entity<ItemData> {
     public int getAmount() { return amount; }
 
     public int increaseAmountAndReturnRest(int value) {
-        amount += value;
+        int amount = this.amount + value;
+        int rest;
         if (amount > MAX_AMOUNT) {
-            int rest = amount - MAX_AMOUNT;
+            rest = amount - MAX_AMOUNT;
             amount = MAX_AMOUNT;
-            notifySubscribers();
-            return rest;
         }
         else {
-            notifySubscribers();
-            return 0;
+            rest = 0;
         }
+        setAmount(amount);
+        return rest;
     }
 
     @Override
@@ -97,13 +97,13 @@ public class Item extends Entity<ItemData> {
     }
 
     public void decreaseAmount(int value) {
-        amount -= value;
-        notifySubscribers();
+        setAmount(this.amount - value);
     }
 
     public void setAmount(int value) {
+        int oldAmount = this.amount;
         amount = value;
-        notifySubscribers();
+        subscribers.notifySubscribers(subscriber -> subscriber.update(this, oldAmount, amount));
     }
 
     public Item copy() {
@@ -120,7 +120,7 @@ public class Item extends Entity<ItemData> {
         subscribers.unsubscribe(subscriber);
     }
 
-    private void notifySubscribers() {
-        subscribers.notifySubscribers(subscriber -> subscriber.update(amount, this));
+    public SubscribersManager<ItemCountObserver> getSubscribers() {
+        return subscribers;
     }
 }

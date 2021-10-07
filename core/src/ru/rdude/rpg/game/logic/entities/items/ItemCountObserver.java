@@ -6,6 +6,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 public interface ItemCountObserver {
 
-    void update(int amount, Item item);
+    void update(Item item, int oldAmount, int newAmount);
 
 }

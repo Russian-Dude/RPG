@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.logic.data;
 
 import ru.rdude.rpg.game.logic.data.resources.QuestResources;
 import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
+import ru.rdude.rpg.game.logic.enums.StatName;
 import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
@@ -11,24 +12,37 @@ import java.util.stream.Stream;
 @JsonPolymorphicSubType("questData")
 public class QuestData extends EntityData {
 
+    public enum RewardTarget { ALL, SELECTED, RANDOM }
+
+    public enum EndQuestPlace { WHERE_GET, INSTANT }
+
     private static Map<Long, QuestData> quests = new HashMap<>();
+
+    private int lvl = 0;
+    private EndQuestPlace endQuestPlace = EndQuestPlace.WHERE_GET;
+    private boolean unique = false;
 
     // requirements
     private Map<Long, Integer> killMonsters = new HashMap<>();
+    private boolean killMonstersDescriberToReal = true;
     private Map<Long, Integer> collectItems = new HashMap<>();
+    private boolean collectItemsDescriberToReal = true;
     private boolean takeItems = true;
-    private double collectGold = 0d;
+    private int collectGold = 0;
+    private boolean takeGold = true;
     private Map<Long, Integer> useSkills = new HashMap<>();
-    private Map<BeingAction.Action, Integer> doActions = new HashMap<>();
-    private Stats reachStats = new Stats(false);
+    private boolean useSkillsDescriberToReal = true;
 
     // rewards
     private Set<Long> learnSkills = new HashSet<>();
+    private RewardTarget learnSkillsRewardTarget = RewardTarget.ALL;
     private Map<Long, Integer> receiveItems = new HashMap<>();
-    private double receiveGold = 0d;
-    private Stats receiveStats = new Stats(false);
+    private Map<StatName, Double> receiveStats = new HashMap<>();
+    private RewardTarget receiveStatsRewardTarget = RewardTarget.ALL;
+    private int receiveGold = 0;
     private Set<Long> startQuests = new HashSet<>();
     private Long startEvent = null;
+    private int expReward = 0;
 
     private QuestData() { }
 
@@ -44,6 +58,10 @@ public class QuestData extends EntityData {
 
     public static QuestData getQuestByGuid(long guid) {
         return quests.get(guid);
+    }
+
+    public static Map<Long, QuestData> getQuests() {
+        return quests;
     }
 
     public Map<Long, Integer> getKillMonsters() {
@@ -70,11 +88,11 @@ public class QuestData extends EntityData {
         this.takeItems = takeItems;
     }
 
-    public double getCollectGold() {
+    public int getCollectGold() {
         return collectGold;
     }
 
-    public void setCollectGold(double collectGold) {
+    public void setCollectGold(int collectGold) {
         this.collectGold = collectGold;
     }
 
@@ -84,22 +102,6 @@ public class QuestData extends EntityData {
 
     public void setUseSkills(Map<Long, Integer> useSkills) {
         this.useSkills = useSkills;
-    }
-
-    public Map<BeingAction.Action, Integer> getDoActions() {
-        return doActions;
-    }
-
-    public void setDoActions(Map<BeingAction.Action, Integer> doActions) {
-        this.doActions = doActions;
-    }
-
-    public Stats getReachStats() {
-        return reachStats;
-    }
-
-    public void setReachStats(Stats reachStats) {
-        this.reachStats = reachStats;
     }
 
     public Set<Long> getLearnSkills() {
@@ -118,20 +120,12 @@ public class QuestData extends EntityData {
         this.receiveItems = receiveItems;
     }
 
-    public double getReceiveGold() {
+    public int getReceiveGold() {
         return receiveGold;
     }
 
-    public void setReceiveGold(double receiveGold) {
+    public void setReceiveGold(int receiveGold) {
         this.receiveGold = receiveGold;
-    }
-
-    public Stats getReceiveStats() {
-        return receiveStats;
-    }
-
-    public void setReceiveStats(Stats receiveStats) {
-        this.receiveStats = receiveStats;
     }
 
     public Set<Long> getStartQuests() {
@@ -148,6 +142,94 @@ public class QuestData extends EntityData {
 
     public void setStartEvent(Long startEvent) {
         this.startEvent = startEvent;
+    }
+
+    public int getLvl() {
+        return lvl;
+    }
+
+    public void setLvl(int lvl) {
+        this.lvl = lvl;
+    }
+
+    public boolean isKillMonstersDescriberToReal() {
+        return killMonstersDescriberToReal;
+    }
+
+    public void setKillMonstersDescriberToReal(boolean killMonstersDescriberToReal) {
+        this.killMonstersDescriberToReal = killMonstersDescriberToReal;
+    }
+
+    public boolean isCollectItemsDescriberToReal() {
+        return collectItemsDescriberToReal;
+    }
+
+    public void setCollectItemsDescriberToReal(boolean collectItemsDescriberToReal) {
+        this.collectItemsDescriberToReal = collectItemsDescriberToReal;
+    }
+
+    public boolean isUseSkillsDescriberToReal() {
+        return useSkillsDescriberToReal;
+    }
+
+    public void setUseSkillsDescriberToReal(boolean useSkillsDescriberToReal) {
+        this.useSkillsDescriberToReal = useSkillsDescriberToReal;
+    }
+
+    public int getExpReward() {
+        return expReward;
+    }
+
+    public void setExpReward(int expReward) {
+        this.expReward = expReward;
+    }
+
+    public RewardTarget getLearnSkillsRewardTarget() {
+        return learnSkillsRewardTarget;
+    }
+
+    public void setLearnSkillsRewardTarget(RewardTarget learnSkillsRewardTarget) {
+        this.learnSkillsRewardTarget = learnSkillsRewardTarget;
+    }
+
+    public Map<StatName, Double> getReceiveStats() {
+        return receiveStats;
+    }
+
+    public void setReceiveStats(Map<StatName, Double> receiveStats) {
+        this.receiveStats = receiveStats;
+    }
+
+    public RewardTarget getReceiveStatsRewardTarget() {
+        return receiveStatsRewardTarget;
+    }
+
+    public void setReceiveStatsRewardTarget(RewardTarget receiveStatsRewardTarget) {
+        this.receiveStatsRewardTarget = receiveStatsRewardTarget;
+    }
+
+    public EndQuestPlace getEndQuestPlace() {
+        return endQuestPlace;
+    }
+
+    public void setEndQuestPlace(EndQuestPlace endQuestPlace) {
+        this.endQuestPlace = endQuestPlace;
+    }
+
+    public boolean isTakeGold() {
+        return takeGold;
+    }
+
+    public void setTakeGold(boolean takeGold) {
+        this.takeGold = takeGold;
+    }
+
+    public boolean isUnique() {
+        return unique;
+    }
+
+    public void setUnique(boolean unique) {
+        this.unique = unique;
     }
 
     @Override
