@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.rdude.rpg.game.commands.CommandsInput;
 import ru.rdude.rpg.game.logic.GameLogger;
 import ru.rdude.rpg.game.logic.actions.SkillsSequencer;
+import ru.rdude.rpg.game.logic.city.CitiesHolder;
 import ru.rdude.rpg.game.logic.data.io.*;
 import ru.rdude.rpg.game.logic.entities.EntityFactory;
 import ru.rdude.rpg.game.logic.entities.beings.ExpSpreader;
@@ -53,6 +54,7 @@ public class Game {
     private GoldHolder gold;
     private DefeatManager defeatManager;
     private QuestsHolder questHolder;
+    private CitiesHolder citiesHolder;
 
     private static final CustomObjectMapper customObjectMapper = new CustomObjectMapper("ru.rdude.rpg.game");
     private static AvatarCreator avatarCreator;
@@ -101,6 +103,7 @@ public class Game {
         this.skillsSequencer = new SkillsSequencer();
         this.gold = new GoldHolder();
         this.questHolder = new QuestsHolder();
+        this.citiesHolder = new CitiesHolder();
     }
 
     public static void initNewGame() {
@@ -292,6 +295,10 @@ public class Game {
 
     public QuestsHolder getQuestHolder() {
         return questHolder;
+    }
+
+    public CitiesHolder getCitiesHolder() {
+        return citiesHolder;
     }
 
     public void notifySubscribers(CurrentGameObserver.Action action) {

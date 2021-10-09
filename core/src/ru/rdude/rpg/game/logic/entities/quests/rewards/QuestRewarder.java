@@ -13,7 +13,6 @@ public class QuestRewarder {
 
     private Quest quest;
     private final QuestRewardCreator questRewardCreator = new QuestRewardCreator();
-    private final QuestRewardTargetRequestStage stage = QuestRewardTargetRequestStage.getInstance();
 
     private final Queue<QuestReward<?>> needToSelect = new LinkedList<>();
     private QuestRewards currentQuestRewards;
@@ -30,8 +29,8 @@ public class QuestRewarder {
             endRewarding();
             return;
         }
-        stage.setCurrentReward(needToSelect.poll());
-        Game.getGameVisual().setMenuStage(stage);
+        QuestRewardTargetRequestStage.getInstance().setCurrentReward(needToSelect.poll());
+        Game.getGameVisual().setMenuStage(QuestRewardTargetRequestStage.getInstance());
     }
 
     public void endRewarding() {

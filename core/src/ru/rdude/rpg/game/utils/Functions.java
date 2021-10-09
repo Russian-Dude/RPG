@@ -261,7 +261,7 @@ public class Functions {
             return in -> {
                 List<T> pre = new ArrayList<>(in);
                 Collections.shuffle(pre);
-                return pre.subList(0, elementsCount);
+                return pre.subList(0, Math.min(elementsCount, pre.size()));
             };
         }
 

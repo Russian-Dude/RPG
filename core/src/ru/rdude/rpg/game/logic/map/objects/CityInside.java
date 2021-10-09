@@ -3,6 +3,7 @@ package ru.rdude.rpg.game.logic.map.objects;
 import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.data.QuestData;
 import ru.rdude.rpg.game.logic.entities.items.Item;
+import ru.rdude.rpg.game.logic.entities.quests.QuestsHolder;
 import ru.rdude.rpg.game.logic.enums.ItemMainType;
 import ru.rdude.rpg.game.logic.enums.ItemRarity;
 import ru.rdude.rpg.game.logic.game.Game;
@@ -10,8 +11,7 @@ import ru.rdude.rpg.game.logic.time.TimeChangeObserver;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @JsonPolymorphicSubType("cityInside")
 public class CityInside implements TimeChangeObserver {
@@ -52,7 +52,28 @@ public class CityInside implements TimeChangeObserver {
     }
 
     private void generateQuests() {
-        // TODO: 29.05.2021 generate quests in city
+        QuestsHolder questHolder = Game.getCurrentGame().getQuestHolder();
+        int averageLvl = Game.getCurrentGame().getCurrentPlayers().stream()
+                .map(being -> (int) being.stats().lvl().value())
+                .reduce(Integer::sum)
+                .orElse(1) / Game.getCurrentGame().getCurrentPlayers().getBeings().size();
+        List<QuestData> generated = new ArrayList<>(QuestData.getQuests().values()
+                .stream()
+                .filter(questData -> questData.getUnique() == QuestData.Unique.NO || !questHolder.isUniqueQuestCreated(questData))
+                .filter(questData -> questData.getLvl() >= averageLvl - 4 && questData.getLvl() <= averageLvl + 4)
+                .collect(Functions.randomCollector(5)));
+        if (generated.size() < 5) {
+            List<QuestData> collect = new ArrayList<>(QuestData.getQuests().values());
+            Collections.shuffle(collect);
+            collect.stream()
+                    .filter(questData -> questData.getUnique() == QuestData.Unique.NO || (!generated.contains(questData) && !questHolder.isUniqueQuestCreated(questData)))
+                    .limit(5 - generated.size())
+                    .forEach(generated::add);
+        }
+        quests.addAll(generated);
+        generated.stream()
+                .filter(questData -> questData.getUnique() != QuestData.Unique.NO)
+                .forEach(questHolder::uniqueQuestCreated);
     }
 
     private void updateShop() {
@@ -66,7 +87,14 @@ public class CityInside implements TimeChangeObserver {
     }
 
     private void updateQuests() {
-        // TODO: 29.05.2021 update quests in city
+        QuestsHolder questHolder = Game.getCurrentGame().getQuestHolder();
+        List<QuestData> collect = QuestData.getQuests().values().stream()
+                .filter(questData -> questData.getUnique() == QuestData.Unique.NO || !questHolder.isUniqueQuestCreated(questData))
+                .collect(Functions.randomCollector(Functions.random(1, 3)));
+        collect.stream()
+                .filter(questData -> questData.getUnique() != QuestData.Unique.NO)
+                .forEach(questHolder::uniqueQuestCreated);
+        quests.addAll(collect);
     }
 
     @Override
@@ -75,7 +103,7 @@ public class CityInside implements TimeChangeObserver {
         if (minutes <= 0) {
             updateShop();
             updateQuests();
+            timeToNextUpdate = Functions.random(4320, 7500);
         }
-        timeToNextUpdate = Functions.random(4320, 7500);
     }
 }

@@ -14,12 +14,16 @@ import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.GameMap;
 import ru.rdude.rpg.game.logic.map.PlaceObserver;
 import ru.rdude.rpg.game.logic.map.Point;
+import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.logic.time.TimeForMovingCalculator;
 import ru.rdude.rpg.game.mapVisual.MapStage;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -29,6 +33,7 @@ import java.util.function.BiConsumer;
 public class Map extends GameStateBase {
 
     private final GameMap gameMap;
+    private Set<City> cities = new HashSet<>();
     private MapStage mapStage;
     private final CellProperties[][] cellProperties;
     private Cell playerPosition;
@@ -40,6 +45,9 @@ public class Map extends GameStateBase {
         for (int x = 0; x < gameMap.getWidth(); x++) {
             for (int y = 0; y < gameMap.getHeight(); y++) {
                 cellProperties[x][y] = new CellProperties();
+                if (gameMap.cell(x, y).getObject() instanceof City) {
+                    cities.add(((City) gameMap.cell(x, y).getObject()));
+                }
             }
         }
     }
@@ -105,6 +113,10 @@ public class Map extends GameStateBase {
     public Party getAllySide(Being<?> of) {
         Party party = Game.getCurrentGame().getCurrentPlayers();
         return party.getBeings().contains(of) ? party : null;
+    }
+
+    public Set<City> getCities() {
+        return cities;
     }
 
     @Override

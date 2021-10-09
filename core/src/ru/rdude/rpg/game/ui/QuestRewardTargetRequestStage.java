@@ -21,7 +21,7 @@ import java.util.Map;
 @JsonIgnoreType
 public class QuestRewardTargetRequestStage extends Stage implements NonClosableMenuStage, CurrentGameObserver {
 
-    private static final QuestRewardTargetRequestStage instance = new QuestRewardTargetRequestStage();
+    private static QuestRewardTargetRequestStage instance;
 
     private final Table mainTable = new Table(UiData.DEFAULT_SKIN);
     private final Label question = new Label("", UiData.DEFAULT_SKIN, UiData.BIG_TEXT_STYLE);
@@ -36,6 +36,9 @@ public class QuestRewardTargetRequestStage extends Stage implements NonClosableM
     }
 
     public static QuestRewardTargetRequestStage getInstance() {
+        if (instance == null) {
+            instance = new QuestRewardTargetRequestStage();
+        }
         return instance;
     }
 

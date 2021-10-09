@@ -37,6 +37,7 @@ public class GameStateSwitcher {
         Game.getGameVisual().clearMainMenus();
         final Map map = new Map(GameMapFileLoader.load(selectedMap.mapFile));
         Game.getCurrentGame().setGameMap(map);
+        map.getCities().forEach(Game.getCurrentGame().getCitiesHolder()::addCity);
         map.placePlayerOnStartPosition();
         createdPlayers.forEach(player -> {
             String name = player.getName();

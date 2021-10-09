@@ -16,11 +16,13 @@ public class QuestData extends EntityData {
 
     public enum EndQuestPlace { WHERE_GET, INSTANT }
 
+    public enum Unique { NO, ONE_PER_GAME, ONE_ACTIVE }
+
     private static Map<Long, QuestData> quests = new HashMap<>();
 
     private int lvl = 0;
     private EndQuestPlace endQuestPlace = EndQuestPlace.WHERE_GET;
-    private boolean unique = false;
+    private Unique unique = Unique.NO;
 
     // requirements
     private Map<Long, Integer> killMonsters = new HashMap<>();
@@ -224,11 +226,11 @@ public class QuestData extends EntityData {
         this.takeGold = takeGold;
     }
 
-    public boolean isUnique() {
+    public Unique getUnique() {
         return unique;
     }
 
-    public void setUnique(boolean unique) {
+    public void setUnique(Unique unique) {
         this.unique = unique;
     }
 
