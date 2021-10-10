@@ -100,7 +100,7 @@ public class ExpSpreader implements BeingActionObserver, GameStateObserver, Part
                 .findAny()
                 .map(Effort::totalEffort)
                 .orElse(1d);
-        return Math.round((1 + intBonus) * (allExp * 0.07 + allExp * (1 - partySize * 0.07) * (totalEffort / beingEffort)));
+        return Math.round((1 + intBonus) * (allExp * 0.07 + allExp * (1 - partySize * 0.07) * (beingEffort / totalEffort)));
     }
 
     public void clear() {
