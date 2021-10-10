@@ -241,7 +241,8 @@ public class Stm extends Stat implements Calculatable, RoundStat {
             if (!stm.calculatable) return value();
             double LVL = stm.lvl.value();
             double AGI = stm.agi.value();
-            this.set(3 + stm.hardness.value() - Math.floor(Math.floor(AGI / 3) * 0.4 + Math.floor(AGI / 5) + Math.floor(AGI / 7) * 0.5 + Math.floor(LVL / 7)));
+            double value = 3 + stm.hardness.value() - Math.floor(Math.floor(AGI / 3) * 0.4 + Math.floor(AGI / 5) + Math.floor(AGI / 7) * 0.5 + Math.floor(LVL / 7));
+            this.set(Math.max(value, 0));
             return value();
         }
 
