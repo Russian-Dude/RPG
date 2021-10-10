@@ -1,6 +1,7 @@
 package ru.rdude.rpg.game.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -142,7 +143,15 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
         });
 
         // skills
-        Table skillSelectorTable = new Table();
+        Table skillSelectorTable = new Table() {
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                if (this.isVisible() && (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) || Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT))) {
+                    this.setVisible(false);
+                }
+            }
+        };
         this.skillSelector = new SkillSelector(player, skillSelectorTable);
         ScrollPane skillSelectorScrollPane = new ScrollPane(skillSelector);
         skillSelectorScrollPane.setVariableSizeKnobs(false);
