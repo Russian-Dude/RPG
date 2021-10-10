@@ -72,6 +72,21 @@ public enum Commands {
                     e.printStackTrace();
                 }
             }
+    ),
+
+    IS_READY(
+            string -> {
+                try {
+                    String value = string.split("\\s")[1];
+                    int index = Integer.parseInt(value);
+                    Being<?> being = Game.getCurrentGame().getCurrentPlayers().getBeings().get(index);
+                    Game.getCurrentGame().getGameLogger().log(
+                            being.getName() + (being.isReady() ? " ready" : " not ready"));
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
     );
 
     private final Consumer<String> action;

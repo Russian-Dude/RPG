@@ -6,6 +6,7 @@ import ru.rdude.rpg.game.logic.entities.Entity;
 import ru.rdude.rpg.game.logic.entities.EntityReceiver;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.entities.items.holders.AvailableSkills;
+import ru.rdude.rpg.game.logic.entities.items.holders.BackpackSlotsHolder;
 import ru.rdude.rpg.game.logic.entities.items.holders.EquipmentSlotsHolder;
 import ru.rdude.rpg.game.logic.entities.items.holders.ItemSlotsHolder;
 import ru.rdude.rpg.game.logic.entities.skills.*;
@@ -34,7 +35,7 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
 
     protected Coefficients coefficients;
 
-    protected ItemSlotsHolder backpack;
+    protected BackpackSlotsHolder backpack;
     protected EquipmentSlotsHolder equipment;
     protected Set<Buff> buffs;
     protected AvailableSkills availableSkills;
@@ -61,7 +62,7 @@ public abstract class Being<T extends BeingData> extends Entity<T> implements Bu
         size = new StateHolder<>(beingData.getSize());
         coefficients = new Coefficients();
         buffs = new HashSet<>();
-        backpack = new ItemSlotsHolder(16);
+        backpack = new BackpackSlotsHolder(this);
         equipment = new EquipmentSlotsHolder(this);
         availableSkills = new AvailableSkills();
         effect = SkillEffect.NO;

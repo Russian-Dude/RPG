@@ -3,6 +3,7 @@ package ru.rdude.rpg.game.logic.holders;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.entities.Entity;
+import ru.rdude.rpg.game.logic.entities.items.holders.SlotPredicate;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.function.Predicate;
@@ -15,7 +16,7 @@ public class SimpleSlot<T extends Entity<?>> extends Slot<T> {
         super(marker, t -> true);
     }
 
-    public SimpleSlot(String marker, Predicate<T>... extraRequirements) {
+    public SimpleSlot(String marker, SlotPredicate<T>... extraRequirements) {
         super(marker, extraRequirements);
     }
 }

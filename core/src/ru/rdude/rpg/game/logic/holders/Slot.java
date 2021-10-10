@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.logic.holders;
 
 import com.fasterxml.jackson.annotation.*;
 import ru.rdude.rpg.game.logic.entities.Entity;
+import ru.rdude.rpg.game.logic.entities.items.holders.SlotPredicate;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 
@@ -18,18 +19,17 @@ public abstract class Slot<T extends Entity<?>> {
 
     protected T entity;
 
-    @JsonIgnore
-    protected Set<? extends Predicate<T>> extraRequirements;
+    protected Set<? extends SlotPredicate<T>> extraRequirements;
 
     protected String marker;
 
-    public Slot(String marker, Predicate<T>... extraRequirements) {
+    public Slot(String marker, SlotPredicate<T>... extraRequirements) {
         subscribers = new SubscribersManager<>();
         this.marker = marker;
         this.extraRequirements = Arrays.stream(extraRequirements).collect(Collectors.toSet());
     }
 
-    protected Slot(Set<? extends Predicate<T>> extraRequirements) {
+    protected Slot(Set<? extends SlotPredicate<T>> extraRequirements) {
         this.extraRequirements = extraRequirements;
     }
 

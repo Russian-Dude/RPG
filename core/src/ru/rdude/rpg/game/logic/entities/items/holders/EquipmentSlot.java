@@ -24,7 +24,7 @@ public class EquipmentSlot extends Slot<Item> {
         this.being = being;
     }
 
-    private static Predicate<Item> createExtraRequirements(Being<?> being, ItemMainOrConcreteType itemType, ItemMainOrConcreteType... itemTypes) {
+    private static SlotPredicate<Item> createExtraRequirements(Being<?> being, ItemMainOrConcreteType itemType, ItemMainOrConcreteType... itemTypes) {
         Set<ItemMainOrConcreteType> types = new HashSet<>();
         types.add(itemType);
         if (itemTypes != null) {

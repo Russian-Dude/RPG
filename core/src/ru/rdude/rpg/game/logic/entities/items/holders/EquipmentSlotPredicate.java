@@ -5,11 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.enums.ItemMainOrConcreteType;
+import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class EquipmentSlotPredicate implements Predicate<Item> {
+@JsonPolymorphicSubType("equipmentPredicate")
+public class EquipmentSlotPredicate implements SlotPredicate<Item> {
 
     private final Set<ItemMainOrConcreteType> itemTypes;
     private final Being<?> being;

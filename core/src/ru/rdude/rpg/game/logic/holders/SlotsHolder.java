@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.logic.holders;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.entities.Entity;
+import ru.rdude.rpg.game.logic.entities.items.holders.SlotPredicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public abstract class SlotsHolder<T extends Entity<?>> {
         this(capacity, null);
     }
 
-    public SlotsHolder(int capacity, String marker, Predicate<T> ... extraRequirements) {
+    public SlotsHolder(int capacity, String marker, SlotPredicate<T>... extraRequirements) {
         slots = new ArrayList<>(capacity);
         for (int i = 0; i < capacity; i++) {
             slots.add(new SimpleSlot<>(marker, extraRequirements));

@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 @JsonPolymorphicSubType("itemSlotsHolder")
 public class ItemSlotsHolder extends SlotsHolder<Item> {
 
-    private ItemSlotsHolder() { }
+    protected ItemSlotsHolder() { }
 
     public ItemSlotsHolder(int capacity) {
         super(capacity);
     }
 
-    public ItemSlotsHolder(int capacity, String marker, Predicate<Item>... extraRequirements) {
+    public ItemSlotsHolder(int capacity, String marker, SlotPredicate<Item>... extraRequirements) {
         super(capacity, marker, extraRequirements);
     }
 
