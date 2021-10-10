@@ -191,6 +191,7 @@ public class Player extends Being<PlayerData> implements AbilityObserver, GameSt
             stats.stm().set(stats.stm().maxValue());
             stats.hp().set(stats.hp().maxValue());
         }
+        setReady(true);
         cast.setCast(null);
     }
 }

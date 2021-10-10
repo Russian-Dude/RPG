@@ -93,6 +93,7 @@ public class Minion extends Monster implements TurnChangeObserver, TimeChangeObs
             stats.hp().set(stats().hp().maxValue());
             stats.stm().set(stats.stm().maxValue());
         }
+        setReady(true);
         cast.setCast(null);
     }
 }
