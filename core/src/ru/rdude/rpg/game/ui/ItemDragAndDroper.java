@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import ru.rdude.rpg.game.logic.data.resources.Resource;
 import ru.rdude.rpg.game.logic.entities.items.Item;
+import ru.rdude.rpg.game.logic.entities.items.holders.EquipmentSlot;
+import ru.rdude.rpg.game.logic.entities.items.holders.ShopItemSlot;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.holders.Slot;
 
@@ -72,13 +74,14 @@ public class ItemDragAndDroper {
                 }
                 else if (targetActor instanceof PlayerVisual) {
                     final Slot<Item> initialSlot = Slot.withEntity(item);
-                    if (((PlayerVisual) targetActor).getPlayer().receive(item)) {
+                    if (!(initialSlot instanceof ShopItemSlot) && ((PlayerVisual) targetActor).getPlayer().receive(item)) {
                         initialSlot.setEntity(null);
                     }
                 }
                 else if (targetActor instanceof ItemRemoverArea) {
                     final Object object = payload.getObject();
-                    if (object instanceof Item) {
+                    final Slot<Item> initialSlot = Slot.withEntity(item);
+                    if (object instanceof Item && ("backpack".equals(initialSlot.getMarker()) || initialSlot instanceof EquipmentSlot)) {
                         Game.getGameVisual().setMenuStage(ThrowItemRequestStage
                                 .instance(Slot.withEntity((Item) payload.getObject())));
                     }
@@ -115,7 +118,14 @@ public class ItemDragAndDroper {
 
         // if slot is empty
         if (slot.isEmpty()) {
-            Slot.withEntity(item).setEntity(null);
+            Slot<Item> initialSlot = Slot.withEntity(item);
+            if (initialSlot instanceof ShopItemSlot && !(slot instanceof ShopItemSlot)) {
+                Game.getCurrentGame().getGold().decrease((int) (initialSlot.getEntity().getAmount() * initialSlot.getEntity().price()));
+            }
+            else if (!(initialSlot instanceof ShopItemSlot) && slot instanceof ShopItemSlot) {
+                Game.getCurrentGame().getGold().increase((int) ((initialSlot.getEntity().getAmount() * initialSlot.getEntity().price()) / 2));
+            }
+            initialSlot.setEntity(null);
             slot.setEntity(item);
             return;
         }
@@ -123,7 +133,13 @@ public class ItemDragAndDroper {
         // if slot contains different item
         if (!slot.getEntity().sameAs(item)) {
             Slot<Item> initialSlot = Slot.withEntity(item);
-            if (initialSlot != null && initialSlot.isEntityMatchRequirements(slot.getEntity())) {
+            if (initialSlot instanceof ShopItemSlot && !(slot instanceof ShopItemSlot)) {
+                return;
+            }
+            else if (!(initialSlot instanceof ShopItemSlot) && slot instanceof ShopItemSlot) {
+                return;
+            }
+            else if (initialSlot != null && initialSlot.isEntityMatchRequirements(slot.getEntity())) {
                 slot.swapEntities(initialSlot);
             } else {
                 return;
@@ -135,7 +151,14 @@ public class ItemDragAndDroper {
             if (!item.isStackable()) {
                 return;
             } else {
+                Slot<Item> initialSlot = Slot.withEntity(item);
                 int rest = slot.getEntity().increaseAmountAndReturnRest(item.getAmount());
+                if (initialSlot instanceof ShopItemSlot && !(slot instanceof ShopItemSlot)) {
+                    Game.getCurrentGame().getGold().decrease((int) ((initialSlot.getEntity().getAmount() - rest) * initialSlot.getEntity().price()));
+                }
+                else if (!(initialSlot instanceof ShopItemSlot) && slot instanceof ShopItemSlot) {
+                    Game.getCurrentGame().getGold().increase((int) (((initialSlot.getEntity().getAmount() - rest) * initialSlot.getEntity().price()) / 2));
+                }
                 if (rest > 0) {
                     item.setAmount(rest);
                     return;

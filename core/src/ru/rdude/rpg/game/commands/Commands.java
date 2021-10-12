@@ -68,8 +68,7 @@ public enum Commands {
                     Game.getCurrentGame().getGameLogger().log(
                             "Items of " + being.getName() + ": " + items);
                 }
-                catch (Exception e) {
-                    e.printStackTrace();
+                catch (Exception ignored) {
                 }
             }
     ),
@@ -83,8 +82,19 @@ public enum Commands {
                     Game.getCurrentGame().getGameLogger().log(
                             being.getName() + (being.isReady() ? " ready" : " not ready"));
                 }
-                catch (Exception e) {
-                    e.printStackTrace();
+                catch (Exception ignored) {
+                }
+            }
+    ),
+
+    RECEIVE_GOLD(
+            string -> {
+                try {
+                    String value = string.split("\\s")[1];
+                    int amount = Integer.parseInt(value);
+                    Game.getCurrentGame().getGold().increase(amount);
+                }
+                catch (Exception ignored) {
                 }
             }
     );

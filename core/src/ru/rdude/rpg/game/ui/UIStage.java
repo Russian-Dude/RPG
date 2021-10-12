@@ -31,6 +31,7 @@ public class UIStage extends Stage implements GameStateObserver {
     private final QuestsJournal questsJournal = new QuestsJournal();
     private final LoggerVisual loggerVisual;
     private final Button endTurnButton;
+    private final Button enterCityButton;
 
     public UIStage() {
         super(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
@@ -97,6 +98,11 @@ public class UIStage extends Stage implements GameStateObserver {
         addActor(battleVictoryWindow);
         battleVictoryWindow.setPosition(Gdx.graphics.getWidth() / 2f - battleVictoryWindow.getWidth() / 2f, Gdx.graphics.getHeight() / 2f - battleVictoryWindow.getHeight() / 2f);
         battleVictoryWindow.setVisible(false);
+
+        // enter city button
+        enterCityButton = new EnterCityButton();
+        addActor(enterCityButton);
+        enterCityButton.setPosition(5f, Gdx.graphics.getHeight() - timeAndPlaceUi.getHeight() - enterCityButton.getHeight() - 10f);
     }
 
     public boolean isHit() {

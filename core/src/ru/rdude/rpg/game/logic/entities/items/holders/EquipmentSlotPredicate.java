@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.enums.ItemMainOrConcreteType;
+import ru.rdude.rpg.game.logic.game.Game;
+import ru.rdude.rpg.game.logic.holders.Slot;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
 import java.util.Set;
@@ -24,6 +26,10 @@ public class EquipmentSlotPredicate implements SlotPredicate<Item> {
 
     @Override
     public boolean test(Item item) {
+        Slot<Item> slot = Slot.withEntity(item);
+        if (slot instanceof ShopItemSlot && slot.getEntity() != null && Game.getCurrentGame().getGold().getAmount() < slot.getEntity().price()) {
+            return false;
+        }
         return being.isReady()
                 && (itemTypes.contains(item.getEntityData().getItemType())
                 || itemTypes.contains(item.getEntityData().getItemType().getMainType()))

@@ -3,25 +3,56 @@ package ru.rdude.rpg.game.logic.map.objects;
 import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.data.QuestData;
 import ru.rdude.rpg.game.logic.entities.items.Item;
+import ru.rdude.rpg.game.logic.entities.items.holders.ShopSlotsHolder;
 import ru.rdude.rpg.game.logic.entities.quests.QuestsHolder;
 import ru.rdude.rpg.game.logic.enums.ItemMainType;
 import ru.rdude.rpg.game.logic.enums.ItemRarity;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.time.TimeChangeObserver;
+import ru.rdude.rpg.game.utils.CityNameGenerator;
 import ru.rdude.rpg.game.utils.Functions;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @JsonPolymorphicSubType("cityInside")
 public class CityInside implements TimeChangeObserver {
 
     private int timeToNextUpdate = 4320;
 
-    private final List<Item> shop = new ArrayList<>();
-    private final List<QuestData> quests = new ArrayList<>();
+    private String name;
+    private ShopSlotsHolder shop;
+    private List<QuestData> quests;
 
-    public void generateShopAndQuests() {
+    private CityInside() {}
+
+    public CityInside(City city) {
+        shop = new ShopSlotsHolder();
+        quests = new ArrayList<>();
+        name = CityNameGenerator.generate();
+        Game.getCurrentGame().getTimeManager().subscribe(this);
+        generateShopAndQuests();
+    }
+
+    public void removeQuest(QuestData questData) {
+        this.quests.remove(questData);
+    }
+
+    public ShopSlotsHolder getShop() {
+        return shop;
+    }
+
+    public List<QuestData> getQuests() {
+        return quests;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    private void generateShopAndQuests() {
         generateShop();
         generateQuests();
     }
@@ -47,7 +78,7 @@ public class CityInside implements TimeChangeObserver {
 
         preRes.forEach(itemData -> {
             int amount = itemData.isStackable() ? Functions.random(5, Item.MAX_AMOUNT) : 1;
-            shop.add(Game.getEntityFactory().items().get(itemData, amount));
+            shop.receiveEntity(Game.getEntityFactory().items().get(itemData, amount));
         });
     }
 
@@ -77,13 +108,13 @@ public class CityInside implements TimeChangeObserver {
     }
 
     private void updateShop() {
-        int removing = Math.max(5, shop.size());
+        long removing = Math.max(5, shop.getSlots().stream().filter(slot -> !slot.isEmpty()).count());
         while (shop.size() > 5 && removing > 0) {
-            shop.remove(Functions.random(shop));
+            shop.removeEntity(Functions.random(shop));
             removing--;
         }
         ItemData.getItemsWith().getRandomItems(Functions.random(5, 8))
-                .forEach(itemData -> shop.add(Game.getEntityFactory().items().get(itemData, itemData.isStackable() ? Functions.random(5, Item.MAX_AMOUNT) : 1)));
+                .forEach(itemData -> shop.receiveEntity(Game.getEntityFactory().items().get(itemData, itemData.isStackable() ? Functions.random(5, Item.MAX_AMOUNT) : 1)));
     }
 
     private void updateQuests() {

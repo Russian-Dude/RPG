@@ -6,7 +6,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import ru.rdude.rpg.game.logic.entities.Entity;
 import ru.rdude.rpg.game.logic.enums.StatName;
+import ru.rdude.rpg.game.logic.holders.Slot;
+import ru.rdude.rpg.game.logic.holders.SlotsHolder;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -75,6 +78,16 @@ public class Functions {
     public static <T> T random(T... values) {
         if (values.length < 1) return null;
         return values[random(0, values.length)];
+    }
+
+    public static <T extends Entity<?>> T random(SlotsHolder<T> slotsHolder) {
+        Slot<T> slot = slotsHolder.getSlots().stream()
+                .filter(s -> !s.isEmpty())
+                .collect(randomCollector());
+        if (slot == null || slot.isEmpty()) {
+            return null;
+        }
+        return slot.getEntity();
     }
 
     public static <T> T randomMapKey(Map<T, ?> map) {

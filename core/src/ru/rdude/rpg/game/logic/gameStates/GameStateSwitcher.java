@@ -37,13 +37,13 @@ public class GameStateSwitcher {
         Game.getGameVisual().clearMainMenus();
         final Map map = new Map(GameMapFileLoader.load(selectedMap.mapFile));
         Game.getCurrentGame().setGameMap(map);
-        map.getCities().forEach(Game.getCurrentGame().getCitiesHolder()::addCity);
         map.placePlayerOnStartPosition();
         createdPlayers.forEach(player -> {
             String name = player.getName();
             player.setName(name.isBlank() ? "Default Player Name" : name); });
         final Party party = new Party(createdPlayers);
         Game.getCurrentGame().setCurrentPlayers(party);
+        map.getCities().forEach(Game.getCurrentGame().getCitiesHolder()::addCity);
         Game.getCurrentGame().getGameStateHolder().setGameState(map);
         Game.getGameVisual().addStage(map.getStage());
         Game.getGameVisual().setUi(new UIStage());

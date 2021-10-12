@@ -9,7 +9,7 @@ public class BackpackSlotsHolder extends ItemSlotsHolder {
     private BackpackSlotsHolder() {}
 
     public BackpackSlotsHolder(Being<?> being) {
-        super(16, null, new BackpackSlotPredicate(being));
+        super(16, "backpack", new BackpackSlotPredicate(being));
     }
 
 }
