@@ -4,6 +4,7 @@ import ru.rdude.rpg.game.logic.data.ItemData;
 import ru.rdude.rpg.game.logic.data.QuestData;
 import ru.rdude.rpg.game.logic.entities.items.Item;
 import ru.rdude.rpg.game.logic.entities.items.holders.ShopSlotsHolder;
+import ru.rdude.rpg.game.logic.entities.quests.QuestEndLocation;
 import ru.rdude.rpg.game.logic.entities.quests.QuestsHolder;
 import ru.rdude.rpg.game.logic.enums.ItemMainType;
 import ru.rdude.rpg.game.logic.enums.ItemRarity;
@@ -18,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @JsonPolymorphicSubType("cityInside")
-public class CityInside implements TimeChangeObserver {
+public class CityInside implements TimeChangeObserver, QuestEndLocation {
 
     private int timeToNextUpdate = 4320;
 

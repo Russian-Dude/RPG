@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.utils.Align;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import ru.rdude.rpg.game.logic.data.EntityData;
 import ru.rdude.rpg.game.logic.data.ItemData;
@@ -36,12 +37,15 @@ public class QuestJournalEntry extends VerticalGroup implements QuestAmountObser
         if (description != null && !description.isBlank()) {
             final Label descriptionLabel = new Label(description, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
             descriptionLabel.setWrap(true);
-            addActor(descriptionLabel);
             descriptionLabel.setWidth(Gdx.graphics.getWidth() / 3f);
+            descriptionLabel.setAlignment(Align.center);
+            Table descriptionTable = new Table(UiData.DEFAULT_SKIN);
+            descriptionTable.add(descriptionLabel).width(Gdx.graphics.getWidth() / 3f);
+            descriptionTable.pack();
+            addActor(descriptionTable);
         }
 
         addActor(requirementsTable);
-        requirementsTable.padLeft(20f);
 
         // requirements
         // items
@@ -54,6 +58,7 @@ public class QuestJournalEntry extends VerticalGroup implements QuestAmountObser
         if (quest.getQuestData().getCollectGold() > 0) {
             requirementsTable.add(new Label("Collect gold ", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE));
             goldRequirementLabel = new Label(Math.min(Game.getCurrentGame().getGold().getAmount(), quest.getQuestData().getCollectGold()) + " / " + quest.getQuestData().getCollectGold(), UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+            goldRequirementLabel.setAlignment(Align.left);
             requirementsTable.add(goldRequirementLabel);
             Game.getCurrentGame().getGold().subscribe(this);
             requirementsTable.row();

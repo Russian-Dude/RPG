@@ -19,6 +19,7 @@ public class CityVisual extends Table implements PlaceObserver {
 
     private final CityInside cityInside;
     private final ShopVisual shopVisual;
+    private final NewQuestsSelector newQuestsSelector;
 
     public CityVisual(CityInside cityInside) {
         super(UiData.DEFAULT_SKIN);
@@ -49,6 +50,19 @@ public class CityVisual extends Table implements PlaceObserver {
         row();
 
         // quests
+        newQuestsSelector = new NewQuestsSelector(cityInside.getQuests(), () -> this.setVisible(true), cityInside);
+        Button questsButton = new TextButton("Quests", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+        questsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                newQuestsSelector.setQuests(cityInside.getQuests());
+                CityVisual.this.setVisible(false);
+                Game.getGameVisual().setMenuStage(newQuestsSelector);
+            }
+        });
+        add(questsButton);
+        row();
 
         // exit button
         Button exitButton = new TextButton("Exit", UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
@@ -68,7 +82,6 @@ public class CityVisual extends Table implements PlaceObserver {
 
     public void addSubWindowsToStage() {
         this.getStage().addActor(shopVisual);
-        // TODO: 11.10.2021 add quests visual to stage
     }
 
     public static CityVisual of(City city) {

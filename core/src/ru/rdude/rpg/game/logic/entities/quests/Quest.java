@@ -30,6 +30,7 @@ public class Quest implements BeingActionObserver, SlotObserver, PartyObserver, 
     private Map<Long, Amount> killMonsters = new HashMap<>();
     private Map<Long, Amount> collectItems = new HashMap<>();
     private Map<Long, Amount> useSkills = new HashMap<>();
+    private Amount gold;
 
     private boolean complete = false;
 
@@ -38,8 +39,9 @@ public class Quest implements BeingActionObserver, SlotObserver, PartyObserver, 
         this.questData = QuestData.getQuestByGuid(guid);
     }
 
-    public Quest(QuestData questData) {
+    public Quest(QuestData questData, QuestEndLocation questEndLocation) {
         this.questData = questData;
+        this.endLocation = questEndLocation;
         // kill monsters
         questData.getKillMonsters().forEach((guid, amount) -> {
             MonsterData monsterData = MonsterData.getMonsterByGuid(guid);
@@ -98,6 +100,9 @@ public class Quest implements BeingActionObserver, SlotObserver, PartyObserver, 
 
     public void setComplete(boolean value) {
         this.complete = value;
+        if (value && endLocation == null) {
+            Game.getQuestRewarder().startRewarding(this);
+        }
     }
 
     public boolean isComplete() {
@@ -136,7 +141,8 @@ public class Quest implements BeingActionObserver, SlotObserver, PartyObserver, 
         boolean kills = killMonsters.values().stream().allMatch(Amount::isComplete);
         boolean items = collectItems.values().stream().allMatch(Amount::isComplete);
         boolean skills = useSkills.values().stream().allMatch(Amount::isComplete);
-        boolean result = kills && items && skills;
+        boolean gold = Game.getCurrentGame().getGold().getAmount() >= questData.getCollectGold();
+        boolean result = kills && items && skills && gold;
         if (this.complete != result) {
             setComplete(result);
         }
@@ -183,6 +189,7 @@ public class Quest implements BeingActionObserver, SlotObserver, PartyObserver, 
                     .filter(entry -> Game.getSameEntityChecker().check(entry.getKey(), action.withSkill().getGuid()))
                     .forEach(entry -> entry.getValue().increase(1));
         }
+        checkCompletion();
     }
 
     @Override
@@ -203,6 +210,7 @@ public class Quest implements BeingActionObserver, SlotObserver, PartyObserver, 
                 being.equipment().getSlots().forEach(this::unsubscribeFromSlot);
             }
         }
+        checkCompletion();
     }
 
     @Override
@@ -225,6 +233,7 @@ public class Quest implements BeingActionObserver, SlotObserver, PartyObserver, 
                     .filter(entry -> Game.getSameEntityChecker().check(entry.getKey(), newEntity.getEntityData().getGuid()))
                     .forEach(entry -> entry.getValue().increase(((Item) newEntity).getAmount()));
         }
+        checkCompletion();
     }
 
     @Override
@@ -232,6 +241,7 @@ public class Quest implements BeingActionObserver, SlotObserver, PartyObserver, 
         collectItems.entrySet().stream()
                 .filter(entry -> Game.getSameEntityChecker().check(entry.getKey(), item.getEntityData().getGuid()))
                 .forEach(entry -> entry.getValue().increase(newAmount - oldAmount));
+        checkCompletion();
     }
 
     @Override

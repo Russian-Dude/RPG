@@ -33,6 +33,7 @@ public class QuestRewardTargetRequestStage extends Stage implements NonClosableM
         super();
         question.setAlignment(Align.center);
         Game.subscribe(this);
+        createMainTable();
     }
 
     public static QuestRewardTargetRequestStage getInstance() {

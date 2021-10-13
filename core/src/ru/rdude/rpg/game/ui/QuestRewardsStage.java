@@ -18,6 +18,10 @@ import java.util.List;
 public class QuestRewardsStage extends Stage implements NonClosableMenuStage {
 
     public QuestRewardsStage(Quest quest, QuestRewards questRewards) {
+        this(quest, questRewards, null);
+    }
+
+    public QuestRewardsStage(Quest quest, QuestRewards questRewards, Runnable closeExtraAction) {
         super();
         Table mainTable = new Table(UiData.DEFAULT_SKIN);
         mainTable.background(UiData.SEMI_TRANSPARENT_BACKGROUND);
@@ -68,6 +72,9 @@ public class QuestRewardsStage extends Stage implements NonClosableMenuStage {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 Game.getGameVisual().closeMenus();
+                if (closeExtraAction != null) {
+                    closeExtraAction.run();
+                }
             }
         });
         mainTable.add(okButton);

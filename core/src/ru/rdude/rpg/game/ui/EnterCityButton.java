@@ -5,12 +5,16 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import ru.rdude.rpg.game.logic.entities.quests.Quest;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.Map;
 import ru.rdude.rpg.game.logic.map.Cell;
 import ru.rdude.rpg.game.logic.map.PlaceObserver;
 import ru.rdude.rpg.game.logic.map.objects.City;
 import ru.rdude.rpg.game.logic.map.objects.CityInside;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @JsonIgnoreType
 public class EnterCityButton extends TextButton implements PlaceObserver {
@@ -29,14 +33,22 @@ public class EnterCityButton extends TextButton implements PlaceObserver {
                 }
                 CityInside cityInside = Game.getCurrentGame().getCitiesHolder().getCityById(playerPosition.getObject().getId());
                 CityVisual cityVisual = CityVisual.of((City) playerPosition.getObject());
-                if (cityVisual == null) {
-                    cityVisual = new CityVisual(cityInside);
-                    EnterCityButton.this.getStage().addActor(cityVisual);
-                    cityVisual.addSubWindowsToStage();
-                    Game.getStaticReferencesHolders().cityVisuals().put(((City) playerPosition.getObject()), cityVisual);
+                List<Quest> completedQuests = Game.getCurrentGame().getQuestHolder().getQuests().stream()
+                        .filter(quest -> quest.isComplete() && quest.getEndLocation() == cityInside)
+                        .collect(Collectors.toList());
+                if (!completedQuests.isEmpty()) {
+                    completedQuests.forEach(Game.getQuestRewarder()::startRewarding);
                 }
-                EnterCityButton.this.setVisible(false);
-                cityVisual.setVisible(true);
+                else {
+                    if (cityVisual == null) {
+                        cityVisual = new CityVisual(cityInside);
+                        EnterCityButton.this.getStage().addActor(cityVisual);
+                        cityVisual.addSubWindowsToStage();
+                        Game.getStaticReferencesHolders().cityVisuals().put(((City) playerPosition.getObject()), cityVisual);
+                    }
+                    EnterCityButton.this.setVisible(false);
+                    cityVisual.setVisible(true);
+                }
             }
         });
     }

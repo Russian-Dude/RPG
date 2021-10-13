@@ -43,7 +43,7 @@ public enum Commands {
 
     START_ALL_QUESTS
             (string -> {
-                QuestData.getQuests().values().forEach(questData -> Game.getCurrentGame().getQuestHolder().add(new Quest(questData)));
+                QuestData.getQuests().values().forEach(questData -> Game.getCurrentGame().getQuestHolder().add(new Quest(questData, null)));
             }),
 
     END_FIRST_COMPLETED_QUEST
