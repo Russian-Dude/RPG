@@ -135,7 +135,7 @@ public final class MonsterFactory {
     }
 
     public Map.MonstersOnCell createMonstersOnCell(Cell cell) {
-        int amount = Functions.random(1, 5);
+        int amount = Functions.random(1, 6);
         int minLvl = Math.max(1, cell.getLvl() - amount - 1);
         int maxLvl = cell.getLvl() + (5 - amount);
         return MonsterData.getMonsters().values().stream()
