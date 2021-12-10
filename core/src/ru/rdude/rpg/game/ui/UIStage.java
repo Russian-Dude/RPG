@@ -79,6 +79,11 @@ public class UIStage extends Stage implements GameStateObserver {
         addActor(showQuestsButton);
         showQuestsButton.setPosition(timeAndPlaceUi.getWidth() + goldUi.getWidth() + 20f, Gdx.graphics.getHeight() - showQuestsButton.getHeight() - 5f);
 
+        // camp button
+        SetUpCampButton setUpCampButton = new SetUpCampButton();
+        addActor(setUpCampButton);
+        setUpCampButton.setPosition(getWidth() - setUpCampButton.getWidth() - 5f, Gdx.graphics.getHeight() - setUpCampButton.getHeight() - 5f);
+
         // quests journal
         addActor(questsJournal);
         questsJournal.setPosition(Gdx.graphics.getWidth() / 2f - questsJournal.getWidth() / 2f, Gdx.graphics.getHeight() / 2f - questsJournal.getHeight() / 2f);

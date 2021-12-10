@@ -17,10 +17,7 @@ import ru.rdude.rpg.game.logic.entities.items.ItemUser;
 import ru.rdude.rpg.game.logic.entities.quests.QuestsHolder;
 import ru.rdude.rpg.game.logic.entities.quests.rewards.QuestRewarder;
 import ru.rdude.rpg.game.logic.entities.skills.*;
-import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
-import ru.rdude.rpg.game.logic.gameStates.GameStateHolder;
-import ru.rdude.rpg.game.logic.gameStates.GameStateSwitcher;
-import ru.rdude.rpg.game.logic.gameStates.Map;
+import ru.rdude.rpg.game.logic.gameStates.*;
 import ru.rdude.rpg.game.logic.gold.GoldHolder;
 import ru.rdude.rpg.game.logic.time.TimeManager;
 import ru.rdude.rpg.game.logic.time.TurnsManager;
@@ -55,6 +52,8 @@ public class Game {
     private DefeatManager defeatManager;
     private QuestsHolder questHolder;
     private CitiesHolder citiesHolder;
+    private CampSetup campSetup;
+    private CampLeaveController campLeaveController;
 
     private static final CustomObjectMapper customObjectMapper = new CustomObjectMapper("ru.rdude.rpg.game");
     private static AvatarCreator avatarCreator;
@@ -104,6 +103,8 @@ public class Game {
         this.gold = new GoldHolder();
         this.questHolder = new QuestsHolder();
         this.citiesHolder = new CitiesHolder();
+        this.campSetup = new CampSetup(gameStateHolder);
+        this.campLeaveController = new CampLeaveController(timeManager, gameStateHolder);
     }
 
     public static void initNewGame() {
@@ -299,6 +300,10 @@ public class Game {
 
     public CitiesHolder getCitiesHolder() {
         return citiesHolder;
+    }
+
+    public CampSetup getCampSetup() {
+        return campSetup;
     }
 
     public void notifySubscribers(CurrentGameObserver.Action action) {

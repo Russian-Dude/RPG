@@ -90,6 +90,14 @@ public class GameStateSwitcher {
         removePlayersCasts();
     }
 
+    public void switchToCamp() {
+        Camp camp = new Camp(Game.getCurrentGame().getGameMap().getPlayerPosition());
+        Game.getCurrentGame().getGameStateHolder().setGameState(camp);
+        Game.getGameVisual().clearNonUiStages();
+        Game.getGameVisual().addStage((Stage) camp.getStage());
+        removePlayersCasts();
+    }
+
     private void removePlayersCasts() {
         Game.getCurrentGame().getCurrentPlayers().forEach(player -> {
             if (player.isCasting()) {
