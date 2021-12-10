@@ -299,6 +299,6 @@ public class PlayerVisual extends VerticalGroup implements GameStateObserver, Pl
     @Override
     public void update(Player player, boolean ready) {
         spells.setVisible(ready);
-        attack.setVisible(ready);
+        attack.setVisible(Game.getCurrentGame().getCurrentGameState() instanceof Battle && getBeing().isReady());
     }
 }
