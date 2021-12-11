@@ -4,6 +4,7 @@ import ru.rdude.rpg.game.logic.data.resources.MonsterResources;
 import ru.rdude.rpg.game.logic.enums.AttackType;
 import ru.rdude.rpg.game.logic.enums.Biom;
 import ru.rdude.rpg.game.logic.enums.Relief;
+import ru.rdude.rpg.game.logic.enums.StatName;
 import ru.rdude.rpg.game.logic.stats.Stats;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
@@ -29,6 +30,7 @@ public class MonsterData extends BeingData {
     private AttackType defaultAttackType = AttackType.MELEE;
     private boolean canBlock = false;
     private boolean canParry = false;
+    private List<StatName> statsPattern = new ArrayList<>();
 
     public MonsterData() {
         super();
@@ -158,6 +160,14 @@ public class MonsterData extends BeingData {
 
     public void setCanParry(boolean canParry) {
         this.canParry = canParry;
+    }
+
+    public List<StatName> getStatsPattern() {
+        return statsPattern;
+    }
+
+    public void setStatsPattern(List<StatName> statsPattern) {
+        this.statsPattern = statsPattern;
     }
 
     @Override

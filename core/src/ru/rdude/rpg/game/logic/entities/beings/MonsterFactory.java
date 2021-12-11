@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 
 public final class MonsterFactory {
 
+    private MonsterStatsCreator monsterStatsCreator = new MonsterStatsCreator();
+
     public Minion createMinion(long guid, Integer turnsDuration, Integer timeDuration, Being<?> master) {
         return createMinion(MonsterData.getMonsterByGuid(guid), turnsDuration, timeDuration, master);
     }
@@ -100,23 +102,7 @@ public final class MonsterFactory {
             return monster;
         }
         // calculate stats
-        double mainLvl = monster.stats.lvlValue();
-        monster.stats.lvl().set(lvl);
-        monster.stats.forEachWithNestedStats(stat -> {
-            if (!(stat instanceof Lvl)) {
-                double bonus = stat.getBuffValue(Bonus.class);
-                if (bonus != 0) {
-                    double bonusPerLvl = bonus / mainLvl;
-                    stat.setBuffValue(Bonus.class, bonusPerLvl * lvl);
-                    if (stat instanceof Hp.Max) {
-                        monster.stats.hp().set(stat.value());
-                    }
-                    else if (stat instanceof Stm.Max) {
-                        monster.stats.stm().set(stat.value());
-                    }
-                }
-            }
-        });
+        monsterStatsCreator.create(monster, lvl);
         return monster;
     }
 
