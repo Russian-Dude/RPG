@@ -116,10 +116,28 @@ Button_Horizontal_Disabled
   orig: 160, 50
   offset: 0, 0
   index: -1
+Button_Horizontal_Disabled_9p
+  rotate: false
+  xy: 1, 760
+  size: 160, 50
+  split: 13, 13, 15, 15
+  pad: 7, 7, 8, 8
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
 Button_Horizontal_No_Over
   rotate: false
   xy: 509, 829
   size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_No_Over_9p
+  rotate: false
+  xy: 509, 829
+  size: 160, 50
+  split: 13, 13, 15, 15
+  pad: 7, 7, 8, 8
   orig: 160, 50
   offset: 0, 0
   index: -1
@@ -130,10 +148,28 @@ Button_Horizontal_No_Pressed
   orig: 160, 50
   offset: 0, 0
   index: -1
+Button_Horizontal_No_Pressed_9p
+  rotate: false
+  xy: 711, 881
+  size: 160, 50
+  split: 13, 13, 15, 15
+  pad: 7, 7, 8, 8
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
 Button_Horizontal_No_Up
   rotate: false
   xy: 1, 708
   size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_No_Up_9p
+  rotate: false
+  xy: 1, 708
+  size: 160, 50
+  split: 13, 13, 15, 15
+  pad: 7, 7, 8, 8
   orig: 160, 50
   offset: 0, 0
   index: -1
@@ -144,10 +180,28 @@ Button_Horizontal_Over
   orig: 160, 50
   offset: 0, 0
   index: -1
+Button_Horizontal_Over_9p
+  rotate: false
+  xy: 163, 760
+  size: 160, 50
+  split: 13, 13, 15, 15
+  pad: 7, 7, 8, 8
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
 Button_Horizontal_Pressed
   rotate: false
   xy: 671, 829
   size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_Pressed_9p
+  rotate: false
+  xy: 671, 829
+  size: 160, 50
+  split: 13, 13, 15, 15
+  pad: 7, 7, 8, 8
   orig: 160, 50
   offset: 0, 0
   index: -1
@@ -158,10 +212,28 @@ Button_Horizontal_Up
   orig: 160, 50
   offset: 0, 0
   index: -1
+Button_Horizontal_Up_9p
+  rotate: false
+  xy: 1, 656
+  size: 160, 50
+  split: 13, 13, 15, 15
+  pad: 7, 7, 8, 8
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
 Button_Horizontal_Yes_Over
   rotate: false
   xy: 163, 708
   size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_Yes_Over_9p
+  rotate: false
+  xy: 163, 708
+  size: 160, 50
+  split: 13, 13, 15, 15
+  pad: 7, 7, 8, 8
   orig: 160, 50
   offset: 0, 0
   index: -1
@@ -172,10 +244,28 @@ Button_Horizontal_Yes_Pressed
   orig: 160, 50
   offset: 0, 0
   index: -1
+Button_Horizontal_Yes_Pressed_9p
+  rotate: false
+  xy: 325, 760
+  size: 160, 50
+  split: 13, 13, 15, 15
+  pad: 7, 7, 8, 8
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
 Button_Horizontal_Yes_Up
   rotate: false
   xy: 1, 604
   size: 160, 50
+  orig: 160, 50
+  offset: 0, 0
+  index: -1
+Button_Horizontal_Yes_Up_9p
+  rotate: false
+  xy: 1, 604
+  size: 160, 50
+  split: 13, 13, 15, 15
+  pad: 7, 7, 8, 8
   orig: 160, 50
   offset: 0, 0
   index: -1
@@ -386,6 +476,15 @@ Slider_Knob
   rotate: false
   xy: 67, 243
   size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+Slider_Knob_9p
+  rotate: false
+  xy: 67, 243
+  size: 10, 10
+  split: 3, 3, 4, 4
+  pad: 0, 0, 0, 0
   orig: 10, 10
   offset: 0, 0
   index: -1

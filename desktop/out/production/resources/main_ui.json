@@ -91,22 +91,22 @@ com.kotcrab.vis.ui.widget.BusyBar$BusyBarStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	default: {
-		up: Button_Horizontal_Up
-		down: Button_Horizontal_Pressed
-		over: Button_Horizontal_Over
-		disabled: Button_Horizontal_Disabled
+		up: Button_Horizontal_Up_9p
+		down: Button_Horizontal_Pressed_9p
+		over: Button_Horizontal_Over_9p
+		disabled: Button_Horizontal_Disabled_9p
 	}
 	yes: {
-		up: Button_Horizontal_Yes_Up
-		down: Button_Horizontal_Yes_Pressed
-		over: Button_Horizontal_Yes_Over
-		disabled: Button_Horizontal_Disabled
+		up: Button_Horizontal_Yes_Up_9p
+		down: Button_Horizontal_Yes_Pressed_9p
+		over: Button_Horizontal_Yes_Over_9p
+		disabled: Button_Horizontal_Disabled_9p
 	}
 	no: {
-		up: Button_Horizontal_No_Up
-		down: Button_Horizontal_No_Pressed
-		over: Button_Horizontal_No_Over
-		disabled: Button_Horizontal_Disabled
+		up: Button_Horizontal_No_Up_9p
+		down: Button_Horizontal_No_Pressed_9p
+		over: Button_Horizontal_No_Over_9p
+		disabled: Button_Horizontal_Disabled_9p
 	}
 	attack: {
 		up: ButtonAttack_Up
