@@ -74,7 +74,7 @@ public class StmBar extends Group implements StatObserver {
 
     public void actDelayed(SkillResult skillResult) {
         delayedResults.remove(skillResult);
-        double value = Math.max(0, progressBar.getValue() - skillResult.getSkillData().getStaminaReq());
+        double value = Math.max(0, progressBar.getValue() - skillResult.getStaminaUsed());
         setCurrent(value);
         delayedResults.remove(skillResult);
         noMoreDelayed();

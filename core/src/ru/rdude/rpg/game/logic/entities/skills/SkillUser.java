@@ -13,11 +13,6 @@ public class SkillUser {
 
     public void use(SkillData skillData, Being<?> caster, Target mainTarget) {
 
-        // stamina requirements
-        if (caster.stats().stmValue() < skillData.getStaminaReq()) {
-            return;
-        }
-
         // items requirements (only for players)
         Map<Long, Integer> requiredItems = skillData.getRequirements().getItems();
         if (caster instanceof Player && requiredItems != null && !requiredItems.isEmpty()) {
@@ -47,6 +42,15 @@ public class SkillUser {
         }
 
         SkillTargets skillTargets = Game.getSkillTargeter().get(skillData, caster, mainTarget);
+
+        // stamina requirements
+        if (caster.stats().stmValue() < Game.getSkillParser().parse(skillData.getStaminaReq(), caster, skillTargets.getMainTarget())) {
+            if (caster instanceof Player) {
+                Game.getCurrentGame().getGameLogger().log("Not enough stamina");
+            }
+            return;
+        }
+
         caster.notifySubscribers(new BeingAction(BeingAction.Action.USE_SKILL, caster, skillData, 1), caster);
         Game.getCurrentGame().getSkillsSequencer().add(skillData, caster, skillTargets, true);
     }

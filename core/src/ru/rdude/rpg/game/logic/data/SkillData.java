@@ -28,7 +28,7 @@ public class SkillData extends EntityData {
     private boolean permanent;
     private AttackType attackType;
     private Set<Element> elements;
-    private int staminaReq;
+    private String staminaReq;
     private int concentrationReq;
     private String durationInTurns;
     private String durationInMinutes;
@@ -197,11 +197,11 @@ public class SkillData extends EntityData {
         this.elements = elements;
     }
 
-    public int getStaminaReq() {
+    public String getStaminaReq() {
         return staminaReq;
     }
 
-    public void setStaminaReq(int staminaReq) {
+    public void setStaminaReq(String staminaReq) {
         this.staminaReq = staminaReq;
     }
 

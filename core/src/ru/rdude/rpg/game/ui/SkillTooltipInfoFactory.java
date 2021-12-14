@@ -122,9 +122,9 @@ final class SkillTooltipInfoFactory {
 
         // requirements
         if ((referenceInfo == EntityReferenceInfo.ALL || referenceInfo == EntityReferenceInfo.INTEGRATED)
-                && (skillData.getStaminaReq() > 0 || skillData.getConcentrationReq() > 0)
+                && (!skillData.getStaminaReq().isEmpty() || skillData.getConcentrationReq() > 0)
                 && infoHolder.optionMeetsCondition(AbilityTooltipInfoFactory.PassiveSkills.class, o -> o.isNotPassive(skillData))) {
-            String stamina = skillData.getStaminaReq() > 0 ? skillData.getStaminaReq() + " stamina" : "";
+            String stamina = !skillData.getStaminaReq().isEmpty() ? skillData.getStaminaReq() + " stamina" : "";
             String concentration = skillData.getConcentrationReq() > 0 ? skillData.getConcentrationReq() + " concentration" : "";
             String requirements = Stream.of(stamina, concentration)
                     .filter(s -> !s.isEmpty())

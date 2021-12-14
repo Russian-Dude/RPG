@@ -69,12 +69,16 @@ public class SkillResultsCreator {
 
         List<SkillResult> results = new ArrayList<>();
 
+        // concentration
+
+
         // concentration check and creation of cast if needed
+        int staminaUse = (int) Game.getSkillParser().parse(skillData.getStaminaReq(), caster, targets.getMainTarget());
         if (mainSkill) {
             int casterConcentration = (int) caster.stats().concentrationValue();
             int concentrationReq = skillData.getConcentrationReq();
             if (concentrationReq > casterConcentration) {
-                Cast cast = new Cast(skillData, caster, targets.getMainTarget(), skillData.getStaminaReq());
+                Cast cast = new Cast(skillData, caster, targets.getMainTarget(), staminaUse);
                 SkillResult skillResult = new SkillResult(cast);
                 results.add(skillResult);
                 return results;
@@ -84,12 +88,12 @@ public class SkillResultsCreator {
         // damage
         Damage mainTargetDamage = getDamage(skillData, caster, targets.getMainTarget());
 
-        // create buff and/or receive items and summon only if damage does not exists or if it hits
+        // create buff and/or receive items and summon only if damage does not exist or if it hits
         boolean canContinue = mainTargetDamage == null || mainTargetDamage.isHit();
 
         // return damage that does not hit
         if (!canContinue) {
-            results.add(new SkillResult(skillData, caster, targets.getMainTarget(), mainTargetDamage, null, null, false, mainSkill ? skillData.getStaminaReq() : 0, null));
+            results.add(new SkillResult(skillData, caster, targets.getMainTarget(), mainTargetDamage, null, null, false, mainSkill ? staminaUse : 0, null));
             return results;
         }
 
@@ -98,7 +102,7 @@ public class SkillResultsCreator {
         Buff mainTargetBuff = isBuff(skillData) && !isMainTargetResisted ?
                 new Buff(skillData, caster, targets.getMainTarget(), mainTargetDamage) : null;
         SkillResult mainTargetSkillResult = new SkillResult(
-                skillData, caster, targets.getMainTarget(), mainTargetDamage, getSummon(skillData, targets.getMainTarget()), mainTargetBuff, isMainTargetResisted, mainSkill ? skillData.getStaminaReq() : 0, null);
+                skillData, caster, targets.getMainTarget(), mainTargetDamage, getSummon(skillData, targets.getMainTarget()), mainTargetBuff, isMainTargetResisted, mainSkill ? staminaUse : 0, null);
         results.add(mainTargetSkillResult);
 
         // ignore other targets and skill chaining if skill did not hit and resisted
