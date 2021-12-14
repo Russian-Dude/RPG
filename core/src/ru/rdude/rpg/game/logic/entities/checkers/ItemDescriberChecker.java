@@ -6,7 +6,7 @@ class ItemDescriberChecker extends DescriberChecker<ItemData> {
 
     @Override
     protected ItemData getDataByGuid(long guid) {
-        return null;
+        return ItemData.getItemDataByGuid(guid);
     }
 
     @Override

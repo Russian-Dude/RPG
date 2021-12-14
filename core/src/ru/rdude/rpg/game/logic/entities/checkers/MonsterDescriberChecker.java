@@ -6,7 +6,7 @@ class MonsterDescriberChecker extends DescriberChecker<MonsterData> {
 
     @Override
     protected MonsterData getDataByGuid(long guid) {
-        return null;
+        return MonsterData.getMonsterByGuid(guid);
     }
 
     @Override
