@@ -1,5 +1,6 @@
 package ru.rdude.rpg.game.logic.entities.skills;
 
+import org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import ru.rdude.rpg.game.logic.entities.beings.Being;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
 
@@ -20,7 +21,8 @@ public class SkillParser {
     public SkillParser() {
         if (scriptEngineManager == null) {
             scriptEngineManager = new ScriptEngineManager();
-            engine = scriptEngineManager.getEngineByName("JavaScript");
+            engine = new NashornScriptEngineFactory().getScriptEngine();
+            //engine = scriptEngineManager.getEngineByName("JavaScript");
         }
     }
 

@@ -76,6 +76,8 @@ project(":core") {
         // https://mvnrepository.com/artifact/org.reflections/reflections
         compile group: 'org.reflections', name: 'reflections', version: '0.9.12'
 
+        implementation 'org.openjdk.nashorn:nashorn-core:15.3'
+
 
     }
 }
