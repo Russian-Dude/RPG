@@ -1,7 +1,7 @@
 package ru.rdude.rpg.game.logic.enums;
 
 public enum Target {
-    NO(true, false),
+    NO(false, false),
     SELF(true, true),
     ALLY(true, false),
     ENEMY(true, false),
@@ -21,8 +21,8 @@ public enum Target {
     LEFT_ALLY(true, true),
     RIGHT_ALLY(true, true);
 
-    private boolean canBeMainTarget;
-    private boolean canBeSubTarget;
+    private final boolean canBeMainTarget;
+    private final boolean canBeSubTarget;
 
     Target(boolean canBeMainTarget, boolean canBeSubTarget) {
         this.canBeMainTarget = canBeMainTarget;
