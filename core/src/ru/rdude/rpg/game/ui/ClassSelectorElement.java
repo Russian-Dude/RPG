@@ -12,11 +12,12 @@ import ru.rdude.rpg.game.logic.game.CurrentGameObserver;
 import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.logic.gameStates.GameStateBase;
 import ru.rdude.rpg.game.logic.gameStates.GameStateObserver;
+import ru.rdude.rpg.game.logic.playerClass.CurrentPlayerClassObserver;
 import ru.rdude.rpg.game.logic.playerClass.PlayerClass;
 import ru.rdude.rpg.game.logic.playerClass.PlayerClassObserver;
 
 @JsonIgnoreType
-public class ClassSelectorElement extends Table implements Comparable<ClassSelectorElement>, PlayerClassObserver, GameStateObserver, CurrentGameObserver {
+public class ClassSelectorElement extends Table implements Comparable<ClassSelectorElement>, PlayerClassObserver, GameStateObserver, CurrentGameObserver, CurrentPlayerClassObserver {
 
     private final PlayerClass playerClass;
     private final Player player;
@@ -51,6 +52,7 @@ public class ClassSelectorElement extends Table implements Comparable<ClassSelec
         });
 
         playerClass.subscribe(this);
+        player.subscribe(this);
         Game.getCurrentGame().getGameStateHolder().subscribe(this);
 
 
@@ -96,9 +98,13 @@ public class ClassSelectorElement extends Table implements Comparable<ClassSelec
         long points = requiredPoints - playerClass.getNeedToOpen();
         score.setText(player.getCurrentClass() == playerClass ? "current" : (playerClass.isOpen() ? "open" : points + " / " + requiredPoints));
         progressBar.setValue(points);
-        if (playerClass.isOpen()) {
+        if (playerClass.isOpen() && progressOrButton.getChildren().contains(progressBar, true)) {
             progressBar.remove();
             progressOrButton.addActor(selectButton);
+        }
+        else if (!playerClass.isOpen() && progressOrButton.getChildren().contains(selectButton, true)){
+            selectButton.remove();
+            progressOrButton.addActor(progressBar);
         }
         selectButton.setVisible(player.getCurrentClass() != playerClass);
         progressBar.setVisible(player.getCurrentClass() != playerClass);
@@ -113,5 +119,13 @@ public class ClassSelectorElement extends Table implements Comparable<ClassSelec
     public void update(Game game, Action action) {
         playerClass.unsubscribe(this);
         Game.getCurrentGame().getGameStateHolder().unsubscribe(this);
+    }
+
+    @Override
+    public void currentPlayerClassUpdate(PlayerClass oldValue, PlayerClass newValue) {
+        long requiredPoints = playerClass.getClassData().getRequiredPoints();
+        long points = requiredPoints - playerClass.getNeedToOpen();
+        score.setText(newValue == playerClass ? "current" : (playerClass.isOpen() ? "open" : points + " / " + requiredPoints));
+        selectButton.setVisible(!playerClass.equals(newValue));
     }
 }

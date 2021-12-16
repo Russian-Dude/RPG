@@ -30,7 +30,9 @@ public class PlayerClassVisualHolder extends Group implements CurrentPlayerClass
 
     @Override
     public void currentPlayerClassUpdate(PlayerClass oldValue, PlayerClass newValue) {
-        addActor(playerClasses.get(newValue));
+        PlayerClassVisual newClassVisual = playerClasses.get(newValue);
+        addActor(newClassVisual);
         currentClass.remove();
+        currentClass = newClassVisual;
     }
 }
