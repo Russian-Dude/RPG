@@ -1,6 +1,5 @@
 package ru.rdude.rpg.game.logic.gameStates;
 
-import ru.rdude.rpg.game.logic.game.Game;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
@@ -11,6 +10,8 @@ public class CampSetup implements GameStateObserver {
 
     private SubscribersManager<CampSetupObserver> subscribers = new SubscribersManager<>();
     private int beforeNextCampAllowed = BEFORE_NEXT_CAMP_ALLOWED;
+
+    private CampSetup() {}
 
     public CampSetup(GameStateHolder gameStateHolder) {
         gameStateHolder.subscribe(this);
@@ -31,7 +32,6 @@ public class CampSetup implements GameStateObserver {
     public void setBeforeNextCampAllowed(int value) {
         int oldValue = this.beforeNextCampAllowed;
         this.beforeNextCampAllowed = value;
-        Game.getCurrentGame().getGameLogger().log("real before next camp: " + value);
         subscribers.notifySubscribers(sub -> sub.updateBeforeSetUpCampAllowed(this, oldValue, value));
     }
 
@@ -42,10 +42,7 @@ public class CampSetup implements GameStateObserver {
     @Override
     public void update(GameStateBase oldValue, GameStateBase newValue) {
         if (oldValue instanceof Battle) {
-            Game.getCurrentGame().getGameLogger().log("before next camp: " + beforeNextCampAllowed);
             setBeforeNextCampAllowed(beforeNextCampAllowed - 1);
-            Game.getCurrentGame().getGameLogger().log("before next camp: " + beforeNextCampAllowed);
-            Game.getCurrentGame().getGameLogger().log("====");
         }
         if (newValue instanceof Camp) {
             setBeforeNextCampAllowed(BEFORE_NEXT_CAMP_ALLOWED);
