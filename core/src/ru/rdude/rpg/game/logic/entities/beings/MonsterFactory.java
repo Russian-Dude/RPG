@@ -168,6 +168,10 @@ public final class MonsterFactory {
         while (amount > 0 && !points.isEmpty()) {
             final Point randomPoint = Functions.random(points);
             points.remove(randomPoint);
+            if (map.getGameMap().cell(randomPoint).getObject() != null
+                    || map.getGameMap().cell(randomPoint) == map.getPlayerPosition()) {
+                continue;
+            }
             final Map.MonstersOnCell monstersOnCell = createMonstersOnCell(map.getGameMap().cell(randomPoint));
             if (monstersOnCell != null && !monstersOnCell.isEmpty()) {
                 map.getCellProperties(map.getGameMap().cell(randomPoint)).setMonsters(monstersOnCell);
