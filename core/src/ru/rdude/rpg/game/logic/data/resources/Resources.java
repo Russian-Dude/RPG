@@ -1,6 +1,7 @@
 package ru.rdude.rpg.game.logic.data.resources;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public abstract class Resources {
@@ -55,22 +56,46 @@ public abstract class Resources {
         this.particleResources = particleResources;
     }
 
-    public void swap(Resource oldV, Resource newV) {
-        swapImage(oldV, newV);
-        swapSound(oldV, newV);
-        swapParticle(oldV, newV);
+    public boolean swap(Resource oldV, Resource newV) {
+        return swapImage(oldV, newV) | swapSound(oldV, newV) | swapParticle(oldV, newV);
     }
 
-    public void swapImage(Resource oldV, Resource newV) {
-        imageResources.replaceAll((name, resource) -> oldV.equals(resource) ? newV : resource);
+    public boolean swapImage(Resource oldV, Resource newV) {
+        boolean res = false;
+        List<String> toChange = imageResources.entrySet().stream()
+                .filter(entry -> oldV.equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+        for (String s : toChange) {
+            res = true;
+            imageResources.put(s, newV);
+        }
+        return res;
     }
 
-    public void swapSound(Resource oldV, Resource newV) {
-        soundResources.replaceAll((name, resource) -> oldV.equals(resource) ? newV : resource);
+    public boolean swapSound(Resource oldV, Resource newV) {
+        boolean res = false;
+        List<String> toChange = soundResources.entrySet().stream()
+                .filter(entry -> oldV.equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+        for (String s : toChange) {
+            res = true;
+            soundResources.put(s, newV);
+        }
+        return res;
     }
 
-    public void swapParticle(Resource oldV, Resource newV) {
-        particleResources.values().forEach(list -> list.replaceAll(resource -> oldV.equals(resource) ? newV : resource));
+    public boolean swapParticle(Resource oldV, Resource newV) {
+        boolean res = false;
+        for (Map.Entry<String, List<Resource>> entry : particleResources.entrySet()) {
+            List<Resource> list = entry.getValue();
+            if (list != null && list.remove(oldV)) {
+                list.add(newV);
+                res = true;
+            }
+        }
+        return res;
     }
 
     public void remove(Resource resource) {

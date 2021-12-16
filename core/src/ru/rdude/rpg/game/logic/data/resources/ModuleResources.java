@@ -2,6 +2,7 @@ package ru.rdude.rpg.game.logic.data.resources;
 
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @JsonPolymorphicSubType("moduleResources")
@@ -20,7 +21,9 @@ public class ModuleResources extends Resources {
     }
 
     public void addParticleResource(Resource resource) {
-        particleResources.put(String.valueOf(resource.getGuid()), List.of(resource));
+        List<Resource> list = new ArrayList<>();
+        list.add(resource);
+        particleResources.put(String.valueOf(resource.getGuid()), list);
     }
 
     @Override
