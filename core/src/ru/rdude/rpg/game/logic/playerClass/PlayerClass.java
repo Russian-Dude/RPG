@@ -7,20 +7,19 @@ import ru.rdude.rpg.game.logic.entities.beings.BeingAction;
 import ru.rdude.rpg.game.logic.entities.beings.Player;
 import ru.rdude.rpg.game.logic.enums.UsedByStatistics;
 import ru.rdude.rpg.game.logic.statistics.StatisticValueObserver;
+import ru.rdude.rpg.game.logic.stats.Stat;
+import ru.rdude.rpg.game.logic.stats.StatObserver;
 import ru.rdude.rpg.game.logic.stats.primary.Lvl;
 import ru.rdude.rpg.game.utils.Pair;
 import ru.rdude.rpg.game.utils.SubscribersManager;
 import ru.rdude.rpg.game.utils.jsonextension.JsonPolymorphicSubType;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class)
 @JsonPolymorphicSubType("playerClass")
-public class PlayerClass implements StatisticValueObserver, AbilityObserver {
+public class PlayerClass implements StatisticValueObserver, AbilityObserver, StatObserver {
 
     private SubscribersManager<PlayerClassObserver> subscribers = new SubscribersManager<>();
 
@@ -37,6 +36,7 @@ public class PlayerClass implements StatisticValueObserver, AbilityObserver {
     public PlayerClass(PlayerClassData classData) {
         this.classData = classData;
         lvl = new Lvl(Lvl.CLASS);
+        lvl.subscribe(this);
         lvl.setCalculatable(true);
         lvl.calculate();
         needToOpen = classData.getRequiredPoints();
@@ -112,6 +112,17 @@ public class PlayerClass implements StatisticValueObserver, AbilityObserver {
                 .filter(abilityEntry -> abilityEntry.getRequirements().get(ability.getAbilityData().getGuid()) <= newLvl)
                 .forEach(abilityEntry -> abilities.stream()
                         .filter(ab -> ab.getAbilityData().getGuid() == (abilityEntry.getAbilityData()))
+                        .filter(ab -> {
+                            var nextLvl = ab.getAbilityData().getLvl(ab.getLvl() + 1);
+                            return nextLvl.isPresent() && nextLvl.get().getClassLvlRequirement() <= lvl.value();
+                        })
                         .forEach(ab -> ab.setOpen(true)));
+    }
+
+    @Override
+    public void update(Stat stat) {
+        if (stat == lvl) {
+            abilities.forEach(ability -> updateAbility(ability, false, ability.getLvl(), ability.getLvl()));
+        }
     }
 }

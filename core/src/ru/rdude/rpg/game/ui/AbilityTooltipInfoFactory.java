@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static ru.rdude.rpg.game.logic.enums.EntityReferenceInfo.*;
@@ -53,15 +54,32 @@ public class AbilityTooltipInfoFactory {
         // requirements
         if ((referenceInfo == ALL || referenceInfo == INTEGRATED)
                 && !ability.isOpen()) {
+            // abilities requirements
+            AtomicBoolean hasAbilityRequirements = new AtomicBoolean(false);
             String requirementsString = "Required " + abilityEntry.getRequirements().entrySet().stream()
+                    .filter(reqEntry -> playerClass.getAbilities().stream()
+                            .filter(ab -> ab.getAbilityData().getGuid() == reqEntry.getKey())
+                            .anyMatch(ab -> ab.getLvl() < reqEntry.getValue()))
                     .map(reqEntry -> {
                         String lvlReq = reqEntry.getValue() > 1 ? " level " + reqEntry.getValue() : "";
                         return AbilityData.getAbilityByGuid(reqEntry.getKey()).getName() + lvlReq;
                     })
+                    .peek(s -> hasAbilityRequirements.set(true))
                     .collect(Collectors.joining(", "));
-            Label requirementsLabel = new Label(requirementsString, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
-            requirementsLabel.addAction(Actions.color(Color.RED));
-            result.add(requirementsLabel);
+            if (hasAbilityRequirements.get()) {
+                Label requirementsLabel = new Label(requirementsString, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+                requirementsLabel.addAction(Actions.color(Color.RED));
+                result.add(requirementsLabel);
+            }
+            // class level requirements
+            ability.getAbilityData().getLvl(ability.getLvl() + 1).ifPresent(abilityLevel -> {
+                int classLvlReq = abilityLevel.getClassLvlRequirement();
+                if (classLvlReq > 0 && playerClass.getLvl().value() < classLvlReq) {
+                    Label label = new Label("Required class level " + classLvlReq, UiData.DEFAULT_SKIN, UiData.SMALL_TEXT_STYLE);
+                    label.addAction(Actions.color(Color.RED));
+                    result.add(label);
+                }
+            });
         }
 
         // current lvl

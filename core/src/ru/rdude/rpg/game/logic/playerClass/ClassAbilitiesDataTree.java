@@ -42,7 +42,7 @@ public class ClassAbilitiesDataTree {
         if (l < 0) {
             return Optional.empty();
         }
-        else if (l < 10) {
+        else if (l <= 10) {
             return Optional.of(AbilityPath.values()[(int) l]);
         }
         else {
