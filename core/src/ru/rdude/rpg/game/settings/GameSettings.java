@@ -5,17 +5,19 @@ import com.badlogic.gdx.Gdx;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Properties;
 
 public final class GameSettings {
 
-    private static GameSettings instance = new GameSettings();
+    private static final GameSettings instance = new GameSettings();
 
     private GameSettings() {
         try (FileReader reader = new FileReader(Gdx.files.local("properties.properties").file())) {
             properties.load(reader);
             cameraFollowPlayers = Boolean.parseBoolean(properties.getProperty("cameraFollowPlayers"));
             playersMovingSpeedOnMap = MovingSpeed.valueOf(properties.getProperty("playersMovingSpeedOnMap"));
+            logsDirectory = Path.of(properties.getProperty("logs_directory"));
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -37,6 +39,7 @@ public final class GameSettings {
     private Properties properties = new Properties();
     private boolean cameraFollowPlayers;
     private MovingSpeed playersMovingSpeedOnMap;
+    private Path logsDirectory;
 
     public static boolean isCameraFollowPlayers() {
         return instance.cameraFollowPlayers;
@@ -66,5 +69,9 @@ public final class GameSettings {
         catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Path getLogsDirectory() {
+        return instance.logsDirectory;
     }
 }
